@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Count block types in saved chunks of a world (anvil .mca) by block-state palettes.
 
-Usage: scan_blocks.py <world_dir> [dimension: overworld|nether|end] [regex of block names, default: ores]
+Usage: scan_blocks.py <world_dir> [dimension: overworld|nether|end] [regex of block names, default: ores | 'structures']
 Palette-based: counts how many chunk *sections* list a block, plus how many chunks contain it
 (enough to prove presence/absence; not exact block counts).
 """
@@ -64,6 +64,16 @@ def main():
     if not os.path.isdir(rdir):  # 26.x layout: dimensions/minecraft/<dim>/region
         rdir = os.path.join(world, "dimensions/minecraft", {"overworld": "overworld", "nether": "the_nether", "end": "the_end"}[dim], "region")
     sections = collections.Counter(); in_chunks = collections.Counter(); n = 0
+    if len(sys.argv) > 3 and sys.argv[3] == "structures":  # count structure *starts* in chunk NBT
+        starts = collections.Counter()
+        for fn in sorted(os.listdir(rdir)):
+            if not fn.endswith(".mca"): continue
+            for c in chunks(os.path.join(rdir, fn)):
+                n += 1
+                for k in ((c.get("structures") or {}).get("starts") or {}): starts[k] += 1
+        print(f"{dim}: {n} chunks scanned in {rdir}; structure starts: {sum(starts.values())}")
+        for k, v in sorted(starts.items()): print(f"  {k}: {v}")
+        return
     for fn in sorted(os.listdir(rdir)):
         if not fn.endswith(".mca"): continue
         for c in chunks(os.path.join(rdir, fn)):
