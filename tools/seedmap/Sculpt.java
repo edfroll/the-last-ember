@@ -188,7 +188,7 @@ public class Sculpt {
 
     // ---------- verification ----------
     static int groundTop(RegionFileStorage st, Map<Long, Tag[][]> cache, int x, int z) throws IOException {
-        int cxk = Math.floorDiv(x, 16), czk = Math.floorDiv(z, 16); long key = ChunkPos.asLong(cxk, czk);
+        int cxk = Math.floorDiv(x, 16), czk = Math.floorDiv(z, 16); long key = (((long) cxk << 32) | (czk & 0xffffffffL));
         Tag[][] blocks = cache.get(key);
         if (blocks == null) { CompoundTag ch = st.read(new ChunkPos(cxk, czk)); if (ch == null) return Integer.MIN_VALUE; ListTag secs = ch.getListOrEmpty("sections"); blocks = new Tag[24][]; for (int i = 0; i < 24; i++) blocks[i] = decode(secs.getCompoundOrEmpty(i)); cache.put(key, blocks); }
         int lx = Math.floorMod(x, 16), lz = Math.floorMod(z, 16);
