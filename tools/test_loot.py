@@ -8,7 +8,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 spec = importlib.util.spec_from_file_location("rcon", os.path.join(ROOT, "tools/rcon.py"))
 rc = importlib.util.module_from_spec(spec); spec.loader.exec_module(rc)
 
-BANNED = re.compile(r"^minecraft:(raw_(iron|gold|copper)(_block)?|(iron|gold|copper)_(ingot|nugget|block)|diamond(_block)?|"
+BANNED = re.compile(r"^minecraft:((iron|golden|diamond|chainmail|copper|netherite)_(sword|pickaxe|axe|shovel|hoe|helmet|chestplate|leggings|boots|spear|\w*horse_armor|\w*nautilus_armor)|raw_(iron|gold|copper)(_block)?|(iron|gold|copper)_(ingot|nugget|block)|diamond(_block)?|"
                     r"emerald(_block)?|lapis_lazuli|lapis_block|redstone(_block)?|netherite_scrap|ancient_debris|\w+_ore)$")
 POS = "1 100 1"
 
@@ -18,11 +18,11 @@ class Conn:
         self.s = socket.create_connection(("127.0.0.1", int(p["rcon.port"])), timeout=30)
         rc.pkt(self.s, 1, 3, p["rcon.password"]); rc.read(self.s)
     def run(self, cmd):
-        rc.pkt(self.s, 2, 2, cmd); return rc.read(self.s)[2]
+        return rc.exchange(self.s, cmd)
 
 def tables():
     base = os.path.join(ROOT, "server/generated/data/minecraft/loot_table")
-    for d in ("chests", "archaeology", "pots"):
+    for d in ("chests", "archaeology", "pots", "equipment", "gameplay/hero_of_the_village", "barrels", "spawners"):
         for dp, _, fns in os.walk(os.path.join(base, d)):
             for fn in sorted(fns):
                 if fn.endswith(".json"):

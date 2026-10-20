@@ -21,10 +21,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:iron_axe"
-        },
-        {
-          "type": "minecraft:item",
           "name": "minecraft:wheat",
           "weight": 2
         },

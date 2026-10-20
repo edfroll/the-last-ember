@@ -15,10 +15,6 @@
           },
           "name": "minecraft:bread",
           "weight": 4
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_helmet"
         }
       ],
       "rolls": {

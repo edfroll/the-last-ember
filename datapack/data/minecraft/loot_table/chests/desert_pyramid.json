@@ -57,26 +57,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:copper_horse_armor",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_horse_armor",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_horse_armor",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_horse_armor",
-          "weight": 5
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:enchant_randomly",
             "options": "#minecraft:on_random_loot"

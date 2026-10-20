@@ -57,22 +57,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:copper_horse_armor"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:iron_horse_armor"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:golden_horse_armor"
-        },
-        {
-          "type": "minecraft:item",
-          "name": "minecraft:diamond_horse_armor"
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:enchant_with_levels",
             "levels": 30,

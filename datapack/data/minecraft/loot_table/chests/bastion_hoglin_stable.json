@@ -5,48 +5,6 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_damage",
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.8,
-                "min": 0.15
-              }
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            }
-          ],
-          "name": "minecraft:diamond_shovel",
-          "weight": 15
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_damage",
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.95,
-                "min": 0.15
-              }
-            },
-            {
-              "type": "minecraft:set_count",
-              "count": 1
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            }
-          ],
-          "name": "minecraft:diamond_pickaxe",
-          "weight": 12
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:set_count",
             "count": 1
@@ -81,20 +39,6 @@
     },
     {
       "entries": [
-        {
-          "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_count",
-              "count": 1
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            }
-          ],
-          "name": "minecraft:golden_axe"
-        },
         {
           "type": "minecraft:item",
           "modifier": {

@@ -7,30 +7,6 @@
           "type": "minecraft:item",
           "modifier": [
             {
-              "type": "minecraft:set_count",
-              "count": 1
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            }
-          ],
-          "name": "minecraft:diamond_pickaxe",
-          "weight": 6
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:diamond_shovel",
-          "weight": 6
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": [
-            {
               "type": "minecraft:set_damage",
               "damage": {
                 "type": "minecraft:uniform",
@@ -115,102 +91,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_damage",
-              "damage": {
-                "type": "minecraft:uniform",
-                "max": 0.9,
-                "min": 0.1
-              }
-            },
-            {
-              "type": "minecraft:set_count",
-              "count": 1
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            }
-          ],
-          "name": "minecraft:iron_sword",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_count",
-              "count": 1
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "minecraft:soul_speed"
-            }
-          ],
-          "name": "minecraft:golden_boots"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": [
-            {
-              "type": "minecraft:set_count",
-              "count": 1
-            },
-            {
-              "type": "minecraft:enchant_randomly",
-              "options": "#minecraft:on_random_loot"
-            }
-          ],
-          "name": "minecraft:golden_axe"
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:set_count",
             "count": 1
           },
           "name": "minecraft:crossbow"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:golden_sword"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:golden_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:golden_helmet"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:golden_leggings"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:golden_boots"
         },
         {
           "type": "minecraft:item",

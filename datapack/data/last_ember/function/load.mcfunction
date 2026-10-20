@@ -1,5 +1,7 @@
 # Runs on world load / reload.
 scoreboard objectives add le.init dummy
 scoreboard players set #loaded le.init 1
-tellraw @a[tag=le.debug] {"text":"[Last Ember] datapack loaded","color":"gold"}
-say [Last Ember] datapack loaded
+# T-001b: no wandering traders
+gamerule spawn_wandering_traders false
+# T-001b: metal-gear drop control for natural mobs
+schedule function last_ember:mob_eq/scan 10t replace

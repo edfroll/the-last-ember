@@ -47,34 +47,6 @@
         {
           "type": "minecraft:item",
           "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": {
-              "type": "minecraft:uniform",
-              "max": 10,
-              "min": 0
-            },
-            "options": "#minecraft:on_random_loot"
-          },
-          "name": "minecraft:iron_axe",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": {
-              "type": "minecraft:uniform",
-              "max": 10,
-              "min": 0
-            },
-            "options": "#minecraft:on_random_loot"
-          },
-          "name": "minecraft:iron_chestplate",
-          "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
             "type": "minecraft:set_count",
             "count": {
               "type": "minecraft:uniform",
@@ -115,32 +87,6 @@
           },
           "name": "minecraft:book",
           "weight": 2
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": {
-              "type": "minecraft:uniform",
-              "max": 15,
-              "min": 5
-            },
-            "options": "#minecraft:on_random_loot"
-          },
-          "name": "minecraft:diamond_chestplate"
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:enchant_with_levels",
-            "levels": {
-              "type": "minecraft:uniform",
-              "max": 15,
-              "min": 5
-            },
-            "options": "#minecraft:on_random_loot"
-          },
-          "name": "minecraft:diamond_axe"
         }
       ],
       "rolls": 1

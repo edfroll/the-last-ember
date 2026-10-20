@@ -59,10 +59,6 @@
         },
         {
           "type": "minecraft:item",
-          "name": "minecraft:golden_helmet"
-        },
-        {
-          "type": "minecraft:item",
           "modifier": {
             "type": "minecraft:enchant_randomly",
             "options": "#minecraft:on_random_loot"
@@ -103,42 +99,6 @@
         {
           "type": "minecraft:empty",
           "weight": 148
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:copper_nautilus_armor",
-          "weight": 20
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:iron_nautilus_armor",
-          "weight": 10
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:golden_nautilus_armor",
-          "weight": 5
-        },
-        {
-          "type": "minecraft:item",
-          "modifier": {
-            "type": "minecraft:set_count",
-            "count": 1
-          },
-          "name": "minecraft:diamond_nautilus_armor",
-          "weight": 2
         }
       ],
       "rolls": 1

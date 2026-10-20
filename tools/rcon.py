@@ -28,14 +28,26 @@ def read(sock):
     rid, typ = struct.unpack("<ii", buf[:8])
     return rid, typ, buf[8:-2].decode(errors="replace")
 
+def exchange(s, cmd):
+    """Send one command, return the full reply. Replies >= ~4 KB arrive split into several packets; only then a bogus packet
+    (type 200, id 3) is sent as an end marker (the server echoes it after the last fragment)."""
+    pkt(s, 2, 2, cmd)
+    _, _, out = read(s)
+    if len(out.encode()) >= 4000:
+        pkt(s, 3, 200, "")
+        while True:
+            rid, _, body = read(s)
+            if rid == 3: break
+            out += body
+    return out
+
 def run(cmd, host="127.0.0.1"):
     p = props()
     s = socket.create_connection((host, int(p.get("rcon.port", 25575))), timeout=30)
     pkt(s, 1, 3, p["rcon.password"])
     if read(s)[0] == -1:
         raise SystemExit("RCON auth failed")
-    pkt(s, 2, 2, cmd)
-    out = read(s)[2]
+    out = exchange(s, cmd)
     s.close()
     return out
 

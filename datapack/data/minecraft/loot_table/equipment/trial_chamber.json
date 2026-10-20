@@ -1,0 +1,5 @@
+{
+  "type": "minecraft:equipment",
+  "pools": [],
+  "random_sequence": "minecraft:equipment/trial_chamber"
+}
