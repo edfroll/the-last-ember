@@ -1,0 +1,7 @@
+# T-004 test zones (only for the test world; passed explicitly: python3 tools/gen_zones.py zones/test_zones.txt)
+t_box      overworld box  0 60 0  31 100 31
+t_cyl      overworld cyl  100 16 60  0 100
+t_ovA      overworld box  -100 60 -20  -70 100 10      no_spawn
+t_ovB      overworld box  -80 60 -10  -50 100 20
+t_outer    overworld box  0 60 100  60 110 160
+t_inner    overworld box  20 70 120  40 90 140      no_blink

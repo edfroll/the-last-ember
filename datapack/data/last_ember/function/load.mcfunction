@@ -5,3 +5,12 @@ scoreboard players set #loaded le.init 1
 gamerule spawn_wandering_traders false
 # T-001b: metal-gear drop control for natural mobs
 schedule function last_ember:mob_eq/scan 10t replace
+# T-004: global protection rules (see docs/reports/T-004-report.md for side effects)
+gamerule mob_griefing false
+gamerule fire_spread_radius_around_player 0
+gamerule projectiles_can_break_blocks false
+# T-004: adventure zones
+scoreboard objectives add le.z dummy
+scoreboard players set #5 le.z 5
+scoreboard players set #20 le.z 20
+function last_ember:zones/setup

@@ -27,6 +27,7 @@ def rules_ok(rules):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--host", default="localhost:25565"); ap.add_argument("--name", default="Cam"); ap.add_argument("--size", default="1280x720")
+    ap.add_argument("--dir", default="server/client", help="game dir (separate per extra client)"); ap.add_argument("--mem", default="3G")
     a = ap.parse_args()
     d = json.load(open(f"{MC}/versions/{VER}/{VER}.json"))
     cp = []
@@ -39,7 +40,7 @@ def main():
             if os.path.exists(p): cp.append(p)
             else: print("missing lib", p, file=sys.stderr)
     cp.append(f"{MC}/versions/{VER}/{VER}.jar")
-    game_dir = os.path.join(ROOT, "server/client"); os.makedirs(game_dir, exist_ok=True)
+    game_dir = os.path.join(ROOT, a.dir); os.makedirs(game_dir, exist_ok=True)
     opt = os.path.join(game_dir, "options.txt")
     if not os.path.exists(opt):
         open(opt, "w").write("renderDistance:12\npauseOnLostFocus:false\nonboardAccessibility:false\nfullscreen:false\nguiScale:2\nnarrator:0\ntutorialStep:none\n")
@@ -51,7 +52,7 @@ def main():
     w, h = a.size.split("x")
     subs = {"natives_directory": f"{MC}/versions/{VER}/natives", "launcher_name": "last-ember-dev", "launcher_version": "1",
             "classpath": ":".join(cp), "auth_player_name": a.name, "version_name": VER, "game_directory": game_dir,
-            "assets_root": f"{MC}/assets", "assets_index_name": d["assetIndex"]["id"], "auth_uuid": "00000000-0000-0000-0000-000000000001",
+            "assets_root": f"{MC}/assets", "assets_index_name": d["assetIndex"]["id"], "auth_uuid": "00000000-0000-0000-0000-%012d" % (abs(hash(a.name)) % 10**12),
             "auth_access_token": "0", "clientid": "", "auth_xuid": "", "version_type": "release",
             "resolution_width": w, "resolution_height": h, "quickPlayMultiplayer": a.host}
     def expand(args, feats):
@@ -69,7 +70,7 @@ def main():
         for k, v in subs.items(): s = s.replace("${%s}" % k, v)
         return s
     java = glob.glob(f"{ROOT}/server/jdk25/*/Contents/Home/bin/java")[0]
-    cmd = [java, "-Xmx3G", f"-javaagent:{ROOT}/server/shotagent.jar={game_dir}"] + [sub(s) for s in jvm] + [d["mainClass"]] + [sub(s) for s in game]
+    cmd = [java, f"-Xmx{a.mem}", f"-javaagent:{ROOT}/server/shotagent.jar={game_dir}"] + [sub(s) for s in jvm] + [d["mainClass"]] + [sub(s) for s in game]
     os.makedirs(f"{game_dir}/logs", exist_ok=True)
     try:  # camera player must not die/fall on join: new joiners become spectators (best effort, server may be down)
         import importlib.util
