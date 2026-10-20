@@ -16,10 +16,16 @@ public class ShotAgent {
     public static void premain(String args, Instrumentation inst) {
         Thread t = new Thread(() -> {
             Path dir = Paths.get(args), req = dir.resolve("shot-request.txt"), done = dir.resolve("shot-done.txt");
+            try { Thread.sleep(25000); } catch (InterruptedException e) { return; }  // do not touch Minecraft during startup
             while (true) {
                 try {
                     Thread.sleep(200);
-                    if (!Files.exists(req)) continue;
+                    if (!Files.exists(req)) {
+                        // camera must never sit on the death screen: auto-respawn (saved player data may be dead)
+                        Minecraft m = Minecraft.getInstance();
+                        if (m != null && m.player != null && m.player.isDeadOrDying()) m.execute(() -> { if (m.player != null && m.player.isDeadOrDying()) m.player.respawn(); });
+                        continue;
+                    }
                     List<String> lines = Files.readAllLines(req);
                     Files.delete(req);
                     Minecraft mc = Minecraft.getInstance();
