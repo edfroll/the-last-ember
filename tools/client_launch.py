@@ -45,7 +45,7 @@ def main():
         open(opt, "w").write("renderDistance:12\npauseOnLostFocus:false\nonboardAccessibility:false\nfullscreen:false\nguiScale:2\nnarrator:0\ntutorialStep:none\n")
     import re  # keep the dev client clean: no tutorial hints
     txt = open(opt).read()
-    for k, v in (("tutorialStep", "none"), ("pauseOnLostFocus", "false")):
+    for k, v in (("tutorialStep", "none"), ("pauseOnLostFocus", "false"), ("renderClouds", '"false"')):
         txt = re.sub(rf"(?m)^{k}:.*$", f"{k}:{v}", txt) if f"{k}:" in txt else txt + f"{k}:{v}\n"
     open(opt, "w").write(txt)
     w, h = a.size.split("x")

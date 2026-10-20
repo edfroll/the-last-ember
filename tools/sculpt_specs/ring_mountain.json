@@ -2,7 +2,7 @@
   "name": "ring_mountain",
   "png": "docs/design/heightmaps/ring_mountain_height.png",
   "x0": -1200, "z0": -360, "offsetY": 40,
-  "seamWidth": 20,
+  "seamWidth": 24,
   "center": [-920, -80],
   "valleyRadius": 105,
   "lake": { "x": -915, "z": -100, "r": 40, "level": 76 },

@@ -11,4 +11,4 @@ if [ ! -f "$B/Sculpt.class" ] || [ "$ROOT/tools/seedmap/Sculpt.java" -nt "$B/Scu
 fi
 cd "$ROOT"
 MODE="$1"; SPEC="$2"; shift 2
-exec "$JAVA_HOME/bin/java" -Xmx3G -cp "$B:$CP" Sculpt "$MODE" "$SRV/world" "$SPEC" "$@" 2>&1 | grep -v -E "WARN|\[main/INFO\]: \[STD"
+exec "$JAVA_HOME/bin/java" -Xmx3G -cp "$B:$CP" Sculpt "$MODE" "$SRV/world" "$SPEC" "$@" 2>&1 | grep -v WARN | sed "s/^\[[^]]*\] \[[^]]*\]: \[STD[A-Z]*\]: //"

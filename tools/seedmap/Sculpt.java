@@ -162,7 +162,7 @@ public class Sculpt {
                     int H; double slope;
                     if (d == 0) { H = pix(x, z); slope = slopeAt(x, z); colsNew++; }
                     else { // seam: blend from the edge height into the existing generated ground
-                        int G = existingTop(blocks, lx, lz); double t = 1 - smooth(d / seam); int E = pix(x, z);
+                        int G = existingTop(blocks, lx, lz); double t = 1 - Math.min(1, d / seam); int E = pix(x, z);  // linear blend: gentlest worst-case slope
                         H = (int) Math.round(t * E + (1 - t) * G); slope = 0; colsSeam++;
                     }
                     Tag[] col = column(x, z, H, slope);
@@ -192,7 +192,7 @@ public class Sculpt {
         Tag[][] blocks = cache.get(key);
         if (blocks == null) { CompoundTag ch = st.read(new ChunkPos(cxk, czk)); if (ch == null) return Integer.MIN_VALUE; ListTag secs = ch.getListOrEmpty("sections"); blocks = new Tag[24][]; for (int i = 0; i < 24; i++) blocks[i] = decode(secs.getCompoundOrEmpty(i)); cache.put(key, blocks); }
         int lx = Math.floorMod(x, 16), lz = Math.floorMod(z, 16);
-        for (int y = MAXY; y >= MINY; y--) { String n = nameOf(blocks[(y - MINY) >> 4][(((y - MINY) & 15) << 8) | (lz << 4) | lx]).replace("minecraft:", ""); if (!n.equals("air") && !n.equals("water")) return y; }
+        for (int y = MAXY; y >= MINY; y--) { String n = nameOf(blocks[(y - MINY) >> 4][(((y - MINY) & 15) << 8) | (lz << 4) | lx]).replace("minecraft:", ""); if (GROUND.contains(n)) return y; }  // terrain only: trees, plants and water are ignored
         return MINY;
     }
     static void verify(String csv) throws Exception {
@@ -211,16 +211,22 @@ public class Sculpt {
             }
             // seam: largest height step between horizontally adjacent ground columns along a ring around the footprint, 0..seam out
             int worst = 0; String where = "";
-            for (int d = -2; d <= seam + 1; d++) {
+            int worstOuter = 0; String whereOuter = ""; long pairs = 0, over4 = 0; long[] perD = new long[seam + 4]; long[] perSide = new long[4];
+            for (int d = -2; d <= seam; d++) {
                 for (int side = 0; side < 4; side++) for (int t = 0; t < (side % 2 == 0 ? h : w); t++) {
                     int xa, za, xb, zb;
                     switch (side) { case 0 -> { xa = x0 - d; za = z0 + t; xb = xa - 1; zb = za; } case 1 -> { xa = x0 + t; za = z0 - d; xb = xa; zb = za - 1; }
                         case 2 -> { xa = x0 + w - 1 + d; za = z0 + t; xb = xa + 1; zb = za; } default -> { xa = x0 + t; za = z0 + h - 1 + d; xb = xa; zb = za + 1; } }
                     int ya = groundTop(st, cache, xa, za), yb = groundTop(st, cache, xb, zb); if (ya == Integer.MIN_VALUE || yb == Integer.MIN_VALUE) continue;
-                    int step = Math.abs(ya - yb); if (step > worst) { worst = step; where = "(" + xa + "," + za + ")->(" + xb + "," + zb + ") d=" + d; }
+                    int step = Math.abs(ya - yb);
+                    if (d < seam) { pairs++; if (step > 4) { over4++; perD[d + 2]++; perSide[side]++; } if (step > worst) { worst = step; where = "(" + xa + "," + za + ")->(" + xb + "," + zb + ") d=" + d; } }
+                    else if (step > worstOuter) { worstOuter = step; whereOuter = "(" + xa + "," + za + ")->(" + xb + "," + zb + ")"; }
                 }
             }
-            System.out.println("seam: largest step between adjacent ground columns " + worst + " blocks at " + where + (worst <= 4 ? "  OK" : "  > 4"));
+            System.out.println("seam: largest step between adjacent ground columns inside the strip (d=-2.." + (seam - 1) + "): " + worst + " blocks at " + where + (worst <= 4 ? "  OK" : "  > 4"));
+            System.out.println("seam: steps>4 by d(-2..): " + Arrays.toString(perD) + " by side(W,N,E,S): " + Arrays.toString(perSide));
+            System.out.println("seam: strip pairs checked " + pairs + ", with step > 4: " + over4);
+            System.out.println("seam: step across the strip's outer edge (strip vs untouched generation, includes natural cliffs): " + worstOuter + " blocks at " + whereOuter);
             System.out.println(allOk ? "PROFILES OK" : "PROFILES OUT OF TOLERANCE");
         }
     }
