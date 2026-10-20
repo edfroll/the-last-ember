@@ -3,6 +3,7 @@ import java.lang.instrument.Instrumentation;
 import java.nio.file.*;
 import java.util.List;
 
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.world.entity.player.ChatVisiblity;
@@ -34,6 +35,22 @@ public class ShotAgent {
                     for (String line : lines) {
                         String[] p = line.trim().split("\\s+");
                         if (p[0].isEmpty()) continue;
+                        if (p[0].startsWith("!")) { // input actions for tests: !use (right click), !drop (Q), !sneak_on / !sneak_off
+                            String act = p[0].substring(1);
+                            mc.execute(() -> {
+                                if (mc.gui.screen() != null) mc.gui.setScreen(null);
+                                switch (act) {
+                                    case "use" -> KeyMapping.click(mc.options.keyUse.getDefaultKey());
+                                    case "drop" -> KeyMapping.click(mc.options.keyDrop.getDefaultKey());
+                                    case "sneak_on" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), true);
+                                    case "sneak_off" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), false);
+                                    default -> {}
+                                }
+                            });
+                            Thread.sleep(150);
+                            res.append(p[0]).append(" ok\n");
+                            continue;
+                        }
                         boolean hud = p.length > 1 && p[1].equals("1");
                         Object lock = new Object();
                         boolean[] ok = {false};

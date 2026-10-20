@@ -1,0 +1,4 @@
+# T-005 test bonfires (only for the test world): python3 tools/gen_bonfires.py bonfires/test_bonfires.txt
+1  t_main   overworld  200 110 200  main    r0  start
+2  t_one    overworld  230 110 200  normal  r1
+3  t_two    overworld  260 110 200  normal  r1

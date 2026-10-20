@@ -14,3 +14,5 @@ scoreboard objectives add le.z dummy
 scoreboard players set #5 le.z 5
 scoreboard players set #20 le.z 20
 function last_ember:zones/setup
+# T-005: bonfires and the Ember
+function last_ember:bonfire/setup

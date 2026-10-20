@@ -4,7 +4,7 @@ Usage: client_launch.py [--host localhost:25565] [--name Cam] [--size 1280x720]
 Uses a dedicated game dir (server/client/) so the player's own options/saves are untouched; assets and libraries are read from
 ~/Library/Application Support/minecraft. Prints the PID; client log: server/client/logs/latest.log
 """
-import argparse, glob, json, os, platform, subprocess, sys
+import argparse, glob, json, os, platform, re, shutil, subprocess, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MC = os.path.expanduser("~/Library/Application Support/minecraft")
@@ -48,6 +48,13 @@ def main():
     txt = open(opt).read()
     for k, v in (("tutorialStep", "none"), ("pauseOnLostFocus", "false"), ("renderClouds", '"false"')):
         txt = re.sub(rf"(?m)^{k}:.*$", f"{k}:{v}", txt) if f"{k}:" in txt else txt + f"{k}:{v}\n"
+    open(opt, "w").write(txt)
+    # the map's resource pack is always the current working copy
+    rp = os.path.join(game_dir, "resourcepacks/last_ember")
+    if os.path.exists(rp): shutil.rmtree(rp)
+    shutil.copytree(os.path.join(ROOT, "resourcepack"), rp)
+    txt = open(opt).read()
+    txt = re.sub(r"(?m)^resourcePacks:.*$", 'resourcePacks:["vanilla","file/last_ember"]', txt) if "resourcePacks:" in txt else txt + 'resourcePacks:["vanilla","file/last_ember"]\n'
     open(opt, "w").write(txt)
     w, h = a.size.split("x")
     subs = {"natives_directory": f"{MC}/versions/{VER}/natives", "launcher_name": "last-ember-dev", "launcher_version": "1",

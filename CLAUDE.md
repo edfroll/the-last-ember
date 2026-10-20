@@ -68,6 +68,15 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Глобально в `load`: `mob_griefing false`, `fire_spread_radius_around_player 0`, `projectiles_can_break_blocks false` (обоснование в `docs/reports/T-004-report.md`). TNT, TNT-вагонетки, кристаллы Края ближе 8 блоков к зоне обезвреживаются.
 - Тесты: `tools/test_zones.py` (1 игрок, 26 проверок), `tools/test_zones_mp.py` (2 игрока: `client_launch.py --name Cam2 --dir server/client2 --mem 1500M --size 640x360`).
 
+## Костры и Уголь (T-005)
+- Костры — `bonfires/bonfires.txt` (`номер id измерение x y z main|normal регион [start]`), номер постоянный. `python3 tools/gen_bonfires.py` → `bonfire/gen/{register,build_pending,start}` + `zones/bonfires.gen.txt` (зоны r6), затем `python3 tools/gen_zones.py`. Тестовые: `gen_bonfires.py bonfires/test_bonfires.txt` (перед коммитом перегенерировать без них).
+- Реестр: storage `last_ember:bonfires by.b<номер>` {state 0/1, built, rx/ry/rz точка возрождения, d измерение…}. Строится при первой загрузке тикающего чанка (`build_pending` раз в секунду). Вручную: `function last_ember:bonfire/place {…}` (поля в комментарии файла). Внешний вид — заглушка `bonfire/build_here` до карточки.
+- Клики: сущности `interaction` (теги `le.hearth`/`le.stela`, номер в `le.bidx`), достижение `bonfire/click` → `bonfire/clicked`. Позиции: `positioned <целые>` уже центрирует x/z (+0.5) — сущности ставить в `~ ~ ~`.
+- Возрождение: счёты игрока `le.sx/sy/sz/sd/sb`, `spawnpoint` переустанавливается раз в секунду (кровати не сбивают). Новичок → костёр `start`.
+- Уголь: `trial_key` с `custom_data{le_ember:1b,gen:N}` и `item_model last_ember:ember` (анимированная текстура в ресурс-паке, `tools/make_ember_texture.py`). Ровно один действительный: при потере носителем `gen` растёт, носитель получает новый, старые копии удаляются (у игроков, в рамках/стойках/мобах рядом, в контейнере под взглядом, в эндер-сундуке). Носитель — тег `le.carrier`. Гнездо: storage `last_ember:ember socket` (-1 пусто), отображение — `item_display` с тегом `le.ember_disp`. Админ/тест: `function last_ember:ember/give_to_me`.
+- Тест: `tools/test_bonfires.py` (2 клиента, клики и Q — реальный ввод через агент: строки `!use`, `!drop`, `!sneak_on/off` в `shot-request.txt`).
+- **Тест-сервер: `pause-when-empty-seconds=-1`**, иначе без игроков сервер в 26.x встаёт на паузу и `schedule`-циклы не идут.
+
 ## Порядок работы
 - Одна задача Штаба = ветка или серия коммитов. Каждую задачу проверять самому на сервере (RCON, тестовые функции, логи) до отчёта.
 - Отчёт Штабу: что сделано; как проверено; что отличается от задачи и почему; что может проверить только живой игрок; вопросы.

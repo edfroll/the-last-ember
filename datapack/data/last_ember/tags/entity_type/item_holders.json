@@ -1,0 +1,27 @@
+{
+ "values": [
+  "minecraft:item_frame",
+  "minecraft:glow_item_frame",
+  "minecraft:armor_stand",
+  "minecraft:allay",
+  "minecraft:fox",
+  "minecraft:dolphin",
+  "minecraft:chest_minecart",
+  "minecraft:hopper_minecart",
+  "minecraft:zombie",
+  "minecraft:skeleton",
+  "minecraft:piglin",
+  "minecraft:villager",
+  "minecraft:acacia_chest_boat",
+  "minecraft:birch_chest_boat",
+  "minecraft:cherry_chest_boat",
+  "minecraft:dark_oak_chest_boat",
+  "minecraft:jungle_chest_boat",
+  "minecraft:mangrove_chest_boat",
+  "minecraft:oak_chest_boat",
+  "minecraft:pale_oak_chest_boat",
+  "minecraft:poplar_chest_boat",
+  "minecraft:spruce_chest_boat",
+  "minecraft:bamboo_chest_raft"
+ ]
+}

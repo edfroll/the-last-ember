@@ -16,6 +16,7 @@ rcon.password=ember-local-rcon
 broadcast-rcon-to-ops=false
 online-mode=false
 view-distance=12
+pause-when-empty-seconds=-1
 simulation-distance=8
 motd=The Last Ember (dev)
 level-seed=

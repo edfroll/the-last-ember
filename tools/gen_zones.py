@@ -50,6 +50,7 @@ def test(z, m):
 
 def main():
     zones = parse(os.path.join(ROOT, "zones/zones.txt"))
+    if os.path.exists(os.path.join(ROOT, "zones/bonfires.gen.txt")): zones += parse(os.path.join(ROOT, "zones/bonfires.gen.txt"))
     for extra in sys.argv[1:]: zones += parse(extra)
     ids = [z["id"] for z in zones]
     if len(ids) != len(set(ids)): raise SystemExit("duplicate zone ids")
