@@ -71,6 +71,12 @@ def main():
     java = glob.glob(f"{ROOT}/server/jdk25/*/Contents/Home/bin/java")[0]
     cmd = [java, "-Xmx3G", f"-javaagent:{ROOT}/server/shotagent.jar={game_dir}"] + [sub(s) for s in jvm] + [d["mainClass"]] + [sub(s) for s in game]
     os.makedirs(f"{game_dir}/logs", exist_ok=True)
+    try:  # camera player must not die/fall on join: new joiners become spectators (best effort, server may be down)
+        import importlib.util
+        sp = importlib.util.spec_from_file_location("rcon", os.path.join(ROOT, "tools/rcon.py")); rc = importlib.util.module_from_spec(sp); sp.loader.exec_module(rc)
+        rc.run("defaultgamemode spectator"); rc.run(f"gamemode spectator {a.name}")
+    except Exception as e:
+        print("note: could not set spectator default via RCON:", e, file=sys.stderr)
     p = subprocess.Popen(cmd, cwd=game_dir, stdout=open(f"{game_dir}/logs/stdout.txt", "w"), stderr=subprocess.STDOUT, start_new_session=True)
     print(p.pid)
 

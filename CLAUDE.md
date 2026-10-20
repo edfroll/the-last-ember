@@ -57,7 +57,7 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 
 ## Автоскриншоты из игры (шаг 4)
 - Реальный клиент 26.3 (файлы из лаунчера Edward'а в `~/Library/Application Support/minecraft`, запуск нашим `tools/client_launch.py` из отдельной папки `server/client/`, настройки Edward'а не трогаем) + dev-агент `tools/shotagent/ShotAgent.java` (`tools/build_shotagent.sh` → `server/shotagent.jar`, только локальный инструмент, в карту не входит). Агент по файлу-запросу делает штатный скриншот клиента (без нажатия клавиш, без прав macOS на Универсальный доступ и запись экрана), скрывает HUD, чат, закрывает меню.
-- Порядок: `tools/server.sh start` → `python3 tools/client_launch.py` (ждать ~50 с, клиент заходит как `Cam`) → `python3 tools/screenshot.py shots.json [--out DIR]` (формат файла в докстринге: точки, yaw/pitch, время суток, погода; камера = spectator, `tp` по RCON). Кадры 2560×1440. `whitelist` на тест-сервере выключен (`white-list=false`).
+- Порядок: `tools/server.sh start` → `python3 tools/client_launch.py` (ждать ~50 с, клиент заходит как `Cam`) → `python3 tools/screenshot.py shots.json [--out DIR]` (формат файла в докстринге: точки, yaw/pitch, время суток, погода; камера = spectator, `tp` по RCON). Кадры 2560×1440. Свёрнутое окно клиента (жёлтый кружок) не мешает (проверено), закрыть окно нельзя; агент сам возрождает мёртвую камеру, новичкам ставится spectator. `whitelist` на тест-сервере выключен (`white-list=false`).
 - Выгрузка в 26.x: у библиотек в манифесте нет `path`, берём из `url`; в клиенте нет `Options.hideGui` (HUD: `mc.gui.hud`), нет `setScreen` у Minecraft (`mc.gui.setScreen`).
 
 ## Порядок работы
