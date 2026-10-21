@@ -83,25 +83,30 @@ tavern_bed_2                   -50  107    35
 well_bottom                     40   83   -44  shaft 3x3 to y 83
 well_swap                       40  101   -44  21x21 yard + shaft, states before/after
 well_trigger                    40  102   -44  sounds and cold wind
-gallery_145                   -110  146   -84  
-gallery_152                   -110  153   -84  
-gallery_172                   -110  173   -84  
-map_frame_00                  -112  194   -96  item_frame facing south
-map_frame_01                  -112  193   -96  item_frame facing south
-map_frame_02                  -112  192   -96  item_frame facing south
-map_frame_03                  -112  191   -96  item_frame facing south
-map_frame_10                  -111  194   -96  item_frame facing south
-map_frame_11                  -111  193   -96  item_frame facing south
-map_frame_12                  -111  192   -96  item_frame facing south
-map_frame_13                  -111  191   -96  item_frame facing south
-map_frame_20                  -110  194   -96  item_frame facing south
-map_frame_21                  -110  193   -96  item_frame facing south
-map_frame_22                  -110  192   -96  item_frame facing south
-map_frame_23                  -110  191   -96  item_frame facing south
-map_frame_30                  -109  194   -96  item_frame facing south
-map_frame_31                  -109  193   -96  item_frame facing south
-map_frame_32                  -109  192   -96  item_frame facing south
-map_frame_33                  -109  191   -96  item_frame facing south
-tower_view                    -110  190   -81  view to the plaza, south-east
+tower_keeper                  -110  125   -92  store room, NPC point
+gallery_0                     -119  149   -81  
+gallery_1                     -101  157   -81  
+gallery_2                     -119  173   -99  
+map_frame_00                  -112  194   -95  item_frame facing south
+map_frame_01                  -112  193   -95  item_frame facing south
+map_frame_02                  -112  192   -95  item_frame facing south
+map_frame_03                  -112  191   -95  item_frame facing south
+map_frame_10                  -111  194   -95  item_frame facing south
+map_frame_11                  -111  193   -95  item_frame facing south
+map_frame_12                  -111  192   -95  item_frame facing south
+map_frame_13                  -111  191   -95  item_frame facing south
+map_frame_20                  -110  194   -95  item_frame facing south
+map_frame_21                  -110  193   -95  item_frame facing south
+map_frame_22                  -110  192   -95  item_frame facing south
+map_frame_23                  -110  191   -95  item_frame facing south
+map_frame_30                  -109  194   -95  item_frame facing south
+map_frame_31                  -109  193   -95  item_frame facing south
+map_frame_32                  -109  192   -95  item_frame facing south
+map_frame_33                  -109  191   -95  item_frame facing south
+spyglass_north                -110  190   -99  sign with the region
+spyglass_east                 -101  190   -90  sign with the region
+spyglass_south                -110  190   -81  sign with the region
+spyglass_west                 -119  190   -90  sign with the region
 bell                          -110  204   -90  
-tower_stair                   -110  125   -82  145 cells, 2 turns, no jumps
+tower_view                    -110  190   -81  view to the plaza
+tower_stair                   -103  125   -84  139 walking cells, 2 turns, 2 wide, no jumps
