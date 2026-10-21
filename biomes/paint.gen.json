@@ -1,0 +1,168 @@
+{
+  "seed": 1013,
+  "layers": [
+    {
+      "biome": "last_ember:weeping_vale",
+      "shape": "rect",
+      "v": [
+        -652,
+        -848,
+        652,
+        652
+      ],
+      "trans": 32,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:weeping_vale",
+      "shape": "rect",
+      "v": [
+        -1500,
+        -848,
+        -652,
+        -620
+      ],
+      "trans": 32,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:twilight_refuge",
+      "shape": "rect",
+      "v": [
+        -200,
+        -200,
+        200,
+        200
+      ],
+      "trans": 24,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:barrows",
+      "shape": "rect",
+      "v": [
+        124,
+        372,
+        276,
+        524
+      ],
+      "trans": 16,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:castle_dream",
+      "shape": "circle",
+      "v": [
+        450,
+        0,
+        100
+      ],
+      "trans": 16,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:crooked_fens",
+      "shape": "rect",
+      "v": [
+        -492,
+        240,
+        -268,
+        420
+      ],
+      "trans": 24,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:mushroom_grove",
+      "shape": "circle",
+      "v": [
+        -420,
+        60,
+        45
+      ],
+      "trans": 16,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:hedge_maze",
+      "shape": "rect",
+      "v": [
+        -212,
+        -492,
+        -88,
+        -368
+      ],
+      "trans": 8,
+      "y": [
+        40,
+        150
+      ]
+    },
+    {
+      "biome": "minecraft:pale_garden",
+      "shape": "rect",
+      "v": [
+        232,
+        -448,
+        428,
+        -252
+      ],
+      "trans": 16,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:early_winter",
+      "shape": "rect",
+      "v": [
+        -620,
+        -852,
+        -500,
+        -780
+      ],
+      "trans": 16,
+      "y": [
+        -64,
+        319
+      ]
+    },
+    {
+      "biome": "last_ember:early_winter",
+      "shape": "rect",
+      "v": [
+        -800,
+        -848,
+        -620,
+        -700
+      ],
+      "trans": 32,
+      "y": [
+        -64,
+        319
+      ]
+    }
+  ]
+}

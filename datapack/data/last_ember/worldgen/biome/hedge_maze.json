@@ -1,0 +1,71 @@
+{
+  "attributes": {
+    "minecraft:visual/sky_color": "#6B7586",
+    "minecraft:visual/fog_color": "#B8B5AA",
+    "minecraft:visual/water_fog_color": "#2E3A33",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [
+            {
+              "type": "minecraft:zombie",
+              "weight": 95,
+              "count": 4
+            },
+            {
+              "type": "minecraft:skeleton",
+              "weight": 100,
+              "count": 4
+            },
+            {
+              "type": "minecraft:spider",
+              "weight": 100,
+              "count": 4
+            },
+            {
+              "type": "minecraft:creeper",
+              "weight": 8,
+              "count": 1
+            },
+            {
+              "type": "minecraft:witch",
+              "weight": 3,
+              "count": 1
+            }
+          ],
+          "creature": [],
+          "ambient": [],
+          "axolotls": [],
+          "underground_water_creature": [],
+          "water_creature": [],
+          "water_ambient": [],
+          "misc": []
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "sound": {
+          "sound_id": "last_ember:music.r1_vale"
+        },
+        "min_delay": 6000,
+        "max_delay": 24000
+      }
+    },
+    "minecraft:visual/fog_start_distance": 6.0,
+    "minecraft:visual/fog_end_distance": 24.0
+  },
+  "carvers": [],
+  "features": [],
+  "downfall": 0.8,
+  "temperature": 0.6,
+  "has_precipitation": true,
+  "effects": {
+    "grass_color": "#A08A52",
+    "foliage_color": "#8F7A48",
+    "dry_foliage_color": "#8F7A48",
+    "water_color": "#5C6E62"
+  }
+}

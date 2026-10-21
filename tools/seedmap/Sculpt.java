@@ -98,7 +98,7 @@ public class Sculpt {
             } else {
                 boolean valley = rC < valleyR;
                 if (slope > 1.4 && depth < 2) b = vnoise(x / 5.0, z / 5.0, 31) > 0.45 ? T("stone") : T("andesite");
-                else if (depth == 0) b = valley ? (vnoise(x / 7.0, z / 7.0, 41) > 0.68 ? T("moss_block") : T("grass_block")) : (vnoise(x / 8.0, z / 8.0, 42) > 0.8 ? T("gravel") : T("grass_block"));
+                else if (depth == 0) b = valley ? (vnoise(x / 7.0, z / 7.0, 41) > 0.68 ? T("moss_block") : T("grass_block")) : T("grass_block")  /* T-003 review: no gravel patches on the outer apron */;
                 else if (depth < 3) b = T("dirt");
             }
             if (b != null) c[y - MINY] = b;

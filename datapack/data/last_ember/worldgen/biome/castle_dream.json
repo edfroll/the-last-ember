@@ -1,0 +1,95 @@
+{
+  "attributes": {
+    "minecraft:visual/sky_color": "#34506A",
+    "minecraft:visual/fog_color": "#6E6478",
+    "minecraft:visual/water_fog_color": "#1F2E30",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [
+            {
+              "type": "minecraft:zombie",
+              "weight": 100,
+              "count": 4
+            },
+            {
+              "type": "minecraft:skeleton",
+              "weight": 100,
+              "count": 4
+            },
+            {
+              "type": "minecraft:drowned",
+              "weight": 30,
+              "count": 2
+            }
+          ],
+          "creature": [],
+          "ambient": [],
+          "axolotls": [],
+          "underground_water_creature": [],
+          "water_creature": [],
+          "water_ambient": [],
+          "misc": []
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "sound": {
+          "sound_id": "last_ember:music.lair_castle"
+        },
+        "min_delay": 6000,
+        "max_delay": 24000
+      }
+    },
+    "minecraft:visual/fog_start_distance": 32.0,
+    "minecraft:visual/fog_end_distance": 160.0,
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:white_ash"
+          },
+          "probability": 0.002
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:audio/ambient_sounds": {
+      "mood": {
+        "sound": "minecraft:ambient.cave",
+        "tick_delay": 6000,
+        "block_search_extent": 8,
+        "offset": 2.0
+      }
+    },
+    "minecraft:gameplay/bed_rule": {
+      "can_set_spawn": "never",
+      "can_sleep": "never",
+      "error_message": {
+        "translate": "block.minecraft.bed.no_sleep"
+      }
+    },
+    "minecraft:gameplay/straw_bed_rule": {
+      "can_set_spawn": "never",
+      "can_sleep": "never",
+      "destroy_on_leave": true,
+      "error_message": {
+        "translate": "block.minecraft.bed.no_sleep"
+      }
+    }
+  },
+  "carvers": [],
+  "features": [],
+  "downfall": 0.8,
+  "temperature": 0.6,
+  "has_precipitation": true,
+  "effects": {
+    "grass_color": "#7A7350",
+    "foliage_color": "#6F5A3A",
+    "dry_foliage_color": "#6F5A3A",
+    "water_color": "#3D5A5E"
+  }
+}

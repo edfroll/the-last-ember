@@ -16,3 +16,5 @@ scoreboard players set #20 le.z 20
 function last_ember:zones/setup
 # T-005: bonfires and the Ember
 function last_ember:bonfire/setup
+# T-006: safe biomes sweep
+schedule function last_ember:biomes/safe_sweep 20t replace

@@ -1,0 +1,92 @@
+{
+  "music.refuge": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.grove": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.healing": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.r1_vale": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.r2_ring": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.r3_silence": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.lair_castle": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.lair_temple": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  },
+  "music.lair_crown": {
+    "category": "music",
+    "sounds": [
+      {
+        "name": "minecraft:music/game/calm1",
+        "stream": true,
+        "volume": 0.6
+      }
+    ]
+  }
+}

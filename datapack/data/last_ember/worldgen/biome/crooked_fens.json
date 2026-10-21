@@ -1,0 +1,84 @@
+{
+  "attributes": {
+    "minecraft:visual/sky_color": "#8A8668",
+    "minecraft:visual/fog_color": "#5E6B45",
+    "minecraft:visual/water_fog_color": "#2A3018",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [
+            {
+              "type": "minecraft:slime",
+              "weight": 100,
+              "count": 4
+            },
+            {
+              "type": "minecraft:witch",
+              "weight": 20,
+              "count": 1
+            },
+            {
+              "type": "minecraft:bogged",
+              "weight": 60,
+              "count": 4
+            },
+            {
+              "type": "minecraft:drowned",
+              "weight": 30,
+              "count": 2
+            }
+          ],
+          "creature": [
+            {
+              "type": "minecraft:frog",
+              "weight": 10,
+              "count": 3
+            }
+          ],
+          "ambient": [],
+          "axolotls": [],
+          "underground_water_creature": [],
+          "water_creature": [],
+          "water_ambient": [],
+          "misc": []
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "sound": {
+          "sound_id": "last_ember:music.r1_vale"
+        },
+        "min_delay": 6000,
+        "max_delay": 24000
+      }
+    },
+    "minecraft:visual/fog_start_distance": 8.0,
+    "minecraft:visual/fog_end_distance": 72.0,
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:spore_blossom_air"
+          },
+          "probability": 0.01
+        }
+      ],
+      "modifier": "append"
+    },
+    "minecraft:gameplay/surface_slime_spawn_chance": 0.5
+  },
+  "carvers": [],
+  "features": [],
+  "downfall": 0.8,
+  "temperature": 0.7,
+  "has_precipitation": true,
+  "effects": {
+    "grass_color": "#5F6B3A",
+    "foliage_color": "#4F5A30",
+    "dry_foliage_color": "#4F5A30",
+    "water_color": "#4F5A2E"
+  }
+}

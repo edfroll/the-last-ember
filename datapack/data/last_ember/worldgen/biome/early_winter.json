@@ -1,0 +1,56 @@
+{
+  "attributes": {
+    "minecraft:visual/sky_color": "#8A93A0",
+    "minecraft:visual/fog_color": "#C4CAD0",
+    "minecraft:visual/water_fog_color": "#1C2834",
+    "minecraft:gameplay/natural_mob_spawns": {
+      "argument": {
+        "spawn_costs": {},
+        "spawns_by_category": {
+          "monster": [],
+          "creature": [],
+          "ambient": [],
+          "axolotls": [],
+          "underground_water_creature": [],
+          "water_creature": [],
+          "water_ambient": [],
+          "misc": []
+        }
+      },
+      "modifier": "overlay"
+    },
+    "minecraft:audio/background_music": {
+      "default": {
+        "sound": {
+          "sound_id": "last_ember:music.r1_vale"
+        },
+        "min_delay": 6000,
+        "max_delay": 24000
+      }
+    },
+    "minecraft:visual/fog_start_distance": 32.0,
+    "minecraft:visual/fog_end_distance": 160.0,
+    "minecraft:visual/ambient_particles": {
+      "argument": [
+        {
+          "particle": {
+            "type": "minecraft:snowflake"
+          },
+          "probability": 0.0005
+        }
+      ],
+      "modifier": "append"
+    }
+  },
+  "carvers": [],
+  "features": [],
+  "downfall": 0.8,
+  "temperature": 0.0,
+  "has_precipitation": true,
+  "effects": {
+    "grass_color": "#9A9A86",
+    "foliage_color": "#84876E",
+    "dry_foliage_color": "#84876E",
+    "water_color": "#3E5468"
+  }
+}
