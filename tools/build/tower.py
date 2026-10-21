@@ -201,3 +201,54 @@ def path(b, natural_h):
                 if yy is None: continue
                 b.set(xi, yy, zi, Mix({"cobblestone": 45, "gravel": 25, "coarse_dirt": 20, "mossy_cobblestone": 10}, 75))
     return b
+def hill_decor(b, gnd, avoid):
+    """Card v3, hill: 4-5 layered rock outcrops on the steeper north and west sides (2-4 high, 5-9 wide, stepped like bedded rock,
+    moss and grass on top, scree of gravel and cobble below), spruces at the foot, flowers on the warm south side. avoid: (x, z)
+    cells of paths that must stay clear."""
+    ROCK = Mix({"stone": 40, "andesite": 25, "tuff": 20, "cobblestone": 10, "mossy_cobblestone": 5}, 76)
+    SCREE = Mix({"gravel": 55, "cobblestone": 45}, 77)
+    def near_avoid(x, z, d=2): return any((x + dx, z + dz) in avoid for dx in range(-d, d + 1) for dz in range(-d, d + 1))
+    spots = [(330, 33, 8, 4), (355, 37, 9, 3), (20, 32, 6, 3), (275, 35, 7, 4), (245, 38, 5, 2)]   # angle, radius, length, height
+    for k, (ang, r, L, H) in enumerate(spots):
+        a = math.radians(ang); ox, oz = math.sin(a), -math.cos(a); tx, tz = math.cos(a), math.sin(a)   # outward, along the contour
+        for i in range(-L // 2, L - L // 2):
+            for j in range(0, 3):                                   # depth 3 into the slope
+                x = round(TX + ox * (r - j) + tx * i); z = round(TZ + oz * (r - j) + tz * i)
+                if near_avoid(x, z): continue
+                g = gnd(x, z)
+                if g is None: continue
+                hh = max(1, H - abs(i) * 2 // L - (2 - j) // 2 - (1 if h(x, 0, z, 81 + k) < 0.3 else 0))
+                for y in range(g - 2, g + hh): b.set(x, y, z, ROCK)
+                top = g + hh
+                if (b.get(x, top, z) or "minecraft:air") == "minecraft:air":
+                    b.set(x, top, z, "moss_carpet" if h(x, 1, z, 83) < 0.5 else "short_grass")
+            for j in range(1, 4):                                   # scree downslope
+                x = round(TX + ox * (r + j) + tx * i); z = round(TZ + oz * (r + j) + tz * i)
+                if near_avoid(x, z) or h(x, 2, z, 84) > 0.75 - 0.15 * j: continue
+                g = gnd(x, z)
+                if g is not None: b.set(x, g, z, SCREE)
+        b.marker(f"hill_rock_{k}", round(TX + ox * r), gnd(round(TX + ox * r), round(TZ + oz * r)) or 0, round(TZ + oz * r))
+    # spruces at the foot (north, west, east), bare at the top
+    for k, (ang, r) in enumerate(((300, 52), (320, 56), (345, 50), (10, 55), (260, 54), (280, 60), (60, 52), (35, 58))):
+        a = math.radians(ang); x = round(TX + math.sin(a) * r); z = round(TZ - math.cos(a) * r)
+        if near_avoid(x, z, 3): continue
+        g = gnd(x, z)
+        if g is None: continue
+        hgt = 6 + int(h(x, 3, z, 85) * 3)
+        for y in range(g + 1, g + 1 + hgt): b.set(x, y, z, log("spruce_log"))
+        for y in range(g + 3, g + 2 + hgt):
+            rr = max(0, (g + 1 + hgt - y) // 2) if (y - g) % 2 else max(0, (g + 1 + hgt - y) // 2 - 1)
+            for dx in range(-rr, rr + 1):
+                for dz in range(-rr, rr + 1):
+                    if abs(dx) + abs(dz) <= rr + 1 and (dx or dz) and (b.get(x + dx, y, z + dz) or "minecraft:air") == "minecraft:air":
+                        b.set(x + dx, y, z + dz, "spruce_leaves[persistent=true]")
+        b.set(x, g + 1 + hgt, z, "spruce_leaves[persistent=true]")
+    # flowers on the south side (towards the plaza)
+    FL = ["poppy", "dandelion", "cornflower", "oxeye_daisy", "azure_bluet"]
+    for x in range(TX - 45, TX + 46):
+        for z in range(TZ, TZ + 46):
+            r = math.hypot(x - TX, z - TZ)
+            if r < 13 or r > 45 or near_avoid(x, z, 1) or h(x, 5, z, 86) > 0.06: continue
+            g = gnd(x, z)
+            if g is None: continue
+            if (b.get(x, g + 1, z) or "minecraft:air") == "minecraft:air": b.set(x, g + 1, z, FL[int(h(x, 6, z, 87) * len(FL)) % len(FL)])

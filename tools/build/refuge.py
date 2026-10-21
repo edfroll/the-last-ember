@@ -130,6 +130,10 @@ def build_all():
     route = [geo.rot(0, 0, 315, 32, 0), (-60, -50), serp[0]] + serp[1:] + [(tx + 9, tz + 10), (tx + 7.5, tz + 8)]
     global TOWER_ROUTE
     TOWER_ROUTE = graded_path(sb, gnd, route, 2, taken, end_y=125)
+    hd = B("hill"); tower.hill_decor(hd, gnd, {(x, z) for (x, y, z) in sb.v})
+    for k, s in hd.v.items():
+        if k not in taken and k not in sb.v: sb.v[k] = s
+    sb.markers += hd.markers
     for k, s in sb.v.items(): world[k] = s
     pieces.append(sb)
     wb = B("world"); wb.v = world; connect(wb)
