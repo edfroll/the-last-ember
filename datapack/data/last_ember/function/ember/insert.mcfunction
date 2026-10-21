@@ -1,5 +1,6 @@
 # carrier puts the Ember into this stela's socket
 tag @a[tag=le.clicker] remove le.carrier
+data remove storage last_ember:ember carrier
 clear @a[tag=le.clicker] *[minecraft:custom_data~{le_ember:1b}]
 execute store result storage last_ember:ember socket int 1 run scoreboard players get @s le.bidx
 kill @e[type=minecraft:item_display,tag=le.ember_disp]

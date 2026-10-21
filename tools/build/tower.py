@@ -12,7 +12,7 @@ def rad_at(y):
     return 7.5
 def build():
     b = B("tower"); y0 = BASE
-    b.cyl(TX, y0 - 1, TZ, y0 + 95, 12, "air"); b.disc(TX, y0 - 1, TZ, 7.3, Mix({"cobblestone": 60, "gravel": 20, "coarse_dirt": 20}, 72))
+    b.cyl(TX, y0, TZ, y0 + 95, 12, "air"); b.disc(TX, y0 - 1, TZ, 7.3, Mix({"cobblestone": 60, "gravel": 20, "coarse_dirt": 20}, 72))
     # plinth d13, 4 high, battered
     for y in range(y0, y0 + 4): b.disc(TX, y, TZ, 6.5 - (y - y0) * 0.25, Mix({"cobblestone": 50, "mossy_cobblestone": 25, "stone_bricks": 25}, 73), hollow_r=4.6 - (y - y0) * 0.25)
     b.disc(TX, y0 - 1, TZ, 5, "polished_andesite")
@@ -22,45 +22,54 @@ def build():
         if (y - y0) % 12 == 6:   # slit windows on 4 sides
             for dx, dz in ((round(r), 0), (-round(r), 0), (0, round(r)), (0, -round(r))): b.set(TX + dx, y, TZ + dz, "air"); b.set(TX + dx, y + 1, TZ + dz, "air")
     # door to the stairwell (south side, facing the plaza path) and an inner ladder shaft for the descent
-    b.fill(TX, y0, TZ + 4, TX, y0 + 2, TZ + 7, "air")
+    b.fill(TX, y0, TZ + 4, TX, y0 + 1, TZ + 7, "air")      # doorway exactly 2 high (no gap over the door)
     b.set(TX, y0, TZ + 5, "spruce_door[facing=north,half=lower,hinge=left,open=false]"); b.set(TX, y0 + 1, TZ + 5, "spruce_door[facing=north,half=upper,hinge=left,open=false]")
-    b.set(TX, y0 + 2, TZ + 4, lantern(True))
-    # external spiral stair (T-008 review: no jumps): 2 turns, 2 wide, from the ground (y 125) to the room floor (standing at 190).
-    # Surfaces go up in half blocks: bottom slab (+0.5), full block (+0.5 from a slab) or a stair block (+1, walkable) -- never a jump.
-    b.disc(TX, y0 + 4, TZ, 5, "spruce_planks")          # store-room ceiling inside the plinth
-    def r0_at(yy): return rad_at(min(yy, 188))
-    A0 = 200.0; TURNS = 2.0; S0, S1 = 2 * y0, 2 * 190     # surfaces in half blocks
-    outer = []; k = 0
-    while True:                                          # distinct cells of the outer lane, in walking order
-        a = A0 + k * 0.5; k += 1
-        if a > A0 + 360 * TURNS: break
-        frac = (a - A0) / (360 * TURNS); yy = int((S0 + frac * (S1 - S0)) // 2)
-        rr = r0_at(yy) + 1.9; c = (TX + round(math.sin(math.radians(a)) * rr), TZ - round(math.cos(math.radians(a)) * rr))
-        if not outer or outer[-1][0] != c: outer.append((c, a))
-    N = len(outer); m = N - (S1 - S0) // 2; kst = (S1 - S0) // 2 - m      # m slab pairs (+1,+1), kst stairs (+2)
-    assert m >= 0 and kst >= 0, (N, m, kst)
-    units = []; acc = 0.0
-    for i in range(m + kst):                             # spread the slab pairs evenly among the stairs
-        acc += m / (m + kst)
-        if acc >= 1: units += [1, 1]; acc -= 1
-        else: units.append(2)
-    units += [1] * (N - len(units))
-    steps = {}; rails = {}; sv = S0
-    for i, ((cx_, cz_), a) in enumerate(outer):
-        d = units[i] if i < len(units) else 0; sv = min(S1, sv + d)
-        ar = math.radians(a); tx, tz = math.cos(ar), math.sin(ar)
-        fac = ("east" if tx > 0 else "west") if abs(tx) >= abs(tz) else ("south" if tz > 0 else "north")
-        if sv % 2: st = slab("stone_brick_slab"); yb = (sv - 1) // 2
-        elif d == 2: st = stairs("stone_brick_stairs", fac); yb = sv // 2 - 1
-        else: st = Mix({"stone_bricks": 60, "cobblestone": 40}, 74); yb = sv // 2 - 1
-        yb_ = (sv + 1) // 2
-        rr0 = r0_at(yb)
-        for rr in (rr0 + 0.9, rr0 + 1.9):
-            c = (TX + round(math.sin(ar) * rr), TZ - round(math.cos(ar) * rr))
-            if (c[0], c[1]) not in [(k_[0], k_[2]) for k_ in steps if k_[1] == yb]: steps.setdefault((c[0], yb, c[1]), (st, yb_))
-        rx, rz = TX + round(math.sin(ar) * (rr0 + 2.9)), TZ - round(math.cos(ar) * (rr0 + 2.9))
-        rails[(rx, yb_, rz)] = True
-    cells = list(steps)
+    b.set(TX, y0 + 3, TZ + 3, lantern(True))                 # hangs from the store-room ceiling (y0+4)
+    # external spiral stair (T-008 review: no jumps, 2 turns). A 4-connected walking line at radius 8.5 (no diagonal moves) rises
+    # exactly half a block per cell (bottom slab / full block alternate), widened to 3 lanes; it arrives on the balcony (y 190).
+    b.disc(TX, y0 + 4, TZ, 4.2, "spruce_planks")        # store-room ceiling inside the shaft (not visible outside)
+    A0 = 200.0; TURNS = 2; S0, S1 = 2 * y0, 2 * 190; RW = 9.0
+    line = []
+    for k in range(int(360 * TURNS * 8) + 1):
+        a = math.radians(A0 + k / 8); c = (TX + round(math.sin(a) * RW), TZ - round(math.cos(a) * RW))
+        if line and c == line[-1][0]: continue
+        if line and abs(c[0] - line[-1][0][0]) + abs(c[1] - line[-1][0][1]) == 2:   # diagonal: insert the corner nearer the circle
+            p1, p2 = (c[0], line[-1][0][1]), (line[-1][0][0], c[1])
+            line.append((min((p1, p2), key=lambda q: abs(math.hypot(q[0] - TX, q[1] - TZ) - RW)), a))
+        line.append((c, a))
+    moves = len(line) - 1; rise = S1 - S0
+    assert moves >= rise, (moves, rise)
+    steps = {}; rails = set(); sv = S0; lane = []
+    for i, ((cx_, cz_), a) in enumerate(line):
+        if i: sv = S0 + (i * rise) // moves
+        yb = (sv - 1) // 2 if sv % 2 else sv // 2 - 1
+        st = slab("stone_brick_slab") if sv % 2 else "minecraft:stone_bricks"
+        lane.append((cx_, yb, cz_, st, (sv + 1) // 2))
+    main = {(x, z) for x, _, z, _, _ in lane}
+    for x, yb, z, st, top in lane:
+        steps[(x, yb, z)] = (st, top)
+    for x, yb, z, st, top in lane:                       # side lanes: radial neighbours take the height of the main line
+        rr = math.hypot(x - TX, z - TZ); ux, uz = (x - TX) / rr, (z - TZ) / rr
+        for dr in (-1, 1):
+            q = (round(x + ux * dr), round(z + uz * dr))
+            if q in main or any((q[0], y, q[1]) in steps for y in range(yb - 2, yb + 3)): continue
+            steps[(q[0], yb, q[1])] = (st, top)
+        for dr in (-2, 2):
+            q = (round(x + ux * dr), round(z + uz * dr))
+            if q not in main: rails.add((q[0], top, q[1]))
+    brackets = []                                        # every 6th cell a stone bracket ties the stair to the shaft
+    for i, (x, yb, z, st, top) in enumerate(lane):
+        if i % 6: continue
+        rr = math.hypot(x - TX, z - TZ); ux, uz = (x - TX) / rr, (z - TZ) / rr
+        for k in range(1, 5):
+            q = (round(x - ux * k), round(z - uz * k))
+            if math.hypot(q[0] - TX, q[1] - TZ) <= rad_at(min(yb, 188)) + 0.3: break
+            brackets.append((q[0], yb - 1, q[1]))
+    global STEPS, LINE; STEPS = steps; LINE = lane
+    # entry from the balcony into the top room where the stair arrives
+    a = math.radians(A0); ex, ez = TX + round(math.sin(a) * 7), TZ - round(math.cos(a) * 7)
+    for rr_ in (6.4, 7.0, 7.4):
+        q = (TX + round(math.sin(a) * rr_), TZ - round(math.cos(a) * rr_)); b.fill(q[0], 190, q[1], q[0], 191, q[1], "air")
     # galleries / landings at 145, 152, 172: ring platform with a wall rail and a lantern
     for gy in (145, 152, 172):
         r = rad_at(gy); b.disc(TX, gy, TZ, r + 2.4, slab("stone_brick_slab", "top"), hollow_r=r)
@@ -99,14 +108,19 @@ def build():
         r = 7.5 * (214 - y) / 7.5
         b.disc(TX, y, TZ, r, "deepslate_tiles", hollow_r=max(r - 1.4, -1))
     b.fill(TX, 214, TZ, TX, 216, TZ, "iron_chain"); b.set(TX, 217, TZ, "lightning_rod")
-    # headroom over every step (cuts the hatch through the room floor at the top of the climb), then the steps and the rail
+    # headroom over every step (cuts the hatch through the room floor at the top of the climb), then the steps, a top-slab underside, the rail
     for (x, yb, z), (st, top) in steps.items():
         for y in range(yb + 1, top + 3):
-            b.set(x, y, z, "air")
+            if (x, y, z) not in steps: b.set(x, y, z, "air")
     for (x, y, z) in rails:
-        if (x, y, z) not in steps and (x, y - 1, z) not in steps: b.set(x, y, z, "stone_brick_wall")
-    for (x, yb, z), (st, top) in steps.items(): b.set(x, yb, z, st)
-    b.marker("tower_stair", outer[0][0][0], y0, outer[0][0][1], f"{len(outer)} cells, 2 turns, no jumps")
+        if not any((x, y + k, z) in steps for k in (-2, -1, 0, 1, 2)) and math.hypot(x - TX, z - TZ) > rad_at(min(y, 188)) + 0.4:
+            b.set(x, y, z, "stone_brick_wall")
+    for (x, yb, z), (st, top) in steps.items():
+        b.set(x, yb, z, st)
+        if (x, yb - 1, z) not in steps and b.get(x, yb - 1, z) in (None, "minecraft:air"): b.set(x, yb - 1, z, slab("stone_brick_slab", "top"))
+    for (x, y, z) in brackets:
+        if b.get(x, y, z) in (None, "minecraft:air"): b.set(x, y, z, slab("stone_brick_slab", "top"))
+    b.marker("tower_stair", TX, y0, TZ + 8, f"{len(lane)} cells, 2 turns, no jumps")
     # path up the cone: switchback from the plaza street end (south-east) to the door
     return b
 def path(b, natural_h):
