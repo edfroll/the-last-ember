@@ -54,22 +54,24 @@ def build():
             q = (round(x + ux * dr), round(z + uz * dr))
             if q in main or any((q[0], y, q[1]) in steps for y in range(yb - 2, yb + 3)): continue
             steps[(q[0], yb, q[1])] = (st, top)
-        for dr in (-2, 2):
-            q = (round(x + ux * dr), round(z + uz * dr))
-            if q not in main: rails.add((q[0], top, q[1]))
+        for k in range(2, 6):                            # fill inward up to the shaft wall: no gaps to look (or fall) through
+            q = (round(x - ux * k), round(z - uz * k))
+            if math.hypot(q[0] - TX, q[1] - TZ) <= rad_at(min(yb, 188)) + 0.3: break
+            if yb >= 183 and math.hypot(q[0] - TX, q[1] - TZ) < 7.6: break      # keep the top-room floor whole
+            if q in main or any((q[0], y, q[1]) in steps for y in range(yb - 2, yb + 3)): continue
+            steps[(q[0], yb, q[1])] = (st, top)
+        q = (round(x + ux * 2), round(z + uz * 2))
+        if q not in main: rails.add((q[0], top, q[1]))
     brackets = []                                        # every 6th cell a stone bracket ties the stair to the shaft
     for i, (x, yb, z, st, top) in enumerate(lane):
-        if i % 6: continue
+        if True: continue
         rr = math.hypot(x - TX, z - TZ); ux, uz = (x - TX) / rr, (z - TZ) / rr
         for k in range(1, 5):
             q = (round(x - ux * k), round(z - uz * k))
             if math.hypot(q[0] - TX, q[1] - TZ) <= rad_at(min(yb, 188)) + 0.3: break
+            if yb >= 183 and math.hypot(q[0] - TX, q[1] - TZ) < 7.6: break      # keep the top-room floor whole
             brackets.append((q[0], yb - 1, q[1]))
     global STEPS, LINE; STEPS = steps; LINE = lane
-    # entry from the balcony into the top room where the stair arrives
-    a = math.radians(A0); ex, ez = TX + round(math.sin(a) * 7), TZ - round(math.cos(a) * 7)
-    for rr_ in (6.4, 7.0, 7.4):
-        q = (TX + round(math.sin(a) * rr_), TZ - round(math.cos(a) * rr_)); b.fill(q[0], 190, q[1], q[0], 191, q[1], "air")
     # galleries / landings at 145, 152, 172: ring platform with a wall rail and a lantern
     for gy in (145, 152, 172):
         r = rad_at(gy); b.disc(TX, gy, TZ, r + 2.4, slab("stone_brick_slab", "top"), hollow_r=r)
@@ -92,7 +94,7 @@ def build():
     for (lx, lz) in ((TX, TZ), (TX - 3, TZ - 3), (TX + 3, TZ + 3)): b.set(lx, 197, lz, lantern(True))
     # entry from the stair top into the room (south-west side)
     # balcony ring at 190 (outside the room), rail
-    b.disc(TX, 189, TZ, 9.4, slab("stone_brick_slab", "top"), hollow_r=7.6); b.disc(TX, 190, TZ, 9.4, "stone_brick_wall", hollow_r=8.6)
+    b.disc(TX, 189, TZ, 11.4, slab("stone_brick_slab", "top"), hollow_r=7.6); b.disc(TX, 190, TZ, 11.4, "stone_brick_wall", hollow_r=10.6)
     b.marker("tower_view", TX, 190, TZ + 9, "view to the plaza, south-east")
     # belfry y198..205: floor, 4 pillars, open arches, the bell hanging under a beam
     b.disc(TX, 198, TZ, 7.5, "polished_deepslate")
@@ -120,6 +122,11 @@ def build():
         if (x, yb - 1, z) not in steps and b.get(x, yb - 1, z) in (None, "minecraft:air"): b.set(x, yb - 1, z, slab("stone_brick_slab", "top"))
     for (x, y, z) in brackets:
         if b.get(x, y, z) in (None, "minecraft:air"): b.set(x, y, z, slab("stone_brick_slab", "top"))
+    # entry (after the room walls are built) from the balcony into the top room where the stair arrives
+    a = math.radians(A0); ex, ez = TX + round(math.sin(a) * 7), TZ - round(math.cos(a) * 7)
+    for rr_ in (6.4, 7.0, 7.4):
+        q = (TX + round(math.sin(a) * rr_), TZ - round(math.cos(a) * rr_)); b.fill(q[0], 190, q[1], q[0], 191, q[1], "air")
+    b.set(TX + round(math.sin(math.radians(A0)) * 6.4), 191, TZ - round(math.cos(math.radians(A0)) * 6.4), "air")
     b.marker("tower_stair", TX, y0, TZ + 8, f"{len(lane)} cells, 2 turns, no jumps")
     # path up the cone: switchback from the plaza street end (south-east) to the door
     return b
