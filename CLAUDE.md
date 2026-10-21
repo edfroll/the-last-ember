@@ -88,3 +88,10 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Угасание главы: `function last_ember:biomes/gen/fade_chapter1` (команды `fillbiome … replace`, плитки ≤32768 блоков). Клиенты видят смену цвета сразу, без перезахода (проверено кадрами «до/после»).
 - Атрибуты окружения: в биоме задаётся 49 из 51, только `fast_lava` и `sky_light_level` — на измерение (`docs/reports/T-006-attributes.md`). Музыка в биоме: `{"sound": {"sound_id": "last_ember:music.<слот>"}}` (встроенное событие, регистрировать на сервере не надо).
 - Тесты: `tools/test_spawns.py [минут] [места…]` (ускоренный `tick rate`, считает мобов по биому, в котором они стоят).
+
+## Смерть, пепельный след, Урны (T-007)
+- `gamerule keep_inventory true`: ничего не падает само; `death/died` (по `deathCount`) оставляет снаряжение (броня, вторая рука), выбранный слот, Уголь и предметы с `custom_data` `le_keep`/`le_key`, остальное и опыт — в след. Предметы хранятся как есть (компоненты не теряются).
+- След: storage `last_ember:ash t.t<id>` {items, lv, pts, owner, name, urn, x y z}, сущности `interaction` (тег `le.ashclick`) + `item_display` (`le.ash_disp`, модель `last_ember:ash_pile`) с `le.tid`, блок `light`. Забирает любой (ПКМ, достижение `ash/click`). У игрока `le.ash` = его след. Вторая смерть → прежний след в Урну. Лава, y < −64, «пустоты» из `death/voids.txt` → сразу в Урну. Нет места → ближайшая свободная точка ≤ 8 (`ash/gen/find_spot`), иначе Урна.
+- Регионы → урны: `death/regions.txt` (Р0 и Р1 → урна `r0` Приюта, Р5 по y). Урны: `death/urns.txt` (постройка-заглушка по карточке). `python3 tools/gen_death.py [urns_file]`. Урна: storage `urns.<id>` {trails, names, pos}, ПКМ → всё тому, кто открыл, лишнее — в чашу; свечи и искры, табличка с именами (`text_display`).
+- Котёл знахаря (замечание к T-005): тег класса `le.class.healer`, предмет с `custom_data le_cauldron`. Shift+ПКМ по горящему очагу — котёл над огнём; Shift+ПКМ по котлу — обратно. Тест: `function last_ember:bonfire/give_cauldron`.
+- Тесты: `tools/test_death.py` (19 проверок, 2 клиента), `tools/test_cauldron.py`.
