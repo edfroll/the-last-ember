@@ -95,3 +95,12 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Регионы → урны: `death/regions.txt` (Р0 и Р1 → урна `r0` Приюта, Р5 по y). Урны: `death/urns.txt` (постройка-заглушка по карточке). `python3 tools/gen_death.py [urns_file]`. Урна: storage `urns.<id>` {trails, names, pos}, ПКМ → всё тому, кто открыл, лишнее — в чашу; свечи и искры, табличка с именами (`text_display`).
 - Котёл знахаря (замечание к T-005): тег класса `le.class.healer`, предмет с `custom_data le_cauldron`. Shift+ПКМ по горящему очагу — котёл над огнём; Shift+ПКМ по котлу — обратно. Тест: `function last_ember:bonfire/give_cauldron`.
 - Тесты: `tools/test_death.py` (19 проверок, 2 клиента), `tools/test_cauldron.py`.
+
+## Приют (T-008)
+- Генераторы построек: `tools/build/` (`lib.py` — воксельная модель и экспорт; модули `plaza`, `gates`, `buildings`, `tower`, `hall`, `bonfire_std`, `urn`; `geo.py` — целевой рельеф и повороты). Сборка: `python3 tools/build/refuge.py` → `server/build/refuge/` (`terrain.png/json`, `refuge.txt`, куски в `pieces/`) + `function/refuge/gen/markers` (точки механик в storage `last_ember:refuge m.<имя>`) + `docs/reports/T-008-markers.txt`. Проверка состояний блоков: `python3 tools/build/validate.py <файлы>`.
+- Порядок (сервер остановлен, чанки хаба сгенерированы; `server/build/refuge/heights.txt` — естественный рельеф, `tools/blockwriter.sh heights -210 -210 210 210 <файл>` на нетронутом мире): `tools/sculpt.sh apply server/build/refuge/terrain.json` → `tools/blockwriter.sh apply server/build/refuge/refuge.txt` → `tools/biomepaint.sh` → старт (костёр и Урну строит датапак). `.nbt`: `python3 tools/build/refuge.py nbt` → `structure/refuge/*.nbt`.
+- `BlockWriter` (`tools/seedmap/BlockWriter.java`): офлайн-запись блоков и блочных сущностей, экспорт `.nbt`, дамп высот. **26.x: состояние блока в NBT = `{id, properties}`** (не `Name/Properties`). Соединения заборов/стен/панелей считает `tools/build/connect.py` (офлайн нет обновлений блоков).
+- Варианты сквозных построек: костёр `variant=std|dol|snow|desert|ash|under` (r 3/4) → `bonfire/gen/build_<v>_r<r>`, урна `r0,r2..r6` → `urn/gen/build_<v>`; генерирует `python3 tools/build/gen_runtime.py`.
+- Зоны Приюта: `refuge` (−200…200, y 50…320, no_spawn) и `refuge_well`. Биом Купели `last_ember:font_of_callings` (коробка грота).
+- FPS клиента: строка `!fps` в `shot-request.txt` (ответ в `shot-done.txt`); для замера в `server/client/options.txt` `inactivityFpsLimit:"minimized"`, иначе AFK-ограничение 30.
+

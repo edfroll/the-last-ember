@@ -1,0 +1,106 @@
+# Точки механик Приюта (генерирует tools/build/refuge.py; в игре: storage last_ember:refuge m.<имя> = [x,y,z])
+world_spawn_bed_0               -3   59    -8  player spawn
+world_spawn_bed_1                0   59    -8  player spawn
+world_spawn_bed_2                3   59    -8  player spawn
+door_cell                        0   57    -1  held closed until the choice
+door_hall                        0   57    48  Hall -> Font, held closed until the choice
+people_pad_humans               12   57    12  trigger 3x3, sign/button point
+people_pad_elves                16   57    24  trigger 3x3, sign/button point
+people_pad_halflings            12   57    36  trigger 3x3, sign/button point
+people_pad_dwarves             -16   57    24  trigger 3x3, sign/button point
+people_pad_ashborn             -12   57    12  trigger 3x3, sign/button point
+sixth_niche_swap               -15   57    39  templates refuge/sixth_intact|sixth_fallen
+font_centre                      0   55    57  
+altar_shield                    -5   55    52  trigger 3x3 at the pillar
+altar_symbol_shield             -5   59    52  item_display point over the bowl
+altar_horn                       5   55    52  trigger 3x3 at the pillar
+altar_symbol_horn                5   59    52  item_display point over the bowl
+altar_staff                     -5   55    62  trigger 3x3 at the pillar
+altar_symbol_staff              -5   59    62  item_display point over the bowl
+altar_phial                      5   55    62  trigger 3x3 at the pillar
+altar_symbol_phial               5   59    62  item_display point over the bowl
+name_stone_humans               -3   52    54  becomes sea_lantern
+name_stone_elves                 3   52    54  becomes sea_lantern
+name_stone_dwarves              -3   52    60  becomes sea_lantern
+name_stone_halflings             3   52    60  becomes sea_lantern
+name_stone_ashborn               0   52    62  becomes sea_lantern
+door_font                       14   55    53  Font -> stairs, held closed until the choice
+font_biome_box                 -16   53    44  to 16 73 68
+stairs_top                      28   97    38  47 cells, 5 landings, top y 96
+portico_stairs_top               2  103    14  
+grate_fire                      -2  103    22  
+grate_fire_1                     2  103    22  
+grate_fire_2                    -2  103    26  
+grate_fire_3                     2  103    26  
+grate                            0  102    24  
+plaza_trigger                    0  103     0  circle r30
+gate_swap_r3                     0  103   -31  angle 0
+gate_banner_r3                   0  112   -29  angle 0
+gate_exit_r3                     0  103   -37  angle 0
+gate_transfer_r3                 0  103   -41  angle 0
+gate_swap_r1                    22  103   -22  angle 45
+gate_banner_r1                  21  112   -21  angle 45
+gate_exit_r1                    26  103   -26  angle 45
+gate_transfer_r1                29  103   -29  angle 45
+gate_swap_r6                    31  103     0  angle 90
+gate_banner_r6                  29  112     0  angle 90
+gate_exit_r6                    37  103     0  angle 90
+gate_transfer_r6                41  103     0  angle 90
+gate_swap_r4                    11  103    29  angle 160
+gate_banner_r4                  10  112    27  angle 160
+gate_exit_r4                    13  103    35  angle 160
+gate_transfer_r4                14  103    39  angle 160
+gate_swap_r5                   -18  103    25  angle 215
+gate_banner_r5                 -17  112    24  angle 215
+gate_exit_r5                   -21  103    30  angle 215
+gate_transfer_r5               -24  103    34  angle 215
+gate_swap_r2                   -31  103     0  angle 270
+gate_banner_r2                 -29  112     0  angle 270
+gate_exit_r2                   -37  103     0  angle 270
+gate_transfer_r2               -41  103     0  angle 270
+smith_trader                    58  101    27  
+weapon_wall                     45  102    30  3-4 armor stands / frames
+smithy_campfire                 64  101    33  3 air above, open sky
+order_sign_0                   -60  103    22  
+order_sign_1                   -58  103    22  
+order_sign_2                   -56  103    22  
+order_sign_3                   -60  102    22  
+order_sign_4                   -58  102    22  
+order_sign_5                   -56  102    22  
+trophy_head_0                  -60  106    22  
+trophy_head_1                  -59  106    22  
+trophy_head_2                  -58  106    22  
+trophy_head_3                  -57  106    22  
+trophy_head_4                  -56  106    22  
+trophy_head_5                  -55  106    22  
+innkeeper                      -50  101    30  
+cache_hint_note                -59  101    35  note: 'old Hugo hid it behind the third barrel'
+cache_door_barrel              -50   95    34  
+cache_chest                    -50   95    36  
+tavern_bed_0                   -60  107    35  
+tavern_bed_1                   -54  107    35  
+tavern_bed_2                   -50  107    35  
+well_bottom                     40   83   -44  shaft 3x3 to y 83
+well_swap                       40  101   -44  21x21 yard + shaft, states before/after
+well_trigger                    40  102   -44  sounds and cold wind
+gallery_145                   -110  146   -84  
+gallery_152                   -110  153   -84  
+gallery_172                   -110  173   -84  
+map_frame_00                  -112  194   -96  item_frame facing south
+map_frame_01                  -112  193   -96  item_frame facing south
+map_frame_02                  -112  192   -96  item_frame facing south
+map_frame_03                  -112  191   -96  item_frame facing south
+map_frame_10                  -111  194   -96  item_frame facing south
+map_frame_11                  -111  193   -96  item_frame facing south
+map_frame_12                  -111  192   -96  item_frame facing south
+map_frame_13                  -111  191   -96  item_frame facing south
+map_frame_20                  -110  194   -96  item_frame facing south
+map_frame_21                  -110  193   -96  item_frame facing south
+map_frame_22                  -110  192   -96  item_frame facing south
+map_frame_23                  -110  191   -96  item_frame facing south
+map_frame_30                  -109  194   -96  item_frame facing south
+map_frame_31                  -109  193   -96  item_frame facing south
+map_frame_32                  -109  192   -96  item_frame facing south
+map_frame_33                  -109  191   -96  item_frame facing south
+tower_view                    -110  190   -81  view to the plaza, south-east
+bell                          -110  204   -90  

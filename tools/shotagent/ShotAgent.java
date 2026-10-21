@@ -35,6 +35,7 @@ public class ShotAgent {
                     for (String line : lines) {
                         String[] p = line.trim().split("\\s+");
                         if (p[0].isEmpty()) continue;
+                        if (p[0].equals("!fps")) { res.append("fps ").append(mc.getFps()).append('\n'); continue; }  // perf report (T-008)
                         if (p[0].startsWith("!")) { // input actions for tests: !use (right click), !drop (Q), !sneak_on / !sneak_off
                             String act = p[0].substring(1);
                             mc.execute(() -> {

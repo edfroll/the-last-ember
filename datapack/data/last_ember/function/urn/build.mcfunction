@@ -1,30 +1,11 @@
-# macro n urn x y z dim, executed at the urn anchor (centre of the podium, square level). Placeholder look per the card until the Architect's .nbt.
+# macro n urn variant x y z dim, executed at the urn anchor (centre of the podium, square level). Placeholder look per the card until the Architect's .nbt.
 $data modify storage last_ember:ash urns.$(urn).built set value 1b
 $data modify storage last_ember:ash urns.$(urn).n set value $(n)
 $data modify storage last_ember:ash urns.$(urn).pos set value {x:$(x),y:$(y),z:$(z),dim:"$(dim)"}
 $execute unless data storage last_ember:ash urns.$(urn).trails run data modify storage last_ember:ash urns.$(urn).trails set value []
 $execute unless data storage last_ember:ash urns.$(urn).names run data modify storage last_ember:ash urns.$(urn).names set value []
 $data modify storage last_ember:ash urn_ids.u$(n) set value "$(urn)"
-fill ~-3 ~ ~-3 ~3 ~7 ~3 minecraft:air
-fill ~-3 ~ ~-3 ~3 ~ ~3 minecraft:polished_deepslate
-fill ~-1 ~1 ~-1 ~1 ~1 ~1 minecraft:polished_deepslate
-fill ~-2 ~2 ~-2 ~2 ~4 ~2 minecraft:deepslate_tiles
-setblock ~-2 ~2 ~-2 minecraft:air
-setblock ~2 ~2 ~-2 minecraft:air
-setblock ~-2 ~2 ~2 minecraft:air
-setblock ~2 ~2 ~2 minecraft:air
-setblock ~-2 ~4 ~-2 minecraft:air
-setblock ~2 ~4 ~-2 minecraft:air
-setblock ~-2 ~4 ~2 minecraft:air
-setblock ~2 ~4 ~2 minecraft:air
-fill ~-2 ~3 ~-2 ~2 ~3 ~2 minecraft:waxed_oxidized_cut_copper replace minecraft:deepslate_tiles
-fill ~-1 ~3 ~-1 ~1 ~3 ~1 minecraft:deepslate_tiles
-fill ~-1 ~5 ~-1 ~1 ~5 ~1 minecraft:chiseled_deepslate
-setblock ~ ~5 ~ minecraft:light_gray_concrete_powder
-setblock ~ ~6 ~ minecraft:gray_carpet
-setblock ~ ~1 ~3 minecraft:cauldron
-setblock ~ ~1 ~-3 minecraft:polished_blackstone_wall
-setblock ~ ~2 ~-3 minecraft:polished_blackstone_wall
+$function last_ember:urn/gen/build_$(variant)
 $scoreboard players set #u le.e $(n)
 kill @e[type=minecraft:interaction,tag=le.urnclick,distance=..4]
 kill @e[type=minecraft:text_display,tag=le.urn_plate,distance=..6]

@@ -1,4 +1,3 @@
-# at the hearth (macro i): burning campfire with a hay bale under it (signal smoke), registry state = 1
-setblock ~ ~-1 ~ minecraft:hay_block
-setblock ~ ~ ~ minecraft:campfire[lit=true,signal_fire=true]
+# at the hearth (macro i r): lit campfire (signal smoke over hay), glowing nest, candles; registry state = 1
+$function last_ember:bonfire/gen/lit_r$(r)
 $data modify storage last_ember:bonfires by.b$(i).state set value 1

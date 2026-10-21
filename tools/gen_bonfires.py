@@ -16,7 +16,9 @@ for ln, line in enumerate(open(src, encoding="utf-8"), 1):
     f = line.split()
     i, bid, dim, x, y, z, kind, region = int(f[0]), f[1], f[2], int(f[3]), int(f[4]), int(f[5]), f[6], f[7]
     if dim not in DIMS or kind not in ("main", "normal"): raise SystemExit(f"{src}:{ln}: bad dimension/kind")
-    rows.append(dict(i=i, id=bid, dim=dim, d=DIMS[dim], x=x, y=y, z=z, kind=kind, region=region, start="start" in f[8:]))
+    opts = f[8:]
+    variant = next((o.split("=", 1)[1] for o in opts if o.startswith("variant=")), {"r0": "std", "r1": "dol", "r2": "dol", "r3": "snow", "r4": "desert", "r5": "ash", "r6": "ash"}.get(region, "std"))
+    rows.append(dict(i=i, id=bid, dim=dim, d=DIMS[dim], x=x, y=y, z=z, kind=kind, region=region, start="start" in opts, variant=variant, r=4 if kind == "main" else 3))
 if len({r["i"] for r in rows}) != len(rows) or len({r["id"] for r in rows}) != len(rows): raise SystemExit("duplicate number or id")
 starts = [r for r in rows if r["start"]]
 if len(starts) > 1: raise SystemExit("more than one start bonfire")
@@ -26,7 +28,7 @@ with open(os.path.join(out, "register.mcfunction"), "w") as f:
     for r in rows:
         lit = 1 if r["kind"] == "main" else 0
         f.write(f'function last_ember:bonfire/place {{i:{r["i"]},id:"{r["id"]}",dim:"minecraft:{r["dim"]}",d:{r["d"]},x:{r["x"]},y:{r["y"]},z:{r["z"]},'
-                f'rx:{r["x"]},ry:{r["y"]},rz:{r["z"] - 3},kind:"{r["kind"]}",region:"{r["region"]}",eternal:{lit},lit:{lit}}}\n')
+                f'rx:{r["x"]},ry:{r["y"]},rz:{r["z"] + r["r"] + 2},kind:"{r["kind"]}",region:"{r["region"]}",eternal:{lit},lit:{lit},variant:"{r["variant"]}",r:{r["r"]}}}\n')
 with open(os.path.join(out, "build_pending.mcfunction"), "w") as f:
     f.write("# generated: registered but not yet built bonfires are built once their chunk is loaded (checked every second)\n")
     for r in rows:

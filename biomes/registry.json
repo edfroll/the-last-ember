@@ -4,6 +4,8 @@
   "biomes": {
     "twilight_refuge": {"sky": "#4E5872", "fog": "#9A7F62", "water": "#1F2D4A", "water_fog": "#121A2E", "grass": "#7C7B4E", "foliage": "#6E6E44",
       "music": "refuge", "temp": 0.6, "light_tint": "#ffb060", "spawns": "none"},
+    "font_of_callings": {"sky": "#4E5872", "fog": "#2B3A3A", "water": "#3FB8AF", "water_fog": "#1E5F5A", "grass": "#7C7B4E", "foliage": "#6E6E44",
+      "music": "refuge", "temp": 0.6, "light_tint": "#ffb060", "particles": [["spore_blossom_air", 0.004]], "spawns": "none"},
     "weeping_vale": {"sky": "#6B7586", "fog": "#B8B5AA", "water": "#5C6E62", "water_fog": "#2E3A33", "grass": "#A08A52", "foliage": "#8F7A48",
       "fog_start": 48, "fog_end": 190, "music": "r1_vale", "temp": 0.6,
       "spawns": {"monster": [["zombie", 95, 4], ["skeleton", 100, 4], ["spider", 100, 4], ["creeper", 8, 1], ["witch", 3, 1]],
@@ -44,7 +46,7 @@
   "paint": [
     {"id": "weeping_vale", "shape": "rect", "v": [-652, -848, 652, 652], "trans": 32},
     {"id": "weeping_vale", "shape": "rect", "v": [-1500, -848, -652, -620], "trans": 32},
-    {"id": "twilight_refuge", "shape": "rect", "v": [-200, -200, 200, 200], "trans": 24},
+    {"id": "twilight_refuge", "shape": "rect", "v": [-200, -200, 200, 200], "trans": 24}, {"id": "font_of_callings", "shape": "rect", "v": [-16, 44, 16, 68], "y": [53, 73], "trans": 0},
     {"id": "barrows", "shape": "rect", "v": [124, 372, 276, 524], "trans": 16},
     {"id": "castle_dream", "shape": "circle", "v": [450, 0, 100], "trans": 16},
     {"id": "crooked_fens", "shape": "rect", "v": [-492, 240, -268, 420], "trans": 24},

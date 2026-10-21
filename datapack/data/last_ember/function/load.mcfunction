@@ -20,3 +20,4 @@ function last_ember:bonfire/setup
 schedule function last_ember:biomes/safe_sweep 20t replace
 # T-007: death, ash trails, urns
 function last_ember:death/setup
+function last_ember:refuge/gen/markers

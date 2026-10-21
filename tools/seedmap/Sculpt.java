@@ -72,6 +72,7 @@ public class Sculpt {
     static Tag[] column(int x, int z, int H, double slope) {
         Tag[] c = new Tag[MAXY - MINY + 1]; Tag air = T("air");
         Arrays.fill(c, air);
+        if (!spec.has("lake")) { spec.add("lake", JsonParser.parseString("{\"x\":0,\"z\":0,\"r\":0,\"level\":-100}")); }
         double lakeX = spec.getAsJsonObject("lake").get("x").getAsDouble(), lakeZ = spec.getAsJsonObject("lake").get("z").getAsDouble();
         double lakeR = spec.getAsJsonObject("lake").get("r").getAsDouble(); int lakeY = spec.getAsJsonObject("lake").get("level").getAsInt();
         int snow = spec.get("snowLine").getAsInt(), stoneLine = spec.get("stoneLine").getAsInt(); double valleyR = spec.get("valleyRadius").getAsDouble();
@@ -160,6 +161,7 @@ public class Sculpt {
                     int x = cxk * 16 + lx, z = czk * 16 + lz; double d = distOutside(x, z);
                     if (d > seam) continue;
                     int H; double slope;
+                    if (d == 0 && pix(x, z) <= offY) continue;  // pixel 0 = keep this column as it is
                     if (d == 0) { H = pix(x, z); slope = slopeAt(x, z); colsNew++; }
                     else { // seam: blend from the edge height into the existing generated ground
                         int G = existingTop(blocks, lx, lz); double t = 1 - Math.min(1, d / seam); int E = pix(x, z);  // linear blend: gentlest worst-case slope

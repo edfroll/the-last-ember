@@ -47,6 +47,21 @@
       ]
     },
     {
+      "biome": "last_ember:font_of_callings",
+      "shape": "rect",
+      "v": [
+        -16,
+        44,
+        16,
+        68
+      ],
+      "trans": 0,
+      "y": [
+        53,
+        73
+      ]
+    },
+    {
       "biome": "last_ember:barrows",
       "shape": "rect",
       "v": [

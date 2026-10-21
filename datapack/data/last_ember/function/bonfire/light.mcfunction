@@ -1,5 +1,5 @@
 # at the hearth interaction: lit by the carrier
-function last_ember:bonfire/set_lit with storage last_ember:bt
+function last_ember:bonfire/set_lit with storage last_ember:bt cur
 playsound minecraft:item.firecharge.use block @a[distance=..32] ~ ~ ~ 1 0.7
 playsound minecraft:block.fire.ambient block @a[distance=..32] ~ ~ ~ 1 1
 particle minecraft:flame ~ ~0.6 ~ 0.3 0.3 0.3 0.04 80
