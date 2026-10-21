@@ -75,9 +75,10 @@ def tavern():
     b.fill(x1 - 2, fy + 1, z1 - 5, x2 + 2, fy + 22, z2 + 3, "air")
     b.fill(x1, fy, z1, x2, fy, z2, Mix({"spruce_planks": 70, "dark_oak_planks": 30}, 52))
     b.walls(x1, fy + 1, z1, x2, fy + 5, z2, W)
-    b.fill(cx, fy + 1, z1, cx + 1, fy + 2, z1, "air")   # front door
-    b.set(cx, fy + 1, z1, "spruce_door[facing=south,half=lower,hinge=left,open=false]"); b.set(cx, fy + 2, z1, "spruce_door[facing=south,half=upper,hinge=left,open=false]")
-    b.set(cx + 1, fy + 1, z1, "spruce_door[facing=south,half=lower,hinge=right,open=false]"); b.set(cx + 1, fy + 2, z1, "spruce_door[facing=south,half=upper,hinge=right,open=false]")
+    DX = cx + 1                                          # front door (double), right of the order board
+    b.fill(DX, fy + 1, z1, DX + 1, fy + 2, z1, "air")
+    b.set(DX, fy + 1, z1, "spruce_door[facing=south,half=lower,hinge=left,open=false]"); b.set(DX, fy + 2, z1, "spruce_door[facing=south,half=upper,hinge=left,open=false]")
+    b.set(DX + 1, fy + 1, z1, "spruce_door[facing=south,half=lower,hinge=right,open=false]"); b.set(DX + 1, fy + 2, z1, "spruce_door[facing=south,half=upper,hinge=right,open=false]")
     b.set(x2, fy + 1, z2 - 2, "spruce_door[facing=west,half=lower,hinge=left,open=false]"); b.set(x2, fy + 2, z2 - 2, "spruce_door[facing=west,half=upper,hinge=left,open=false]")   # kitchen back door
     for x in range(x1 + 2, x2 - 1, 3):     # warm windows
         for z in (z1, z2): b.set(x, fy + 3, z, "glass_pane")
@@ -91,17 +92,17 @@ def tavern():
             b.set(x, row, z1 - 1, 'dark_oak_wall_sign[facing=north]{front_text:{messages:["",{"text":"","color":"dark_gray"},"",""]}}'); b.marker(f"order_sign_{k}", x, row, z1 - 1); k += 1
     for i, x in enumerate(range(bx1, bx1 + 7)): b.set(x, fy + 5, z1 - 1, slab("dark_oak_slab", "top"))
     for i in range(6): b.marker(f"trophy_head_{i}", bx1 + 1 + i, fy + 6, z1 - 1)
-    for x in range(bx1 - 1, bx1 + 10):
+    for x in range(bx1 - 1, bx1 + 12):
         for z in range(z1 - 4, z1): b.set(x, fy + 6, z, slab("spruce_slab"))
-    for x in (bx1 - 1, bx1 + 9): b.fill(x, fy + 1, z1 - 4, x, fy + 5, z1 - 4, "spruce_fence")
+    for x in (bx1 - 1, bx1 + 11): b.fill(x, fy + 1, z1 - 4, x, fy + 5, z1 - 4, "spruce_fence")
     b.set(bx1 + 3, fy + 5, z1 - 3, lantern(True))
     for x in range(bx1 + 1, bx1 + 5): b.set(x, fy + 1, z1 - 3, stairs("spruce_stairs", "north"))
-    b.set(bx1 + 7, fy + 1, z1 - 2, "barrel[facing=up,open=false]"); b.set(bx1 + 8, fy + 1, z1 - 2, "barrel[facing=up,open=false]"); b.set(bx1 + 8, fy + 1, z1 - 3, "carved_pumpkin[facing=north]")
+    b.set(bx1 - 1, fy + 1, z1 - 2, "barrel[facing=up,open=false]"); b.set(bx1 - 1, fy + 1, z1 - 1, "barrel[facing=up,open=false]"); b.set(bx1, fy + 1, z1 - 1, "carved_pumpkin[facing=north]")
     # hall: hearth on the west wall, long tables, bar counter, kitchen
     b.fill(x1 + 1, fy + 1, cz - 2, x1 + 1, fy + 4, cz + 1, "stone_bricks"); b.set(x1 + 1, fy + 1, cz, "campfire[lit=true,signal_fire=false]"); b.set(x1 + 1, fy + 1, cz - 1, "campfire[lit=true,signal_fire=false]")
     b.fill(x1 + 1, fy + 2, cz - 1, x1 + 1, fy + 3, cz, "air"); b.fill(x1 + 2, fy + 4, cz - 2, x1 + 2, fy + 4, cz + 1, stairs("stone_brick_stairs", "east", "top"))
     for tz in (cz - 5, cz - 1, cz + 3):
-        for x in range(x1 + 4, x1 + 10):
+        for x in range(x1 + 4, x1 + 8):
             b.set(x, fy + 1, tz, "spruce_fence"); b.set(x, fy + 2, tz, slab("spruce_slab", "bottom")) if False else b.set(x, fy + 2, tz, slab("spruce_slab"))
             b.set(x, fy + 1, tz - 1, stairs("spruce_stairs", "south")); b.set(x, fy + 1, tz + 1, stairs("spruce_stairs", "north"))
             if x % 2 == 0: b.set(x, fy + 3, tz, candle(2, True))
@@ -164,6 +165,6 @@ def well():
     b.fill(cx - 2, y + 5, cz, cx + 2, y + 5, cz, log("spruce_log", "x")); b.fill(cx, y + 3, cz, cx, y + 4, cz, "iron_chain")
     b.set(cx - 6, y + 1, cz - 8, stairs("spruce_stairs", "south")); b.set(cx - 5, y + 1, cz - 8, stairs("spruce_stairs", "south"))
     b.set(cx + 8, y + 1, cz + 8, "barrel[facing=up,open=false]"); b.set(cx + 8, y + 1, cz + 7, "barrel[facing=up,open=false]")
-    b.set(cx - 8, y + 1, cz + 6, "cobblestone_wall"); b.set(cx - 8, y + 2, cz + 6, lantern())
+    b.set(cx - 8, y + 1, cz - 8, "cobblestone_wall"); b.set(cx - 8, y + 2, cz - 8, lantern())
     b.marker("well_swap", cx, y, cz, "21x21 yard + shaft, states before/after"); b.marker("well_trigger", cx, y + 1, cz, "sounds and cold wind")
     return b

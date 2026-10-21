@@ -17,7 +17,8 @@ def build():
     posts, windows to four sides, map wall), narrow balcony round it, belfry with the bell, cone roof, spire."""
     b = B("tower"); y0 = BASE
     b.cyl(TX, y0, TZ, y0 + 95, 13, "air")
-    b.disc(TX, y0 - 1, TZ, 7.3, Mix({"cobblestone": 60, "gravel": 20, "coarse_dirt": 20}, 72))
+    for y in range(y0 - 6, y0 - 1): b.disc(TX, y, TZ, 12.5, "dirt")                 # flat apron round the foot: the stair starts at ground level
+    b.disc(TX, y0 - 1, TZ, 12.5, "grass_block"); b.disc(TX, y0 - 1, TZ, 7.3, Mix({"cobblestone": 60, "gravel": 20, "coarse_dirt": 20}, 72))
     PL = Mix({"cobblestone": 35, "mossy_cobblestone": 25, "stone_bricks": 20, "tuff": 10, "mossy_stone_bricks": 10}, 73)
     SH = Mix({"stone_bricks": 35, "tuff_bricks": 20, "cobblestone": 15, "andesite": 15, "cracked_stone_bricks": 10, "mossy_stone_bricks": 5}, 71)
     def shaft_r(y): return 6.5 if y <= y0 + 5 else (5.5 - 1.0 * (y - y0 - 6) / (188 - y0 - 6) if y <= 188 else 0)
@@ -125,7 +126,7 @@ def build():
     b.fill(TX - 2, 190, TZ - 6, TX + 1, 195, TZ - 6, "spruce_planks")
     for i in range(4):
         for j in range(4): b.marker(f"map_frame_{i}{j}", TX - 2 + i, 194 - j, TZ - 5, "item_frame facing south")
-    b.set(TX + 3, 190, TZ + 3, "cartography_table"); b.set(TX + 2, 190, TZ + 4, "barrel[facing=up,open=false]")
+    b.set(TX - 4, 190, TZ, "cartography_table"); b.set(TX - 4, 190, TZ - 1, "barrel[facing=up,open=false]")
     b.set(TX - 3, 190, TZ + 3, "straw_bed[facing=east,part=head]"); b.set(TX - 4, 190, TZ + 3, "straw_bed[facing=east,part=foot]")
     b.disc(TX, 197, TZ, 7.5, "spruce_planks")
     for (lx, lz) in ((TX, TZ), (TX - 3, TZ - 2), (TX + 2, TZ + 2)): b.set(lx, 196, lz, lantern(True))
@@ -170,6 +171,19 @@ def build():
                 d = 0; yy = fy - 1
                 while yy > y0 - 5 and wk.kind(g(nx, yy, nz)) == "air": d += 1; yy -= 1
                 if d >= 2: b.set(nx, fy, nz, "spruce_fence")
+    # rails stand on the floor: one more fence under every fence that hangs in the air, and the empty diagonal corners filled
+    def isf(x, y, z): return (b.get(x, y, z) or "").endswith("spruce_fence")
+    def free(x, y, z): return (b.get(x, y, z) or "minecraft:air") == "minecraft:air"
+    fences = [k for k, v in b.v.items() if v.endswith("spruce_fence")]
+    for (x, y, z) in fences:
+        for dx, dz in ((1, 1), (1, -1), (-1, 1), (-1, -1)):
+            if isf(x + dx, y, z + dz) and not isf(x + dx, y, z) and not isf(x, y, z + dz):
+                c = max(((x + dx, z), (x, z + dz)), key=lambda q: math.hypot(q[0] - TX, q[1] - TZ))
+                walk = any((c[0] - TX, c[1] - TZ, yy) in steps for yy in range(y - 4, y + 1))
+                if not walk and free(c[0], y, c[1]) and free(c[0], y + 1, c[1]): b.set(c[0], y, c[1], "spruce_fence")
+    for (x, y, z) in [k for k, v in b.v.items() if v.endswith("spruce_fence")]:
+        head = any((x - TX, z - TZ, yy) in steps for yy in range(y - 5, y - 1))     # never into the head room of a step below
+        if free(x, y - 1, z) and not head: b.set(x, y - 1, z, "spruce_fence")
     b.marker("tower_view", TX, 190, TZ + 9, "view to the plaza")
     b.marker("tower_stair", TX + 7, y0, TZ + 6, f"{len(order)} walking cells, 2 turns, 2 wide, no jumps")
     return b

@@ -221,6 +221,7 @@ def build(envelope=True):
     for ang, kind in PEOPLES.items(): niche(b, ang, kind)
     sixth(b)
     font(b)
+    b.fill(-1, HF + 1, 44, 1, HF + 3, 47, "air"); b.fill(-1, HF, 44, 1, HF, 47, "polished_deepslate")     # the Font shell must not close the exit
     stairs_up(b)
     return b
 # ------------------------------------------------------------------ Font of Callings
@@ -260,7 +261,7 @@ def font(b):
     for x in range(-5, 6): path.add((x, 57))
     for (ax, az) in ALTARS.values():
         for z in range(min(az, 57), max(az, 57) + 1): path.add((ax - (2 if ax < 0 else -2), z))
-    for x in range(1, 15): path.add((x, 53))
+    for x in range(1, 15): path.add((x, 57))
     for (x, z) in path:
         if b.get(x, FY, z) == "minecraft:water": b.set(x, FY, z, "smooth_stone_slab[type=top,waterlogged=true]")
     b.fill(-1, FY, 56, 1, FY, 58, "smooth_stone"); b.marker("font_centre", 0, FY + 1, 57)
@@ -275,16 +276,14 @@ def font(b):
     for (kind, (x, z)) in zip(("humans", "elves", "dwarves", "halflings", "ashborn"), ((-3, 54), (3, 54), (-3, 60), (3, 60), (2, 57) if False else (0, 61))):
         if b.get(x, FY, z) != "minecraft:water": z += 1
         b.set(x, FY - 2, z, BASE[kind]); b.marker(f"name_stone_{kind}", x, FY - 2, z, "becomes sea_lantern")
-    # exit east: corridor along z 52..54 to x 29, door, then north to the shaft (x 25..31, z 37..43)
-    b.fill(12, FY, 52, 29, FY, 54, "polished_deepslate"); b.fill(12, FY + 1, 52, 29, FY + 4, 54, "air")
-    b.fill(12, FY + 5, 51, 30, FY + 5, 55, "stone_bricks"); b.fill(12, FY + 1, 51, 30, FY + 4, 51, "stone_bricks"); b.fill(12, FY + 1, 55, 30, FY + 4, 55, "stone_bricks")
-    b.fill(27, FY, 44, 29, FY, 54, "polished_deepslate"); b.fill(27, FY + 1, 44, 29, FY + 4, 54, "air")
-    b.fill(26, FY + 1, 44, 26, FY + 4, 51, "stone_bricks"); b.fill(30, FY + 1, 44, 30, FY + 4, 54, "stone_bricks"); b.fill(26, FY + 5, 44, 30, FY + 5, 54, "stone_bricks")
-    b.fill(14, FY + 1, 53, 14, FY + 2, 53, "air")
-    b.fill(14, FY + 1, 52, 14, FY + 4, 54, "stone_bricks"); b.fill(14, FY + 1, 53, 14, FY + 2, 53, "air")
-    b.set(14, FY + 1, 53, "dark_oak_door[facing=west,half=lower,hinge=left,open=false]"); b.set(14, FY + 2, 53, "dark_oak_door[facing=west,half=upper,hinge=left,open=false]")
-    b.marker("door_font", 14, FY + 1, 53, "Font -> stairs, held closed until the choice")
-    b.set(20, FY + 4, 53, lantern(True)); b.set(28, FY + 4, 49, lantern(True))
+    # exit east: corridor along z 56..58 (between the altar pairs) to x 29, door, then north to the shaft (x 25..31, z 37..43)
+    b.fill(12, FY + 1, 55, 30, FY + 5, 59, "stone_bricks"); b.fill(26, FY + 1, 44, 30, FY + 5, 59, "stone_bricks")
+    b.fill(12, FY, 56, 29, FY, 58, "polished_deepslate"); b.fill(12, FY + 1, 56, 29, FY + 4, 58, "air")
+    b.fill(27, FY, 44, 29, FY, 58, "polished_deepslate"); b.fill(27, FY + 1, 44, 29, FY + 4, 58, "air")
+    b.fill(14, FY + 1, 56, 14, FY + 4, 58, "stone_bricks"); b.fill(14, FY + 1, 57, 14, FY + 2, 57, "air")
+    b.set(14, FY + 1, 57, "dark_oak_door[facing=west,half=lower,hinge=left,open=false]"); b.set(14, FY + 2, 57, "dark_oak_door[facing=west,half=upper,hinge=left,open=false]")
+    b.marker("door_font", 14, FY + 1, 57, "Font -> stairs, held closed until the choice")
+    b.set(20, FY + 4, 57, lantern(True)); b.set(28, FY + 4, 50, lantern(True))
     b.marker("font_biome_box", -16, 53, 44, "to 16 73 68")
 # ------------------------------------------------------------------ stairs up
 SX1, SZ1 = 25, 37   # shaft 7x7: x 25..31, z 37..43
@@ -304,20 +303,31 @@ def stairs_up(b):
             n_ += 1
         return n_
     n = sim(); k = (8 - (n - 1)) % 16          # flat cells at the bottom so that the last step lands on the north row (exit north)
-    y = y0; land = 0
+    y = y0; land = 0; tops = {}
     for j in range(k + n):
         i = j; x, z = ring[i % 16]; nx, nz = nxt[i % 16]
         flat = j < k or ((j - k) % 9 == 8)
         if not flat: y += 1
-        fac = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}[(nx - x, nz - z)]
-        if y > y0: b.fill(x, y0 + 1, z, x, y - 1, z, "stone_bricks")
+        px, pz = ring[(i - 1) % 16]                      # a stair faces the way it is climbed (from the previous cell)
+        fac = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}[(x - px, z - pz)]
+        if y > y0 + 1 and (b.get(x, y - 1, z) or "minecraft:air") == "minecraft:air": b.set(x, y - 1, z, "stone_brick_slab[type=top]")
         b.set(x, y, z, "stone_bricks" if flat else stairs("stone_brick_stairs", fac))
-        if flat and j >= k: b.set(x, y + 3, z, lantern(True)); land += 1
-        for dy in range(1, 4):
-            if not (b.get(x, y + dy, z) or "").endswith("lantern[hanging=true]"): b.set(x, y + dy, z, "air")
+        if flat and j >= k:                               # landing light in a niche of the core (no lantern at head height)
+            for cx_, cz_ in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)):
+                if SX1 + 2 <= cx_ <= SX1 + 4 and SZ1 + 2 <= cz_ <= SZ1 + 4:
+                    b.set(cx_, y + 2, cz_, "air"); b.set(cx_, y + 1, cz_, "stone_bricks"); b.set(cx_, y + 2, cz_, lantern()); break
+            land += 1
+        for dy in range(1, 4): b.set(x, y + dy, z, "air")
+        tops[(x, z)] = max(tops.get((x, z), -99), y)
     last = ring[(k + n - 1) % 16]; steps = n
+    global SHAFT_PATH
+    SHAFT_PATH = []; yy_ = y0
+    for j in range(k + n):
+        if not (j < k or ((j - k) % 9 == 8)): yy_ += 1
+        SHAFT_PATH.append((ring[j % 16][0] + 0.5, ring[j % 16][1] + 0.5, yy_ + 1))
     b.marker("stairs_top", last[0], y + 1, last[1], f"{steps} cells, {land} landings, top y {y}")
-    b.set(last[0] + 1, y1, last[1], "polished_deepslate")
+    for (cx_, cz_), ty in tops.items():                 # close the top: floor over every ring cell whose last step is well below
+        if ty <= y1 - 5: b.set(cx_, y1, cz_, "polished_deepslate")
     # walk off at y1 (top floor): open the north wall of the shaft, corridor north along x 27..29 to z 18, then west along z 18..20
     yy = y1
     legs = [(27, 18, 29, 36), (-6, 18, 29, 20), (-6, 12, -4, 20)]
@@ -330,13 +340,13 @@ def stairs_up(b):
         for z in (13, 14, 15):
             ty = yy + 1 + k
             b.fill(x, yy, z, x, ty - 1, z, "stone_bricks")
-            b.set(x, ty, z, stairs("stone_brick_stairs", "east") if ty < FLOOR else "polished_deepslate")
+            b.set(x, ty, z, stairs("stone_brick_stairs", "east"))
             for dy in range(1, 5): b.set(x, ty + dy, z, "air")
     b.fill(-3, yy + 1, 12, 3, FLOOR, 12, "stone_bricks"); b.fill(-3, yy + 1, 16, 3, FLOOR, 16, "stone_bricks"); b.fill(3, yy + 1, 13, 3, FLOOR - 1, 15, "stone_bricks")
     b.marker("portico_stairs_top", 2, FLOOR + 1, 14)
 def plaza_holes():
     """cells the plaza must leave open (stair hole under the portico)"""
-    return {(x, FLOOR + dy, z) for x in range(-3, 2) for z in (13, 14, 15) for dy in (0, 1, 2, 3)}
+    return {(x, FLOOR + dy, z) for x in range(-3, 3) for z in (13, 14, 15) for dy in range(-5, 1)} | {(x, FLOOR + dy, z) for x in range(-3, 2) for z in (13, 14, 15) for dy in range(1, 4)}
 def sixth_templates():
     a = B("sixth_intact"); sixth(a); f = B("sixth_fallen"); sixth(f, fallen=True); return a, f
 def statue_pieces():

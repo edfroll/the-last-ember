@@ -9,7 +9,7 @@ $function last_ember:urn/gen/build_$(variant)
 $scoreboard players set #u le.e $(n)
 kill @e[type=minecraft:interaction,tag=le.urnclick,distance=..4]
 kill @e[type=minecraft:text_display,tag=le.urn_plate,distance=..6]
-summon minecraft:interaction ~ ~1 ~ {width:3.2f,height:5.5f,response:1b,Tags:["le.urnclick","le.urnnew"]}
+summon minecraft:interaction ~ ~1 ~ {width:6.2f,height:6.0f,response:1b,Tags:["le.urnclick","le.urnnew"]}
 summon minecraft:text_display ~ ~3.4 ~-3.3 {Tags:["le.urn_plate","le.urnnew"],billboard:"center",text:"",background:1140850688,line_width:120}
 execute as @e[tag=le.urnnew,distance=..6] run scoreboard players operation @s le.uid = #u le.e
 tag @e[tag=le.urnnew,distance=..6] remove le.urnnew

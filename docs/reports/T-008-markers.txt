@@ -24,7 +24,7 @@ name_stone_elves                 3   52    54  becomes sea_lantern
 name_stone_dwarves              -3   52    60  becomes sea_lantern
 name_stone_halflings             3   52    60  becomes sea_lantern
 name_stone_ashborn               0   52    62  becomes sea_lantern
-door_font                       14   55    53  Font -> stairs, held closed until the choice
+door_font                       14   55    57  Font -> stairs, held closed until the choice
 font_biome_box                 -16   53    44  to 16 73 68
 stairs_top                      28   97    38  47 cells, 5 landings, top y 96
 portico_stairs_top               2  103    14  

@@ -7,7 +7,7 @@ Pipeline (server STOPPED, hub chunks generated): sculpt.sh apply terrain.json ->
 -> start (bonfire and urn are built by the datapack) -> python3 tools/build/refuge.py nbt (exports .nbt pieces)."""
 import math, os, sys, struct, zlib, json, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from lib import B, Mix, h
+from lib import B, Mix, h, slab
 import geo, plaza, gates, buildings, tower, hall
 from connect import connect
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -57,6 +57,49 @@ def street(b, gnd, pts, w=2, taken=None):
                     b.set(xi, y, zi, STREET)
                     for dy in (1, 2, 3):
                         if not taken or (xi, y + dy, zi) not in taken: b.set(xi, y + dy, zi, "air")
+PATHM = Mix({"cobblestone": 45, "mossy_cobblestone": 20, "stone_bricks": 20, "andesite": 15}, 78)
+def graded_path(b, gnd, pts, w=1, taken=None, end_y=None, flat=False):
+    """walkable path without jumps: surfaces in half blocks change by at most 0.5 per step along the line (cut into slopes, banked over
+    hollows); bottom slabs for half levels. pts: polyline (x, z); end_y: surface (standing level) to arrive at."""
+    line = []
+    for (ax, az), (bx, bz) in zip(pts, pts[1:]):
+        L = max(1, int(math.hypot(bx - ax, bz - az) * 3))
+        for i in range(L): line.append((ax + (bx - ax) * i / L, az + (bz - az) * i / L))
+    line.append(pts[-1])
+    cells = []
+    for (x, z) in line:
+        c = (round(x), round(z))
+        if cells and c == cells[-1]: continue
+        if cells and abs(c[0] - cells[-1][0]) + abs(c[1] - cells[-1][1]) == 2:      # 4-connected centre line: no diagonal steps
+            p1 = (c[0], cells[-1][1]); p2 = (cells[-1][0], c[1])
+            cells.append(min((p1, p2), key=lambda q: math.hypot(q[0] - x, q[1] - z)))
+        cells.append(c)
+    t = [2 * end_y if flat else 2 * (gnd(*c) + 1) for c in cells]
+    if end_y is not None: t[-1] = 2 * end_y
+    for _ in range(3):
+        for i in range(1, len(t)): t[i] = max(min(t[i], t[i - 1] + 1), t[i - 1] - 1)
+        for i in range(len(t) - 2, -1, -1): t[i] = max(min(t[i], t[i + 1] + 1), t[i + 1] - 1)
+    if end_y is not None and t[-1] != 2 * end_y: print("graded_path: end height not reached", t[-1] / 2, end_y)
+    surf = {}; best = {}
+    for c, s2 in zip(cells, t):                         # side cells take the height of the nearest centre cell
+        for dx in range(-w, w + 1):
+            for dz in range(-w, w + 1):
+                if dx * dx + dz * dz > w * w + 1: continue
+                q = (c[0] + dx, c[1] + dz); d = dx * dx + dz * dz
+                if q not in best or d < best[q] or (d == best[q] and s2 < surf[q]): best[q] = d; surf[q] = s2
+    changed = True                                       # across the whole width: neighbours differ by at most half a block
+    while changed:
+        changed = False
+        for (x, z), s2 in list(surf.items()):
+            m = min([surf[q] for q in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)) if q in surf] + [s2 + 1]) + 1
+            if m < s2: surf[(x, z)] = m; changed = True
+    for (x, z), s2 in surf.items():
+        y = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
+        if taken and any((x, yy, z) in taken for yy in range(y - 1, y + 4)): continue
+        b.set(x, y, z, slab("cobblestone_slab") if s2 % 2 else PATHM)
+        for yy in range(y - 3, y): b.set(x, yy, z, "dirt") if b.get(x, yy, z) is None else None
+        for yy in range(y + 1, y + 4): b.set(x, yy, z, "air")
+    return [((c[0] + 0.5, c[1] + 0.5), s2 / 2) for c, s2 in zip(cells, t)]
 def build_all():
     nat = natural(); T = terrain(nat); os.makedirs(OUT, exist_ok=True)
     write_png(os.path.join(OUT, "terrain.png"), T)
@@ -76,14 +119,17 @@ def build_all():
         markers += p.markers
     # streets and the tower path go last and never overwrite a building
     sb = B("streets"); taken = set(k for k, s in world.items() if s != "minecraft:air")
-    street(sb, gnd, [geo.rot(0, 0, 125, 32, 0), (40, 21), (52, 21)], 2, taken)
-    street(sb, gnd, [geo.rot(0, 0, 240, 32, 0), (-40, 19), (-53, 19)], 2, taken)
-    street(sb, gnd, [geo.rot(0, 0, plaza.LANE_WELL, 32, 0), (18, -34), (32, -37)], 1, taken)
-    tx, tz = geo.TOWER; sx, sz = round(tx + 28 * math.sin(math.radians(135))), round(tz - 28 * math.cos(math.radians(135)))
-    street(sb, gnd, [geo.rot(0, 0, 315, 32, 0), (-60, -50), (sx, sz)], 2, taken)
-    tp = B("tower_path"); tower.path(tp, gnd)
-    for k, s in tp.v.items():
-        if k not in taken: sb.v[k] = s
+    graded_path(sb, gnd, [geo.rot(0, 0, 125, 31, 0), (40, 21), (52, 21)], 2, taken, end_y=101)
+    graded_path(sb, gnd, [geo.rot(0, 0, 240, 31, 0), (-40, 19), (-52, 19)], 2, taken, end_y=101)
+    graded_path(sb, gnd, [geo.rot(0, 0, plaza.LANE_WELL, 31, 0), (18, -33), (32, -33)], 1, taken, end_y=102, flat=True)
+    tx, tz = geo.TOWER
+    serp = []
+    for i in range(0, 140):
+        t_ = i / 139; r_ = 28 - 13 * t_; a_ = math.radians(135 + 360 * t_)
+        serp.append((tx + r_ * math.sin(a_), tz - r_ * math.cos(a_)))
+    route = [geo.rot(0, 0, 315, 32, 0), (-60, -50), serp[0]] + serp[1:] + [(tx + 9, tz + 10), (tx + 7.5, tz + 8)]
+    global TOWER_ROUTE
+    TOWER_ROUTE = graded_path(sb, gnd, route, 2, taken, end_y=125)
     for k, s in sb.v.items(): world[k] = s
     pieces.append(sb)
     wb = B("world"); wb.v = world; connect(wb)

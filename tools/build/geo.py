@@ -19,12 +19,12 @@ def target(x, z, natural):
     # tower hill: flat top r 7 at 124 (tower base stands at 125), slopes ease into the surrounding ground (no cliff at the foot);
     # the foot radius wobbles with the angle so the hill does not read as a perfect cone
     rt = math.hypot(x - TOWER[0], z - TOWER[1])
-    if rt <= 7: return 124, True
+    if rt <= 12.5: return 124, True
     ang = math.atan2(z - TOWER[1], x - TOWER[0])
     R = 62 + 9 * math.sin(3 * ang + 0.7) + 5 * math.sin(5 * ang + 2.1)
     hill = None
     if rt < R:
-        t = (rt - 7) / (R - 7); hill = (124, 1 - smooth(t) ** 0.8)       # weight of the hill top over the base ground
+        t = (rt - 12.5) / (R - 12.5); hill = (124, 1 - smooth(t) ** 0.8)       # weight of the hill top over the base ground
     # plateau around the plaza: 102 at the plaza edge, 99 at r 90, blending into the natural ground by r 150
     base = natural
     if r <= 90: base = FLOOR - 3 * smooth((r - PLAZA_R) / (90 - PLAZA_R))
