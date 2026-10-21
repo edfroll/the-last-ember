@@ -17,7 +17,7 @@ def main():
     ap.add_argument("--settle", type=float, default=6); ap.add_argument("--player", default="Cam")
     a = ap.parse_args()
     cfg = json.load(open(a.spec)); os.makedirs(a.out, exist_ok=True)
-    rc.run("defaultgamemode spectator"); rc.run(f"gamemode spectator {a.player}")
+    rc.run(f"gamemode spectator {a.player}")   # only the camera; the server default stays survival for real players
     time.sleep(2)  # the client agent auto-respawns a dead camera player
     rc.run(f"gamemode spectator {a.player}")
     if "time" in cfg: rc.run(f"time set {cfg['time']}")

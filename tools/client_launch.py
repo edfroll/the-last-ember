@@ -86,6 +86,11 @@ def main():
     except Exception as e:
         print("note: could not set spectator default via RCON:", e, file=sys.stderr)
     p = subprocess.Popen(cmd, cwd=game_dir, stdout=open(f"{game_dir}/logs/stdout.txt", "w"), stderr=subprocess.STDOUT, start_new_session=True)
+    # once the camera is in, give the server its normal default back (real players must not join as spectators)
+    restore = (f"import time,sys; sys.path.insert(0,{os.path.join(ROOT, 'tools')!r}); import rcon\n"
+               f"for _ in range(120):\n    time.sleep(2)\n    if {a.name!r} in rcon.run('list'): break\n"
+               f"rcon.run('gamemode spectator {a.name}'); rcon.run('defaultgamemode survival')\n")
+    subprocess.Popen([sys.executable, "-c", restore], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     print(p.pid)
 
 main()
