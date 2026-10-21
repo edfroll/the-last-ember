@@ -7,7 +7,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 F = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 font, small = ImageFont.truetype(F, 14), ImageFont.truetype(F, 11)
 
-def plan(fname, x0, x1, z0, z1, scale, grid, areas, points, path, title):
+def plan(fname, x0, x1, z0, z1, scale, grid, areas, points, path, title, alt=None):
     W = int((x1 - x0) * scale); H = int((z1 - z0) * scale)
     img = Image.new("RGB", (W, H + 34), (26, 20, 20)); d = ImageDraw.Draw(img)
     P = lambda x, z: ((x - x0) * scale, (z - z0) * scale)
@@ -25,6 +25,12 @@ def plan(fname, x0, x1, z0, z1, scale, grid, areas, points, path, title):
         d.text((tx + 4, tz + 4), name, fill=(255, 255, 255), font=font, stroke_width=2, stroke_fill=(0, 0, 0))
     if path:
         d.line([P(*p) for p in path], fill=(255, 255, 255), width=3)
+    if alt:  # необязательная петля — пунктир
+        pts = [P(*p) for p in alt]
+        for (ax, az), (bx, bz) in zip(pts, pts[1:]):
+            n = max(1, int(((bx - ax) ** 2 + (bz - az) ** 2) ** 0.5 // 8))
+            for i in range(0, n, 2):
+                d.line([(ax + (bx - ax) * i / n, az + (bz - az) * i / n), (ax + (bx - ax) * (i + 1) / n, az + (bz - az) * (i + 1) / n)], fill=(190, 190, 190), width=2)
     for name, x, z, c in points:
         px, pz = P(x, z); d.ellipse([px - 5, pz - 5, px + 5, pz + 5], fill=c, outline=(0, 0, 0))
         tw = d.textlength(name, font=small); tx = px + 8 if px + 8 + tw < W - 4 else px - 8 - tw
@@ -52,6 +58,7 @@ plan("r6_surface_plan.png", 640, 1520, -880, 680, 0.6, 200,
      [("Пепельные Врата: выход из Незера, главный костёр", 760, 0, (255, 160, 60)),
       ("Врата в Край — вершина вулкана", 1280, -620, (180, 140, 255)),
       ("Обугленный хребет (граница с Р1)", 665, 300, (200, 200, 200))],
-     [(760, 0), (900, 150), (950, 350), (1000, 100), (1000, -300), (1150, -480), (1280, -620)],
-     "Пепельные Земли: x +665…+1500, z −870…+650. Север — вверх.")
+     [(760, 0), (880, -120), (1000, -300), (1150, -480), (1280, -620)],
+     "Пепельные Земли: x +665…+1500, z −870…+650. Белая — основной путь, пунктир — Топи (необязательно). Север — вверх.",
+     alt=[(760, 0), (900, 150), (950, 350), (1000, 100), (1000, -300)])
 print("ok")
