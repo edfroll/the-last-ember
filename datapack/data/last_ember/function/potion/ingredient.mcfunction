@@ -1,0 +1,34 @@
+# as an item entity: #bit le.e = its ingredient value (0 = not an ingredient, 2^20 = a potion for modifying)
+scoreboard players set #bit le.e 0
+execute if items entity @s contents minecraft:brown_mushroom run scoreboard players set #bit le.e 1
+execute if items entity @s contents minecraft:red_mushroom run scoreboard players set #bit le.e 1
+execute if items entity @s contents minecraft:cooked_beef run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:cooked_porkchop run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:cooked_chicken run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:cooked_mutton run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:cooked_rabbit run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:cooked_cod run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:cooked_salmon run scoreboard players set #bit le.e 2
+execute if items entity @s contents minecraft:sugar run scoreboard players set #bit le.e 4
+execute if items entity @s contents minecraft:bone run scoreboard players set #bit le.e 8
+execute if items entity @s contents minecraft:gunpowder run scoreboard players set #bit le.e 16
+execute if items entity @s contents minecraft:rabbit_foot run scoreboard players set #bit le.e 32
+execute if items entity @s contents minecraft:pumpkin run scoreboard players set #bit le.e 64
+execute if items entity @s contents minecraft:glow_berries run scoreboard players set #bit le.e 128
+execute if items entity @s contents minecraft:spider_eye run scoreboard players set #bit le.e 256
+execute if items entity @s contents minecraft:rotten_flesh run scoreboard players set #bit le.e 512
+execute if items entity @s contents minecraft:lava_bucket run scoreboard players set #bit le.e 1024
+execute if items entity @s contents minecraft:honey_bottle run scoreboard players set #bit le.e 2048
+execute if items entity @s contents minecraft:cod run scoreboard players set #bit le.e 4096
+execute if items entity @s contents minecraft:salmon run scoreboard players set #bit le.e 4096
+execute if items entity @s contents minecraft:tropical_fish run scoreboard players set #bit le.e 4096
+execute if items entity @s contents minecraft:pufferfish run scoreboard players set #bit le.e 4096
+execute if items entity @s contents minecraft:kelp run scoreboard players set #bit le.e 8192
+execute if items entity @s contents minecraft:milk_bucket run scoreboard players set #bit le.e 16384
+execute if items entity @s contents minecraft:slime_ball run scoreboard players set #bit le.e 32768
+execute if items entity @s contents minecraft:charcoal run scoreboard players set #bit le.e 65536
+execute if items entity @s contents minecraft:bone_meal run scoreboard players set #bit le.e 131072
+execute if items entity @s contents minecraft:cobweb run scoreboard players set #bit le.e 262144
+execute if items entity @s contents minecraft:potion run scoreboard players set #bit le.e 1048576
+execute if items entity @s contents minecraft:splash_potion run scoreboard players set #bit le.e 1048576
+execute if items entity @s contents minecraft:lingering_potion run scoreboard players set #bit le.e 1048576

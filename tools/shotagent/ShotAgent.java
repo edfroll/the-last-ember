@@ -51,6 +51,8 @@ public class ShotAgent {
                                     case "sneak_off" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), false);
                                     case "fwd_on" -> KeyMapping.set(mc.options.keyUp.getDefaultKey(), true);     // walk bot (T-008)
                                     case "fwd_off" -> KeyMapping.set(mc.options.keyUp.getDefaultKey(), false);
+                                    case "use_on" -> KeyMapping.set(mc.options.keyUse.getDefaultKey(), true);    // hold right mouse (shield, bow)
+                                    case "use_off" -> KeyMapping.set(mc.options.keyUse.getDefaultKey(), false);
                                     case "jump_on" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), true);  // jump uses the held state
                                     case "jump_off" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), false);
                                     default -> {}

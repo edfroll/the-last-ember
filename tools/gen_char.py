@@ -34,7 +34,7 @@ RACES = [  # slug, number, title, pad marker, statue angle, attributes [(attr, v
 ]
 NAME_STONE = {"human": "name_stone_humans", "elf": "name_stone_elves", "dwarf": "name_stone_dwarves", "halfling": "name_stone_halflings", "ashborn": "name_stone_ashborn"}
 CLASSES = [  # slug, number, title, altar marker, symbol item, attributes, description
- ("knight", 1, "Рыцарь", "altar_shield", "minecraft:shield", [("attack_speed", 0.2, "add_multiplied_base"), ("entity_interaction_range", 0.5, "add_value")],
+ ("knight", 1, "Рыцарь", "altar_shield", "minecraft:shield", [("entity_interaction_range", 0.5, "add_value")],
   ["Щит и меч. Получает меньше урона, бьёт чаще и чуть дальше.", "У костра может благословить отряд."]),
  ("ranger", 2, "Следопыт", "altar_horn", "minecraft:goat_horn", [],
   ["Лук и рог. Его стрелы летят вдвое дальше.", "Рог подсвечивает врагов всему отряду."]),
@@ -45,14 +45,14 @@ CLASSES = [  # slug, number, title, altar marker, symbol item, attributes, descr
 ]
 def mod(prefix, attr, val, op): return f"attribute @s minecraft:{attr} modifier add last_ember:{prefix}_{attr} {val} {op}"
 def rm(prefix, attr): return f"attribute @s minecraft:{attr} modifier remove last_ember:{prefix}_{attr}"
-race_attrs = sorted({a for r in RACES for a, _, _ in r[5]}); class_attrs = sorted({a for c in CLASSES for a, _, _ in c[5]} | {"luck"})
+race_attrs = sorted({a for r in RACES for a, _, _ in r[5]}); class_attrs = sorted({a for c in CLASSES for a, _, _ in c[5]} | {"luck", "attack_speed"})
 w("race_strip", ["# as a player: removes every race modifier"] + [rm("race", a) for a in race_attrs])
 w("class_strip", ["# as a player: removes every class modifier"] + [rm("class", a) for a in class_attrs])
 for slug, n, title, pad, ang, attrs, desc in RACES:
     w(f"race_apply_{n}", [f"# as a player: {title} -- modifiers (idempotent)", "function last_ember:char/gen/race_strip"] + [mod("race", a, v, op) for a, v, op in attrs])
 for slug, n, title, altar, sym, attrs, desc in CLASSES:
     w(f"class_apply_{n}", [f"# as a player: {title} -- modifiers (idempotent)", "function last_ember:char/gen/class_strip", "attribute @s minecraft:luck modifier add last_ember:class_mark 0 add_value"]
-      + [mod("class", a, v, op) for a, v, op in attrs])
+      + [mod("class", a, v, op) for a, v, op in attrs] + (["function last_ember:char/knight_tier"] if slug == "knight" else []))
 # dispatchers by tag (race_apply / class_apply for the current tag)
 w("race_apply", ["# as a player: applies the modifiers of the race by tag"] + [f"execute if entity @s[tag=le.race.{r[0]}] run function last_ember:char/gen/race_apply_{r[1]}" for r in RACES])
 w("class_apply", ["# as a player: applies the modifiers of the class by tag"] + [f"execute if entity @s[tag=le.class.{c[0]}] run function last_ember:char/gen/class_apply_{c[1]}" for c in CLASSES])
@@ -112,8 +112,18 @@ blade = lambda n, extra: give("minecraft:stone_sword", ",".join([nm(n, "gray"), 
     'minecraft:attribute_modifiers=[{type:"minecraft:attack_damage",id:"last_ember:dagger_damage",amount:2,operation:"add_value",slot:"mainhand"},{type:"minecraft:attack_speed",id:"last_ember:dagger_speed",amount:-2,operation:"add_value",slot:"mainhand"}]']))
 w("kit_all", ["# as a player: the common start kit", give("minecraft:bread", count=6), give("minecraft:torch", count=8), give("minecraft:wooden_pickaxe"), give("minecraft:wooden_axe")])
 w("kit_knight", ["# as a player", give("minecraft:stone_sword"), "item replace entity @s weapon.offhand with minecraft:shield", "item replace entity @s armor.chest with minecraft:chainmail_chestplate"])
-w("kit_ranger", ["# as a player", give("minecraft:bow"), give("minecraft:arrow", count=32),
-    give("minecraft:goat_horn", ",".join([nm("Рог следопыта", "gold"), keep(",le_horn:1b"), lore("Пока молчит.")]))])
+HORN_COMP = ('minecraft:item_model="minecraft:goat_horn",minecraft:custom_data={le_keep:1b,le_horn:1b},minecraft:custom_name={"text":"Рог следопыта","color":"gold","italic":false},'
+             'minecraft:lore=[{"text":"Подсвечивает врагов всему отряду.","color":"gray","italic":false}],'
+             'minecraft:consumable={consume_seconds:0.1f,animation:"toot_horn",sound:"minecraft:intentionally_empty",has_consume_particles:false},minecraft:use_cooldown={seconds:30.0f,cooldown_group:"last_ember:horn"}')
+def snbt_comps(c):  # key=value,... -> {"key":value,...} for use_remainder
+    parts = re.findall(r'(minecraft:[a-z_]+)=', c); out = []; idx = [m.start() for m in re.finditer(r'(?:^|,)(minecraft:[a-z_]+)=', c)]
+    for i, st in enumerate(idx):
+        seg = c[st + (1 if c[st] == "," else 0): (idx[i + 1] if i + 1 < len(idx) else len(c))]
+        k, v = seg.split("=", 1); out.append('"%s":%s' % (k, v))
+    return ",".join(out)
+w("horn_item", ["# as a player: the Ranger's horn (a stick with the goat horn model: a consumable that comes back, 30 s cooldown on the slot)",
+    'give @s minecraft:stick[%s,minecraft:use_remainder={id:"minecraft:stick",count:1,components:{%s}}] 1' % (HORN_COMP, snbt_comps(HORN_COMP))])
+w("kit_ranger", ["# as a player", give("minecraft:bow"), give("minecraft:arrow", count=32), "function last_ember:char/gen/horn_item"])
 STAFFS = [("blink", "Посох Мгновения"), ("frost", "Посох Хладной Длани"), ("flame", "Посох Пламенной Жатвы"), ("levity", "Посох Отринутой Тяжести"), ("exile", "Посох Изгнания")]
 for i, (sid, sname) in enumerate(STAFFS, 1):
     w(f"staff_{i}", ["# as a player: a staff (stub item: name, description; the spells come in T-011)", give("minecraft:stick", ",".join([nm(sname, "light_purple"), keep(f',le_staff:"{sid}"'), lore("Заклинания посоха — позже.", "Пепельный Покров есть на любом посохе.")]))])

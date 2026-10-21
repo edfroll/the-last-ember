@@ -1,0 +1,25 @@
+{
+ "criteria": {
+  "b": {
+   "trigger": "minecraft:entity_hurt_player",
+   "conditions": {
+    "damage": {
+     "blocked": true,
+     "dealt": {
+      "min": 0,
+      "max": 7.999
+     },
+     "source_entity": {
+      "minecraft:entity_type": "#last_ember:monsters"
+     },
+     "direct_entity": {
+      "minecraft:entity_type": "#last_ember:monsters"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:knight/reflect_1"
+ }
+}

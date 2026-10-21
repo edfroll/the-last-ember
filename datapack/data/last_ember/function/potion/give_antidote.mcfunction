@@ -1,0 +1,2 @@
+# as a player: the antidote (a drinkable vial: clears poison and withering, 60 s of immunity)
+give @s minecraft:potion[minecraft:custom_data={le_antidote:1b},minecraft:custom_name={"text":"Противоядие","italic":false,"color":"green"},minecraft:potion_contents={custom_color:11141120},minecraft:lore=[{"text":"Снимает отравление и иссушение.","color":"gray","italic":false},{"text":"60 секунд невосприимчивости к ним.","color":"gray","italic":false}]] 1

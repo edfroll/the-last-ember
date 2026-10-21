@@ -1,3 +1,5 @@
+# as/at the cauldron interaction: water goes in with a bucket or a bottle (healer), only a sneaking healer takes the cauldron back
+execute as @a[tag=le.clicker,limit=1] if function last_ember:potion/fill_try run return 0
 # as/at the cauldron interaction: only a sneaking healer takes it back; others just get a hint
 execute unless entity @a[tag=le.clicker,tag=le.class.healer,predicate=last_ember:sneaking] run return run title @a[tag=le.clicker] actionbar {"text":"Котёл знахаря: снять его может только знахарь (Shift+ПКМ)","color":"gray"}
 execute if block ~ ~ ~ minecraft:cauldron run setblock ~ ~ ~ minecraft:air

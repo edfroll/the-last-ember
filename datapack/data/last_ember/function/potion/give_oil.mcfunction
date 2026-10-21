@@ -1,0 +1,2 @@
+# macro type: poison|fire -- function last_ember:potion/give_oil {type:"poison"}; the oil is a drinkable-looking vial used from the OFF hand
+$give @s minecraft:potion[minecraft:custom_data={le_oilitem:1b,le_oiltype:"$(type)"},minecraft:custom_name={"text":"Масло $(label)","italic":false,"color":"$(color)"},minecraft:potion_contents={custom_color:$(col)},minecraft:consumable={consume_seconds:1.0f,animation:"drink",has_consume_particles:false},minecraft:lore=[{"text":"Возьми клинок в основную руку, масло в левую, ПКМ.","color":"gray","italic":false}]] 1

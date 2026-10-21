@@ -1,0 +1,19 @@
+{
+ "criteria": {
+  "t": {
+   "trigger": "minecraft:player_interacted_with_entity",
+   "conditions": {
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "#last_ember:rideable"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:ranger/tame_horse"
+ }
+}

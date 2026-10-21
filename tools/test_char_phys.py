@@ -8,7 +8,7 @@ def load(n):
 rc = load("rcon"); wb = load("walkbot")
 def setc(race, cls=1):
     rc.run("clear Cam"); rc.run("execute as Cam run function last_ember:char/reset"); time.sleep(1.6); rc.run("gamemode survival Cam")
-    rc.run(f"execute as Cam run function last_ember:char/set {{race:{race},class:{cls}}}"); time.sleep(0.5)
+    rc.run(f"execute as Cam run function last_ember:char/set {{race:{race},class:{cls},tier:0}}"); time.sleep(0.5)
 def walk(x, z0, z1, jump, secs=9):
     """walk along +z from z0 to z1 at x; returns (final y, final z, jumps)"""
     rc.run(f"tp Cam {x} 103 {z0} 0 0"); time.sleep(1.0); wb.agent("!fwd_on"); jumps = 0; t0 = time.time(); last = time.time(); bz = z0; peak = 0

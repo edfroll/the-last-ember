@@ -1,0 +1,2 @@
+# TEST/LOOT: function last_ember:potion/murky {effect:"weakness",duration:600,amp:0} (as the player who receives it; effect without the namespace)
+$give @s minecraft:potion[minecraft:custom_data={le_murky:1b},minecraft:custom_name={"text":"Мутная склянка","italic":false,"color":"dark_gray"},minecraft:potion_contents={custom_color:5000268,custom_effects:[{id:"minecraft:$(effect)",duration:$(duration),amplifier:$(amp)}]},minecraft:tooltip_display={hidden_components:["minecraft:potion_contents"]}] 1

@@ -1,0 +1,1 @@
+{"type": "minecraft:sequence", "functions": [{"type": "minecraft:set_custom_data", "tag": "{le_oil:{type:\"fire\",n:10}}"}, {"type": "minecraft:set_lore", "mode": "replace_all", "lore": [{"text": "Масло огня: 10 ударов", "color": "gray", "italic": false}]}]}

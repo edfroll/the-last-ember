@@ -1,0 +1,29 @@
+{
+ "criteria": {
+  "t": {
+   "trigger": "minecraft:player_interacted_with_entity",
+   "conditions": {
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "minecraft:parrot"
+     }
+    },
+    "item": {
+     "items": [
+      "minecraft:wheat_seeds",
+      "minecraft:melon_seeds",
+      "minecraft:pumpkin_seeds",
+      "minecraft:beetroot_seeds",
+      "minecraft:torchflower_seeds",
+      "minecraft:pitcher_pod"
+     ]
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:ranger/tame_parrot"
+ }
+}

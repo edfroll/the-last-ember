@@ -1,0 +1,22 @@
+# generated constants (powers of two for the mask arithmetic)
+scoreboard players set #1 le.e 1
+scoreboard players set #2 le.e 2
+scoreboard players set #4 le.e 4
+scoreboard players set #8 le.e 8
+scoreboard players set #16 le.e 16
+scoreboard players set #32 le.e 32
+scoreboard players set #64 le.e 64
+scoreboard players set #128 le.e 128
+scoreboard players set #256 le.e 256
+scoreboard players set #512 le.e 512
+scoreboard players set #1024 le.e 1024
+scoreboard players set #2048 le.e 2048
+scoreboard players set #4096 le.e 4096
+scoreboard players set #8192 le.e 8192
+scoreboard players set #16384 le.e 16384
+scoreboard players set #32768 le.e 32768
+scoreboard players set #65536 le.e 65536
+scoreboard players set #131072 le.e 131072
+scoreboard players set #262144 le.e 262144
+scoreboard players set #1048576 le.e 1048576
+scoreboard players set #2 le.e 2

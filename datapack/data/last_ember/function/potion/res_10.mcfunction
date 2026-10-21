@@ -1,0 +1,2 @@
+# recipe oil_fire
+data modify storage last_ember:pt it set value {id:"minecraft:potion",count:1,components:{"minecraft:custom_data":{le_oilitem:1b,le_oiltype:"fire",le_boost:1b},"minecraft:custom_name":{text:"Масло огня",italic:false,color:"gold"},"minecraft:potion_contents":{custom_color:16737792},"minecraft:consumable":{consume_seconds:1.0f,animation:"drink",has_consume_particles:false},"minecraft:lore":[{text:"Возьми клинок в основную руку, масло в левую, ПКМ.",color:"gray",italic:false}]}}

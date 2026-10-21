@@ -12,8 +12,8 @@ def check(name, cond, extra=""):
 def attr(p, a): return float(re.search(r"is ([-0-9.eE]+)$", rc.run(f"attribute {p} minecraft:{a} get").strip()).group(1))
 def reset(p="Cam"):
     rc.run(f"execute as {p} run function last_ember:char/reset"); time.sleep(1.6); rc.run(f"gamemode survival {p}")
-def setc(race, cls, p="Cam"):
-    rc.run(f"clear {p}"); reset(p); rc.run(f"execute as {p} run function last_ember:char/set {{race:{race},class:{cls}}}"); time.sleep(0.5)
+def setc(race, cls, p="Cam", tier=0):
+    rc.run(f"clear {p}"); reset(p); rc.run(f"execute as {p} run function last_ember:char/set {{race:{race},class:{cls},tier:{tier}}}"); time.sleep(0.5)
 def near(a, b, t=1e-3): return abs(a - b) <= t
 RACE = {1: dict(scale=1.0, luck=1.0, max_health=20), 2: dict(scale=1.1, max_health=16, movement_speed=0.11, jump_strength=0.42 * 1.15, safe_fall_distance=6.0, attack_damage=0.0),
         3: dict(scale=0.8, max_health=24, attack_damage=2.0, block_break_speed=1.3, knockback_resistance=0.5, movement_speed=0.09, jump_strength=0.42 * 0.92, block_interaction_range=4.0, entity_interaction_range=2.5),
@@ -90,7 +90,7 @@ def t_kits():
         for it in need: check(f"class {cls} has {it}", f"minecraft:{it}" in inv)
         check(f"class {cls} bread x6", "count: 6, Slot" in inv or re.search(r"count: 6[^}]*bread", inv) is not None)
         n = inv.count("{")
-        rc.run(f"execute as Cam run function last_ember:char/set {{race:1,class:{cls}}}"); inv2 = rc.run("data get entity Cam Inventory")
+        rc.run(f"execute as Cam run function last_ember:char/set {{race:1,class:{cls},tier:0}}"); inv2 = rc.run("data get entity Cam Inventory")
         check(f"class {cls}: kit not given twice", inv2.count("{") == n)
         if cls == 3: check("seer: staff has le_keep", "le_staff" in inv and "le_keep" in inv)
     setc(1, 1); eq = rc.run("data get entity Cam equipment"); check("knight: chainmail chest + shield offhand", "chainmail_chestplate" in eq and "shield" in eq, eq)
