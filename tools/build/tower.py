@@ -122,11 +122,14 @@ def build():
         if (x, yb - 1, z) not in steps and b.get(x, yb - 1, z) in (None, "minecraft:air"): b.set(x, yb - 1, z, slab("stone_brick_slab", "top"))
     for (x, y, z) in brackets:
         if b.get(x, y, z) in (None, "minecraft:air"): b.set(x, y, z, slab("stone_brick_slab", "top"))
-    # entry (after the room walls are built) from the balcony into the top room where the stair arrives
-    a = math.radians(A0); ex, ez = TX + round(math.sin(a) * 7), TZ - round(math.cos(a) * 7)
-    for rr_ in (6.4, 7.0, 7.4):
-        q = (TX + round(math.sin(a) * rr_), TZ - round(math.cos(a) * rr_)); b.fill(q[0], 190, q[1], q[0], 191, q[1], "air")
-    b.set(TX + round(math.sin(math.radians(A0)) * 6.4), 191, TZ - round(math.cos(math.radians(A0)) * 6.4), "air")
+    # entry (after the room walls are built): a 3x3 doorway from the balcony into the top room where the stair arrives
+    a = math.radians(A0); ox_, oz_ = math.sin(a), -math.cos(a); px_, pz_ = math.cos(a), math.sin(a)
+    for rr_ in (5.8, 6.4, 7.0, 7.6):
+        for w in (-1, 0, 1):
+            q = (TX + round(ox_ * rr_ + px_ * w), TZ + round(oz_ * rr_ + pz_ * w))
+            b.fill(q[0], 190, q[1], q[0], 192, q[1], "air"); b.set(q[0], 189, q[1], "minecraft:spruce_planks")
+    q = (TX + round(ox_ * 6.4), TZ + round(oz_ * 6.4)); b.set(q[0], 193, q[1], "minecraft:stone_bricks")
+    q = (TX + round(ox_ * 5.2), TZ + round(oz_ * 5.2)); b.set(q[0], 196, q[1], lantern(True))
     b.marker("tower_stair", TX, y0, TZ + 8, f"{len(lane)} cells, 2 turns, no jumps")
     # path up the cone: switchback from the plaza street end (south-east) to the door
     return b
