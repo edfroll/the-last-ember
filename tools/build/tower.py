@@ -25,7 +25,6 @@ def build():
     for y in range(y0, y0 + 6): b.disc(TX, y, TZ, 6.5, PL, hollow_r=4.6)
     b.disc(TX, y0 - 1, TZ, 5, "polished_andesite"); b.disc(TX, y0 + 6, TZ, 5.5, "spruce_planks")
     b.fill(TX - 1, y0, TZ + 4, TX + 1, y0 + 2, TZ + 7, "air")
-    for x in (TX - 1, TX + 1): b.set(x, y0 + 2, TZ + 7, stairs("stone_brick_stairs", "west" if x < TX else "east", "top"))
     b.set(TX, y0 + 3, TZ + 4, lantern(True)) if False else b.set(TX, y0 + 5, TZ, lantern(True))
     b.marker("tower_keeper", TX, y0, TZ - 2, "store room, NPC point")
     # shaft
@@ -94,6 +93,7 @@ def build():
                 if b.get(TX + x, yy, TZ + z) in (None, "minecraft:air"): b.set(TX + x, yy, TZ + z, PL)
         elif kind != "fill" and b.get(TX + x, y - 1, TZ + z) in (None, "minecraft:air"): b.set(TX + x, y - 1, TZ + z, slab("stone_brick_slab", "top"))
     for (x, z, y), (st, kind, s_) in steps.items():
+        if s_ <= y0 + 1: continue                           # ground level: the stair is entered from the hill here
         r = math.hypot(x, z)
         for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             q = (x + dx, z + dz)
