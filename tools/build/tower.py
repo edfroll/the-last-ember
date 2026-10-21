@@ -1,5 +1,5 @@
 """Watchtower (card «Сторожевая башня»): on the cone hill north-west of the plaza. Plinth d13, round shaft d11 narrowing to d9,
-external spiral stair (1.5 turns) with three landings/galleries, top room d15 with the map wall (16 frames), balcony, belfry with
+external spiral stair (2 turns, half steps, no jumps) with three landings/galleries, top room d15 with the map wall (16 frames), balcony, belfry with
 the bell, conical roof and spire. Street from the plaza climbs the cone as a switchback path."""
 import math
 from lib import B, Mix, stairs, slab, lantern, log, h
@@ -25,17 +25,42 @@ def build():
     b.fill(TX, y0, TZ + 4, TX, y0 + 2, TZ + 7, "air")
     b.set(TX, y0, TZ + 5, "spruce_door[facing=north,half=lower,hinge=left,open=false]"); b.set(TX, y0 + 1, TZ + 5, "spruce_door[facing=north,half=upper,hinge=left,open=false]")
     b.set(TX, y0 + 2, TZ + 4, lantern(True))
-    # external spiral stair: 64 steps, 1.5 turns, 2 wide, from the plinth top (y0+4) to y 189, with a stone rail
-    steps = 64; turns = 1.5; ytop = 189; cells = []
+    # external spiral stair (T-008 review: no jumps): 2 turns, 2 wide, from the ground (y 125) to the room floor (standing at 190).
+    # Surfaces go up in half blocks: bottom slab (+0.5), full block (+0.5 from a slab) or a stair block (+1, walkable) -- never a jump.
     b.disc(TX, y0 + 4, TZ, 5, "spruce_planks")          # store-room ceiling inside the plinth
-    for i in range(steps):
-        a = math.radians(180 + i * 360 * turns / steps); yy = y0 + round(i * (ytop - y0 - 1) / (steps - 1))
-        r0 = max(rad_at(yy), rad_at(yy + 3))
-        for rr in (r0 + 0.9, r0 + 1.9):
-            x, z = TX + round(math.sin(a) * rr), TZ - round(math.cos(a) * rr)
-            b.set(x, yy, z, Mix({"stone_bricks": 60, "cobblestone": 40}, 74)); cells.append((x, yy, z))
-        rx, rz = TX + round(math.sin(a) * (r0 + 2.9)), TZ - round(math.cos(a) * (r0 + 2.9))
-        b.set(rx, yy + 1, rz, "stone_brick_wall")
+    def r0_at(yy): return rad_at(min(yy, 188))
+    A0 = 200.0; TURNS = 2.0; S0, S1 = 2 * y0, 2 * 190     # surfaces in half blocks
+    outer = []; k = 0
+    while True:                                          # distinct cells of the outer lane, in walking order
+        a = A0 + k * 0.5; k += 1
+        if a > A0 + 360 * TURNS: break
+        frac = (a - A0) / (360 * TURNS); yy = int((S0 + frac * (S1 - S0)) // 2)
+        rr = r0_at(yy) + 1.9; c = (TX + round(math.sin(math.radians(a)) * rr), TZ - round(math.cos(math.radians(a)) * rr))
+        if not outer or outer[-1][0] != c: outer.append((c, a))
+    N = len(outer); m = N - (S1 - S0) // 2; kst = (S1 - S0) // 2 - m      # m slab pairs (+1,+1), kst stairs (+2)
+    assert m >= 0 and kst >= 0, (N, m, kst)
+    units = []; acc = 0.0
+    for i in range(m + kst):                             # spread the slab pairs evenly among the stairs
+        acc += m / (m + kst)
+        if acc >= 1: units += [1, 1]; acc -= 1
+        else: units.append(2)
+    units += [1] * (N - len(units))
+    steps = {}; rails = {}; sv = S0
+    for i, ((cx_, cz_), a) in enumerate(outer):
+        d = units[i] if i < len(units) else 0; sv = min(S1, sv + d)
+        ar = math.radians(a); tx, tz = math.cos(ar), math.sin(ar)
+        fac = ("east" if tx > 0 else "west") if abs(tx) >= abs(tz) else ("south" if tz > 0 else "north")
+        if sv % 2: st = slab("stone_brick_slab"); yb = (sv - 1) // 2
+        elif d == 2: st = stairs("stone_brick_stairs", fac); yb = sv // 2 - 1
+        else: st = Mix({"stone_bricks": 60, "cobblestone": 40}, 74); yb = sv // 2 - 1
+        yb_ = (sv + 1) // 2
+        rr0 = r0_at(yb)
+        for rr in (rr0 + 0.9, rr0 + 1.9):
+            c = (TX + round(math.sin(ar) * rr), TZ - round(math.cos(ar) * rr))
+            if (c[0], c[1]) not in [(k_[0], k_[2]) for k_ in steps if k_[1] == yb]: steps.setdefault((c[0], yb, c[1]), (st, yb_))
+        rx, rz = TX + round(math.sin(ar) * (rr0 + 2.9)), TZ - round(math.cos(ar) * (rr0 + 2.9))
+        rails[(rx, yb_, rz)] = True
+    cells = list(steps)
     # galleries / landings at 145, 152, 172: ring platform with a wall rail and a lantern
     for gy in (145, 152, 172):
         r = rad_at(gy); b.disc(TX, gy, TZ, r + 2.4, slab("stone_brick_slab", "top"), hollow_r=r)
@@ -57,8 +82,6 @@ def build():
     b.set(TX - 3, 190, TZ + 3, "straw_bed[facing=east,part=head]"); b.set(TX - 4, 190, TZ + 3, "straw_bed[facing=east,part=foot]")
     for (lx, lz) in ((TX, TZ), (TX - 3, TZ - 3), (TX + 3, TZ + 3)): b.set(lx, 197, lz, lantern(True))
     # entry from the stair top into the room (south-west side)
-    a = math.radians(180 + 360 * turns); ex, ez = TX + round(math.sin(a) * 7), TZ - round(math.cos(a) * 7)
-    b.fill(ex, 190, ez, ex, 191, ez, "air")
     # balcony ring at 190 (outside the room), rail
     b.disc(TX, 189, TZ, 9.4, slab("stone_brick_slab", "top"), hollow_r=7.6); b.disc(TX, 190, TZ, 9.4, "stone_brick_wall", hollow_r=8.6)
     b.marker("tower_view", TX, 190, TZ + 9, "view to the plaza, south-east")
@@ -76,11 +99,14 @@ def build():
         r = 7.5 * (214 - y) / 7.5
         b.disc(TX, y, TZ, r, "deepslate_tiles", hollow_r=max(r - 1.4, -1))
     b.fill(TX, 214, TZ, TX, 216, TZ, "iron_chain"); b.set(TX, 217, TZ, "lightning_rod")
-    # headroom over every step (cuts the hatch through the balcony and the room floor at the top of the climb)
-    cs = set(cells)
-    for (x, yy, z) in cells:
-        for dy in (1, 2, 3):
-            if (x, yy + dy, z) not in cs: b.set(x, yy + dy, z, "air")
+    # headroom over every step (cuts the hatch through the room floor at the top of the climb), then the steps and the rail
+    for (x, yb, z), (st, top) in steps.items():
+        for y in range(yb + 1, top + 3):
+            b.set(x, y, z, "air")
+    for (x, y, z) in rails:
+        if (x, y, z) not in steps and (x, y - 1, z) not in steps: b.set(x, y, z, "stone_brick_wall")
+    for (x, yb, z), (st, top) in steps.items(): b.set(x, yb, z, st)
+    b.marker("tower_stair", outer[0][0][0], y0, outer[0][0][1], f"{len(outer)} cells, 2 turns, no jumps")
     # path up the cone: switchback from the plaza street end (south-east) to the door
     return b
 def path(b, natural_h):

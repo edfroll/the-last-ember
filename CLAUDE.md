@@ -103,4 +103,5 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Варианты сквозных построек: костёр `variant=std|dol|snow|desert|ash|under` (r 3/4) → `bonfire/gen/build_<v>_r<r>`, урна `r0,r2..r6` → `urn/gen/build_<v>`; генерирует `python3 tools/build/gen_runtime.py`.
 - Зоны Приюта: `refuge` (−200…200, y 50…320, no_spawn) и `refuge_well`. Биом Купели `last_ember:font_of_callings` (коробка грота).
 - FPS клиента: строка `!fps` в `shot-request.txt` (ответ в `shot-done.txt`); для замера в `server/client/options.txt` `inactivityFpsLimit:"minimized"`, иначе AFK-ограничение 30.
+- Ресурс-пак карты сервер выдаёт сам: `tools/server.sh sync` пакует `resourcepack/` в `server/rp/last_ember.zip` и пишет в `server.properties` URL `http://127.0.0.1:8765/last_ember.zip`, sha1 и `require-resource-pack=true`; `start` поднимает `python3 -m http.server 8765`. Новый пак — после рестарта сервера. Dev-агент сам принимает запрос пака (`PackConfirmScreen`).
 

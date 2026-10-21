@@ -104,3 +104,4 @@ map_frame_32                  -109  192   -96  item_frame facing south
 map_frame_33                  -109  191   -96  item_frame facing south
 tower_view                    -110  190   -81  view to the plaza, south-east
 bell                          -110  204   -90  
+tower_stair                   -113  125   -82  113 cells, 2 turns, no jumps

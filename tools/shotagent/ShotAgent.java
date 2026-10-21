@@ -24,6 +24,10 @@ public class ShotAgent {
                     if (!Files.exists(req)) {
                         // camera must never sit on the death screen: auto-respawn (saved player data may be dead)
                         Minecraft m = Minecraft.getInstance();
+                        if (m != null && m.gui.screen() != null && m.gui.screen().getClass().getName().endsWith("PackConfirmScreen")) m.execute(() -> {  // accept the server resource pack
+                            try { var sc = m.gui.screen(); var f = net.minecraft.client.gui.screens.ConfirmScreen.class.getDeclaredField("callback"); f.setAccessible(true);
+                                  ((it.unimi.dsi.fastutil.booleans.BooleanConsumer) f.get(sc)).accept(true); } catch (Exception ex) { ex.printStackTrace(); }
+                        });
                         if (m != null && m.player != null && m.player.isDeadOrDying()) m.execute(() -> { if (m.player != null && m.player.isDeadOrDying()) m.player.respawn(); });
                         continue;
                     }

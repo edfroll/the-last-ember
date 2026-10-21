@@ -9,6 +9,13 @@ case "${1:-}" in
   setup|sync)  # copy datapack into the world, write config (EULA must already be accepted in server/eula.txt)
     mkdir -p "$SRV/world/datapacks"
     rsync -a --delete "$ROOT/datapack/" "$SRV/world/datapacks/last_ember/"  # symlinks are forbidden in worlds
+    # the map's resource pack is pushed to every client by the server (served locally over HTTP on 127.0.0.1:8765)
+    mkdir -p "$SRV/rp"; rm -f "$SRV/rp/last_ember.zip"; (cd "$ROOT/resourcepack" && zip -qrX "$SRV/rp/last_ember.zip" . -x '.*')
+    SHA=$(shasum -a 1 "$SRV/rp/last_ember.zip" | cut -d' ' -f1)
+    if [ -f "$SRV/server.properties" ]; then
+      sed -i '' -e "s#^resource-pack=.*#resource-pack=http://127.0.0.1:8765/last_ember.zip#" -e "s#^resource-pack-sha1=.*#resource-pack-sha1=$SHA#" \
+        -e "s#^require-resource-pack=.*#require-resource-pack=true#" "$SRV/server.properties"
+    fi
     [ -f "$SRV/server.properties" ] || cat > "$SRV/server.properties" <<P
 enable-rcon=true
 rcon.port=25575
@@ -22,7 +29,9 @@ motd=The Last Ember (dev)
 level-seed=
 P
     ;;
-  start)  "$0" sync; cd "$SRV" && exec "$JAVA" -Xms2G -Xmx4G -jar server-26.3.jar nogui ;;
+  start)  "$0" sync
+          pgrep -f "http.server 8765" >/dev/null || (nohup python3 -m http.server 8765 --bind 127.0.0.1 -d "$SRV/rp" > "$SRV/rp/http.log" 2>&1 &)
+          cd "$SRV" && exec "$JAVA" -Xms2G -Xmx4G -jar server-26.3.jar nogui ;;
   stop)   python3 "$ROOT/tools/rcon.py" stop ;;
   rcon)   shift; python3 "$ROOT/tools/rcon.py" "$@" ;;
   *) echo "usage: $0 {setup|start|stop|rcon <cmd>}"; exit 1 ;;
