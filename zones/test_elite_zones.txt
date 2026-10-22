@@ -1,0 +1,2 @@
+# TEST zone for tools/test_elite.py (python3 tools/gen_elites.py zones/test_elite_zones.txt); regenerate without it before the commit: python3 tools/gen_elites.py
+t_dungeon overworld box 880 190 880 920 230 920 dungeon

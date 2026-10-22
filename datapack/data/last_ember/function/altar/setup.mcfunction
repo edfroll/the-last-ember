@@ -2,7 +2,8 @@
 scoreboard objectives add le.alt dummy
 scoreboard objectives add le.pid dummy
 scoreboard objectives add le.ecd dummy
-scoreboard objectives add le.eslast dummy
+scoreboard objectives add le.emain dummy
+scoreboard objectives add le.eoff dummy
 execute unless score #chapters le.alt matches 0.. run scoreboard players set #chapters le.alt 0
 scoreboard players set #5 le.alt 5
 # 1 = the tier of everybody follows the chapters (the game); 0 = the tests set tiers by hand

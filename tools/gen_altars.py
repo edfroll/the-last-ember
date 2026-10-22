@@ -139,8 +139,7 @@ def lore(n):
     return L
 for n in range(0, 7):
     json.dump({"type": "minecraft:set_lore", "mode": "replace_all", "lore": lore(n)}, open(os.path.join(DP, "item_modifier/ember_lore_%d.json" % n), "w"), ensure_ascii=False)
-    comps = ('minecraft:custom_data={le_ember:1b,gen:$(gen)},minecraft:item_model="last_ember:ember",minecraft:custom_name={"text":"Последний Уголь","color":"gold","italic":false},minecraft:lore=%s,minecraft:max_stack_size=1,minecraft:rarity="epic",'
-             'minecraft:consumable={consume_seconds:36000.0f,animation:"none",sound:"minecraft:intentionally_empty",has_consume_particles:false},minecraft:use_remainder={id:"minecraft:trial_key",count:1,components:{"minecraft:custom_data":{le_ember:1b,gen:$(gen)},"minecraft:item_model":"last_ember:ember","minecraft:max_stack_size":1}}') % json.dumps(lore(n), ensure_ascii=False)
+    comps = ('minecraft:custom_data={le_ember:1b,gen:$(gen)},minecraft:item_model="last_ember:ember",minecraft:custom_name={"text":"Последний Уголь","color":"gold","italic":false},minecraft:lore=%s,minecraft:max_stack_size=1,minecraft:rarity="epic"') % json.dumps(lore(n), ensure_ascii=False)
     w("give_%d" % n, ["$give @s minecraft:trial_key[%s] 1" % comps], EGEN)
 w("relore", ["# macro n: the lore of the Ember in the carrier's inventory follows the chapters"] + ["$execute if items entity @s container.%d *[minecraft:custom_data~{le_ember:1b}] run item modify entity @s container.%d last_ember:ember_lore_$(n)" % (i, i) for i in range(36)] +
   ["$execute if items entity @s weapon.offhand *[minecraft:custom_data~{le_ember:1b}] run item modify entity @s weapon.offhand last_ember:ember_lore_$(n)"], EGEN)

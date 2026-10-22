@@ -1,0 +1,10 @@
+# T-014: names of the elite mobs: region mob name...   (a mob without a line here is called "<vanilla name> — элита")
+r1 zombie Курганный мертвец
+r1 skeleton Плакальщик
+r1 spider Паучиха Пёстрого леса
+r1 cave_spider Ядовитая мать
+r1 witch Сестра Топей
+r1 drowned Топляк
+r1 bogged Трясинный стрелок
+r1 slime Болотная утроба
+r1 phantom Бессонный

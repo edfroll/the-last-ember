@@ -47,6 +47,7 @@ public class ShotAgent {
                                 switch (act) {
                                     case "use" -> KeyMapping.click(mc.options.keyUse.getDefaultKey());
                                     case "drop" -> KeyMapping.click(mc.options.keyDrop.getDefaultKey());
+                                    case "swap" -> KeyMapping.click(mc.options.keySwapOffhand.getDefaultKey());   // F (T-014)
                                     case "sneak_on" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), true);
                                     case "sneak_off" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), false);
                                     case "fwd_on" -> KeyMapping.set(mc.options.keyUp.getDefaultKey(), true);     // walk bot (T-008)

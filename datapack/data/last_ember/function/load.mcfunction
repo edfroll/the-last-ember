@@ -25,3 +25,5 @@ function last_ember:refuge/gen/markers
 function last_ember:char/setup
 # T-013: altars of the chapters, keys, properties of the Ember
 function last_ember:altar/setup
+# T-014: elite mobs
+function last_ember:elite/setup
