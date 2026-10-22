@@ -58,3 +58,10 @@ scoreboard players set #kb le.e 200
 scoreboard players set #5 le.e 5
 scoreboard players set #200 le.e 200
 scoreboard objectives add le.xptot dummy
+scoreboard objectives add le.rt dummy
+scoreboard objectives add le.rcd dummy
+scoreboard objectives add le.rlast dummy
+scoreboard objectives add le.ra0 dummy
+scoreboard objectives add le.rt0 dummy
+scoreboard objectives add le.rk0 dummy
+scoreboard objectives add le.rpend dummy

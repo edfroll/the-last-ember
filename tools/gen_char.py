@@ -129,5 +129,5 @@ w("kit_seer", ["# as a player: a random staff of five (no Wrath of the Dead Sky:
 w("kit_healer", ["# as a player", "function last_ember:bonfire/give_cauldron", blade("Нож знахаря", ""), give("minecraft:glass_bottle", count=3),
     give("minecraft:potion", "minecraft:potion_contents={potion:\"minecraft:healing\"}", 2), give("minecraft:brown_mushroom", count=4), give("minecraft:sugar", count=2)])
 w("kit", ["# as a player: the kit of the class by tag (once: tag le.kit)", "execute if entity @s[tag=le.kit] run return 0", "tag @s add le.kit", "function last_ember:char/gen/kit_all"] +
-  [f"execute if entity @s[tag=le.class.{c[0]}] run function last_ember:char/gen/kit_{c[0]}" for c in CLASSES])
+  [f"execute if entity @s[tag=le.class.{c[0]}] run function last_ember:char/gen/kit_{c[0]}" for c in CLASSES] + ["execute if entity @s[tag=le.race.halfling] run function last_ember:ring/first"])
 print("char/gen written:", len(os.listdir(OUT)), "files")

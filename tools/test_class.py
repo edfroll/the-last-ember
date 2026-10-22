@@ -51,11 +51,24 @@ def t_knight():
     setc(1, 3, 0); tp("Cam", 0.5, 103, -14.5, 0, 0); rc.run("item replace entity Cam weapon.offhand with minecraft:shield"); time.sleep(0.5)
     act("Cam", "!use_on"); time.sleep(0.8); h0 = hp("@e[tag=le.test,limit=1]"); rc.run("damage Cam 6 minecraft:mob_attack by @e[tag=le.test,limit=1]"); time.sleep(0.9)
     check("a seer's shield does not reflect", hp("@e[tag=le.test,limit=1]") == h0); act("Cam", "!use_off"); rc.run("kill @e[tag=le.test]")
+def arena():
+    """A stone platform of our own at (600, 199, 600) under open sky: the blessing tests do not stand in the refuge buildings."""
+    rc.run("forceload add 590 590 612 612"); rc.run("tp Cam 600.5 200 600.5")
+    for _ in range(40):
+        time.sleep(0.5)
+        if "passed" in rc.run("execute if loaded 592 200 592") and "passed" in rc.run("execute if loaded 608 200 608"): break
+    time.sleep(1.0)
+    rc.run("fill 592 199 592 608 199 608 stone"); rc.run("fill 592 200 592 608 206 608 air"); rc.run("kill @e[type=!player,x=600,y=200,z=600,distance=..30]"); rc.run("time set noon")
+def test_hearth(x=600.5, y=200, z=600.5):
+    """A lit test bonfire of our own (a hearth interaction + a registry record that says 'lit'): the blessing tests do not depend on the world."""
+    rc.run("kill @e[type=minecraft:interaction,tag=le.test_h]"); rc.run("data modify storage last_ember:bonfires by.b999 set value {i:999,id:\"test_h\",state:1,built:1b,kind:\"normal\"}")
+    rc.run(f'summon minecraft:interaction {x} {y} {z} {{width:1.0f,height:1.0f,Tags:["le.hearth","le.test_h"]}}'); time.sleep(0.3)
+    rc.run("scoreboard players set @e[type=minecraft:interaction,tag=le.test_h] le.bidx 999")
 def t_bless():
     print("[blessing]")
     for who in ("Cam", "Cam2"): rc.run(f"scoreboard players set {who} le.blday -1"); rc.run(f"tag {who} remove le.sated"); rc.run(f"scoreboard players set {who} le.bless 0")
-    setc(1, 1, 0); setc(2, 2, 0, "Cam2")
-    rc.run("tp Cam 0.5 103 5.5"); rc.run("tp Cam2 3.5 103 5.5"); rc.run("item replace entity Cam armor.chest with minecraft:chainmail_chestplate[minecraft:damage=100]")
+    setc(1, 1, 0); setc(2, 2, 0, "Cam2"); arena(); test_hearth()
+    rc.run("tp Cam 600.5 200 603.5"); rc.run("tp Cam2 603.5 200 603.5"); rc.run("item replace entity Cam armor.chest with minecraft:chainmail_chestplate[minecraft:damage=100]")
     rc.run("item replace entity Cam weapon.mainhand with minecraft:stone_sword[minecraft:damage=50]")
     rc.run("item replace entity Cam armor.head with minecraft:iron_helmet[minecraft:damage=40,minecraft:custom_data={le_cursed:1b}]")
     rc.run("tick rate 100"); t0 = time.time(); got = False
@@ -351,7 +364,7 @@ def t_multi():
     print("[two players at once]")
     # two knights at one bonfire
     for who in ("Cam", "Cam2"): rc.run(f"scoreboard players set {who} le.blday -1"); rc.run(f"tag {who} remove le.sated"); rc.run(f"scoreboard players set {who} le.bless 0")
-    setc(1, 1, 0); setc(3, 1, 6, "Cam2"); tp("Cam", 0.5, 103, 5.5); tp("Cam2", -1.5, 103, 5.5)
+    setc(1, 1, 0); setc(3, 1, 6, "Cam2"); arena(); test_hearth(); tp("Cam", 600.5, 200, 603.5); tp("Cam2", 598.5, 200, 603.5)
     for who in ("Cam", "Cam2"): rc.run(f"item replace entity {who} armor.chest with minecraft:chainmail_chestplate[minecraft:damage=100]")
     rc.run("tick rate 100"); t0 = time.time()
     while time.time() - t0 < 30:

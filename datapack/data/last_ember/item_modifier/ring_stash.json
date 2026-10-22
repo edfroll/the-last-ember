@@ -1,0 +1,1 @@
+{ "type": "minecraft:copy_custom_data", "source": { "type": "minecraft:storage", "source": "last_ember:ring" }, "ops": [ { "source": "cur", "target": "stash", "op": "replace" } ] }

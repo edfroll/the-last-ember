@@ -1,5 +1,6 @@
 # macro dm / hm: at the point of the strike: damage to the enemies within 2 blocks (half to bosses and giants), fire 3x3 in the safe places, light and thunder instead of a vanilla bolt
 $execute as @e[type=#last_ember:monsters,tag=!le.npc,tag=!le.boss,tag=!le.giant,distance=..2] run damage @s $(dm) minecraft:lightning_bolt by @a[tag=le.caster,limit=1]
+$execute as @e[type=#last_ember:neutral,tag=!le.npc,tag=!le.boss,tag=!le.giant,distance=..2] if function last_ember:seer/is_angry run damage @s $(dm) minecraft:lightning_bolt by @a[tag=le.caster,limit=1]
 $execute as @e[type=#last_ember:monsters,tag=!le.npc,distance=..2,tag=le.boss] run damage @s $(hm) minecraft:lightning_bolt by @a[tag=le.caster,limit=1]
 $execute as @e[type=#last_ember:monsters,tag=!le.npc,distance=..2,tag=le.giant,tag=!le.boss] run damage @s $(hm) minecraft:lightning_bolt by @a[tag=le.caster,limit=1]
 particle minecraft:electric_spark ~ ~8 ~ 0.12 8 0.12 0.3 150 force

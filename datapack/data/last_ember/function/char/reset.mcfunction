@@ -1,4 +1,5 @@
 # TEST/ADMIN: as a player: no people, no class, no kit tag, no modifiers; back to the Cell. Usage: execute as <player> run function last_ember:char/reset
+execute if entity @s[tag=le.ringon] at @s run function last_ember:ring/off_giveback
 function last_ember:char/gen/race_strip
 function last_ember:char/gen/class_strip
 function last_ember:char/gen/race_untag

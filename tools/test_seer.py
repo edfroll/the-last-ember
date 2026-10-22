@@ -300,6 +300,24 @@ def t_multi():
     ca, cb = rc.run("data get entity Cam active_effects"), rc.run("data get entity Cam2 active_effects")
     chk("the Cover from both at once: each has absorption (own amplifier 1 for the caster)", "absorption" in ca and "absorption" in cb and "amplifier: 1b" in ca and "amplifier: 1b" in cb, (ca[:120], cb[:120]))
     rc.run("kill @e[tag=le.test]"); rc.run("gamemode survival Cam"); rc.run("gamemode survival Cam2")
+def t_neutral():
+    global AI
+    print("[neutral mobs: only when angry]"); stage(); AI = False; rc.run("kill @e[tag=le.test]")
+    seer(0); rc.run("gamemode creative Cam")
+    gt = score("#gt", "le.e"); ang = f"anger_end_time:{gt+5000}L"
+    spots = {"wolf_angry": ("wolf", ang, 3, 0), "wolf_calm": ("wolf", "", 3, 2), "wolf_tame_angry": ("wolf", ang + ",Owner:[I;1,2,3,4]", 3, -2), "bear_angry": ("polar_bear", ang, 0, 3), "bee_angry": ("bee", ang, 0, -3), "golem_calm": ("iron_golem", "", -3, 0)}
+    for n, (typ, nbt, dx, dz) in spots.items():
+        rc.run(f'summon minecraft:{typ} {BX+0.5+dx} {BY} {BZ+0.5+dz} {{attributes:[{{id:"minecraft:movement_speed",base:0.0d}}],Tags:["le.test","t_{n}"],{nbt}}}'.replace(",}", "}"))
+    time.sleep(0.5); cast(3); time.sleep(0.6)
+    sl = lambda n: "slowness" in effects(f"@e[tag=t_{n},limit=1]")
+    chk("angry wolf, polar bear, bee: frosted", sl("wolf_angry") and sl("bear_angry") and sl("bee_angry"), [n for n in spots if sl(n)])
+    chk("calm wolf, calm golem, tamed (angry) wolf: untouched", not sl("wolf_calm") and not sl("golem_calm") and not sl("wolf_tame_angry"), [n for n in spots if sl(n)])
+    seer(6); rc.run("gamemode creative Cam"); rc.run("scoreboard players set Cam le.cd5 0"); h0 = {n: (pos(f"@e[tag=t_{n},limit=1]") or [0, 0, 0])[1] for n in spots}
+    cast(5); time.sleep(0.15); mx = {n: (pos(f"@e[tag=t_{n},limit=1]") or [0, 0, 0])[1] - h0[n] for n in spots}
+    time.sleep(1.2)
+    chk("lift: the angry ones fly", all(max((pos(f"@e[tag=t_{n},limit=1]") or [0, 0, 0])[1] - h0[n], mx[n]) > 0.5 for n in ("wolf_angry", "bear_angry")), mx)
+    chk("lift: calm and tamed stay", all(mx[n] < 0.3 for n in ("wolf_calm", "golem_calm", "wolf_tame_angry")), mx)
+    rc.run("kill @e[tag=le.test]")
 if __name__ == "__main__":
     want = sys.argv[1:] or ["blink", "frost", "flame", "lift", "banish"]
     for w in want: globals()["t_" + w]()
