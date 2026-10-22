@@ -1,0 +1,4 @@
+# test keys, only with the test altar
+test_a 4 - Тестовый ключ А
+test_b 4 - Тестовый ключ Б
+test_c 4 - Тестовый ключ В

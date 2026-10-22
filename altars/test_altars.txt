@@ -1,0 +1,5 @@
+# TEST altar for the test world (python3 tools/gen_altars.py altars/test_altars.txt altars/test_keys.txt); regenerate without it before the commit
+4 test_altar overworld 700 200 700
+ped 696 200 700 test_a
+ped 704 200 700 test_b
+ped 700 200 696 test_c

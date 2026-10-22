@@ -1,0 +1,19 @@
+# generated: as a player who is online: a key that is owed to him (it was lost while he was offline)
+function last_ember:altar/key_owed {id:"seal_magister"}
+function last_ember:altar/key_owed {id:"tear_creaker"}
+function last_ember:altar/key_owed {id:"crown_witches"}
+function last_ember:altar/key_owed {id:"thread_labyrinth"}
+function last_ember:altar/key_owed {id:"drop_source"}
+function last_ember:altar/key_owed {id:"shell_sea_gods"}
+function last_ember:altar/key_owed {id:"stone_black_water"}
+function last_ember:altar/key_owed {id:"anchor_drowned"}
+function last_ember:altar/key_owed {id:"candle_unfading"}
+function last_ember:altar/key_owed {id:"tear_titan"}
+function last_ember:altar/key_owed {id:"shard_ice_crown"}
+function last_ember:altar/key_owed {id:"tablet"}
+function last_ember:altar/key_owed {id:"seal_whirl"}
+function last_ember:altar/key_owed {id:"eye_forgotten_god"}
+function last_ember:altar/key_owed {id:"banner_dawn"}
+function last_ember:altar/key_owed {id:"hammer_ancestors"}
+function last_ember:altar/key_owed {id:"crown_mountain_king"}
+function last_ember:altar/key_owed {id:"heart_silence"}

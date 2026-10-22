@@ -13,3 +13,4 @@ scoreboard players operation #m le.e = #gt le.e
 scoreboard players operation #m le.e -= @s le.rt
 scoreboard players operation #m le.e %= #20 le.e
 execute if score #m le.e matches 0 run function last_ember:ring/pay
+execute if score #m le.e matches 0 run effect give @s minecraft:invisibility 2 0 true

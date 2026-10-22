@@ -23,7 +23,7 @@ scoreboard players set @s le.rpend 2
 tag @s add le.ringon
 scoreboard players operation @s le.rt = #gt le.e
 scoreboard players operation @s le.rlast = #gt le.e
-effect give @s minecraft:invisibility infinite 0 true
+effect give @s minecraft:invisibility 2 0 true
 particle minecraft:smoke ~ ~1 ~ 0.2 0.5 0.2 0.02 20
 playsound minecraft:entity.vex.ambient player @a[distance=..16,tag=!le.ringon] ~ ~ ~ 0.4 0.5
 playsound minecraft:item.armor.equip_leather player @s ~ ~ ~ 0.3 0.6

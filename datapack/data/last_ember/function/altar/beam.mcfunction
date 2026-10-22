@@ -1,0 +1,9 @@
+# at a pedestal, facing the carrier: sparks along the way
+particle minecraft:end_rod ^ ^ ^1 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^2 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^3 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^4 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^5 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^6 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^7 0 0 0 0 1 force
+particle minecraft:end_rod ^ ^ ^8 0 0 0 0 1 force

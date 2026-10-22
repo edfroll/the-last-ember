@@ -1,0 +1,19 @@
+# generated: every 10 ticks, one call per key (uniqueness, loss, stale copies)
+function last_ember:altar/key_watch {id:"seal_magister"}
+function last_ember:altar/key_watch {id:"tear_creaker"}
+function last_ember:altar/key_watch {id:"crown_witches"}
+function last_ember:altar/key_watch {id:"thread_labyrinth"}
+function last_ember:altar/key_watch {id:"drop_source"}
+function last_ember:altar/key_watch {id:"shell_sea_gods"}
+function last_ember:altar/key_watch {id:"stone_black_water"}
+function last_ember:altar/key_watch {id:"anchor_drowned"}
+function last_ember:altar/key_watch {id:"candle_unfading"}
+function last_ember:altar/key_watch {id:"tear_titan"}
+function last_ember:altar/key_watch {id:"shard_ice_crown"}
+function last_ember:altar/key_watch {id:"tablet"}
+function last_ember:altar/key_watch {id:"seal_whirl"}
+function last_ember:altar/key_watch {id:"eye_forgotten_god"}
+function last_ember:altar/key_watch {id:"banner_dawn"}
+function last_ember:altar/key_watch {id:"hammer_ancestors"}
+function last_ember:altar/key_watch {id:"crown_mountain_king"}
+function last_ember:altar/key_watch {id:"heart_silence"}

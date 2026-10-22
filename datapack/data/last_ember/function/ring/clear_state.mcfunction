@@ -1,11 +1,7 @@
-# as a player: the ring's effects and modifiers off, the cooldown = half of the time worn (not less than 3 s)
+# as a player: the ring's modifiers off (the effects are short and simply stop being refreshed: nothing is cleared, foreign effects stay), the cooldown = half of the time worn (not less than 3 s)
 attribute @s minecraft:armor modifier remove last_ember:ring_armor
 attribute @s minecraft:armor_toughness modifier remove last_ember:ring_toughness
 attribute @s minecraft:knockback_resistance modifier remove last_ember:ring_knockback
-effect clear @s minecraft:invisibility
-effect clear @s minecraft:wither
-effect clear @s minecraft:darkness
-effect clear @s minecraft:slowness
 scoreboard players operation #w le.e = #gt le.e
 scoreboard players operation #w le.e -= @s le.rt
 scoreboard players operation #w le.e /= #2 le.e

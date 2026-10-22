@@ -1,0 +1,4 @@
+# T-013: altars of the chapters (the buildings come with the regions). Format:
+#   chapter id dimension x y z          - the altar; the centre of the event, the Ember carrier must be within 10 blocks
+#   ped px py pz key_id                 - a pedestal of that altar (one per key), on the lines below the altar
+# Not placed yet: the regions' tasks add the altars of chapters I-V here, then:  python3 tools/gen_altars.py

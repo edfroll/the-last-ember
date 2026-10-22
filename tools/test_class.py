@@ -22,6 +22,7 @@ def act(p, a):
 def reset(p):
     rc.run(f"execute as {p} run function last_ember:char/reset"); time.sleep(1.6); rc.run(f"gamemode survival {p}")
 def setc(race, cls, tier, p="Cam"):
+    rc.run("scoreboard players set #tiersync le.alt 0")
     rc.run(f"clear {p}"); reset(p); rc.run(f"execute as {p} run function last_ember:char/set {{race:{race},class:{cls},tier:{tier}}}"); time.sleep(0.6)
 def num(r, pat=r"([-0-9.]+)[fdsb]?$"):
     m = re.search(pat, r.strip()); return float(m.group(1)) if m else None
@@ -38,6 +39,8 @@ def t_knight():
         check(f"tier {tier}: resistance {'II' if tier >= 4 else 'I'}", ("amplifier: 1b" in fx) == (tier >= 4) and "resistance" in fx, fx)
     # shield reflection (the client holds the shield up: the real blocking state)
     setc(1, 1, 0); tp("Cam", 0.5, 103, -14.5, 0, 0); rc.run("kill @e[tag=le.test]"); time.sleep(0.5)
+    # the Ember (consumable since T-013) in the main hand would take the right click instead of the shield: the hands are the knight's own
+    rc.run("item replace entity Cam container.20 from entity Cam weapon.mainhand"); rc.run("item replace entity Cam weapon.mainhand with minecraft:stone_sword")
     rc.run("summon minecraft:husk 0.5 103 -12.5 {NoAI:1b,Tags:[\"le.test\",\"le.keep\"],PersistenceRequired:1b}"); time.sleep(0.5)
     act("Cam", "!use_on"); time.sleep(0.8)
     for dealt, want in ((6, 1), (12, 3), (30, 7), (50, 8)):   # difficulty normal: the reflection is floor(25%) of the damage, 1..8
