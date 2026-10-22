@@ -1,0 +1,1 @@
+{"criteria":{"c":{"trigger":"minecraft:entity_hurt_player","conditions":{"damage":{"direct_entity":{"minecraft:entity_type":"minecraft:arrow","minecraft:nbt":"{Tags:[\"le.trap_arrow\"]}"}}}}},"rewards":{"function":"last_ember:trap/arrow_hit"}}

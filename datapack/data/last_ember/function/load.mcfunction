@@ -29,3 +29,7 @@ function last_ember:altar/setup
 function last_ember:elite/setup
 # T-015: insomnia, hallucinations, sleep
 function last_ember:halluc/setup
+# T-016: traps
+function last_ember:trap/setup
+# T-016: statues
+function last_ember:statue/setup

@@ -1,0 +1,11 @@
+# T-016: traps. Format:  id type dimension x1 y1 z1 x2 y2 z2 [key=value ...]   (the box is the area of the trap; values with several numbers use commas, lists use ;)
+# Types and parameters (see docs/reports/T-016-report.md):
+#   pit            cover=<block> depth=N owner=<mob> ownername=<name_with_underscores> ownerpos=x,y,z equip=<function> chest=x,y,z lock=<block>
+#   arrows         pts=x,y,z;x,y,z;...            (points in the wall the arrows fly from)
+#   plate          link=<trap id>                 (the box is the plate: one block, the player stands on it)
+#   collapse       floor=<block>                  (the box is the floor that falls)
+#   gas            vents=x,y,z;x,y,z;...
+#   lava           back=x1,y1,z1,x2,y2,z2 chan=box;box;...   (lava closes the way back and fills the side channels)
+#   cursed_chest   chest=x,y,z mob=<mob>          (the box is the area of the hints round the chest)
+#   false_treasure pos=x,y,z link=<trap id>       (the box is the area of the hints)
+# The regions' tasks add their traps here, then: python3 tools/gen_traps.py

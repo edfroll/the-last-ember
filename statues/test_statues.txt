@@ -1,0 +1,13 @@
+# TEST statues for tools/test_statues.py (python3 tools/gen_statues.py statues/test_statues.txt); regenerate without them before the commit
+ev1 overworld 1000 200 1020 minecraft:husk 0 event group=evg name=Каменный_страж_1
+ev2 overworld 1002 200 1020 minecraft:husk 0 event group=evg name=Каменный_страж_2
+ev3 overworld 1004 200 1020 minecraft:husk 0 event group=evg name=Каменный_страж_3
+ev4 overworld 1006 200 1020 minecraft:husk 0 event group=evg name=Каменный_страж_4
+it1 overworld 1020 200 1020 minecraft:husk 90 item item=le_testseal:1b group=seal name=Страж_печати_1
+it2 overworld 1020 200 1024 minecraft:husk 90 item item=le_testseal:1b group=seal name=Страж_печати_2
+it3 overworld 1020 200 1028 minecraft:husk 90 item item=le_testseal:1b group=seal name=Страж_печати_3
+rn1 overworld 1040 200 1019 minecraft:husk 0 random group=corr name=Страж_коридора_1
+rn2 overworld 1043 200 1021 minecraft:husk 0 random group=corr name=Страж_коридора_2
+rn3 overworld 1046 200 1019 minecraft:husk 0 random group=corr name=Страж_коридора_3
+rn4 overworld 1049 200 1021 minecraft:husk 0 random group=corr name=Страж_коридора_4
+rn5 overworld 1052 200 1019 minecraft:husk 0 random group=corr name=Страж_коридора_5

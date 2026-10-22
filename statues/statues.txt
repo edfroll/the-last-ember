@@ -1,0 +1,6 @@
+# T-016: coming-to-life statues. Format:  id dimension x y z mob yaw mode [key=value ...]
+#   mode: item (wakes a player within radius=6 blocks who is not protected; item=<nbt of custom_data>: players within 10 blocks of the carrier are protected),
+#         random (group=<g>: when a player is in the group's area, one random statue BEHIND him (more than 120 degrees from his view) wakes; once per pass, 2 minutes of cooldown),
+#         event (group=<g>: only function last_ember:statue/wake {group:"<g>"})
+#   other keys: group=<g> name=<Name_with_underscores> stats=elite|plain (default elite) respawn=1
+# The regions' tasks add their statues here, then: python3 tools/gen_statues.py
