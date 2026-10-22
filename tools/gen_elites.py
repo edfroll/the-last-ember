@@ -58,7 +58,7 @@ for r in names_seen:
         trophy = {"type": "minecraft:item", "name": "minecraft:nautilus_shell", "modifier": [
             {"type": "minecraft:set_components", "components": {"minecraft:custom_data": {"le_trophy": r}, "minecraft:item_model": "last_ember:trophy_" + r, "minecraft:max_stack_size": 16, "minecraft:rarity": "rare",
                                                                  "minecraft:lore": [{"text": "Знак убитой элиты. Его ценят торговцы.", "color": "gray", "italic": False}]}},
-            {"type": "minecraft:set_name", "entity": "this", "target": "custom_name", "name": {"text": "Трофей: ", "color": "gold", "italic": False, "extra": [{"selector": "@s", "color": "gold", "italic": False}]}}]}
+            {"type": "minecraft:set_name", "entity": "this", "target": "custom_name", "name": {"text": "Трофей Незера" if r == "nether" else "Трофей Р%d" % RN[r], "color": "gold", "italic": False}}]}
         bits = [{"type": "minecraft:item", "name": "minecraft:glass_bottle"}, {"type": "minecraft:item", "name": "minecraft:arrow", "modifier": [{"type": "minecraft:set_count", "count": 4}]},
                 {"type": "minecraft:item", "name": "minecraft:bread"}, {"type": "minecraft:item", "name": "minecraft:bone"}]
         json.dump({"type": "minecraft:entity", "pools": [

@@ -1,0 +1,3 @@
+# test presets (only with the test traders)
+test_book minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:protection":2}}
+test_blade minecraft:iron_sword {"minecraft:custom_name":'{"text":"Тестовый клинок","italic":false}'}

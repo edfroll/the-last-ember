@@ -119,7 +119,7 @@ def t_reward():
     rc.run('summon minecraft:zombie 603.5 200 600.5 {NoAI:1b,Silent:1b,Tags:["t1"]}'); time.sleep(0.2); rc.run("execute as @e[tag=t1] at @s run function last_ember:elite/make"); time.sleep(0.3)
     x0 = xp_total(); rc.run("damage @e[tag=t1,limit=1] 1000 minecraft:player_attack by Cam"); time.sleep(3.5)
     items = rc.run('data get entity @e[type=item,limit=1,nbt={Item:{components:{"minecraft:custom_data":{le_trophy:"r1"}}}}] Item')
-    chk("killed by a player: the Trophy of the region r1 drops, named 'Трофей: <the elite's name>'", "le_trophy" in items and "Трофей" in items and "Курганный мертвец" in items, items[:300])
+    chk("killed by a player: the Trophy of the region r1 drops, named 'Трофей Р1' (the same for every elite of the region, so that trophies stack and a trader can take them)", "le_trophy" in items and "Трофей Р1" in items, items[:300])
     chk("the trophy stacks to 16 and has a model", "max_stack_size\": 16" in items and "trophy_r1" in items, items[:200])
     chk("vanilla loot too (rotten flesh can drop: the table includes the vanilla one)", True)
     x1 = xp_total(); chk(f"experience x3: 5 (vanilla) + 10 = about 15 points (got {x1 - x0})", 13 <= x1 - x0 <= 19, x1 - x0)
@@ -132,6 +132,14 @@ def t_reward():
     rc.run("damage @e[tag=t1,limit=1] 1000 minecraft:arrow by Cam"); time.sleep(1.5)
     chk("killed by a projectile of a player: the trophy too (the arrow credits the player)", "passed" in rc.run('execute if entity @e[type=item,nbt={Item:{components:{"minecraft:custom_data":{le_trophy:"r1"}}}}]'))
     rc.run("kill @e[type=item]"); reset_world_state(); rc.run("gamemode creative Cam")
+def t_stack():
+    print("[trophies of different elites stack]"); reset_world_state(); arena(roof=True); tc.setc(1, 1, 0, "Cam"); rc.run("gamemode survival Cam"); rc.run("tp Cam 600.5 200 600.5"); rc.run("effect give Cam minecraft:resistance 1000 4"); rc.run("clear Cam"); time.sleep(0.5)
+    for typ in ("zombie", "skeleton", "spider"):
+        rc.run(f'summon minecraft:{typ} 601.5 200 600.5 {{NoAI:1b,Silent:1b,Tags:["t1"]}}'); time.sleep(0.2); rc.run("execute as @e[tag=t1] at @s run function last_ember:elite/make"); time.sleep(0.3)
+        rc.run("damage @e[tag=t1,limit=1] 1000 minecraft:player_attack by Cam"); time.sleep(1.5); rc.run("kill @e[tag=t1]")
+    inv = rc.run("data get entity Cam Inventory"); rc.run("execute store result score #q le.tr run clear Cam minecraft:nautilus_shell[minecraft:custom_data~{le_trophy:\"r1\"}] 0")
+    chk("trophies of three different elites (zombie, skeleton, spider) are one stack in the inventory", inv.count("nautilus_shell") == 1 and (score("#q", "le.tr") or 0) >= 2, (inv.count("nautilus_shell"), score("#q", "le.tr")))
+    reset_world_state(); rc.run("gamemode creative Cam")
 def t_perf():
     print("[load: 30 mobs]"); reset_world_state(); arena(roof=True)
     def mspt():
@@ -151,6 +159,6 @@ def t_slime():
     chk("the Trophy dropped for the big one (on the floor or already picked up)", "passed" in rc.run('execute if entity @e[type=item,nbt={Item:{components:{"minecraft:custom_data":{le_trophy:"r1"}}}}]') or "passed" in rc.run('execute if items entity Cam container.* *[minecraft:custom_data~{le_trophy:"r1"}]'))
     rc.run("kill @e[type=minecraft:slime]"); rc.run("kill @e[type=minecraft:slime]"); reset_world_state(); rc.run("gamemode creative Cam")
 if __name__ == "__main__":
-    want = sys.argv[1:] or ["chance", "limits", "types", "stats", "names", "reward", "slime", "perf"]
+    want = sys.argv[1:] or ["chance", "limits", "types", "stats", "names", "reward", "stack", "slime", "perf"]
     for w in want: globals()["t_" + w]()
     print(f"\n{ok} ok, {bad} failed"); sys.exit(1 if bad else 0)

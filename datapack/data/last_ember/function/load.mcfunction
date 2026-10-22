@@ -33,3 +33,5 @@ function last_ember:halluc/setup
 function last_ember:trap/setup
 # T-016: statues
 function last_ember:statue/setup
+# T-017: traders
+function last_ember:trader/setup

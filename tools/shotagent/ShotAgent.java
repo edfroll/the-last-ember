@@ -43,11 +43,13 @@ public class ShotAgent {
                         if (p[0].startsWith("!")) { // input actions for tests: !use (right click), !drop (Q), !sneak_on / !sneak_off
                             String act = p[0].substring(1);
                             mc.execute(() -> {
-                                if (mc.gui.screen() != null) mc.gui.setScreen(null);
+                                if (mc.gui.screen() != null && !act.startsWith("trade")) { if (mc.player != null && mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen) mc.player.closeContainer(); else mc.gui.setScreen(null); }   // a container is closed properly (the server gets the packet: the items of a trade window come back)
                                 switch (act) {
                                     case "use" -> KeyMapping.click(mc.options.keyUse.getDefaultKey());
                                     case "drop" -> KeyMapping.click(mc.options.keyDrop.getDefaultKey());
                                     case "swap" -> KeyMapping.click(mc.options.keySwapOffhand.getDefaultKey());   // F (T-014)
+                                    case "trade_sel" -> { if (mc.player != null && mc.player.containerMenu instanceof net.minecraft.world.inventory.MerchantMenu && mc.getConnection() != null) mc.getConnection().send(new net.minecraft.network.protocol.game.ServerboundSelectTradePacket(Integer.parseInt(p.length > 1 ? p[1] : "0"))); }   // T-017: select trade N in the open merchant screen
+                                    case "trade_take" -> { if (mc.player != null && mc.player.containerMenu instanceof net.minecraft.world.inventory.MerchantMenu mm) mc.gameMode.handleContainerInput(mm.containerId, 2, 0, net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player); }   // shift-click the result
                                     case "sneak_on" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), true);
                                     case "sneak_off" -> KeyMapping.set(mc.options.keyShift.getDefaultKey(), false);
                                     case "fwd_on" -> KeyMapping.set(mc.options.keyUp.getDefaultKey(), true);     // walk bot (T-008)

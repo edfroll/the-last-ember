@@ -1,0 +1,2 @@
+# T-017: item presets for the deals: <name> <item id> <components as SNBT>   (used as @name in traders.txt)
+blade_prytu minecraft:iron_sword {"minecraft:custom_name":'{"text":"Клинок Приюта","color":"gold","italic":false}',"minecraft:enchantments":{"minecraft:sharpness":1},"minecraft:lore":['{"text":"Выкован Хальвардом из того, что сняли с чудищ.","color":"gray","italic":false}']}

@@ -1,0 +1,8 @@
+# TEST traders for tools/test_traders.py (python3 tools/gen_traders.py traders/test_traders.txt); regenerate without them before the commit
+trader tt_trader overworld 1100 200 1100 180 type=villager prof=librarian vtype=snow name="Тестовый торговец" hello="Привет, путник. Это проверка."
+  buy trophy:r1 2 -> minecraft:bread 4 uses=2
+  buy trophy:r1 1 + minecraft:coal 3 -> minecraft:arrow 8 uses=3
+  buy minecraft:iron_ingot 2 -> @test_book 1 uses=1
+  buy trophy:r2 1 -> @test_blade 1 uses=2
+trader tt_wander overworld 1105 200 1100 180 type=wandering_trader name="Тестовый странник" hello="Тоже проверка." scale=0.8 silent=0
+  buy minecraft:gold_nugget 5 -> minecraft:emerald 1 uses=4

@@ -1,0 +1,15 @@
+# T-017: traders. Format:
+#   trader <id> <dimension> <x> <y> <z> <yaw> type=<villager|wandering_trader> prof=<profession> vtype=<plains|snow|desert|...> name="<name>" hello="<line>" [silent=0] [scale=0.8] [xp=3]
+#     buy <item> <count> [+ <item> <count>] -> <item> <count> uses=<N>
+#   item = a vanilla id, trophy:<region> (a Trophy of the region, matched by custom_data le_trophy, not by name), or @<preset> from traders/items.txt
+# The deals are never restocked: uses = how many times it can be bought in the whole game. Around every trader a no_spawn zone of 16 blocks is made (zones/traders.gen.txt).
+# After a change of the deals of a standing trader: function last_ember:trader/reset {id:"<id>"} (a new one replaces the old).
+trader smith overworld 58 101 27 180 type=villager prof=weaponsmith vtype=plains name="Кузнец Хальвард" hello="Железа мало. Принеси то, что сняли с чудищ, — и я найду, чем помочь."
+  buy trophy:r1 3 + minecraft:coal 4 -> minecraft:chainmail_helmet 1 uses=3
+  buy trophy:r1 5 + minecraft:leather 2 -> minecraft:chainmail_chestplate 1 uses=3
+  buy trophy:r1 4 + minecraft:leather 2 -> minecraft:chainmail_leggings 1 uses=3
+  buy trophy:r1 2 + minecraft:leather 1 -> minecraft:chainmail_boots 1 uses=3
+  buy trophy:r1 2 -> minecraft:shield 1 uses=3
+  buy trophy:r1 1 + minecraft:coal 4 -> minecraft:arrow 16 uses=5
+  buy trophy:r1 2 -> minecraft:lapis_lazuli 4 uses=3
+  buy minecraft:iron_ingot 2 + trophy:r1 2 -> @blade_prytu 1 uses=2
