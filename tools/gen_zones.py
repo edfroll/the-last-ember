@@ -15,7 +15,7 @@ OUT = os.path.join(ROOT, "datapack/data/last_ember/function/zones/gen")
 CELL, OFF = 64, 8192  # OFF keeps coordinates positive so truncation == floor
 MARGIN = {"p": 5, "t": 8}
 DIMS = {"overworld": "o", "the_nether": "n", "the_end": "e"}
-FLAGS = {"no_spawn", "no_blink", "no_fire"}
+FLAGS = {"no_spawn", "no_blink", "no_fire", "calm", "dungeon"}
 
 def parse(path):
     zones = []

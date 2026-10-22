@@ -27,3 +27,5 @@ function last_ember:char/setup
 function last_ember:altar/setup
 # T-014: elite mobs
 function last_ember:elite/setup
+# T-015: insomnia, hallucinations, sleep
+function last_ember:halluc/setup

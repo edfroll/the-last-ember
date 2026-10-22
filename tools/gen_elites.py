@@ -35,7 +35,8 @@ RN = {r: (7 if r == "nether" else int(r[1:])) for r in names_seen}
 zf = os.path.join(ROOT, "zones/zones.txt") if len(sys.argv) < 2 else sys.argv[1]
 dz = ["# generated from %s: #dg le.el = 1 when the mob is in a zone with the flag `dungeon`" % os.path.relpath(zf, ROOT), "scoreboard players set #dg le.el 0"]
 for r in rows(zf):
-    if len(r) < 4 or "dungeon" not in r[3:] and "dungeon" not in r: continue
+    flags = set(",".join(r[3:]).replace(",", " ").split())
+    if len(r) < 4 or "dungeon" not in flags: continue
     if r[2] == "box":
         x1, y1, z1, x2, y2, z2 = map(int, r[3:9]); dz.append("execute if dimension minecraft:%s if entity @s[x=%d,y=%d,z=%d,dx=%d,dy=%d,dz=%d] run scoreboard players set #dg le.el 1" % (r[1], min(x1, x2), min(y1, y2), min(z1, z2), abs(x2 - x1), abs(y2 - y1), abs(z2 - z1)))
     elif r[2] == "cyl":

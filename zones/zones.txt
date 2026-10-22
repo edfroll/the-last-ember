@@ -8,5 +8,5 @@
 # Строки, начинающиеся с #, и пустые строки игнорируются.
 
 # T-008 Приют (Р0): весь хаб с фундаментом (Зал Пробуждения и Купель до y 51) и колодец (шахта ниже фундамента)
-refuge       overworld box  -200 50 -200  200 320 200   no_spawn
-refuge_well  overworld cyl  40 -44 12  20 109           no_spawn
+refuge       overworld box  -200 50 -200  200 320 200   no_spawn,calm
+refuge_well  overworld cyl  40 -44 12  20 109           no_spawn,calm
