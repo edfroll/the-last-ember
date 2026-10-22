@@ -22,3 +22,4 @@ function last_ember:death/remove_items
 execute if score @s le.ash matches 1.. run function last_ember:ash/old_to_urn
 execute unless data storage last_ember:dt inv[0] if data storage last_ember:dt {lv:0,pts:0} run return 0
 function last_ember:ash/create
+function last_ember:seer/xp_sync

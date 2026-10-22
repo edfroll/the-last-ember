@@ -50,16 +50,6 @@ for n in range(36):
     scan.append(f"execute if items entity @s container.{n} #last_ember:potions unless items entity @s container.{n} *[minecraft:custom_data~{{le_boost:1b}}] unless items entity @s container.{n} *[minecraft:custom_data~{{le_murky:1b}}] unless items entity @s container.{n} *[minecraft:custom_data~{{le_oilitem:1b}}] unless items entity @s container.{n} *[minecraft:custom_data~{{le_antidote:1b}}] run function last_ember:potion/boost_slot {{slot:{n}}}")
     scan.append(f"execute if items entity @s container.{n} minecraft:potion[minecraft:custom_data~{{le_murky:1b}}] run function last_ember:potion/identify_slot {{slot:{n}}}")
 w("scan", scan, os.path.join(DP, "function/potion"))
-# ---------------------------------------------------------------- oil: item modifiers oil/<type>_<n>, oil/none
-os.makedirs(os.path.join(DP, "item_modifier/oil"), exist_ok=True)
-def seq(*fs): return {"type": "minecraft:sequence", "functions": list(fs)}
-for typ, label in (("poison", "Масло яда"), ("fire", "Масло огня")):
-    for n in range(1, 17):
-        json.dump(seq({"type": "minecraft:set_custom_data", "tag": '{le_oil:{type:"%s",n:%d}}' % (typ, n)},
-                      {"type": "minecraft:set_lore", "mode": "replace_all", "lore": [{"text": f"{label}: {n} " + ("удар" if n == 1 else "удара" if 2 <= n <= 4 else "ударов"), "color": "gray", "italic": False}]}),
-                  open(os.path.join(DP, f"item_modifier/oil/{typ}_{n}.json"), "w"), ensure_ascii=False)
-json.dump(seq({"type": "minecraft:set_custom_data", "tag": '{le_oil:{type:"none",n:0}}'}, {"type": "minecraft:set_lore", "mode": "replace_all", "lore": []}),
-          open(os.path.join(DP, "item_modifier/oil/none.json"), "w"))
 print("potion/gen:", len(os.listdir(GEN)), "functions")
 
 # ================================================================== the cauldron: ingredients, recipes (ONE table), masks

@@ -124,11 +124,7 @@ def snbt_comps(c):  # key=value,... -> {"key":value,...} for use_remainder
 w("horn_item", ["# as a player: the Ranger's horn (a stick with the goat horn model: a consumable that comes back, 30 s cooldown on the slot)",
     'give @s minecraft:stick[%s,minecraft:use_remainder={id:"minecraft:stick",count:1,components:{%s}}] 1' % (HORN_COMP, snbt_comps(HORN_COMP))])
 w("kit_ranger", ["# as a player", give("minecraft:bow"), give("minecraft:arrow", count=32), "function last_ember:char/gen/horn_item"])
-STAFFS = [("blink", "Посох Мгновения"), ("frost", "Посох Хладной Длани"), ("flame", "Посох Пламенной Жатвы"), ("levity", "Посох Отринутой Тяжести"), ("exile", "Посох Изгнания")]
-for i, (sid, sname) in enumerate(STAFFS, 1):
-    w(f"staff_{i}", ["# as a player: a staff (stub item: name, description; the spells come in T-011)", give("minecraft:stick", ",".join([nm(sname, "light_purple"), keep(f',le_staff:"{sid}"'), lore("Заклинания посоха — позже.", "Пепельный Покров есть на любом посохе.")]))])
-w("kit_seer", ["# as a player: a random staff of five (no Wrath of the Dead Sky), a dagger, the book", "execute store result score #rnd le.e run random value 1..5"] +
-  [f"execute if score #rnd le.e matches {i} run function last_ember:char/gen/staff_{i}" for i in range(1, 6)] + [blade("Кинжал ворожея", ""),
+w("kit_seer", ["# as a player: a random staff of five (no Wrath of the Dead Sky: T-011), a dagger, the book", "function last_ember:seer/give_random", blade("Кинжал ворожея", ""),
   'give @s minecraft:written_book[minecraft:custom_data={le_keep:1b,le_book:1b},minecraft:written_book_content={title:"Книга ворожея",author:"Несущие",pages:["ПКМ — заклинание посоха.\\nShift + ПКМ — сменить заклинание.\\nУ каждого заклинания свой откат.\\nПосохи бывают разные: ищи их в сокровищницах.","Пепельный Покров есть на любом посохе: жёлтые сердца тебе и тем, кто рядом."]}] 1'])
 w("kit_healer", ["# as a player", "function last_ember:bonfire/give_cauldron", blade("Нож знахаря", ""), give("minecraft:glass_bottle", count=3),
     give("minecraft:potion", "minecraft:potion_contents={potion:\"minecraft:healing\"}", 2), give("minecraft:brown_mushroom", count=4), give("minecraft:sugar", count=2)])

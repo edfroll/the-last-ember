@@ -1,0 +1,21 @@
+{
+ "values": [
+  "#minecraft:base_stone_overworld",
+  "#minecraft:dirt",
+  "#minecraft:sand",
+  "minecraft:gravel",
+  "minecraft:grass_block",
+  "#minecraft:terracotta",
+  "#minecraft:stone_bricks",
+  "minecraft:cobblestone",
+  "minecraft:mossy_cobblestone",
+  "minecraft:deepslate",
+  "minecraft:cobbled_deepslate",
+  "#minecraft:snow",
+  "minecraft:netherrack",
+  "minecraft:mud",
+  "minecraft:clay",
+  "minecraft:coarse_dirt",
+  "minecraft:podzol"
+ ]
+}

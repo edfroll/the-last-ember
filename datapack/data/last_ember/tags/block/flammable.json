@@ -1,0 +1,24 @@
+{
+ "values": [
+  "#minecraft:logs_that_burn",
+  "#minecraft:planks",
+  "#minecraft:leaves",
+  "#minecraft:wool",
+  "minecraft:hay_block",
+  "#minecraft:wooden_fences",
+  "#minecraft:wooden_doors",
+  "#minecraft:wooden_slabs",
+  "#minecraft:wooden_stairs",
+  "minecraft:bookshelf",
+  "#minecraft:wool_carpets",
+  "#minecraft:banners",
+  "minecraft:scaffolding",
+  "#minecraft:fence_gates",
+  "minecraft:composter",
+  "#minecraft:flowers",
+  "minecraft:tall_grass",
+  "minecraft:short_grass",
+  "minecraft:vine",
+  "minecraft:dried_kelp_block"
+ ]
+}

@@ -1,2 +1,0 @@
-# as a player: a staff (stub item: name, description; the spells come in T-011)
-give @s minecraft:stick[minecraft:custom_name={"text":"Посох Пламенной Жатвы","color":"light_purple","italic":false},minecraft:custom_data={le_keep:1b,le_staff:"flame"},minecraft:lore=[{"text":"Заклинания посоха — позже.","color":"gray","italic":false},{"text":"Пепельный Покров есть на любом посохе.","color":"gray","italic":false}]] 1

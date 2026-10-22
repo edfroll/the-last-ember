@@ -33,3 +33,28 @@ scoreboard objectives add le.crec dummy
 scoreboard objectives add le.ctier dummy
 scoreboard objectives add le.cbase dummy
 scoreboard players set #100 le.e 100
+scoreboard objectives add le.cd1 dummy
+scoreboard objectives add le.cd2 dummy
+scoreboard objectives add le.cd3 dummy
+scoreboard objectives add le.cd4 dummy
+scoreboard objectives add le.cd5 dummy
+scoreboard objectives add le.cd6 dummy
+scoreboard objectives add le.cd7 dummy
+scoreboard objectives add le.spsel dummy
+scoreboard objectives add le.suse dummy
+scoreboard objectives add le.slast dummy
+scoreboard objectives add le.wchg dummy
+scoreboard players set #20 le.e 20
+scoreboard players set #4 le.e 4
+scoreboard players set #10 le.e 10
+scoreboard players set #3 le.e 3
+scoreboard objectives add le.frz dummy
+scoreboard objectives add le.ft dummy
+function last_ember:seer/frost_loop
+function last_ember:seer/fire_loop
+scoreboard players set #360 le.e 360
+scoreboard players set #1000 le.e 1000
+scoreboard players set #kb le.e 200
+scoreboard players set #5 le.e 5
+scoreboard players set #200 le.e 200
+scoreboard objectives add le.xptot dummy

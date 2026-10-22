@@ -261,7 +261,7 @@ def t_oil():
     print("[oil]")
     for tier, hits in ((0, 8), (6, 16)):
         setc(1, 4, tier); tp("Cam", 0.5, 103, -14.5, 0, 0); rc.run("kill @e[tag=le.test]"); time.sleep(0.4); rc.run("clear Cam")
-        rc.run("item replace entity Cam weapon.mainhand with minecraft:stone_sword"); rc.run("execute as Cam run function last_ember:potion/give_oil_poison"); time.sleep(0.4)
+        rc.run("item replace entity Cam weapon.mainhand with minecraft:stone_sword[minecraft:lore=[{\"text\":\"Старый клинок\",\"color\":\"gray\",\"italic\":false}]]"); rc.run("execute as Cam run function last_ember:potion/give_oil_poison"); time.sleep(0.4)
         inv = rc.run("data get entity Cam Inventory"); m = re.search(r"Slot: (\d+)b, id: \"minecraft:potion\"", inv)
         rc.run(f"item replace entity Cam weapon.offhand from entity Cam hotbar.{m.group(1)}" if int(m.group(1)) < 9 else "item replace entity Cam weapon.offhand from entity Cam container." + m.group(1)); rc.run(f"clear Cam minecraft:potion")
         rc.run("item replace entity Cam weapon.offhand with minecraft:air"); rc.run("execute as Cam run function last_ember:potion/give_oil_poison"); time.sleep(0.4)
@@ -269,15 +269,19 @@ def t_oil():
         rc.run(f"item replace entity Cam weapon.offhand from entity Cam {'hotbar' if sl < 9 else 'container'}.{sl}"); rc.run(f"item replace entity Cam {'hotbar' if sl < 9 else 'container'}.{sl} with minecraft:air")
         act("Cam", "!use_on"); time.sleep(1.8); act("Cam", "!use_off"); time.sleep(0.6)
         sw = rc.run("data get entity Cam SelectedItem.components")
-        check(f"tier {tier}: the oil puts {hits} hits on the sword", f"n: {hits}" in sw and "poison" in sw and f"{hits} ударов" in sw or f"Масло яда: {hits}" in sw, sw[:300])
+        check(f"tier {tier}: the oil puts {hits} hits on the sword", f"n: {hits}" in sw and "poison" in sw and f"Масло яда: {hits}" in sw, sw[:300])
         rc.run("summon minecraft:pillager 0.5 103 -12.5 {NoAI:1b,Tags:[\"le.test\",\"le.keep\"],PersistenceRequired:1b}"); time.sleep(0.5)
         rc.run("damage @e[tag=le.test,limit=1] 1 minecraft:player_attack by Cam"); time.sleep(0.6)
         check(f"tier {tier}: a hit poisons the husk and costs one hit", "poison" in rc.run("data get entity @e[tag=le.test,limit=1] active_effects") and f"n: {hits - 1}" in rc.run("data get entity Cam SelectedItem.components"))
         for k in range(hits - 1):
             rc.run("effect clear @e[tag=le.test] minecraft:poison"); time.sleep(1.1); rc.run("damage @e[tag=le.test,limit=1] 1 minecraft:player_attack by Cam"); time.sleep(0.3)
         sw = rc.run("data get entity Cam SelectedItem.components")
-        check(f"tier {tier}: after {hits} hits the oil is gone", "type: \"none\"" in sw and "Масло" not in sw, sw[:300])
+        check(f"tier {tier}: after {hits} hits the oil is gone, the sword's own lore stays", "type: \"none\"" in sw and "Масло" not in sw and "Старый клинок" in sw, sw[:300])
         rc.run("kill @e[tag=le.test]")
+    # no effect on players, and no hit is spent
+    setc(1, 4, 0); tp("Cam", 0.5, 103, -14.5, 0, 0); setc(1, 1, 0, "Cam2"); tp("Cam2", 0.5, 103, -12.5, 0, 0); time.sleep(0.5); rc.run("clear Cam")
+    rc.run("item replace entity Cam weapon.mainhand with minecraft:stone_sword[minecraft:custom_data={le_oil:{type:\"poison\",n:5}}]"); rc.run("effect clear Cam2"); rc.run("damage Cam2 1 minecraft:player_attack by Cam"); time.sleep(0.8)
+    check("oil does not touch a player and does not spend a hit", "poison" not in rc.run("data get entity Cam2 active_effects") and "n: 5" in rc.run("data get entity Cam SelectedItem.components"))
     # carried to another player with the sword
     setc(1, 4, 0); tp("Cam", 0.5, 103, -14.5, 0, 0); rc.run("clear Cam"); rc.run("item replace entity Cam weapon.mainhand with minecraft:stone_sword[minecraft:custom_data={le_oil:{type:\"fire\",n:5}}]")
     rc.run("execute as Cam run item replace entity Cam weapon.mainhand from entity Cam weapon.mainhand"); sw = rc.run("data get entity Cam SelectedItem.components")

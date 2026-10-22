@@ -1,0 +1,15 @@
+{
+ "criteria": {
+  "c": {
+   "trigger": "minecraft:using_item",
+   "conditions": {
+    "item": {
+     "items": "minecraft:stick"
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:seer/use_tick"
+ }
+}

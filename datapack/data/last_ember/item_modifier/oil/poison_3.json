@@ -1,1 +1,0 @@
-{"type": "minecraft:sequence", "functions": [{"type": "minecraft:set_custom_data", "tag": "{le_oil:{type:\"poison\",n:3}}"}, {"type": "minecraft:set_lore", "mode": "replace_all", "lore": [{"text": "Масло яда: 3 удара", "color": "gray", "italic": false}]}]}
