@@ -1,5 +1,6 @@
 # as the carrier at itself, every tick: a new point of the path when it has moved 0.25 block (then the segments move); the legs step while it moves
 scoreboard players operation #id le.l = @s le.lnk
+execute if score @s le.lfr matches 1.. run return run function last_ember:lab/cent/rear
 tag @s add le.cme
 execute as @e[type=minecraft:marker,tag=le.cmark] if score @s le.lnk = #id le.l at @s unless entity @e[tag=le.cme,distance=..0.25] run function last_ember:lab/cent/rec
 tag @s remove le.cme

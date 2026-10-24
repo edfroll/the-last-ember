@@ -11,4 +11,5 @@ execute if score @s le.lt matches 20 run particle minecraft:block{block_state:"m
 execute if score @s le.lt matches 20 positioned ~ ~1.5 ~ as @a[distance=..4,gamemode=!spectator,gamemode=!creative] run function last_ember:wound/quake
 execute if score @s le.lt matches 24 run function last_ember:lab/s/fish_taunt
 execute if score @s le.lt matches 24 store result score @s le.lfd run random value 160..260
+execute if score @s le.lt matches 24 store result score @s le.llook run random value 60..120
 execute if score @s le.lt matches 24 run function last_ember:lab/awake

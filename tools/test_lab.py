@@ -172,6 +172,16 @@ def t_fish():
     sp = [pos(f"@e[tag=le.cs{k},limit=1]") for k in (0, 5, 9)]
     chk("10 body segments with hit boxes follow the head (%s / %s), spread along the path %s" % (segs, boxes, [round(p[2], 1) for p in sp if p]), "10" in segs and "10" in boxes and sp[0] and sp[2] and abs(sp[0][2] - sp[2][2]) + abs(sp[0][0] - sp[2][0]) > 4)
     look("le.lab_fish", 6, 2.5, 70); shot("fish_body"); shot("fish_body", "Cam2")
+    # the rearing: the prey 5 blocks in front of it
+    R("execute as @e[tag=le.lab_fish,limit=1] at @s rotated ~ 0 positioned ^ ^ ^5 run tp Cam2 ~ ~ ~ facing entity @e[tag=le.lab_fish,limit=1] feet"); R("scoreboard players set @e[tag=le.lab_fish] le.llook 1"); R("scoreboard players set @e[tag=le.lab_fish] le.lfd 200")
+    rs = False
+    for i in range(30):
+        time.sleep(0.1)
+        if (score("@e[tag=le.lab_fish,limit=1]", "le.lfr") or 0) > 0: rs = True; break
+    time.sleep(0.8); look("le.lab_fish", 7, 1.5, 70); shot("fish_rear"); shot("fish_rear", "Cam2"); hb = num(R("data get entity Cam2 Health")); time.sleep(1.2); shot("fish_slam")
+    ha = num(R("data get entity Cam2 Health"))
+    chk("it rears up (%s) and strikes down with its whole body (prey health %s -> %s)" % (rs, hb, ha), rs and ha is not None and hb is not None and ha < hb)
+    time.sleep(1.0)
     h0 = num(R("data get entity @e[tag=le.lab_fish,limit=1] Health")); R("tp Cam2 @e[tag=le.cs6,limit=1]"); R("execute as Cam2 at @s run tp @s ~ ~ ~-1.5 0 30")
     R("execute as @e[tag=le.cb6] run data merge entity @s {attack:{player:[I;0,0,0,0],timestamp:0L}}")
     R("data modify entity @e[tag=le.cb6,limit=1] attack.player set from entity Cam2 UUID"); time.sleep(0.4); h1 = num(R("data get entity @e[tag=le.lab_fish,limit=1] Health"))

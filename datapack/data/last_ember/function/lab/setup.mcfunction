@@ -40,8 +40,8 @@ scoreboard players set #dormant le.l 0
 # the sound variants of the womb and the silverfish (lab/voice, Edward listens): 1 by default
 execute unless score #v_fish le.l matches 1..3 run scoreboard players set #v_fish le.l 1
 execute unless score #v_womb le.l matches 1..3 run scoreboard players set #v_womb le.l 1
-# the shapes of the womb blob (scale of the display): big = size 3 (1.6), small = size 2 (1.05)
-data modify storage last_ember:lab womb set value {big:{stretch:[1.36f,2.08f,1.36f],squash:[2.08f,0.96f,2.08f],neutral:[1.6f,1.6f,1.6f],surge:[1.35f,1.1f,2.15f],charge:[1.76f,1.36f,1.76f],splat:[3.2f,0.24f,3.2f],gone:[0f,0f,0f]},small:{stretch:[0.89f,1.37f,0.89f],squash:[1.37f,0.63f,1.37f],neutral:[1.05f,1.05f,1.05f],surge:[0.89f,0.72f,1.41f],charge:[1.16f,0.89f,1.16f],splat:[2.1f,0.16f,2.1f],gone:[0f,0f,0f]}}
+# the shapes of the womb blob (scale of the display): big = size 4 (2.13), small = size 2 (1.05)
+data modify storage last_ember:lab womb set value {big:{stretch:[1.81f,2.77f,1.81f],squash:[2.77f,1.28f,2.77f],neutral:[2.13f,2.13f,2.13f],surge:[1.8f,1.47f,2.87f],charge:[2.35f,1.81f,2.35f],splat:[4.27f,0.32f,4.27f],gone:[0.0f,0.0f,0.0f]},small:{stretch:[0.89f,1.37f,0.89f],squash:[1.37f,0.63f,1.37f],neutral:[1.05f,1.05f,1.05f],surge:[0.89f,0.72f,1.41f],charge:[1.16f,0.89f,1.16f],splat:[2.1f,0.16f,2.1f],gone:[0f,0f,0f]}}
 function last_ember:lab/gen/leshy_parts
 function last_ember:lab/gen/warg_parts
 schedule function last_ember:lab/tick 1t replace
