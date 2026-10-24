@@ -1,0 +1,204 @@
+file,seconds,lufs,w3_events,w3_wem_ids
+sfx/amb/bell_far/bell_far_01.ogg,40.00,-20.7,qu_nml_101_bell_hit; amb_sk_ice_giant_canyon_high,119454050 608241533
+sfx/amb/bell_far/bell_far_02.ogg,36.00,-19.7,amb_sk_G_WIND_GRASS_1; qu_nv_310_alarm_bell_hit,217509848 749825198
+sfx/amb/cave_drips/cave_drips_01.ogg,40.00,-20.8,amb_g_in_cave_hollow_wet_3; amb_g_in_EM_dust_debris_1; amb_g_in_cave_hollow_1; amb_g_in_EM_water_drips_c,3715921 44489673 47965861 56156242 58595647 88682738 105655764 169198798 175243277 191018685 200891913 318683564 444372084 448712292 590130610 764296600
+sfx/amb/cave_drips/cave_drips_02.ogg,36.00,-21.9,amb_g_in_cave_hollow_wet_3; amb_g_in_EM_dust_debris_1; amb_g_in_EM_water_drips_c; amb_g_in_cave_water_1_very_close,3715921 47965861 56156242 58595647 88682738 93718880 105655764 175243277 200891913 247204801 427110450 444372084 448712292 590130610 764296600
+sfx/amb/depths_hum/depths_hum_01.ogg,45.00,-21.2,amb_qu_ep2_gravity_cave_cracks_1_RND; amb_qu_ep2_q704_room_drone,160187724 313034404 324201004 719942796
+sfx/amb/depths_hum/depths_hum_02.ogg,45.00,-20.1,amb_qu_ep2_gravity_cave_cracks_1_RND; amb_qu_ep2_gravity_cave_bkg,160187724 313034404 324201004 336186116
+sfx/amb/forest_night/forest_night_01.ogg,45.00,-20.2,amb_nml_g_EM_tree_creaks_big_1; amb_nml_g_EM_animal_bird_night_owl_3_tawny_80m; amb_sk_kaer_trodle_06_wind_forest1,36834690 389086585 462099643 494746277 523811439 579403539 651521010
+sfx/amb/forest_night/forest_night_02.ogg,36.00,-20.6,amb_nml_g_EM_animal_bird_night_owl_3_tawny_80m; amb_nml_g_swamp_01_trees; amb_nml_g_EM_tree_creaks_big_1,43184511 299019132 402114349 523811439 593280702 926183068
+sfx/amb/lava_ash/lava_ash_01.ogg,45.00,-20.2,amb_dyn_dark_liquid_boiling_15m; amb_qu_EXT_hell_surface; fx_expl_toxic_gas_explo; amb_sk_kaer_trodle_13_high_path,412065247 522586684 578568546 599007099 637309880
+sfx/amb/lava_ash/lava_ash_02.ogg,33.00,-20.2,fx_expl_toxic_gas_explo; amb_dyn_dark_liquid_boiling_15m; amb_qu_EXT_hell_surface; amb_qu_EXT_hell_surface_rnd; amb_sk_kaer_trodle_15_wind_high_bridge,113443376 412065247 522586684 797632625 861466005 913903672
+sfx/amb/refuge_fire/refuge_fire_01.ogg,34.00,-21.0,fx_fire_burning_fat_med_loop; amb_sk_kaer_trodle_16_wind_interior; amb_sk_g_em_walla_muted_medium,3424629 22352324 626623716 808833837
+sfx/amb/refuge_fire/refuge_fire_02.ogg,28.00,-21.8,amb_dyn_IN_crowd_tavern_light_1_15m; fx_fire_burning_fireplace_small_loop; amb_sk_kaer_trodle_16_wind_interior,122773256 367732372 379369844 1054206888 1068580819
+sfx/amb/sandstorm/sandstorm_01.ogg,32.00,-20.2,magic_man_sand_gust; amb_sp_desert_wind,84932173 426586155 586038332 815470150 834396209 987565073
+sfx/amb/sandstorm/sandstorm_02.ogg,38.00,-20.2,amb_sp_desert_wind_trees_rattle; amb_sp_desert_wind,192434524 426586155 815470150 834396209 987565073
+sfx/amb/sea/sea_01.ogg,42.00,-20.3,amb_dyn_g_water_ocean_cliff_border; amb_nml_g_EM_animal_bird_seagull_3,152912298 655880213
+sfx/amb/sea/sea_02.ogg,42.00,-20.3,amb_dyn_g_water_ocean_cliff_border; amb_nml_g_EM_animal_bird_seagull_3,214196389 412694978
+sfx/amb/swamp/swamp_01.ogg,40.00,-22.1,amb_bob_BG_18W_swamp_FR; amb_nml_g_EM_swamp_bubbles_2_mud_RND; amb_bob_BG_18W_swamp_FL_plus_add; amb_nml_g_EM_animal_frog_far_05_swamp; boat_water_splash_soft,24540327 95898537 165045285 216295463 231764871 298544813 391804453 396346736 495797006 528794443 581672253 586100724 667219637 736900293 803117722 830498970
+sfx/amb/swamp/swamp_02.ogg,45.00,-21.3,amb_nml_g_swamp_01_glade; amb_nml_g_EM_swamp_bubbles_2_mud_RND; amb_nml_g_EM_animal_frog_far_05_swamp; boat_water_splash_soft,47991114 216295463 231764871 298544813 349111354 391804453 462987097 495797006 581672253 586100724 643974132 803117722 830498970 934401375 944869526
+sfx/amb/wind_ice/wind_ice_01.ogg,40.00,-20.2,amb_qu_blizzard_ext_2d; amb_qu_ice_cracking_ship_40m,321979601 330521419 493833663 966840426
+sfx/amb/wind_ice/wind_ice_02.ogg,45.00,-20.3,amb_qu_ep2_q704_meadow_frozen_city_BKG_FL; amb_qu_ice_cracking_ship_40m; amb_qu_ep2_q704_meadow_frozen_city_BKG_FR; amb_sk_ice_giant_global_land_old,332949885 380517780 396276800 421848965 741826267 824653363
+sfx/amb/wind_mountain/wind_mountain_01.ogg,45.00,-20.2,amb_sk_kaer_trodle_13_high_path,637309880
+sfx/amb/wind_mountain/wind_mountain_02.ogg,45.00,-20.2,amb_sk_g_wind_rnd_blows_mid2; amb_sk_kaer_trodle_15_wind_high_bridge,222746005 284953808 353758322 530982424 913903672
+sfx/class/amulet/amulet_01.ogg,2.00,-16.9,magic_filippa_barrier_shield_start; amb_dyn_tower_bell_EXT_12,288364333 390995273
+sfx/class/amulet/amulet_02.ogg,1.96,-17.0,amb_dyn_tower_bell_EXT_12; sign_quen_discharge_rebound,390995273 397696303
+sfx/class/amulet/amulet_03.ogg,1.92,-17.6,sign_quen_discharge_rebound; amb_dyn_tower_bell_EXT_12,137910852 390995273
+sfx/class/amulet/amulet_04.ogg,1.93,-16.6,magic_keira_shield_stop; amb_dyn_tower_bell_EXT_12,181971868 390995273
+sfx/class/bless/bless_01.ogg,2.40,-16.2,qu_item_bell_ring; sign_quen_charge_loop_start,686405122 739302095 1060203176
+sfx/class/bless/bless_02.ogg,2.40,-16.2,qu_item_bell_ring; sign_quen_charge_loop_start,18252807 753379937 999187903
+sfx/class/bless/bless_03.ogg,2.40,-16.2,qu_item_bell_ring; sign_quen_charge_loop_start,701140655 1054905773 1060203176
+sfx/class/cauldron_boil/cauldron_boil_01.ogg,3.44,-18.1,q704_ft_04_cauldron_bubbles_01,1052690509
+sfx/class/cauldron_boil/cauldron_boil_02.ogg,4.65,-17.1,qu_202_folan_boils,64587338
+sfx/class/cauldron_boil/cauldron_boil_03.ogg,4.19,-17.4,q704_ft_04_cauldron_bubbles_03,306681897
+sfx/class/cauldron_boil/cauldron_boil_04.ogg,5.04,-17.2,amb_qu_cooking_soup_boiling_20m_loop,87754278
+sfx/class/cauldron_done/cauldron_done_01.ogg,1.34,-23.4,fx_fire_burning_hissy_loop_15m; work_cleaning_water_splash; work_elixir_brewing_glass,158632553 226953680 621107326
+sfx/class/cauldron_done/cauldron_done_02.ogg,1.52,-24.3,fx_fire_burning_hissy_loop_15m; work_elixir_brewing_glass; q605_soup_splash,85063370 179298980 685924203
+sfx/class/cauldron_done/cauldron_done_03.ogg,1.30,-23.4,work_elixir_brewing_glass; fx_fire_burning_hissy_loop_15m; work_cleaning_water_splash,86385670 199326944 204146214
+sfx/class/horn/horn_01.ogg,4.63,-16.0,qu_item_blowing_horn,489173817
+sfx/class/horn/horn_02.ogg,4.64,-16.0,qu_item_blowing_horn,285549161
+sfx/class/horn/horn_03.ogg,4.87,-16.0,qu_item_blowing_horn,271770979
+sfx/class/horn/horn_04.ogg,7.86,-16.0,qu_sk_201_horn_call,713661042
+sfx/class/oil_apply/oil_apply_01.ogg,1.20,-17.0,fx_fire_burning_hissy_loop_15m; dialog_cleaning_sword_short,85063370 195646130
+sfx/class/oil_apply/oil_apply_02.ogg,1.21,-17.1,fx_fire_burning_hissy_loop_15m; dialog_cleaning_sword_short,158632553 465118502
+sfx/class/oil_apply/oil_apply_03.ogg,1.16,-18.1,gui_preparation_oil; fx_fire_burning_hissy_loop_15m,100009131 258857605
+sfx/class/shield_reflect/shield_reflect_01.ogg,0.74,-17.7,cmb_play_parry,96348765
+sfx/class/shield_reflect/shield_reflect_02.ogg,0.79,-17.7,cmb_play_parry,580027439
+sfx/class/shield_reflect/shield_reflect_03.ogg,0.83,-17.8,cmb_play_parry,77835762
+sfx/class/shield_reflect/shield_reflect_04.ogg,0.73,-18.7,cmb_imlerith_shield_impact,182102975
+sfx/death/ash/ash_01.ogg,3.89,-22.8,mq7007_statue_dissolves,355210977
+sfx/death/ash/ash_02.ogg,3.85,-22.8,mq7007_statue_dissolves,249848159
+sfx/death/ash/ash_03.ogg,2.36,-23.8,mv_slide_debris,629211289
+sfx/death/ash/ash_04.ogg,2.58,-22.8,mv_slide_debris,216673225
+sfx/death/ash_take/ash_take_01.ogg,1.56,-21.1,g_dialog_hand_rubs_ground_short; fx_fire_burning_fireplace_small_loop,15706334 379369844 480650184
+sfx/death/ash_take/ash_take_02.ogg,1.51,-22.1,g_dialog_hand_rubs_ground_short; fx_fire_burning_fireplace_small_loop,250148799 367732372 479923142
+sfx/death/ash_take/ash_take_03.ogg,1.49,-21.0,g_dialog_hand_rubs_ground_short; fx_fire_burning_fireplace_small_loop,250148799 584779466 1068580819
+sfx/death/urn_open/urn_open_01.ogg,1.13,-19.4,mq7001_02_urn,348026423
+sfx/death/urn_open/urn_open_02.ogg,1.61,-19.8,qu_sk_206_open_secret_hatch,418092177
+sfx/death/urn_open/urn_open_03.ogg,1.91,-18.8,qu_nv_303_sound_open_secret,503005880
+sfx/ember/altar_choir/altar_choir_01.ogg,7.99,-18.1,qu_sk_206_chanting_mans_short,608196079
+sfx/ember/altar_choir/altar_choir_02.ogg,8.52,-18.0,qu_sk_210_siren_singing,990368243
+sfx/ember/altar_choir/altar_choir_03.ogg,8.08,-18.0,qu_sk_210_siren_singing_alt,533395295
+sfx/ember/altar_rise/altar_rise_01.ogg,8.73,-16.3,qu_nv_311_earthquake; amb_dyn_earth_rumble_EXT_250m; magic_vfx_power_places_use,687170118 781962520 826693330
+sfx/ember/altar_rise/altar_rise_02.ogg,8.92,-16.6,qu_nv_311_earthquake; mq_km_4006_stone_door_moving; amb_dyn_earth_rumble_EXT_250m,294675128 547153397 781962520
+sfx/ember/altar_strike/altar_strike_01.ogg,6.41,-17.8,fx_amb_thunder_close; qu_nml_101_bell_hit,696551326 958043099
+sfx/ember/altar_strike/altar_strike_02.ogg,7.42,-16.9,qu_nml_101_bell_hit; fx_amb_thunder_close,29364787 522960254
+sfx/ember/altar_strike/altar_strike_03.ogg,7.52,-16.9,fx_amb_thunder_close; qu_nv_310_alarm_bell_hit,299545250 651413801
+sfx/ember/bonfire_idle/bonfire_idle_01.ogg,22.00,-23.9,fx_fire_burning_fat_med_loop,3424629 22352324
+sfx/ember/bonfire_idle/bonfire_idle_02.ogg,22.00,-24.0,fx_fire_burning_fat_med_loop,3424629 22352324
+sfx/ember/bonfire_idle/bonfire_idle_03.ogg,20.00,-25.0,fx_fire_burning_fireplace_small_loop,367732372 379369844 1068580819
+sfx/ember/bonfire_light/bonfire_light_01.ogg,3.53,-19.4,fx_fire_burning_fireplace_small_loop; fx_fire_burning_strong_begin,379369844 399621178
+sfx/ember/bonfire_light/bonfire_light_02.ogg,3.03,-19.5,fx_fire_burning_strong_begin; fx_fire_burning_fireplace_small_loop,260129669 367732372
+sfx/ember/bonfire_light/bonfire_light_03.ogg,3.44,-19.3,fx_fire_burning_strong_begin; fx_fire_burning_fireplace_small_loop,7394969 1068580819
+sfx/ember/bonfire_light/bonfire_light_04.ogg,2.73,-20.4,qu_sk_206_fire_brust; fx_fire_burning_fireplace_small_loop,229742259 379369844
+sfx/ember/call/call_01.ogg,1.58,-19.3,magic_eredin_icespike_tell_sparks; qu_nml_101_bell_hit,501412265 959249918
+sfx/ember/call/call_02.ogg,1.71,-19.4,magic_eredin_icespike_tell_sparks; qu_nml_101_bell_hit,672382819 820656186
+sfx/ember/call/call_03.ogg,1.24,-19.5,qu_nv_310_alarm_bell_hit; magic_eredin_icespike_tell_sparks,747404181 875343433
+sfx/ember/call/call_04.ogg,1.23,-20.3,magic_eredin_icespike_tell_sparks; qu_nv_310_alarm_bell_hit,280245264 937668677
+sfx/mind/breath/breath_01.ogg,1.34,-17.9,work_m_sigh,69201577
+sfx/mind/breath/breath_02.ogg,1.16,-19.0,work_m_sigh,786115760
+sfx/mind/breath/breath_03.ogg,1.14,-18.3,work_woman_sigh,521240319
+sfx/mind/breath/breath_04.ogg,1.27,-18.2,work_woman_sigh,439696209
+sfx/mind/creak/creak_01.ogg,1.90,-17.2,global_doors_wooden_creepy_1_squeak,670087063
+sfx/mind/creak/creak_02.ogg,2.17,-17.3,global_doors_wooden_creepy_1_squeak,1049488080
+sfx/mind/creak/creak_03.ogg,1.67,-18.3,amb_g_in_wooden_squeaks_room_raw,51235747
+sfx/mind/creak/creak_04.ogg,2.00,-17.1,amb_g_in_wooden_squeaks_room_raw,843007575
+sfx/mind/cry/cry_01.ogg,7.27,-22.0,amb_qu_ghost_woman_crying_loop,913674658
+sfx/mind/cry/cry_02.ogg,6.91,-22.0,amb_qu_ghost_woman_crying_loop,544954447
+sfx/mind/cry/cry_03.ogg,6.93,-22.2,amb_qu_ghost_woman_crying_loop,681591213
+sfx/mind/knock/knock_01.ogg,1.69,-17.5,qu_nml_106_door_knocking_hard_loop,587803383
+sfx/mind/knock/knock_02.ogg,1.96,-17.5,qu_sk_203_oven_knock,762992272
+sfx/mind/knock/knock_03.ogg,1.95,-18.5,dialog_door_knock,162385747 239831226 363520373
+sfx/mind/laugh/laugh_01.ogg,1.65,-19.2,ep2_mq7015_dlg_laugh_sinister,295454106
+sfx/mind/laugh/laugh_02.ogg,1.45,-20.4,q705_regis_laughs,997392729
+sfx/mind/laugh/laugh_03.ogg,2.01,-19.5,work_child_1_laugh,751447416
+sfx/mind/laugh/laugh_04.ogg,1.69,-19.3,amb_qu_haunted_EM_CUSTOM_evil_laugh_1,469042882
+sfx/mind/ring_on/ring_on_01.ogg,3.63,-16.3,magic_ghost_possession; amb_g_in_basement_pressure_1; grunt_vo_geralt_breath_to_underwater; fx_underwater_on,402094931 853405669 954945993 1009994148
+sfx/mind/ring_on/ring_on_02.ogg,3.56,-16.7,magic_ghost_possession; grunt_vo_geralt_breath_to_underwater; amb_g_in_basement_pressure_1; fx_underwater_on,548633111 749635412 896393654 1009994148
+sfx/mind/ring_on/ring_on_03.ogg,3.52,-16.4,magic_geralt_ghost_possession; amb_g_in_basement_pressure_1; grunt_vo_geralt_breath_to_underwater; fx_underwater_on,80727208 385384259 593996204 1009994148
+sfx/mind/steps/steps_01.ogg,2.63,-21.1,amb_qu_haunted_EM_CUSTOM_footsteps_1,876574089
+sfx/mind/steps/steps_02.ogg,1.96,-21.1,amb_qu_haunted_EM_CUSTOM_footsteps_1,733029638
+sfx/mind/steps/steps_03.ogg,1.93,-21.1,g_dialog_footstep_walk,111378730 345936155 552701248
+sfx/mind/steps/steps_04.ogg,2.10,-22.1,g_dialog_footstep_walk,309625421 419874829 551534917
+sfx/mind/steps/steps_05.ogg,2.10,-21.1,g_dialog_footstep_walk,73412502 298646511 340789142
+sfx/mind/whisper/whisper_01.ogg,3.47,-19.4,qu_nml_106_people_whispering_loop,1016261327
+sfx/mind/whisper/whisper_02.ogg,3.45,-19.4,qu_nml_108_whispers_in_cave_amb,596815859
+sfx/mind/whisper/whisper_03.ogg,3.47,-19.3,qu_nml_106_people_whispering_loop,1016261327
+sfx/mind/whisper/whisper_04.ogg,3.36,-19.2,amb_sk_rnd_whispers,1012092564
+sfx/mind/whisper/whisper_05.ogg,3.45,-19.3,amb_dyn_crowd_tavern_whispers,441062799
+sfx/quest/board/board_01.ogg,1.11,-19.4,dialog_zoltan_paper_rip,519926098
+sfx/quest/board/board_02.ogg,1.47,-19.4,q604_paper_grab,676476216
+sfx/quest/board/board_03.ogg,0.88,-20.4,qu_sk_206_pick_paper,157111280
+sfx/quest/board/board_04.ogg,1.90,-19.4,q701_grab_key_paper,457544064
+sfx/quest/clue/clue_01.ogg,1.91,-19.0,play_music_nomansgrad~,286677695
+sfx/quest/clue/clue_02.ogg,1.93,-19.2,play_music_nomansgrad~,944214590
+sfx/quest/clue/clue_03.ogg,1.86,-19.2,play_music_nomansgrad,286638709
+sfx/quest/clue/clue_04.ogg,1.89,-19.1,play_music_skellige,162193685
+sfx/quest/curse_lifted/curse_lifted_01.ogg,4.75,-16.2,sq701_20b_finale_rid_curse_lift,362324812
+sfx/quest/curse_lifted/curse_lifted_02.ogg,4.40,-16.3,sq701_20b_finale_move_curse_lift,300230226
+sfx/quest/curse_lifted/curse_lifted_03.ogg,5.38,-17.1,ep2_mq7004_freeing_ghost,1068407938
+sfx/quest/ritual/ritual_01.ogg,16.00,-18.1,qu_sk_206_chanting_mans_loop,85583724
+sfx/quest/ritual/ritual_02.ogg,10.50,-18.1,qu_prl_001_Yen_hum_loop; amb_dyn_necromancy_drone_EXT_dialog_start,503119001 765225770
+sfx/spell/banish/banish_01.ogg,2.00,-16.8,magic_yennefer_push; sign_aard_blast,393685467 882068329
+sfx/spell/banish/banish_02.ogg,2.00,-16.7,magic_yennefer_push; sign_aard_blast,219921717 265933723
+sfx/spell/banish/banish_03.ogg,2.00,-17.5,sign_aard_blast; magic_yennefer_push,551217952 734456748
+sfx/spell/blink/blink_01.ogg,1.82,-16.7,magic_teleport_explo,310126983
+sfx/spell/blink/blink_02.ogg,1.81,-16.7,magic_teleport_explo,36129462
+sfx/spell/blink/blink_03.ogg,1.46,-17.5,magic_djinn_teleport,177670093
+sfx/spell/blink/blink_04.ogg,1.46,-17.8,monster_fairytale_witch_teleport_jump,518706244
+sfx/spell/cover/cover_01.ogg,3.00,-16.5,amb_g_in_EM_dust_debris_1; sign_quen_charge_loop_start,44489673 739302095
+sfx/spell/cover/cover_02.ogg,3.00,-16.3,amb_g_in_EM_dust_debris_1; sign_quen_charge_loop_start,93718880 999187903
+sfx/spell/cover/cover_03.ogg,3.00,-16.3,amb_g_in_EM_dust_debris_1; sign_quen_charge_loop_start,318683564 1054905773
+sfx/spell/fail/fail_01.ogg,0.94,-18.7,sign_igni_no_stamina,192672826
+sfx/spell/fail/fail_02.ogg,0.86,-19.0,sign_igni_no_stamina,100124651
+sfx/spell/fail/fail_03.ogg,0.88,-18.5,sign_igni_no_stamina,1003646133
+sfx/spell/fail/fail_04.ogg,0.84,-18.2,sign_axii_no_stamina,26917307
+sfx/spell/flame/flame_01.ogg,1.97,-17.1,fx_fire_geralt_fire_hit,670249152
+sfx/spell/flame/flame_02.ogg,1.93,-16.2,fx_fire_geralt_fire_hit,39840666
+sfx/spell/flame/flame_03.ogg,1.80,-16.1,fx_fire_geralt_fire_hit,437885307
+sfx/spell/flame/flame_04.ogg,1.74,-16.5,monster_golem_ifryt_xtra_fireball_explo,434808677
+sfx/spell/frost/frost_01.ogg,1.51,-18.9,bomb_white_frost_explo,881819939
+sfx/spell/frost/frost_02.ogg,1.55,-18.9,bomb_white_frost_explo,849360212
+sfx/spell/frost/frost_03.ogg,2.05,-19.0,bomb_white_frost_explo,1041137790
+sfx/spell/frost/frost_04.ogg,2.00,-19.2,bomb_white_frost_explo,836096688
+sfx/spell/lift/lift_01.ogg,2.03,-16.5,phx_stone_break_small; magic_yennefer_gravity_cast_loop_start; fx_levitating_rock_loop_start,62887892 283330120 513938554 785920727
+sfx/spell/lift/lift_02.ogg,2.03,-16.8,phx_stone_break_small; magic_yennefer_gravity_cast_loop_start; fx_levitating_rock_loop_start,62887892 283330120 352900659 513938554
+sfx/spell/lift/lift_03.ogg,2.09,-16.4,phx_stone_break_small; magic_yennefer_gravity_cast_loop_start; fx_levitating_rock_loop_start,62887892 283330120 370764692 513938554
+sfx/spell/wrath_charge/wrath_charge_01.ogg,9.06,-18.0,fx_other_lightning_pre_2s; amb_dyn_bob_electric_cage_fx_start; amb_g_thunder_far_loop_start; magic_keira_hand_fx_electricity_loop_start,33300259 279187913 417966072 602596595
+sfx/spell/wrath_charge/wrath_charge_02.ogg,9.27,-18.6,amb_g_thunder_far_loop_start; monster_cloud_giant_fx_lightning_begin; magic_sorceress_vfx_lightning_fx_loop_start; fx_other_lightning_pre_2s,414447425 449839240 523723747 871808934
+sfx/spell/wrath_strike/wrath_strike_01.ogg,6.57,-18.8,fx_other_lightning_hit; fx_amb_thunder_close,10751263 737028169
+sfx/spell/wrath_strike/wrath_strike_02.ogg,6.61,-18.5,fx_amb_thunder_close; fx_other_lightning_hit,299545250 347009635
+sfx/spell/wrath_strike/wrath_strike_03.ogg,5.88,-18.3,fx_other_lightning_hit; fx_amb_thunder_close,90411076 98379172
+sfx/sting/chapter/chapter_01.ogg,3.91,-16.2,play_music_kaer_morhen~,841040337
+sfx/sting/chapter/chapter_02.ogg,3.75,-16.2,play_music_nomansgrad~,574095438
+sfx/sting/chapter/chapter_03.ogg,3.64,-16.3,play_music_toussaint~,472415990
+sfx/sting/key_item/key_item_01.ogg,3.14,-18.9,gui_ingame_new_journal,70150978
+sfx/sting/key_item/key_item_02.ogg,3.36,-17.9,gui_ingame_level_up,630918541
+sfx/sting/monster/monster_01.ogg,3.81,-16.2,play_music_nomansgrad~,9902568
+sfx/sting/monster/monster_02.ogg,3.48,-16.4,play_music_skellige~,775235815
+sfx/sting/monster/monster_03.ogg,3.05,-16.2,play_music_nomansgrad~,690225172
+sfx/sting/secret/secret_01.ogg,2.93,-19.3,magic_ciri_teleport_glow,1004447033
+sfx/sting/secret/secret_02.ogg,2.87,-19.1,play_music_nomansgrad~,181493045
+sfx/sting/secret/secret_03.ogg,3.71,-19.4,play_music_toussaint~,73747322
+sfx/trap/arrows/arrows_01.ogg,1.65,-16.2,cmb_arrow_impact_stone; weapon_crossbow_shot; cmb_arrow_swoosh; cmb_arrow_impact_wood,22019788 227664968 253917946 325764999 339974759 603180305 650302822
+sfx/trap/arrows/arrows_02.ogg,1.54,-16.4,cmb_arrow_swoosh; weapon_crossbow_shot; cmb_arrow_impact_stone; cmb_arrow_impact_wood,116320327 124594141 163603882 300257937 601144644 609530278 756209268
+sfx/trap/arrows/arrows_03.ogg,1.54,-16.9,cmb_arrow_impact_wood; cmb_arrow_impact_stone; cmb_arrow_swoosh; weapon_crossbow_shot,25939440 33346828 170109932 325764999 650302822 745835022 756209268
+sfx/trap/branch_crack/branch_crack_01.ogg,0.84,-22.7,phx_wood_break_tiny; phx_wood_break_small,549650561 797703381
+sfx/trap/branch_crack/branch_crack_02.ogg,0.75,-23.7,phx_wood_break_small,340887937
+sfx/trap/branch_crack/branch_crack_03.ogg,0.92,-22.6,phx_wood_break_small; phx_wood_break_tiny,116273662 828069532
+sfx/trap/branch_crack/branch_crack_04.ogg,1.02,-22.7,phx_wood_break_big,317863565
+sfx/trap/click/click_01.ogg,1.33,-20.0,global_switch_light,857136487
+sfx/trap/click/click_02.ogg,1.24,-19.9,global_switch_light,718413220
+sfx/trap/click/click_03.ogg,1.25,-21.0,qu_item_disarm_trap,455246212
+sfx/trap/click/click_04.ogg,1.26,-20.5,qu_sk_201_trap_in_door,196698104
+sfx/trap/collapse/collapse_01.ogg,4.74,-18.9,qu_605_floor_collapse,857795544
+sfx/trap/collapse/collapse_02.ogg,4.27,-19.5,qu_605_floor_collapse,1025281510
+sfx/trap/collapse/collapse_03.ogg,3.64,-18.8,qu_605_floor_collapse,878641820
+sfx/trap/collapse/collapse_04.ogg,2.77,-18.7,fx_expl_rock_med_falling,300100378
+sfx/trap/gas/gas_01.ogg,3.83,-16.4,monster_fairytalewitch_combat_toxic_gas,427314480
+sfx/trap/gas/gas_02.ogg,3.85,-16.4,monster_fairytalewitch_combat_toxic_gas,968835713
+sfx/trap/gas/gas_03.ogg,3.25,-16.4,mq7023_contraption_opening_steam,259173636
+sfx/trap/gas/gas_04.ogg,4.33,-16.1,qu_sk_201_gas_loop,938416710
+sfx/trap/lava_rumble/lava_rumble_01.ogg,4.20,-17.0,amb_nml_g_EM_swamp_bubbles_2_mud_RND; amb_dyn_dark_liquid_boiling_15m; qu_sk_502_earthquake,298544813 412065247 794373653
+sfx/trap/lava_rumble/lava_rumble_02.ogg,4.00,-16.4,amb_nml_g_EM_swamp_bubbles_2_mud_RND; amb_dyn_dark_liquid_boiling_15m; qu_sk_502_earthquake,95898537 412065247 707634744
+sfx/trap/lava_rumble/lava_rumble_03.ogg,3.57,-16.4,amb_nml_g_EM_swamp_bubbles_2_mud_RND; amb_dyn_dark_liquid_boiling_15m; qu_sk_502_earthquake,391804453 412065247 431368370
+sfx/trap/stone_grind/stone_grind_01.ogg,4.32,-16.2,phx_stone_break_small; global_doors_stone_1_slide_far_start,62887892 118330442 296790992
+sfx/trap/stone_grind/stone_grind_02.ogg,5.09,-16.2,phx_stone_break_small; global_doors_stone_2_slide_start; mq_nml_1012_fix_statue,434286911 486777793 835129025 884005100
+sfx/trap/stone_grind/stone_grind_03.ogg,4.52,-16.1,phx_stone_break_small; qu_nml_104_secret_stone_door_moving,6690619 965447000
+sfx/trap/stone_grind/stone_grind_04.ogg,3.75,-16.1,mh_nv_306_open_stone_door; phx_stone_break_small,74733290 818761287
+sfx/world/gate/gate_01.ogg,5.34,-16.2,qu_sk_205_gate_going_up,899154975
+sfx/world/gate/gate_02.ogg,5.92,-16.7,qu_km_403_gate_loop_stop; qu_km_403_gate_loop,411336225 907125972
+sfx/world/gate/gate_03.ogg,6.85,-16.7,global_doors_portcullis_wooded_loop_stop; global_doors_portcullis_wooded_loop_start,239625331 826032031
+sfx/world/gate/gate_04.ogg,6.64,-17.1,qu_item_drawbridge_move,919824723
+sfx/world/portal/portal_01.ogg,5.30,-17.3,magic_teleport_spiral_fx_start; magic_teleport_fx_end,237052389 1063839861
+sfx/world/portal/portal_02.ogg,6.25,-16.4,cs_generic_teleport,258877678
+sfx/world/portal/portal_03.ogg,3.34,-16.3,q601_mirror_teleport,311957266
+sfx/world/portal/portal_04.ogg,4.92,-16.7,amb_dyn_bob_magic_teleport_fx_start,674903903
+sfx/world/rocks/rocks_01.ogg,5.38,-20.0,amb_sk_rnd_rock_fall; fx_expl_nest_destroy,866714158 882782346
+sfx/world/rocks/rocks_02.ogg,6.78,-19.0,mh_701_dlg_rocks_falling_light,76180274
+sfx/world/rocks/rocks_03.ogg,8.04,-19.0,qu_prl_e3_avalanche,964530292
+sfx/world/rocks/rocks_04.ogg,5.53,-19.0,qu_prl_e3_avalanche,964530292
+sfx/world/thunder/thunder_01.ogg,8.69,-19.2,amb_g_thunder_far_loop_start,417966072
+sfx/world/thunder/thunder_02.ogg,8.41,-18.2,amb_g_thunder_far_loop_start,414447425
+sfx/world/thunder/thunder_03.ogg,8.91,-18.3,amb_g_thunder_far_loop_start,150601945
+sfx/world/thunder/thunder_04.ogg,6.41,-18.3,amb_g_thunder_far_loop_start,118071702

@@ -49,6 +49,7 @@ for t in TYPES: nm.append('execute if entity @s[type=minecraft:%s] run data modi
 for (r, t), n in names.items(): nm.append('execute if score #rg le.el matches %d if entity @s[type=minecraft:%s] run data modify storage last_ember:elite name set value {"text":"%s","color":"dark_red"}' % (RN[r], t, n))
 w("name", nm)
 # ------------------------------------------------------------------ helmets, loot tables
+TROPHY = {"r0": "Трофей Приюта", "r1": "Трофей Дола", "r2": "Трофей Кольцевых гор", "r3": "Трофей Белой Тиши", "r4": "Трофей Опалённого Юга", "r5": "Трофей Глубин", "r6": "Трофей Пепельных Земель", "nether": "Трофей Пепельных Земель"}
 COL = {0: 0x888888, 1: 0x4f7a3a, 2: 0x3a5f9a, 3: 0xdde6ee, 4: 0xc9b06a, 5: 0x333333, 6: 0x992222, 7: 0x771111}
 w("helmet", ["# generated: a placeholder helmet of the colour of the region on a mob without a helmet (never dropped)"] + ["execute if score #rg le.el matches %d unless items entity @s armor.head * run item replace entity @s armor.head with minecraft:leather_helmet[minecraft:dyed_color=%d,minecraft:attribute_modifiers=[]]" % (n, c) for n, c in COL.items()])
 loot = ["# generated: the loot table of the elite = the vanilla one + the trophy of the region (+ a small thing) when a player killed it"]
@@ -58,7 +59,7 @@ for r in names_seen:
         trophy = {"type": "minecraft:item", "name": "minecraft:nautilus_shell", "modifier": [
             {"type": "minecraft:set_components", "components": {"minecraft:custom_data": {"le_trophy": r}, "minecraft:item_model": "last_ember:trophy_" + r, "minecraft:max_stack_size": 16, "minecraft:rarity": "rare",
                                                                  "minecraft:lore": [{"text": "Знак убитой элиты. Его ценят торговцы.", "color": "gray", "italic": False}]}},
-            {"type": "minecraft:set_name", "entity": "this", "target": "custom_name", "name": {"text": "Трофей Незера" if r == "nether" else "Трофей Р%d" % RN[r], "color": "gold", "italic": False}}]}
+            {"type": "minecraft:set_name", "entity": "this", "target": "custom_name", "name": {"text": TROPHY[r], "color": "gold", "italic": False}}]}
         bits = [{"type": "minecraft:item", "name": "minecraft:glass_bottle"}, {"type": "minecraft:item", "name": "minecraft:arrow", "modifier": [{"type": "minecraft:set_count", "count": 4}]},
                 {"type": "minecraft:item", "name": "minecraft:bread"}, {"type": "minecraft:item", "name": "minecraft:bone"}]
         json.dump({"type": "minecraft:entity", "pools": [

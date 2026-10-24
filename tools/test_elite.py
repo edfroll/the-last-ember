@@ -119,7 +119,7 @@ def t_reward():
     rc.run('summon minecraft:zombie 603.5 200 600.5 {NoAI:1b,Silent:1b,Tags:["t1"]}'); time.sleep(0.2); rc.run("execute as @e[tag=t1] at @s run function last_ember:elite/make"); time.sleep(0.3)
     x0 = xp_total(); rc.run("damage @e[tag=t1,limit=1] 1000 minecraft:player_attack by Cam"); time.sleep(3.5)
     items = rc.run('data get entity @e[type=item,limit=1,nbt={Item:{components:{"minecraft:custom_data":{le_trophy:"r1"}}}}] Item')
-    chk("killed by a player: the Trophy of the region r1 drops, named 'Трофей Р1' (the same for every elite of the region, so that trophies stack and a trader can take them)", "le_trophy" in items and "Трофей Р1" in items, items[:300])
+    chk("killed by a player: the Trophy of the region r1 drops, named 'Трофей Дола' (the same for every elite of the region, so that trophies stack and a trader can take them)", "le_trophy" in items and "Трофей Дола" in items, items[:300])
     chk("the trophy stacks to 16 and has a model", "max_stack_size\": 16" in items and "trophy_r1" in items, items[:200])
     chk("vanilla loot too (rotten flesh can drop: the table includes the vanilla one)", True)
     x1 = xp_total(); chk(f"experience x3: 5 (vanilla) + 10 = about 15 points (got {x1 - x0})", 13 <= x1 - x0 <= 19, x1 - x0)

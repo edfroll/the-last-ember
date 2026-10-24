@@ -1,0 +1,160 @@
+{
+ "textures": {
+  "a": "last_ember:item/lab/atlas",
+  "particle": "last_ember:item/lab/atlas"
+ },
+ "elements": [
+  {
+   "from": [
+    8.9,
+    7.55,
+    7.5
+   ],
+   "to": [
+    9.9,
+    8.45,
+    8.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "south": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "east": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "west": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "up": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "down": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    }
+   },
+   "light_emission": 15,
+   "shade": false
+  },
+  {
+   "from": [
+    6.1,
+    7.55,
+    7.5
+   ],
+   "to": [
+    7.1,
+    8.45,
+    8.0
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "south": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "east": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "west": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "up": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    },
+    "down": {
+     "uv": [
+      0,
+      12,
+      0.25,
+      12.25
+     ],
+     "texture": "#a",
+     "tintindex": 0
+    }
+   },
+   "light_emission": 15,
+   "shade": false
+  }
+ ]
+}

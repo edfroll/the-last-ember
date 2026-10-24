@@ -1,0 +1,13 @@
+{
+ "assets": {
+  "angry": "last_ember:entity/wolf/lab_warg_angry",
+  "tame": "last_ember:entity/wolf/lab_warg_tame",
+  "wild": "last_ember:entity/wolf/lab_warg"
+ },
+ "baby_assets": {
+  "angry": "last_ember:entity/wolf/lab_warg_angry_baby",
+  "tame": "last_ember:entity/wolf/lab_warg_tame_baby",
+  "wild": "last_ember:entity/wolf/lab_warg_baby"
+ },
+ "spawn_conditions": []
+}

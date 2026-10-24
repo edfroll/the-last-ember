@@ -1,0 +1,3 @@
+# 5. Giant silverfish (a vanilla silverfish of scale 3, slow, 60 health; no glowing eyes: a separate eye model does not follow the head of a vanilla model): it emerges from under the ground and burrows again
+summon minecraft:silverfish ~ ~-1.5 ~ {Tags:["le.lab","le.lab_body","le.noelite","le.keep","le.eq_done","le.rolled","le.lnew","le.lab_fish"],Silent:1b,NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Health:560f,attributes:[{id:"minecraft:max_health",base:560},{id:"minecraft:scale",base:3},{id:"minecraft:attack_damage",base:4},{id:"minecraft:movement_speed",base:0.18},{id:"minecraft:follow_range",base:24},{id:"minecraft:knockback_resistance",base:0.6}]}
+execute as @e[tag=le.lnew] run function last_ember:lab/new

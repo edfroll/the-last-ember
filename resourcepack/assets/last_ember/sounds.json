@@ -1,92 +1,6794 @@
 {
-  "music.refuge": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.grove": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.healing": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.r1_vale": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.r2_ring": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.r3_silence": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.lair_castle": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.lair_temple": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  },
-  "music.lair_crown": {
-    "category": "music",
-    "sounds": [
-      {
-        "name": "minecraft:music/game/calm1",
-        "stream": true,
-        "volume": 0.6
-      }
-    ]
-  }
+ "music.refuge": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.grove": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.healing": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.r1_vale": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.r2_ring": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.r3_silence": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.lair_castle": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.lair_temple": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "music.lair_crown": {
+  "category": "music",
+  "sounds": [
+   {
+    "name": "minecraft:music/game/ancestry",
+    "stream": true,
+    "volume": 0.6
+   }
+  ]
+ },
+ "creature.alghoul.agressive_snarl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_06"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_07"
+   },
+   {
+    "name": "last_ember:creature/alghoul/agressive_snarl/agressive_snarl_08"
+   }
+  ]
+ },
+ "creature.alghoul.appear": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/appear/appear_01"
+   }
+  ]
+ },
+ "creature.alghoul.attack": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/attack/attack_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack/attack_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack/attack_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack/attack_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack/attack_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack/attack_06"
+   }
+  ]
+ },
+ "creature.alghoul.attack_swoosh": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/attack_swoosh/attack_swoosh_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack_swoosh/attack_swoosh_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack_swoosh/attack_swoosh_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack_swoosh/attack_swoosh_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/attack_swoosh/attack_swoosh_05"
+   }
+  ]
+ },
+ "creature.alghoul.bodyfall.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_05"
+   }
+  ]
+ },
+ "creature.alghoul.bodyfall.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_04"
+   }
+  ]
+ },
+ "creature.alghoul.bodyfall.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_04"
+   }
+  ]
+ },
+ "creature.alghoul.bodyfall": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/most_surfaces_22/bodyfall_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/swamp_water_puddle_water_shallow/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/bodyfall/water_deep/bodyfall_04"
+   }
+  ]
+ },
+ "creature.alghoul.breath": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/breath/breath_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/breath/breath_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/breath/breath_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/breath/breath_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/breath/breath_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/breath/breath_06"
+   }
+  ]
+ },
+ "creature.alghoul.burn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/burn/burn_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/burn/burn_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/burn/burn_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/burn/burn_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/burn/burn_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/burn/burn_06"
+   }
+  ]
+ },
+ "creature.alghoul.calm_growl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_06"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_07"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_08"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_09"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_10"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_11"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_12"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_13"
+   },
+   {
+    "name": "last_ember:creature/alghoul/calm_growl/calm_growl_14"
+   }
+  ]
+ },
+ "creature.alghoul.death": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/death/death_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/death/death_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/death/death_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/death/death_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/death/death_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/death/death_06"
+   }
+  ]
+ },
+ "creature.alghoul.eat": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_06"
+   },
+   {
+    "name": "last_ember:creature/alghoul/eat/eat_07"
+   }
+  ]
+ },
+ "creature.alghoul.focus_100m_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_06"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_07"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_08"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_09"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_10"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_11"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_12"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_13"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_14"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_15"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_16"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_17"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_18"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_19"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_20"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_21"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_22"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_23"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_24"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_25"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_26"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_27"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_28"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_29"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_30"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_31"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_32"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_33"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_34"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_35"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_36"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_37"
+   },
+   {
+    "name": "last_ember:creature/alghoul/focus_100m_start/focus_100m_start_38"
+   }
+  ]
+ },
+ "creature.alghoul.foley": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/foley/foley_09",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.alghoul.footsteps.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_08",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.alghoul.footsteps.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.alghoul.footsteps.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.alghoul.footsteps": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/most_surfaces_22/footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/swamp_water_puddle_water_shallow/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/alghoul/footsteps/water_deep/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.alghoul.ground_scratch.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_04"
+   }
+  ]
+ },
+ "creature.alghoul.ground_scratch.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_04"
+   }
+  ]
+ },
+ "creature.alghoul.ground_scratch": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_22/ground_scratch_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/ground_scratch/most_surfaces_4/ground_scratch_04"
+   }
+  ]
+ },
+ "creature.alghoul.morph_loop_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/morph_loop_start/morph_loop_start_01"
+   }
+  ]
+ },
+ "creature.alghoul.pain": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/pain/pain_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/pain/pain_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/pain/pain_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/pain/pain_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/pain/pain_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/pain/pain_06"
+   }
+  ]
+ },
+ "creature.alghoul.short_taunt": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/alghoul/short_taunt/short_taunt_01"
+   },
+   {
+    "name": "last_ember:creature/alghoul/short_taunt/short_taunt_02"
+   },
+   {
+    "name": "last_ember:creature/alghoul/short_taunt/short_taunt_03"
+   },
+   {
+    "name": "last_ember:creature/alghoul/short_taunt/short_taunt_04"
+   },
+   {
+    "name": "last_ember:creature/alghoul/short_taunt/short_taunt_05"
+   },
+   {
+    "name": "last_ember:creature/alghoul/short_taunt/short_taunt_06"
+   }
+  ]
+ },
+ "creature.drowner.breath_long_q503": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/breath_long_q503/breath_long_q503_07"
+   }
+  ]
+ },
+ "creature.drowner.dialog_digout": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/dialog_digout/dialog_digout_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_digout/dialog_digout_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_digout/dialog_digout_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_digout/dialog_digout_04"
+   }
+  ]
+ },
+ "creature.drowner.dialog_growl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_07"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_08"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_09"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_growl/dialog_growl_10"
+   }
+  ]
+ },
+ "creature.drowner.dialog_idle": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_07"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_08"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_09"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_10"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_idle/dialog_idle_11"
+   }
+  ]
+ },
+ "creature.drowner.dialog_taunt": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/dialog_taunt/dialog_taunt_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_taunt/dialog_taunt_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_taunt/dialog_taunt_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/dialog_taunt/dialog_taunt_04"
+   }
+  ]
+ },
+ "creature.drowner.eat": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/eat/eat_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/eat/eat_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/eat/eat_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/eat/eat_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/eat/eat_05"
+   }
+  ]
+ },
+ "creature.drowner.mosnter_drowner_focus_100m_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_07"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_08"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_09"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_10"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_11"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_12"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_13"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_14"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_15"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_16"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_17"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_18"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_19"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_20"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_21"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_22"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_23"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_24"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_25"
+   },
+   {
+    "name": "last_ember:creature/drowner/mosnter_drowner_focus_100m_start/mosnter_drowner_focus_100m_start_26"
+   }
+  ]
+ },
+ "creature.drowner.mv_bodyfall.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_05",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_bodyfall.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_bodyfall.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_bodyfall": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/most_surfaces_22/mv_bodyfall_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_bodyfall/water_deep/mv_bodyfall_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_dighum": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_dighum/mv_dighum_01",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_digin": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_digin/mv_digin_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_digin/mv_digin_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_digin/mv_digin_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_digin/mv_digin_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_digout": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_digout/mv_digout_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_digout/mv_digout_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_digout/mv_digout_03",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_flesh": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_flesh/mv_flesh_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_flesh/mv_flesh_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_flesh/mv_flesh_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_flesh/mv_flesh_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_footstep.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_08",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_footstep.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_05",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_footstep.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.mv_footstep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/most_surfaces_22/mv_footstep_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/swamp_water_puddle_water_shallow/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/drowner/mv_footstep/water_deep/mv_footstep_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.drowner.swoosh": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/swoosh/swoosh_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/swoosh/swoosh_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/swoosh/swoosh_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/swoosh/swoosh_04"
+   }
+  ]
+ },
+ "creature.drowner.uw_dive_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/uw_dive_long/uw_dive_long_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_long/uw_dive_long_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_long/uw_dive_long_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_long/uw_dive_long_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_long/uw_dive_long_05"
+   }
+  ]
+ },
+ "creature.drowner.uw_dive_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/uw_dive_short/uw_dive_short_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_short/uw_dive_short_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_short/uw_dive_short_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_short/uw_dive_short_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_dive_short/uw_dive_short_05"
+   }
+  ]
+ },
+ "creature.drowner.uw_hit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/uw_hit/uw_hit_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_hit/uw_hit_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_hit/uw_hit_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_hit/uw_hit_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_hit/uw_hit_05"
+   }
+  ]
+ },
+ "creature.drowner.uw_movement_heavy": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/uw_movement_heavy/uw_movement_heavy_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_movement_heavy/uw_movement_heavy_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_movement_heavy/uw_movement_heavy_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_movement_heavy/uw_movement_heavy_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_movement_heavy/uw_movement_heavy_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_movement_heavy/uw_movement_heavy_06"
+   }
+  ]
+ },
+ "creature.drowner.uw_pain": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_07"
+   },
+   {
+    "name": "last_ember:creature/drowner/uw_pain/uw_pain_08"
+   }
+  ]
+ },
+ "creature.drowner.vo_attack": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/vo_attack/vo_attack_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_attack/vo_attack_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_attack/vo_attack_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_attack/vo_attack_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_attack/vo_attack_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_attack/vo_attack_06"
+   }
+  ]
+ },
+ "creature.drowner.vo_breath_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_breath_short/vo_breath_short_07"
+   }
+  ]
+ },
+ "creature.drowner.vo_burning": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_05"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_06"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_07"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_08"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_burning/vo_burning_09"
+   }
+  ]
+ },
+ "creature.drowner.vo_cough": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/vo_cough/vo_cough_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_cough/vo_cough_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_cough/vo_cough_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_cough/vo_cough_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_cough/vo_cough_05"
+   }
+  ]
+ },
+ "creature.drowner.vo_death": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/drowner/vo_death/vo_death_01"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_death/vo_death_02"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_death/vo_death_03"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_death/vo_death_04"
+   },
+   {
+    "name": "last_ember:creature/drowner/vo_death/vo_death_05"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack/cmb_attack_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack/cmb_attack_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack/cmb_attack_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack/cmb_attack_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack/cmb_attack_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack/cmb_attack_06"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_poison_cloud": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud/cmb_attack_poison_cloud_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud/cmb_attack_poison_cloud_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud/cmb_attack_poison_cloud_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud/cmb_attack_poison_cloud_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud/cmb_attack_poison_cloud_05"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_poison_cloud_explo": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud_explo/cmb_attack_poison_cloud_explo_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud_explo/cmb_attack_poison_cloud_explo_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud_explo/cmb_attack_poison_cloud_explo_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_poison_cloud_explo/cmb_attack_poison_cloud_explo_04"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_spike": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_spike/cmb_attack_spike_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_spike/cmb_attack_spike_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_spike/cmb_attack_spike_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_spike/cmb_attack_spike_04"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_swoosh": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_swoosh/cmb_attack_swoosh_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_swoosh/cmb_attack_swoosh_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_swoosh/cmb_attack_swoosh_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_swoosh/cmb_attack_swoosh_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_swoosh/cmb_attack_swoosh_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_swoosh/cmb_attack_swoosh_06"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_tail": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tail/cmb_attack_tail_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tail/cmb_attack_tail_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tail/cmb_attack_tail_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tail/cmb_attack_tail_04"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_tongue": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tongue/cmb_attack_tongue_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tongue/cmb_attack_tongue_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_tongue/cmb_attack_tongue_03"
+   }
+  ]
+ },
+ "creature.endrega.cmb_attack_venom": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_venom/cmb_attack_venom_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_venom/cmb_attack_venom_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_attack_venom/cmb_attack_venom_03"
+   }
+  ]
+ },
+ "creature.endrega.cmb_block": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_block/cmb_block_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block/cmb_block_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block/cmb_block_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block/cmb_block_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block/cmb_block_05"
+   }
+  ]
+ },
+ "creature.endrega.cmb_block_add": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_block_add/cmb_block_add_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block_add/cmb_block_add_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block_add/cmb_block_add_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_block_add/cmb_block_add_04"
+   }
+  ]
+ },
+ "creature.endrega.cmb_calm": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_calm/cmb_calm_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_calm/cmb_calm_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_calm/cmb_calm_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_calm/cmb_calm_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_calm/cmb_calm_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_calm/cmb_calm_06"
+   }
+  ]
+ },
+ "creature.endrega.cmb_death_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_death_long/cmb_death_long_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_long/cmb_death_long_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_long/cmb_death_long_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_long/cmb_death_long_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_long/cmb_death_long_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_long/cmb_death_long_06"
+   }
+  ]
+ },
+ "creature.endrega.cmb_death_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_death_short/cmb_death_short_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_short/cmb_death_short_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_short/cmb_death_short_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_short/cmb_death_short_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_short/cmb_death_short_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_death_short/cmb_death_short_06"
+   }
+  ]
+ },
+ "creature.endrega.cmb_pain": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_06"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_pain/cmb_pain_07"
+   }
+  ]
+ },
+ "creature.endrega.cmb_preattack_growl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_preattack_growl/cmb_preattack_growl_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_preattack_growl/cmb_preattack_growl_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_preattack_growl/cmb_preattack_growl_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_preattack_growl/cmb_preattack_growl_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_preattack_growl/cmb_preattack_growl_05"
+   }
+  ]
+ },
+ "creature.endrega.cmb_taunt_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_long/cmb_taunt_long_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_long/cmb_taunt_long_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_long/cmb_taunt_long_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_long/cmb_taunt_long_04"
+   }
+  ]
+ },
+ "creature.endrega.cmb_taunt_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_short/cmb_taunt_short_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_short/cmb_taunt_short_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_short/cmb_taunt_short_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/cmb_taunt_short/cmb_taunt_short_04"
+   }
+  ]
+ },
+ "creature.endrega.despawn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/despawn/despawn_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/despawn/despawn_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/despawn/despawn_03"
+   }
+  ]
+ },
+ "creature.endrega.exp_digging": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_06"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_07"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_digging/exp_digging_08"
+   }
+  ]
+ },
+ "creature.endrega.exp_eating": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_06"
+   },
+   {
+    "name": "last_ember:creature/endrega/exp_eating/exp_eating_07"
+   }
+  ]
+ },
+ "creature.endrega.focus_clue_100m_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_06"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_07"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_08"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_09"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_10"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_11"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_12"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_13"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_14"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_15"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_16"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_17"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_18"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_19"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_20"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_21"
+   },
+   {
+    "name": "last_ember:creature/endrega/focus_clue_100m_start/focus_clue_100m_start_22"
+   }
+  ]
+ },
+ "creature.endrega.idle": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/idle/idle_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_05"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_06"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_07"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_08"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_09"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_10"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_11"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_12"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_13"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_14"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_15"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_16"
+   },
+   {
+    "name": "last_ember:creature/endrega/idle/idle_17"
+   }
+  ]
+ },
+ "creature.endrega.mv_bodyfall.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/most_surfaces_22/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/most_surfaces_22/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/most_surfaces_22/mv_bodyfall_03",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_bodyfall.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_bodyfall.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_bodyfall": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/most_surfaces_22/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/most_surfaces_22/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/most_surfaces_22/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/swamp_water_puddle_water_shallow/mv_bodyfall_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_bodyfall/water_deep/mv_bodyfall_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_foley_01": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_foley_01/mv_foley_01_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_01/mv_foley_01_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_01/mv_foley_01_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_01/mv_foley_01_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_01/mv_foley_01_05",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_foley_02": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_foley_02/mv_foley_02_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_02/mv_foley_02_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_02/mv_foley_02_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_02/mv_foley_02_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_02/mv_foley_02_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_foley_02/mv_foley_02_06",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_footsteps.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_13",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_14",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_15",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_16",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_17",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_18",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_19",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_20",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_21",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_22",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_23",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_24",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_25",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_footsteps.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_13",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_14",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_15",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_16",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_17",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_18",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_19",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_20",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_21",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_22",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_23",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_footsteps.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_13",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_14",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_15",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_16",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_17",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_18",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_19",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_20",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_21",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_22",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_23",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_footsteps": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_13",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_14",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_15",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_16",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_17",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_18",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_19",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_20",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_21",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_22",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_23",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_24",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/most_surfaces_22/mv_footsteps_25",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_13",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_14",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_15",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_16",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_17",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_18",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_19",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_20",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_21",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_22",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/swamp_water_puddle_water_shallow/mv_footsteps_23",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_13",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_14",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_15",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_16",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_17",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_18",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_19",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_20",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_21",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_22",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_footsteps/water_deep/mv_footsteps_23",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_ground_hit.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_ground_hit.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_ground_hit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_22/mv_ground_hit_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_ground_hit/most_surfaces_4/mv_ground_hit_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_jaw": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_jaw/mv_jaw_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_jaw/mv_jaw_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_jaw/mv_jaw_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_jaw/mv_jaw_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_jaw/mv_jaw_05",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_stomp.most_surfaces_22": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_06",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_stomp.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.mv_stomp": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_22/mv_stomp_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/endrega/mv_stomp/most_surfaces_4/mv_stomp_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.endrega.vfx_spit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/vfx_spit/vfx_spit_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/vfx_spit/vfx_spit_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/vfx_spit/vfx_spit_03"
+   }
+  ]
+ },
+ "creature.endrega.vfx_venom_hit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/vfx_venom_hit/vfx_venom_hit_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/vfx_venom_hit/vfx_venom_hit_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/vfx_venom_hit/vfx_venom_hit_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/vfx_venom_hit/vfx_venom_hit_04"
+   }
+  ]
+ },
+ "creature.endrega.vfx_venom_loop_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/vfx_venom_loop_start/vfx_venom_loop_start_01"
+   }
+  ]
+ },
+ "creature.endrega.vfx_web_loop_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/vfx_web_loop_start/vfx_web_loop_start_01"
+   }
+  ]
+ },
+ "creature.endrega.vo_burn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/endrega/vo_burn/vo_burn_01"
+   },
+   {
+    "name": "last_ember:creature/endrega/vo_burn/vo_burn_02"
+   },
+   {
+    "name": "last_ember:creature/endrega/vo_burn/vo_burn_03"
+   },
+   {
+    "name": "last_ember:creature/endrega/vo_burn/vo_burn_04"
+   },
+   {
+    "name": "last_ember:creature/endrega/vo_burn/vo_burn_05"
+   }
+  ]
+ },
+ "creature.leshen.attack_crows_flyby": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_crows_flyby/attack_crows_flyby_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_crows_flyby/attack_crows_flyby_02"
+   }
+  ]
+ },
+ "creature.leshen.attack_root_a_end_s": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_end_s/attack_root_a_end_s_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_end_s/attack_root_a_end_s_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_end_s/attack_root_a_end_s_03"
+   }
+  ]
+ },
+ "creature.leshen.attack_root_a_rumble_loop": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_rumble_loop/attack_root_a_rumble_loop_01"
+   }
+  ]
+ },
+ "creature.leshen.attack_root_a_rumble_loop_end": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_rumble_loop_end/attack_root_a_rumble_loop_end_01"
+   }
+  ]
+ },
+ "creature.leshen.attack_root_a_s": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_s/attack_root_a_s_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_s/attack_root_a_s_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_root_a_s/attack_root_a_s_03"
+   }
+  ]
+ },
+ "creature.leshen.attack_roots_hit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_roots_hit/attack_roots_hit_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_hit/attack_roots_hit_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_hit/attack_roots_hit_03"
+   }
+  ]
+ },
+ "creature.leshen.attack_roots_in": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in/attack_roots_in_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in/attack_roots_in_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in/attack_roots_in_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in/attack_roots_in_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in/attack_roots_in_05"
+   }
+  ]
+ },
+ "creature.leshen.attack_roots_in_strong": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in_strong/attack_roots_in_strong_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in_strong/attack_roots_in_strong_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in_strong/attack_roots_in_strong_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in_strong/attack_roots_in_strong_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in_strong/attack_roots_in_strong_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_in_strong/attack_roots_in_strong_06"
+   }
+  ]
+ },
+ "creature.leshen.attack_roots_out": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_roots_out/attack_roots_out_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_out/attack_roots_out_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_out/attack_roots_out_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_out/attack_roots_out_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_out/attack_roots_out_05"
+   }
+  ]
+ },
+ "creature.leshen.attack_roots_spawn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_roots_spawn/attack_roots_spawn_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_spawn/attack_roots_spawn_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_roots_spawn/attack_roots_spawn_03"
+   }
+  ]
+ },
+ "creature.leshen.attack_swish_medium": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_swish_medium/attack_swish_medium_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_swish_medium/attack_swish_medium_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_swish_medium/attack_swish_medium_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_swish_medium/attack_swish_medium_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_swish_medium/attack_swish_medium_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_swish_medium/attack_swish_medium_06"
+   }
+  ]
+ },
+ "creature.leshen.attack_whoosh_medium": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/attack_whoosh_medium/attack_whoosh_medium_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_whoosh_medium/attack_whoosh_medium_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_whoosh_medium/attack_whoosh_medium_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_whoosh_medium/attack_whoosh_medium_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/attack_whoosh_medium/attack_whoosh_medium_05"
+   }
+  ]
+ },
+ "creature.leshen.cmb_parry": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/cmb_parry/cmb_parry_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/cmb_parry/cmb_parry_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/cmb_parry/cmb_parry_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/cmb_parry/cmb_parry_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/cmb_parry/cmb_parry_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/cmb_parry/cmb_parry_06"
+   }
+  ]
+ },
+ "creature.leshen.critical_burning_loop_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/critical_burning_loop_start/critical_burning_loop_start_01"
+   }
+  ]
+ },
+ "creature.leshen.crow_call_double_custom": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/crow_call_double_custom/crow_call_double_custom_01"
+   }
+  ]
+ },
+ "creature.leshen.crow_call_single_custom": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/crow_call_single_custom/crow_call_single_custom_01"
+   }
+  ]
+ },
+ "creature.leshen.focus_calm": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_06"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_07"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_08"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_09"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_10"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_11"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_12"
+   },
+   {
+    "name": "last_ember:creature/leshen/focus_calm/focus_calm_13"
+   }
+  ]
+ },
+ "creature.leshen.footstep_walk_base_custom": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/footstep_walk_base_custom/footstep_walk_base_custom_08",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.idle_growl_add": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_06"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_07"
+   },
+   {
+    "name": "last_ember:creature/leshen/idle_growl_add/idle_growl_add_08"
+   }
+  ]
+ },
+ "creature.leshen.leshy_break": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/leshy_break/leshy_break_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/leshy_break/leshy_break_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/leshy_break/leshy_break_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/leshy_break/leshy_break_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/leshy_break/leshy_break_05"
+   }
+  ]
+ },
+ "creature.leshen.mv_body_move_add": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_add/mv_body_move_add_07",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_body_move_light": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_body_move_light/mv_body_move_light_07",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_bodyfall": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_bodyfall/mv_bodyfall_01",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_footstep.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_12",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_footstep.water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_12",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_footstep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_deep/mv_footstep_12",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_09",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_10",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_11",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_footstep/water_puddle_water_shallow/mv_footstep_12",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_spawn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_spawn/mv_spawn_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn/mv_spawn_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn/mv_spawn_03",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_spawn_xtra": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_spawn_xtra/mv_spawn_xtra_08",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_teleport_out": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_teleport_out/mv_teleport_out_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_teleport_out/mv_teleport_out_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_teleport_out/mv_teleport_out_03",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_teleport_vanish": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_teleport_vanish/mv_teleport_vanish_01",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.mv_wood_stress": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/mv_wood_stress/mv_wood_stress_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_wood_stress/mv_wood_stress_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_wood_stress/mv_wood_stress_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/leshen/mv_wood_stress/mv_wood_stress_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.leshen.unnamed": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/unnamed/1051315468"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/245363024"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/272668437"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/356162769"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/539289695"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/635855278"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/82701539"
+   },
+   {
+    "name": "last_ember:creature/leshen/unnamed/836741366"
+   }
+  ]
+ },
+ "creature.leshen.vfx_transformation_block_loop_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vfx_transformation_block_loop_start/vfx_transformation_block_loop_start_01"
+   }
+  ]
+ },
+ "creature.leshen.vo_attack_root_in": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_in/vo_attack_root_in_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_in/vo_attack_root_in_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_in/vo_attack_root_in_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_in/vo_attack_root_in_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_in/vo_attack_root_in_05"
+   }
+  ]
+ },
+ "creature.leshen.vo_attack_root_out": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_06"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_root_out/vo_attack_root_out_07"
+   }
+  ]
+ },
+ "creature.leshen.vo_attack_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_attack_short/vo_attack_short_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_short/vo_attack_short_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_short/vo_attack_short_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_attack_short/vo_attack_short_04"
+   }
+  ]
+ },
+ "creature.leshen.vo_burning_scream": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_burning_scream/vo_burning_scream_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_burning_scream/vo_burning_scream_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_burning_scream/vo_burning_scream_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_burning_scream/vo_burning_scream_04"
+   }
+  ]
+ },
+ "creature.leshen.vo_burning_scream_light": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_burning_scream_light/vo_burning_scream_light_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_burning_scream_light/vo_burning_scream_light_02"
+   }
+  ]
+ },
+ "creature.leshen.vo_death": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_death/vo_death_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_death/vo_death_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_death/vo_death_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_death/vo_death_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_death/vo_death_05"
+   }
+  ]
+ },
+ "creature.leshen.vo_pain_heavy": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_06"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_07"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_08"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_09"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_heavy/vo_pain_heavy_10"
+   }
+  ]
+ },
+ "creature.leshen.vo_pain_light": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_pain_light/vo_pain_light_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_light/vo_pain_light_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_light/vo_pain_light_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_light/vo_pain_light_04"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_light/vo_pain_light_05"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_pain_light/vo_pain_light_06"
+   }
+  ]
+ },
+ "creature.leshen.vo_spawn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_spawn/vo_spawn_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_spawn/vo_spawn_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_spawn/vo_spawn_03"
+   }
+  ]
+ },
+ "creature.leshen.vo_summon_crows": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_summon_crows/vo_summon_crows_01"
+   }
+  ]
+ },
+ "creature.leshen.vo_summon_wolves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_summon_wolves/vo_summon_wolves_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_summon_wolves/vo_summon_wolves_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_summon_wolves/vo_summon_wolves_03"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_summon_wolves/vo_summon_wolves_04"
+   }
+  ]
+ },
+ "creature.leshen.vo_summon_wolves_fail": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_summon_wolves_fail/vo_summon_wolves_fail_01"
+   }
+  ]
+ },
+ "creature.leshen.vo_taunt_scream": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/leshen/vo_taunt_scream/vo_taunt_scream_01"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_taunt_scream/vo_taunt_scream_02"
+   },
+   {
+    "name": "last_ember:creature/leshen/vo_taunt_scream/vo_taunt_scream_03"
+   }
+  ]
+ },
+ "creature.toad.cmb_melee_fast": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/cmb_melee_fast/cmb_melee_fast_01"
+   }
+  ]
+ },
+ "creature.toad.cmb_tongue_forward": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_forward/cmb_tongue_forward_01"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_forward/cmb_tongue_forward_02"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_forward/cmb_tongue_forward_03"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_forward/cmb_tongue_forward_04"
+   }
+  ]
+ },
+ "creature.toad.cmb_tongue_front": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_front/cmb_tongue_front_01"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_front/cmb_tongue_front_02"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_front/cmb_tongue_front_03"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_front/cmb_tongue_front_04"
+   }
+  ]
+ },
+ "creature.toad.cmb_tongue_side": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_01"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_02"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_03"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_04"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_05"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_06"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_07"
+   },
+   {
+    "name": "last_ember:creature/toad/cmb_tongue_side/cmb_tongue_side_08"
+   }
+  ]
+ },
+ "creature.toad.fx_mucus_hit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/fx_mucus_hit/fx_mucus_hit_01"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_hit/fx_mucus_hit_02"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_hit/fx_mucus_hit_03"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_hit/fx_mucus_hit_04"
+   }
+  ]
+ },
+ "creature.toad.fx_mucus_spit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_01"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_02"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_03"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_04"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_05"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_06"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_mucus_spit/fx_mucus_spit_07"
+   }
+  ]
+ },
+ "creature.toad.fx_screen_slime": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/fx_screen_slime/fx_screen_slime_01"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_screen_slime/fx_screen_slime_02"
+   }
+  ]
+ },
+ "creature.toad.fx_stomp": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/fx_stomp/fx_stomp_01"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_stomp/fx_stomp_02"
+   }
+  ]
+ },
+ "creature.toad.fx_vomit": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/fx_vomit/fx_vomit_01"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_vomit/fx_vomit_02"
+   },
+   {
+    "name": "last_ember:creature/toad/fx_vomit/fx_vomit_03"
+   }
+  ]
+ },
+ "creature.toad.mv_footsteps": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_footsteps/mv_footsteps_07",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.toad.mv_jump": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/mv_jump/mv_jump_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_jump/mv_jump_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_jump/mv_jump_03",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.toad.mv_land": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/mv_land/mv_land_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_land/mv_land_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/toad/mv_land/mv_land_03",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.toad.vo_attack_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_attack_long/vo_attack_long_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long/vo_attack_long_02"
+   }
+  ]
+ },
+ "creature.toad.vo_attack_long_2": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_03"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_04"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_05"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_06"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_long_2/vo_attack_long_2_07"
+   }
+  ]
+ },
+ "creature.toad.vo_attack_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_attack_short/vo_attack_short_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_short/vo_attack_short_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_short/vo_attack_short_03"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_short/vo_attack_short_04"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_attack_short/vo_attack_short_05"
+   }
+  ]
+ },
+ "creature.toad.vo_idle_12": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_03"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_04"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_05"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_06"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_07"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_08"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_09"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_10"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_11"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_12"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_13"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_14"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_idle_12/vo_idle_12_15"
+   }
+  ]
+ },
+ "creature.toad.vo_melee": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_melee/vo_melee_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_melee/vo_melee_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_melee/vo_melee_03"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_melee/vo_melee_04"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_melee/vo_melee_05"
+   }
+  ]
+ },
+ "creature.toad.vo_pain": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_pain/vo_pain_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain/vo_pain_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain/vo_pain_03"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain/vo_pain_04"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain/vo_pain_05"
+   }
+  ]
+ },
+ "creature.toad.vo_pain_heavy": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_pain_heavy/vo_pain_heavy_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain_heavy/vo_pain_heavy_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain_heavy/vo_pain_heavy_03"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain_heavy/vo_pain_heavy_04"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain_heavy/vo_pain_heavy_05"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_pain_heavy/vo_pain_heavy_06"
+   }
+  ]
+ },
+ "creature.toad.vo_resonance_soft": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_resonance_soft/vo_resonance_soft_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_resonance_soft/vo_resonance_soft_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_resonance_soft/vo_resonance_soft_03"
+   }
+  ]
+ },
+ "creature.toad.vo_taunt_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/toad/vo_taunt_long/vo_taunt_long_01"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_taunt_long/vo_taunt_long_02"
+   },
+   {
+    "name": "last_ember:creature/toad/vo_taunt_long/vo_taunt_long_03"
+   }
+  ]
+ },
+ "creature.water_hag.bodyfall.grass_long_grass_short_leaves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_04"
+   }
+  ]
+ },
+ "creature.water_hag.bodyfall.most_surfaces_19": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_04"
+   }
+  ]
+ },
+ "creature.water_hag.bodyfall.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_04"
+   }
+  ]
+ },
+ "creature.water_hag.bodyfall": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/grass_long_grass_short_leaves/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_19/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/bodyfall/most_surfaces_4/bodyfall_04"
+   }
+  ]
+ },
+ "creature.water_hag.breath_fast": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_fast/breath_fast_07"
+   }
+  ]
+ },
+ "creature.water_hag.breath_slow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/breath_slow/breath_slow_07"
+   }
+  ]
+ },
+ "creature.water_hag.emerge": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/emerge/emerge_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/emerge/emerge_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/emerge/emerge_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/emerge/emerge_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/emerge/emerge_05"
+   }
+  ]
+ },
+ "creature.water_hag.focus_100m_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_07"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_08"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_09"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_10"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_11"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_12"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_13"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_14"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_15"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_16"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_17"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_18"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_19"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_20"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_21"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_22"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_23"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_24"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_25"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_26"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_27"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_28"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_29"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_30"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_31"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_32"
+   },
+   {
+    "name": "last_ember:creature/water_hag/focus_100m_start/focus_100m_start_33"
+   }
+  ]
+ },
+ "creature.water_hag.footsteps.grass_long_grass_short_leaves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_06",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.water_hag.footsteps.most_surfaces_19": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_06",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.water_hag.footsteps.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.water_hag.footsteps": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/grass_long_grass_short_leaves/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_19/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/water_hag/footsteps/most_surfaces_4/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.water_hag.ground.grass_long_grass_short_leaves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_04"
+   }
+  ]
+ },
+ "creature.water_hag.ground.most_surfaces_19": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_04"
+   }
+  ]
+ },
+ "creature.water_hag.ground.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_04"
+   }
+  ]
+ },
+ "creature.water_hag.ground": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/grass_long_grass_short_leaves/ground_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_19/ground_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/ground/most_surfaces_4/ground_04"
+   }
+  ]
+ },
+ "creature.water_hag.mud_grab": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/mud_grab/mud_grab_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/mud_grab/mud_grab_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/mud_grab/mud_grab_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/mud_grab/mud_grab_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/mud_grab/mud_grab_05"
+   }
+  ]
+ },
+ "creature.water_hag.shuffle.grass_long_grass_short_leaves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_07"
+   }
+  ]
+ },
+ "creature.water_hag.shuffle.most_surfaces_19": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_07"
+   }
+  ]
+ },
+ "creature.water_hag.shuffle.most_surfaces_4": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_04"
+   }
+  ]
+ },
+ "creature.water_hag.shuffle": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/grass_long_grass_short_leaves/shuffle_07"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_19/shuffle_07"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/shuffle/most_surfaces_4/shuffle_04"
+   }
+  ]
+ },
+ "creature.water_hag.slime": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/slime/slime_07"
+   }
+  ]
+ },
+ "creature.water_hag.swoosh": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/swoosh/swoosh_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/swoosh/swoosh_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/swoosh/swoosh_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/swoosh/swoosh_04"
+   }
+  ]
+ },
+ "creature.water_hag.vo_attack_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_long/vo_attack_long_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_long/vo_attack_long_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_long/vo_attack_long_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_long/vo_attack_long_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_long/vo_attack_long_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_long/vo_attack_long_06"
+   }
+  ]
+ },
+ "creature.water_hag.vo_attack_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_attack_short/vo_attack_short_07"
+   }
+  ]
+ },
+ "creature.water_hag.vo_burn": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_burn/vo_burn_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_burn/vo_burn_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_burn/vo_burn_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_burn/vo_burn_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_burn/vo_burn_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_burn/vo_burn_06"
+   }
+  ]
+ },
+ "creature.water_hag.vo_death_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_death_long/vo_death_long_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_death_long/vo_death_long_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_death_long/vo_death_long_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_death_long/vo_death_long_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_death_long/vo_death_long_05"
+   }
+  ]
+ },
+ "creature.water_hag.vo_gurgle_long": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_07"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_long/vo_gurgle_long_08"
+   }
+  ]
+ },
+ "creature.water_hag.vo_gurgle_short": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_07"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_gurgle_short/vo_gurgle_short_08"
+   }
+  ]
+ },
+ "creature.water_hag.vo_mumble_high": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_high/vo_mumble_high_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_high/vo_mumble_high_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_high/vo_mumble_high_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_high/vo_mumble_high_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_high/vo_mumble_high_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_high/vo_mumble_high_06"
+   }
+  ]
+ },
+ "creature.water_hag.vo_mumble_low": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_07"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_08"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_09"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_10"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_11"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_mumble_low/vo_mumble_low_12"
+   }
+  ]
+ },
+ "creature.water_hag.vo_pain": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_pain/vo_pain_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_pain/vo_pain_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_pain/vo_pain_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_pain/vo_pain_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_pain/vo_pain_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_pain/vo_pain_06"
+   }
+  ]
+ },
+ "creature.water_hag.vo_taunt": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_01"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_02"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_03"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_04"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_05"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_06"
+   },
+   {
+    "name": "last_ember:creature/water_hag/vo_taunt/vo_taunt_07"
+   }
+  ]
+ },
+ "creature.wild_dog.attack": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_07"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/attack/attack_08"
+   }
+  ]
+ },
+ "creature.wild_dog.bark": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bark/bark_07"
+   }
+  ]
+ },
+ "creature.wild_dog.bite": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bite/bite_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bite/bite_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bite/bite_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bite/bite_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bite/bite_05"
+   }
+  ]
+ },
+ "creature.wild_dog.bodyfall.grass_long_grass_short_leaves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_05"
+   }
+  ]
+ },
+ "creature.wild_dog.bodyfall.most_surfaces_19": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_05"
+   }
+  ]
+ },
+ "creature.wild_dog.bodyfall.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_04"
+   }
+  ]
+ },
+ "creature.wild_dog.bodyfall.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_04"
+   }
+  ]
+ },
+ "creature.wild_dog.bodyfall": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/grass_long_grass_short_leaves/bodyfall_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/most_surfaces_19/bodyfall_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/swamp_water_puddle_water_shallow/bodyfall_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/bodyfall/water_deep/bodyfall_04"
+   }
+  ]
+ },
+ "creature.wild_dog.breath": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_07"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/breath/breath_08"
+   }
+  ]
+ },
+ "creature.wild_dog.calm": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_07"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_08"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_09"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm/calm_10"
+   }
+  ]
+ },
+ "creature.wild_dog.calm_add": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/calm_add/calm_add_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm_add/calm_add_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm_add/calm_add_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm_add/calm_add_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/calm_add/calm_add_05"
+   }
+  ]
+ },
+ "creature.wild_dog.death": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/death/death_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/death/death_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/death/death_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/death/death_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/death/death_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/death/death_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/death/death_07"
+   }
+  ]
+ },
+ "creature.wild_dog.eating": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/eating/eating_07"
+   }
+  ]
+ },
+ "creature.wild_dog.focus_100m_start": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_07"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_08"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_09"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_10"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_11"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_12"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_13"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_14"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_15"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_16"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_17"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_18"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_19"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_20"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_21"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_22"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_23"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_24"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_25"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_26"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_27"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_28"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_29"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_30"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_31"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_32"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_33"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_34"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_35"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_36"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/focus_100m_start/focus_100m_start_37"
+   }
+  ]
+ },
+ "creature.wild_dog.footsteps.grass_long_grass_short_leaves": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_08",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.wild_dog.footsteps.most_surfaces_19": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_08",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.wild_dog.footsteps.swamp_water_puddle_water_shallow": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.wild_dog.footsteps.water_deep": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.wild_dog.footsteps": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/grass_long_grass_short_leaves/footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_05",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_06",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_07",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/most_surfaces_19/footsteps_08",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/swamp_water_puddle_water_shallow/footsteps_04",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_01",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_02",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_03",
+    "attenuation_distance": 12
+   },
+   {
+    "name": "last_ember:creature/wild_dog/footsteps/water_deep/footsteps_04",
+    "attenuation_distance": 12
+   }
+  ]
+ },
+ "creature.wild_dog.growl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/growl/growl_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl/growl_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl/growl_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl/growl_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl/growl_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl/growl_06"
+   }
+  ]
+ },
+ "creature.wild_dog.growl_aggro": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_07"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/growl_aggro/growl_aggro_08"
+   }
+  ]
+ },
+ "creature.wild_dog.howl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/howl/howl_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/howl/howl_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/howl/howl_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/howl/howl_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/howl/howl_05"
+   }
+  ]
+ },
+ "creature.wild_dog.lick": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/lick/lick_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/lick/lick_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/lick/lick_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/lick/lick_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/lick/lick_05"
+   }
+  ]
+ },
+ "creature.wild_dog.pain": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/pain/pain_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/pain/pain_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/pain/pain_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/pain/pain_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/pain/pain_05"
+   }
+  ]
+ },
+ "creature.wild_dog.rolling": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/rolling/rolling_07"
+   }
+  ]
+ },
+ "creature.wild_dog.snarl": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_04"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_05"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_06"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_07"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_08"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/snarl/snarl_09"
+   }
+  ]
+ },
+ "creature.wild_dog.sniff": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/sniff/sniff_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/sniff/sniff_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/sniff/sniff_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/sniff/sniff_04"
+   }
+  ]
+ },
+ "creature.wild_dog.wakeup": {
+  "sounds": [
+   {
+    "name": "last_ember:creature/wild_dog/wakeup/wakeup_01"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/wakeup/wakeup_02"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/wakeup/wakeup_03"
+   },
+   {
+    "name": "last_ember:creature/wild_dog/wakeup/wakeup_04"
+   }
+  ]
+ },
+ "sfx.amb.bell_far": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/bell_far/bell_far_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/bell_far/bell_far_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.cave_drips": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/cave_drips/cave_drips_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/cave_drips/cave_drips_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.depths_hum": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/depths_hum/depths_hum_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/depths_hum/depths_hum_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.forest_night": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/forest_night/forest_night_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/forest_night/forest_night_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.lava_ash": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/lava_ash/lava_ash_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/lava_ash/lava_ash_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.refuge_fire": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/refuge_fire/refuge_fire_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/refuge_fire/refuge_fire_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.sandstorm": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/sandstorm/sandstorm_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/sandstorm/sandstorm_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.sea": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/sea/sea_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/sea/sea_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.swamp": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/swamp/swamp_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/swamp/swamp_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.wind_ice": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/wind_ice/wind_ice_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/wind_ice/wind_ice_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.amb.wind_mountain": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/amb/wind_mountain/wind_mountain_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/amb/wind_mountain/wind_mountain_02",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.class.amulet": {
+  "sounds": [
+   "last_ember:sfx/class/amulet/amulet_01",
+   "last_ember:sfx/class/amulet/amulet_02",
+   "last_ember:sfx/class/amulet/amulet_03",
+   "last_ember:sfx/class/amulet/amulet_04"
+  ]
+ },
+ "sfx.class.bless": {
+  "sounds": [
+   "last_ember:sfx/class/bless/bless_01",
+   "last_ember:sfx/class/bless/bless_02",
+   "last_ember:sfx/class/bless/bless_03"
+  ]
+ },
+ "sfx.class.cauldron_boil": {
+  "sounds": [
+   "last_ember:sfx/class/cauldron_boil/cauldron_boil_01",
+   "last_ember:sfx/class/cauldron_boil/cauldron_boil_02",
+   "last_ember:sfx/class/cauldron_boil/cauldron_boil_03",
+   "last_ember:sfx/class/cauldron_boil/cauldron_boil_04"
+  ]
+ },
+ "sfx.class.cauldron_done": {
+  "sounds": [
+   "last_ember:sfx/class/cauldron_done/cauldron_done_01",
+   "last_ember:sfx/class/cauldron_done/cauldron_done_02",
+   "last_ember:sfx/class/cauldron_done/cauldron_done_03"
+  ]
+ },
+ "sfx.class.horn": {
+  "sounds": [
+   "last_ember:sfx/class/horn/horn_01",
+   "last_ember:sfx/class/horn/horn_02",
+   "last_ember:sfx/class/horn/horn_03",
+   "last_ember:sfx/class/horn/horn_04"
+  ]
+ },
+ "sfx.class.oil_apply": {
+  "sounds": [
+   "last_ember:sfx/class/oil_apply/oil_apply_01",
+   "last_ember:sfx/class/oil_apply/oil_apply_02",
+   "last_ember:sfx/class/oil_apply/oil_apply_03"
+  ]
+ },
+ "sfx.class.shield_reflect": {
+  "sounds": [
+   "last_ember:sfx/class/shield_reflect/shield_reflect_01",
+   "last_ember:sfx/class/shield_reflect/shield_reflect_02",
+   "last_ember:sfx/class/shield_reflect/shield_reflect_03",
+   "last_ember:sfx/class/shield_reflect/shield_reflect_04"
+  ]
+ },
+ "sfx.death.ash": {
+  "sounds": [
+   "last_ember:sfx/death/ash/ash_01",
+   "last_ember:sfx/death/ash/ash_02",
+   "last_ember:sfx/death/ash/ash_03",
+   "last_ember:sfx/death/ash/ash_04"
+  ]
+ },
+ "sfx.death.ash_take": {
+  "sounds": [
+   "last_ember:sfx/death/ash_take/ash_take_01",
+   "last_ember:sfx/death/ash_take/ash_take_02",
+   "last_ember:sfx/death/ash_take/ash_take_03"
+  ]
+ },
+ "sfx.death.urn_open": {
+  "sounds": [
+   "last_ember:sfx/death/urn_open/urn_open_01",
+   "last_ember:sfx/death/urn_open/urn_open_02",
+   "last_ember:sfx/death/urn_open/urn_open_03"
+  ]
+ },
+ "sfx.ember.altar_choir": {
+  "sounds": [
+   "last_ember:sfx/ember/altar_choir/altar_choir_01",
+   "last_ember:sfx/ember/altar_choir/altar_choir_02",
+   "last_ember:sfx/ember/altar_choir/altar_choir_03"
+  ]
+ },
+ "sfx.ember.altar_rise": {
+  "sounds": [
+   "last_ember:sfx/ember/altar_rise/altar_rise_01",
+   "last_ember:sfx/ember/altar_rise/altar_rise_02"
+  ]
+ },
+ "sfx.ember.altar_strike": {
+  "sounds": [
+   "last_ember:sfx/ember/altar_strike/altar_strike_01",
+   "last_ember:sfx/ember/altar_strike/altar_strike_02",
+   "last_ember:sfx/ember/altar_strike/altar_strike_03"
+  ]
+ },
+ "sfx.ember.bonfire_idle": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/ember/bonfire_idle/bonfire_idle_01",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/ember/bonfire_idle/bonfire_idle_02",
+    "stream": true
+   },
+   {
+    "name": "last_ember:sfx/ember/bonfire_idle/bonfire_idle_03",
+    "stream": true
+   }
+  ]
+ },
+ "sfx.ember.bonfire_light": {
+  "sounds": [
+   "last_ember:sfx/ember/bonfire_light/bonfire_light_01",
+   "last_ember:sfx/ember/bonfire_light/bonfire_light_02",
+   "last_ember:sfx/ember/bonfire_light/bonfire_light_03",
+   "last_ember:sfx/ember/bonfire_light/bonfire_light_04"
+  ]
+ },
+ "sfx.ember.call": {
+  "sounds": [
+   "last_ember:sfx/ember/call/call_01",
+   "last_ember:sfx/ember/call/call_02",
+   "last_ember:sfx/ember/call/call_03",
+   "last_ember:sfx/ember/call/call_04"
+  ]
+ },
+ "sfx.mind.breath": {
+  "sounds": [
+   "last_ember:sfx/mind/breath/breath_01",
+   "last_ember:sfx/mind/breath/breath_02",
+   "last_ember:sfx/mind/breath/breath_03",
+   "last_ember:sfx/mind/breath/breath_04"
+  ]
+ },
+ "sfx.mind.creak": {
+  "sounds": [
+   "last_ember:sfx/mind/creak/creak_01",
+   "last_ember:sfx/mind/creak/creak_02",
+   "last_ember:sfx/mind/creak/creak_03",
+   "last_ember:sfx/mind/creak/creak_04"
+  ]
+ },
+ "sfx.mind.cry": {
+  "sounds": [
+   "last_ember:sfx/mind/cry/cry_01",
+   "last_ember:sfx/mind/cry/cry_02",
+   "last_ember:sfx/mind/cry/cry_03"
+  ]
+ },
+ "sfx.mind.knock": {
+  "sounds": [
+   "last_ember:sfx/mind/knock/knock_01",
+   "last_ember:sfx/mind/knock/knock_02",
+   "last_ember:sfx/mind/knock/knock_03"
+  ]
+ },
+ "sfx.mind.laugh": {
+  "sounds": [
+   "last_ember:sfx/mind/laugh/laugh_01",
+   "last_ember:sfx/mind/laugh/laugh_02",
+   "last_ember:sfx/mind/laugh/laugh_03",
+   "last_ember:sfx/mind/laugh/laugh_04"
+  ]
+ },
+ "sfx.mind.ring_on": {
+  "sounds": [
+   "last_ember:sfx/mind/ring_on/ring_on_01",
+   "last_ember:sfx/mind/ring_on/ring_on_02",
+   "last_ember:sfx/mind/ring_on/ring_on_03"
+  ]
+ },
+ "sfx.mind.steps": {
+  "sounds": [
+   "last_ember:sfx/mind/steps/steps_01",
+   "last_ember:sfx/mind/steps/steps_02",
+   "last_ember:sfx/mind/steps/steps_03",
+   "last_ember:sfx/mind/steps/steps_04",
+   "last_ember:sfx/mind/steps/steps_05"
+  ]
+ },
+ "sfx.mind.whisper": {
+  "sounds": [
+   "last_ember:sfx/mind/whisper/whisper_01",
+   "last_ember:sfx/mind/whisper/whisper_02",
+   "last_ember:sfx/mind/whisper/whisper_03",
+   "last_ember:sfx/mind/whisper/whisper_04",
+   "last_ember:sfx/mind/whisper/whisper_05"
+  ]
+ },
+ "sfx.quest.board": {
+  "sounds": [
+   "last_ember:sfx/quest/board/board_01",
+   "last_ember:sfx/quest/board/board_02",
+   "last_ember:sfx/quest/board/board_03",
+   "last_ember:sfx/quest/board/board_04"
+  ]
+ },
+ "sfx.quest.clue": {
+  "sounds": [
+   "last_ember:sfx/quest/clue/clue_01",
+   "last_ember:sfx/quest/clue/clue_02",
+   "last_ember:sfx/quest/clue/clue_03",
+   "last_ember:sfx/quest/clue/clue_04"
+  ]
+ },
+ "sfx.quest.curse_lifted": {
+  "sounds": [
+   "last_ember:sfx/quest/curse_lifted/curse_lifted_01",
+   "last_ember:sfx/quest/curse_lifted/curse_lifted_02",
+   "last_ember:sfx/quest/curse_lifted/curse_lifted_03"
+  ]
+ },
+ "sfx.quest.ritual": {
+  "sounds": [
+   {
+    "name": "last_ember:sfx/quest/ritual/ritual_01",
+    "stream": true
+   },
+   "last_ember:sfx/quest/ritual/ritual_02"
+  ]
+ },
+ "sfx.spell.banish": {
+  "sounds": [
+   "last_ember:sfx/spell/banish/banish_01",
+   "last_ember:sfx/spell/banish/banish_02",
+   "last_ember:sfx/spell/banish/banish_03"
+  ]
+ },
+ "sfx.spell.blink": {
+  "sounds": [
+   "last_ember:sfx/spell/blink/blink_01",
+   "last_ember:sfx/spell/blink/blink_02",
+   "last_ember:sfx/spell/blink/blink_03",
+   "last_ember:sfx/spell/blink/blink_04"
+  ]
+ },
+ "sfx.spell.cover": {
+  "sounds": [
+   "last_ember:sfx/spell/cover/cover_01",
+   "last_ember:sfx/spell/cover/cover_02",
+   "last_ember:sfx/spell/cover/cover_03"
+  ]
+ },
+ "sfx.spell.fail": {
+  "sounds": [
+   "last_ember:sfx/spell/fail/fail_01",
+   "last_ember:sfx/spell/fail/fail_02",
+   "last_ember:sfx/spell/fail/fail_03",
+   "last_ember:sfx/spell/fail/fail_04"
+  ]
+ },
+ "sfx.spell.flame": {
+  "sounds": [
+   "last_ember:sfx/spell/flame/flame_01",
+   "last_ember:sfx/spell/flame/flame_02",
+   "last_ember:sfx/spell/flame/flame_03",
+   "last_ember:sfx/spell/flame/flame_04"
+  ]
+ },
+ "sfx.spell.frost": {
+  "sounds": [
+   "last_ember:sfx/spell/frost/frost_01",
+   "last_ember:sfx/spell/frost/frost_02",
+   "last_ember:sfx/spell/frost/frost_03",
+   "last_ember:sfx/spell/frost/frost_04"
+  ]
+ },
+ "sfx.spell.lift": {
+  "sounds": [
+   "last_ember:sfx/spell/lift/lift_01",
+   "last_ember:sfx/spell/lift/lift_02",
+   "last_ember:sfx/spell/lift/lift_03"
+  ]
+ },
+ "sfx.spell.wrath_charge": {
+  "sounds": [
+   "last_ember:sfx/spell/wrath_charge/wrath_charge_01",
+   "last_ember:sfx/spell/wrath_charge/wrath_charge_02"
+  ]
+ },
+ "sfx.spell.wrath_strike": {
+  "sounds": [
+   "last_ember:sfx/spell/wrath_strike/wrath_strike_01",
+   "last_ember:sfx/spell/wrath_strike/wrath_strike_02",
+   "last_ember:sfx/spell/wrath_strike/wrath_strike_03"
+  ]
+ },
+ "sfx.sting.chapter": {
+  "sounds": [
+   "last_ember:sfx/sting/chapter/chapter_01",
+   "last_ember:sfx/sting/chapter/chapter_02",
+   "last_ember:sfx/sting/chapter/chapter_03"
+  ]
+ },
+ "sfx.sting.key_item": {
+  "sounds": [
+   "last_ember:sfx/sting/key_item/key_item_01",
+   "last_ember:sfx/sting/key_item/key_item_02"
+  ]
+ },
+ "sfx.sting.monster": {
+  "sounds": [
+   "last_ember:sfx/sting/monster/monster_01",
+   "last_ember:sfx/sting/monster/monster_02",
+   "last_ember:sfx/sting/monster/monster_03"
+  ]
+ },
+ "sfx.sting.secret": {
+  "sounds": [
+   "last_ember:sfx/sting/secret/secret_01",
+   "last_ember:sfx/sting/secret/secret_02",
+   "last_ember:sfx/sting/secret/secret_03"
+  ]
+ },
+ "sfx.trap.arrows": {
+  "sounds": [
+   "last_ember:sfx/trap/arrows/arrows_01",
+   "last_ember:sfx/trap/arrows/arrows_02",
+   "last_ember:sfx/trap/arrows/arrows_03"
+  ]
+ },
+ "sfx.trap.branch_crack": {
+  "sounds": [
+   "last_ember:sfx/trap/branch_crack/branch_crack_01",
+   "last_ember:sfx/trap/branch_crack/branch_crack_02",
+   "last_ember:sfx/trap/branch_crack/branch_crack_03",
+   "last_ember:sfx/trap/branch_crack/branch_crack_04"
+  ]
+ },
+ "sfx.trap.click": {
+  "sounds": [
+   "last_ember:sfx/trap/click/click_01",
+   "last_ember:sfx/trap/click/click_02",
+   "last_ember:sfx/trap/click/click_03",
+   "last_ember:sfx/trap/click/click_04"
+  ]
+ },
+ "sfx.trap.collapse": {
+  "sounds": [
+   "last_ember:sfx/trap/collapse/collapse_01",
+   "last_ember:sfx/trap/collapse/collapse_02",
+   "last_ember:sfx/trap/collapse/collapse_03",
+   "last_ember:sfx/trap/collapse/collapse_04"
+  ]
+ },
+ "sfx.trap.gas": {
+  "sounds": [
+   "last_ember:sfx/trap/gas/gas_01",
+   "last_ember:sfx/trap/gas/gas_02",
+   "last_ember:sfx/trap/gas/gas_03",
+   "last_ember:sfx/trap/gas/gas_04"
+  ]
+ },
+ "sfx.trap.lava_rumble": {
+  "sounds": [
+   "last_ember:sfx/trap/lava_rumble/lava_rumble_01",
+   "last_ember:sfx/trap/lava_rumble/lava_rumble_02",
+   "last_ember:sfx/trap/lava_rumble/lava_rumble_03"
+  ]
+ },
+ "sfx.trap.stone_grind": {
+  "sounds": [
+   "last_ember:sfx/trap/stone_grind/stone_grind_01",
+   "last_ember:sfx/trap/stone_grind/stone_grind_02",
+   "last_ember:sfx/trap/stone_grind/stone_grind_03",
+   "last_ember:sfx/trap/stone_grind/stone_grind_04"
+  ]
+ },
+ "sfx.world.gate": {
+  "sounds": [
+   "last_ember:sfx/world/gate/gate_01",
+   "last_ember:sfx/world/gate/gate_02",
+   "last_ember:sfx/world/gate/gate_03",
+   "last_ember:sfx/world/gate/gate_04"
+  ]
+ },
+ "sfx.world.portal": {
+  "sounds": [
+   "last_ember:sfx/world/portal/portal_01",
+   "last_ember:sfx/world/portal/portal_02",
+   "last_ember:sfx/world/portal/portal_03",
+   "last_ember:sfx/world/portal/portal_04"
+  ]
+ },
+ "sfx.world.rocks": {
+  "sounds": [
+   "last_ember:sfx/world/rocks/rocks_01",
+   "last_ember:sfx/world/rocks/rocks_02",
+   "last_ember:sfx/world/rocks/rocks_03",
+   "last_ember:sfx/world/rocks/rocks_04"
+  ]
+ },
+ "sfx.world.thunder": {
+  "sounds": [
+   "last_ember:sfx/world/thunder/thunder_01",
+   "last_ember:sfx/world/thunder/thunder_02",
+   "last_ember:sfx/world/thunder/thunder_03",
+   "last_ember:sfx/world/thunder/thunder_04"
+  ]
+ }
 }

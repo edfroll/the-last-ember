@@ -107,7 +107,7 @@ def t_smith():
     chk("8 deals; the uses 3,3,3,3,3,5,3,2", sorted(int(x) for x in re.findall(r"maxUses: (\d+)", o)) == sorted([3, 3, 3, 3, 3, 5, 3, 2]), re.findall(r"maxUses: (\d+)", o))
     chk("the blade: iron sword, Sharpness I, named Клинок Приюта", "Клинок Приюта" in o and "minecraft:sharpness" in o)
     chk("only the trophies of the region r1 are taken (by custom_data)", o.count('le_trophy: "r1"') >= 8 and 'le_trophy: "r2"' not in o)
-    prep("Cam", 2); rc.run("give Cam minecraft:nautilus_shell[minecraft:custom_data={le_trophy:\"r1\"},minecraft:custom_name='{\"text\":\"Трофей Р1\",\"italic\":false}',minecraft:max_stack_size=16] 4"); rc.run("effect clear Cam")
+    prep("Cam", 2); rc.run("give Cam minecraft:nautilus_shell[minecraft:custom_data={le_trophy:\"r1\"},minecraft:custom_name='{\"text\":\"Трофей Дола\",\"italic\":false}',minecraft:max_stack_size=16] 4"); rc.run("effect clear Cam")
     for _ in range(3):
         rc.run("tp Cam 58.5 101 25.3"); tc.face("Cam", 58.5, 101, 25.3, 58.5, 101.9, 27.5); time.sleep(0.5); tc.act("Cam", "!use"); time.sleep(1.0); tc.act("Cam", "!trade_sel 4"); time.sleep(0.7); tc.act("Cam", "!trade_take"); time.sleep(0.9); tc.act("Cam", "!sneak_off"); time.sleep(1.2)
         if "minecraft:shield" in inv("Cam"): break

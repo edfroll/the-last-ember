@@ -35,3 +35,5 @@ function last_ember:trap/setup
 function last_ember:statue/setup
 # T-017: traders
 function last_ember:trader/setup
+# T-018: the monster lab, wounds
+function last_ember:lab/setup

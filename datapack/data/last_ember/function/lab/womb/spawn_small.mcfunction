@@ -1,0 +1,4 @@
+# a small womb (size 2) out of a dead big one: alive at once, does not split again
+summon minecraft:slime ~ ~ ~ {Size:1,Tags:["le.lab","le.lab_body","le.noelite","le.keep","le.eq_done","le.rolled","le.lnew","le.lab_womb","le.lw_small"],Silent:1b,PersistenceRequired:1b,Health:508f,attributes:[{id:"minecraft:max_health",base:508},{id:"minecraft:attack_damage",base:3},{id:"minecraft:follow_range",base:24}],active_effects:[{id:"minecraft:invisibility",duration:-1,amplifier:0,show_particles:0b}],Passengers:[{id:"minecraft:item_display",Tags:["le.lab_part","le.lab_blob"],teleport_duration:3,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/womb"}},transformation:{translation:[0.0f,-1.0f,0.0f],left_rotation:[0f,0f,0f,1f],scale:[1.05f,1.05f,1.05f],right_rotation:[0f,0f,0f,1f]}}]}
+scoreboard players set #st le.l 2
+execute as @e[tag=le.lnew] run function last_ember:lab/womb/small_init

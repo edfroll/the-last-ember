@@ -1,0 +1,535 @@
+{
+  "sfx.amb.bell_far": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/bell_far/bell_far_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/bell_far/bell_far_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.cave_drips": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/cave_drips/cave_drips_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/cave_drips/cave_drips_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.depths_hum": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/depths_hum/depths_hum_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/depths_hum/depths_hum_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.forest_night": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/forest_night/forest_night_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/forest_night/forest_night_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.lava_ash": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/lava_ash/lava_ash_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/lava_ash/lava_ash_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.refuge_fire": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/refuge_fire/refuge_fire_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/refuge_fire/refuge_fire_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.sandstorm": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/sandstorm/sandstorm_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/sandstorm/sandstorm_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.sea": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/sea/sea_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/sea/sea_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.swamp": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/swamp/swamp_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/swamp/swamp_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.wind_ice": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/wind_ice/wind_ice_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/wind_ice/wind_ice_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.amb.wind_mountain": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/amb/wind_mountain/wind_mountain_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/amb/wind_mountain/wind_mountain_02",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.class.amulet": {
+    "sounds": [
+      "last_ember:sfx/class/amulet/amulet_01",
+      "last_ember:sfx/class/amulet/amulet_02",
+      "last_ember:sfx/class/amulet/amulet_03",
+      "last_ember:sfx/class/amulet/amulet_04"
+    ]
+  },
+  "sfx.class.bless": {
+    "sounds": [
+      "last_ember:sfx/class/bless/bless_01",
+      "last_ember:sfx/class/bless/bless_02",
+      "last_ember:sfx/class/bless/bless_03"
+    ]
+  },
+  "sfx.class.cauldron_boil": {
+    "sounds": [
+      "last_ember:sfx/class/cauldron_boil/cauldron_boil_01",
+      "last_ember:sfx/class/cauldron_boil/cauldron_boil_02",
+      "last_ember:sfx/class/cauldron_boil/cauldron_boil_03",
+      "last_ember:sfx/class/cauldron_boil/cauldron_boil_04"
+    ]
+  },
+  "sfx.class.cauldron_done": {
+    "sounds": [
+      "last_ember:sfx/class/cauldron_done/cauldron_done_01",
+      "last_ember:sfx/class/cauldron_done/cauldron_done_02",
+      "last_ember:sfx/class/cauldron_done/cauldron_done_03"
+    ]
+  },
+  "sfx.class.horn": {
+    "sounds": [
+      "last_ember:sfx/class/horn/horn_01",
+      "last_ember:sfx/class/horn/horn_02",
+      "last_ember:sfx/class/horn/horn_03",
+      "last_ember:sfx/class/horn/horn_04"
+    ]
+  },
+  "sfx.class.oil_apply": {
+    "sounds": [
+      "last_ember:sfx/class/oil_apply/oil_apply_01",
+      "last_ember:sfx/class/oil_apply/oil_apply_02",
+      "last_ember:sfx/class/oil_apply/oil_apply_03"
+    ]
+  },
+  "sfx.class.shield_reflect": {
+    "sounds": [
+      "last_ember:sfx/class/shield_reflect/shield_reflect_01",
+      "last_ember:sfx/class/shield_reflect/shield_reflect_02",
+      "last_ember:sfx/class/shield_reflect/shield_reflect_03",
+      "last_ember:sfx/class/shield_reflect/shield_reflect_04"
+    ]
+  },
+  "sfx.death.ash": {
+    "sounds": [
+      "last_ember:sfx/death/ash/ash_01",
+      "last_ember:sfx/death/ash/ash_02",
+      "last_ember:sfx/death/ash/ash_03",
+      "last_ember:sfx/death/ash/ash_04"
+    ]
+  },
+  "sfx.death.ash_take": {
+    "sounds": [
+      "last_ember:sfx/death/ash_take/ash_take_01",
+      "last_ember:sfx/death/ash_take/ash_take_02",
+      "last_ember:sfx/death/ash_take/ash_take_03"
+    ]
+  },
+  "sfx.death.urn_open": {
+    "sounds": [
+      "last_ember:sfx/death/urn_open/urn_open_01",
+      "last_ember:sfx/death/urn_open/urn_open_02",
+      "last_ember:sfx/death/urn_open/urn_open_03"
+    ]
+  },
+  "sfx.ember.altar_choir": {
+    "sounds": [
+      "last_ember:sfx/ember/altar_choir/altar_choir_01",
+      "last_ember:sfx/ember/altar_choir/altar_choir_02",
+      "last_ember:sfx/ember/altar_choir/altar_choir_03"
+    ]
+  },
+  "sfx.ember.altar_rise": {
+    "sounds": [
+      "last_ember:sfx/ember/altar_rise/altar_rise_01",
+      "last_ember:sfx/ember/altar_rise/altar_rise_02"
+    ]
+  },
+  "sfx.ember.altar_strike": {
+    "sounds": [
+      "last_ember:sfx/ember/altar_strike/altar_strike_01",
+      "last_ember:sfx/ember/altar_strike/altar_strike_02",
+      "last_ember:sfx/ember/altar_strike/altar_strike_03"
+    ]
+  },
+  "sfx.ember.bonfire_idle": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/ember/bonfire_idle/bonfire_idle_01",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/ember/bonfire_idle/bonfire_idle_02",
+        "stream": true
+      },
+      {
+        "name": "last_ember:sfx/ember/bonfire_idle/bonfire_idle_03",
+        "stream": true
+      }
+    ]
+  },
+  "sfx.ember.bonfire_light": {
+    "sounds": [
+      "last_ember:sfx/ember/bonfire_light/bonfire_light_01",
+      "last_ember:sfx/ember/bonfire_light/bonfire_light_02",
+      "last_ember:sfx/ember/bonfire_light/bonfire_light_03",
+      "last_ember:sfx/ember/bonfire_light/bonfire_light_04"
+    ]
+  },
+  "sfx.ember.call": {
+    "sounds": [
+      "last_ember:sfx/ember/call/call_01",
+      "last_ember:sfx/ember/call/call_02",
+      "last_ember:sfx/ember/call/call_03",
+      "last_ember:sfx/ember/call/call_04"
+    ]
+  },
+  "sfx.mind.breath": {
+    "sounds": [
+      "last_ember:sfx/mind/breath/breath_01",
+      "last_ember:sfx/mind/breath/breath_02",
+      "last_ember:sfx/mind/breath/breath_03",
+      "last_ember:sfx/mind/breath/breath_04"
+    ]
+  },
+  "sfx.mind.creak": {
+    "sounds": [
+      "last_ember:sfx/mind/creak/creak_01",
+      "last_ember:sfx/mind/creak/creak_02",
+      "last_ember:sfx/mind/creak/creak_03",
+      "last_ember:sfx/mind/creak/creak_04"
+    ]
+  },
+  "sfx.mind.cry": {
+    "sounds": [
+      "last_ember:sfx/mind/cry/cry_01",
+      "last_ember:sfx/mind/cry/cry_02",
+      "last_ember:sfx/mind/cry/cry_03"
+    ]
+  },
+  "sfx.mind.knock": {
+    "sounds": [
+      "last_ember:sfx/mind/knock/knock_01",
+      "last_ember:sfx/mind/knock/knock_02",
+      "last_ember:sfx/mind/knock/knock_03"
+    ]
+  },
+  "sfx.mind.laugh": {
+    "sounds": [
+      "last_ember:sfx/mind/laugh/laugh_01",
+      "last_ember:sfx/mind/laugh/laugh_02",
+      "last_ember:sfx/mind/laugh/laugh_03",
+      "last_ember:sfx/mind/laugh/laugh_04"
+    ]
+  },
+  "sfx.mind.ring_on": {
+    "sounds": [
+      "last_ember:sfx/mind/ring_on/ring_on_01",
+      "last_ember:sfx/mind/ring_on/ring_on_02",
+      "last_ember:sfx/mind/ring_on/ring_on_03"
+    ]
+  },
+  "sfx.mind.steps": {
+    "sounds": [
+      "last_ember:sfx/mind/steps/steps_01",
+      "last_ember:sfx/mind/steps/steps_02",
+      "last_ember:sfx/mind/steps/steps_03",
+      "last_ember:sfx/mind/steps/steps_04",
+      "last_ember:sfx/mind/steps/steps_05"
+    ]
+  },
+  "sfx.mind.whisper": {
+    "sounds": [
+      "last_ember:sfx/mind/whisper/whisper_01",
+      "last_ember:sfx/mind/whisper/whisper_02",
+      "last_ember:sfx/mind/whisper/whisper_03",
+      "last_ember:sfx/mind/whisper/whisper_04",
+      "last_ember:sfx/mind/whisper/whisper_05"
+    ]
+  },
+  "sfx.quest.board": {
+    "sounds": [
+      "last_ember:sfx/quest/board/board_01",
+      "last_ember:sfx/quest/board/board_02",
+      "last_ember:sfx/quest/board/board_03",
+      "last_ember:sfx/quest/board/board_04"
+    ]
+  },
+  "sfx.quest.clue": {
+    "sounds": [
+      "last_ember:sfx/quest/clue/clue_01",
+      "last_ember:sfx/quest/clue/clue_02",
+      "last_ember:sfx/quest/clue/clue_03",
+      "last_ember:sfx/quest/clue/clue_04"
+    ]
+  },
+  "sfx.quest.curse_lifted": {
+    "sounds": [
+      "last_ember:sfx/quest/curse_lifted/curse_lifted_01",
+      "last_ember:sfx/quest/curse_lifted/curse_lifted_02",
+      "last_ember:sfx/quest/curse_lifted/curse_lifted_03"
+    ]
+  },
+  "sfx.quest.ritual": {
+    "sounds": [
+      {
+        "name": "last_ember:sfx/quest/ritual/ritual_01",
+        "stream": true
+      },
+      "last_ember:sfx/quest/ritual/ritual_02"
+    ]
+  },
+  "sfx.spell.banish": {
+    "sounds": [
+      "last_ember:sfx/spell/banish/banish_01",
+      "last_ember:sfx/spell/banish/banish_02",
+      "last_ember:sfx/spell/banish/banish_03"
+    ]
+  },
+  "sfx.spell.blink": {
+    "sounds": [
+      "last_ember:sfx/spell/blink/blink_01",
+      "last_ember:sfx/spell/blink/blink_02",
+      "last_ember:sfx/spell/blink/blink_03",
+      "last_ember:sfx/spell/blink/blink_04"
+    ]
+  },
+  "sfx.spell.cover": {
+    "sounds": [
+      "last_ember:sfx/spell/cover/cover_01",
+      "last_ember:sfx/spell/cover/cover_02",
+      "last_ember:sfx/spell/cover/cover_03"
+    ]
+  },
+  "sfx.spell.fail": {
+    "sounds": [
+      "last_ember:sfx/spell/fail/fail_01",
+      "last_ember:sfx/spell/fail/fail_02",
+      "last_ember:sfx/spell/fail/fail_03",
+      "last_ember:sfx/spell/fail/fail_04"
+    ]
+  },
+  "sfx.spell.flame": {
+    "sounds": [
+      "last_ember:sfx/spell/flame/flame_01",
+      "last_ember:sfx/spell/flame/flame_02",
+      "last_ember:sfx/spell/flame/flame_03",
+      "last_ember:sfx/spell/flame/flame_04"
+    ]
+  },
+  "sfx.spell.frost": {
+    "sounds": [
+      "last_ember:sfx/spell/frost/frost_01",
+      "last_ember:sfx/spell/frost/frost_02",
+      "last_ember:sfx/spell/frost/frost_03",
+      "last_ember:sfx/spell/frost/frost_04"
+    ]
+  },
+  "sfx.spell.lift": {
+    "sounds": [
+      "last_ember:sfx/spell/lift/lift_01",
+      "last_ember:sfx/spell/lift/lift_02",
+      "last_ember:sfx/spell/lift/lift_03"
+    ]
+  },
+  "sfx.spell.wrath_charge": {
+    "sounds": [
+      "last_ember:sfx/spell/wrath_charge/wrath_charge_01",
+      "last_ember:sfx/spell/wrath_charge/wrath_charge_02"
+    ]
+  },
+  "sfx.spell.wrath_strike": {
+    "sounds": [
+      "last_ember:sfx/spell/wrath_strike/wrath_strike_01",
+      "last_ember:sfx/spell/wrath_strike/wrath_strike_02",
+      "last_ember:sfx/spell/wrath_strike/wrath_strike_03"
+    ]
+  },
+  "sfx.sting.chapter": {
+    "sounds": [
+      "last_ember:sfx/sting/chapter/chapter_01",
+      "last_ember:sfx/sting/chapter/chapter_02",
+      "last_ember:sfx/sting/chapter/chapter_03"
+    ]
+  },
+  "sfx.sting.key_item": {
+    "sounds": [
+      "last_ember:sfx/sting/key_item/key_item_01",
+      "last_ember:sfx/sting/key_item/key_item_02"
+    ]
+  },
+  "sfx.sting.monster": {
+    "sounds": [
+      "last_ember:sfx/sting/monster/monster_01",
+      "last_ember:sfx/sting/monster/monster_02",
+      "last_ember:sfx/sting/monster/monster_03"
+    ]
+  },
+  "sfx.sting.secret": {
+    "sounds": [
+      "last_ember:sfx/sting/secret/secret_01",
+      "last_ember:sfx/sting/secret/secret_02",
+      "last_ember:sfx/sting/secret/secret_03"
+    ]
+  },
+  "sfx.trap.arrows": {
+    "sounds": [
+      "last_ember:sfx/trap/arrows/arrows_01",
+      "last_ember:sfx/trap/arrows/arrows_02",
+      "last_ember:sfx/trap/arrows/arrows_03"
+    ]
+  },
+  "sfx.trap.branch_crack": {
+    "sounds": [
+      "last_ember:sfx/trap/branch_crack/branch_crack_01",
+      "last_ember:sfx/trap/branch_crack/branch_crack_02",
+      "last_ember:sfx/trap/branch_crack/branch_crack_03",
+      "last_ember:sfx/trap/branch_crack/branch_crack_04"
+    ]
+  },
+  "sfx.trap.click": {
+    "sounds": [
+      "last_ember:sfx/trap/click/click_01",
+      "last_ember:sfx/trap/click/click_02",
+      "last_ember:sfx/trap/click/click_03",
+      "last_ember:sfx/trap/click/click_04"
+    ]
+  },
+  "sfx.trap.collapse": {
+    "sounds": [
+      "last_ember:sfx/trap/collapse/collapse_01",
+      "last_ember:sfx/trap/collapse/collapse_02",
+      "last_ember:sfx/trap/collapse/collapse_03",
+      "last_ember:sfx/trap/collapse/collapse_04"
+    ]
+  },
+  "sfx.trap.gas": {
+    "sounds": [
+      "last_ember:sfx/trap/gas/gas_01",
+      "last_ember:sfx/trap/gas/gas_02",
+      "last_ember:sfx/trap/gas/gas_03",
+      "last_ember:sfx/trap/gas/gas_04"
+    ]
+  },
+  "sfx.trap.lava_rumble": {
+    "sounds": [
+      "last_ember:sfx/trap/lava_rumble/lava_rumble_01",
+      "last_ember:sfx/trap/lava_rumble/lava_rumble_02",
+      "last_ember:sfx/trap/lava_rumble/lava_rumble_03"
+    ]
+  },
+  "sfx.trap.stone_grind": {
+    "sounds": [
+      "last_ember:sfx/trap/stone_grind/stone_grind_01",
+      "last_ember:sfx/trap/stone_grind/stone_grind_02",
+      "last_ember:sfx/trap/stone_grind/stone_grind_03",
+      "last_ember:sfx/trap/stone_grind/stone_grind_04"
+    ]
+  },
+  "sfx.world.gate": {
+    "sounds": [
+      "last_ember:sfx/world/gate/gate_01",
+      "last_ember:sfx/world/gate/gate_02",
+      "last_ember:sfx/world/gate/gate_03",
+      "last_ember:sfx/world/gate/gate_04"
+    ]
+  },
+  "sfx.world.portal": {
+    "sounds": [
+      "last_ember:sfx/world/portal/portal_01",
+      "last_ember:sfx/world/portal/portal_02",
+      "last_ember:sfx/world/portal/portal_03",
+      "last_ember:sfx/world/portal/portal_04"
+    ]
+  },
+  "sfx.world.rocks": {
+    "sounds": [
+      "last_ember:sfx/world/rocks/rocks_01",
+      "last_ember:sfx/world/rocks/rocks_02",
+      "last_ember:sfx/world/rocks/rocks_03",
+      "last_ember:sfx/world/rocks/rocks_04"
+    ]
+  },
+  "sfx.world.thunder": {
+    "sounds": [
+      "last_ember:sfx/world/thunder/thunder_01",
+      "last_ember:sfx/world/thunder/thunder_02",
+      "last_ember:sfx/world/thunder/thunder_03",
+      "last_ember:sfx/world/thunder/thunder_04"
+    ]
+  }
+}

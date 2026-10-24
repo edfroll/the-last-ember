@@ -4,10 +4,10 @@ Outputs (all generated, do not edit by hand):
   datapack/data/last_ember/worldgen/biome/<id>.json
   datapack/data/last_ember/function/biomes/gen/fade_<chapter>.mcfunction   (fillbiome ... replace, tiled to <= 32768 blocks)
   biomes/paint.gen.json                                                    (read by tools/seedmap/BiomePaint.java)
-  resourcepack/assets/last_ember/sounds.json                               (music slot placeholders)
+  resourcepack/assets/last_ember/sounds.json  (via tools/gen_sounds.py: music slots + creature + sfx)
 Usage: python3 tools/gen_biomes.py
 """
-import json, os
+import sys, json, os
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 reg = json.load(open(os.path.join(ROOT, "biomes/registry.json"), encoding="utf-8"))
 OUT = os.path.join(ROOT, "datapack/data/last_ember")
@@ -74,10 +74,8 @@ def main():
         bid = p["id"] if ":" in p["id"] else f"last_ember:{p['id']}"
         layers.append({"biome": bid, "shape": p["shape"], "v": p["v"], "trans": p.get("trans", 0), "y": p.get("y", [-64, 319])})
     dump(os.path.join(ROOT, "biomes/paint.gen.json"), {"seed": 1013, "layers": layers})
-    # sound slots (placeholders until Edward's tracks arrive): each slot plays a quiet vanilla ambient music file
-    sounds = {f"music.{s}": {"category": "music", "sounds": [{"name": "minecraft:music/game/calm1", "stream": True, "volume": 0.6}]} for s in reg["slots"]}
-    dump(os.path.join(ROOT, "resourcepack/assets/last_ember/sounds.json"), sounds)
-    print(f"{len(reg['biomes'])} biomes, {len(layers)} paint layers, {len(sounds)} sound slots")
+    import subprocess; subprocess.run([sys.executable, os.path.join(ROOT, "tools/gen_sounds.py")], check=True)   # sounds.json is written by gen_sounds.py (T-018)
+    print(f"{len(reg['biomes'])} biomes, {len(layers)} paint layers, {len(reg['slots'])} sound slots")
 
 if __name__ == "__main__":
     main()
