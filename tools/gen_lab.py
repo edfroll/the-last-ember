@@ -126,13 +126,22 @@ torso = [B(-7, 0, -4, 7, 19, 4, "bark"), B(-9, 15, -5, 9, 20, 5, "moss"), B(-6, 
          B(-6, 13, 4, 6, 14, 5, "bone"), B(-6, 10.5, 4, 6, 11.5, 5, "bone"), B(-5.5, 8, 4, 5.5, 9, 5, "bone"),   # ribs
          B(-1.5, 9, 3.6, 1.5, 12.5, 4.2, "glow_amber"),                                                          # the ember in the chest
          B(-6, -2, -4.5, -2, 6, -4, "moss"), B(1, -4, -4.5, 5, 7, -4, "moss"), B(-7.5, 2, -3, -7, 14, 3, "bark_light"), B(7, 4, -3, 7.5, 15, 3, "bark_light")]
-lhead = [B(-2, 0, -1.5, 2, 3, 2, "bark"), B(-4, 3, -3, 4, 10, 4, "bone"), B(-2.5, 3, 4, 2.5, 7, 10, "bone"),
-         B(-2.2, 2.6, 6, 2.2, 3.2, 9.5, "dark"),
-         B(1.2, 6.5, 4, 3.2, 8.5, 4.3, "dark"), B(-3.2, 6.5, 4, -1.2, 8.5, 4.3, "dark"),
-         B(1.7, 7.0, 4.3, 2.7, 8.0, 4.5, "glow_amber"), B(-2.7, 7.0, 4.3, -1.7, 8.0, 4.5, "glow_amber")]
-antler = [B(3, 9, -1, 4.5, 14, 0.5, "bone"), B(4.5, 12.5, -1, 9, 14, 0.5, "bone"), B(7.5, 14, -1, 9, 22, 0.5, "bone"), B(5.5, 14, -0.5, 6.8, 18.5, 3.5, "bone"),
-          B(9, 18, -1, 12, 19.2, 0.5, "bone")]
-lhead += antler + mirror(antler)
+# the head: a long crooked skull, sockets not alike, the jaw a little open; antlers NOT alike (Edward: a symmetric deer skull looked funny):
+# the left one big and branching outward and back, the right one broken off with moss hanging from the stump
+lhead = [B(-2, 0, -1.5, 2, 3, 2, "bark"), B(-3.5, 3, -3, 3.5, 9.5, 3.5, "bone"), B(-3.8, 7.5, 2.5, 3.8, 9, 4, "bone"),
+         B(-2, 5, 3.5, 2, 8, 10.5, "bone"), B(-1.5, 5.5, 10.5, 1, 7.5, 11.5, "bone"),                     # the muzzle, its tip broken aslant
+         B(-1.8, 2.5, 3.5, 1.8, 4, 9.5, "bone"), B(-1.7, 4, 4, 1.7, 5, 10, "dark"),                       # the lower jaw, the gap
+         B(-1.5, 4, 9, -0.9, 5, 9.6, "teeth"), B(0.9, 4, 8.5, 1.5, 5, 9.1, "teeth"), B(-0.3, 4.2, 7, 0.3, 5, 7.5, "teeth"),
+         B(1.3, 6, 3.6, 3.6, 8.6, 3.9, "dark"), B(-3.2, 6.4, 3.6, -1.5, 8, 3.9, "dark"),                  # sockets: the left one bigger
+         B(2, 6.8, 3.9, 3, 7.8, 4.1, "glow_amber"), B(-2.6, 6.9, 3.9, -2.0, 7.5, 4.1, "glow_amber"),
+         B(-4, 3, -3.2, -3.4, 8, 2, "moss"), B(-3.5, 9.5, -3, 0, 10.2, 2, "moss"),                         # moss over the right side and the crown
+         # the left antler
+         B(2.5, 9, -1.5, 4, 13, 0, "bone"), B(4, 12, -1.5, 8, 13.4, 0, "bone"), B(6.5, 13.4, -1.5, 7.8, 21, 0, "bone"),
+         B(8, 11.5, -1.5, 13, 12.8, 0, "bone"), B(11.5, 12.8, -1.5, 12.7, 17, 0, "bone"), B(5, 13.4, 0, 6.2, 17, 3.5, "bone"),
+         B(7.8, 17, -4, 9, 18.2, -1.5, "bone"), B(6.5, 21, -1.5, 10, 22.2, 0, "bone"),
+         # the right antler, broken; moss hangs from the stump, a root twig is wound round it
+         B(-4, 9, -1.5, -2.5, 12.5, 0, "bone"), B(-6.5, 11.5, -1.5, -4, 12.8, 0, "bone"), B(-6.5, 12.8, -1.5, -5.5, 14, 0, "bone"),
+         B(-6.3, 6, -1, -5.7, 11.5, -0.4, "moss"), B(-7, 10.8, -2, -3.5, 11.3, 0.5, "root")]
 arm = [B(-2, -14, -2, 2, 0, 2, "bark"), B(-2.5, -3, -2.5, 2.5, 1.5, 2.5, "moss"), B(-1.5, -26, -1.5, 1.5, -14, 1.5, "bark"),
        B(-2, -31, -0.5, -1, -26, 1.5, "root"), B(-0.5, -32, 0, 0.5, -26, 2, "root"), B(1, -31, -0.5, 2, -26, 1.5, "root"), B(-1.6, -20, -1.6, 1.6, -18, 1.6, "moss")]
 leg = [B(-2.5, -21, -2.5, 2.5, 0, 2.5, "bark"), B(-3.5, -21, -3, 3.5, -19, 5, "root"), B(-1, -21, 5, 1, -20, 8, "root"), B(-3, -10, -3, 3, -8, 3, "moss")]

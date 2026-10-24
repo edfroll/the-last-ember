@@ -12,6 +12,6 @@ execute store result entity @s Pos[1] double 0.01 run scoreboard players remove 
 particle minecraft:block{block_state:"minecraft:coarse_dirt"} ~ ~1.6 ~ 0.4 0.05 0.4 0 3
 scoreboard players operation #t8 le.l = @s le.lt
 scoreboard players operation #t8 le.l %= #8 le.l
-execute if score #t8 le.l matches 0 run playsound last_ember:creature.endrega.mv_stomp hostile @a ~ ~1.5 ~ 1.2 1
+execute if score #t8 le.l matches 0 run function last_ember:lab/s/fish_rumble
 execute if entity @a[distance=..2.5,gamemode=!spectator,gamemode=!creative] run return run function last_ember:lab/fish/emerge
 execute if score @s le.lt matches 120.. run function last_ember:lab/fish/emerge

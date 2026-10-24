@@ -5,4 +5,4 @@ execute unless block ~ ~-0.5 ~ #last_ember:diggable run return 0
 scoreboard players set @s le.ls 5
 scoreboard players set @s le.lt 0
 data merge entity @s {NoAI:1b,Invulnerable:1b}
-playsound last_ember:creature.endrega.exp_digging hostile @a ~ ~ ~ 1.8 1
+execute positioned ~ ~-1.5 ~ run function last_ember:lab/s/fish_dig

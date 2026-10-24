@@ -68,6 +68,16 @@ def t_drowner():
     chk("dormant under the mud of the pool, frozen and invulnerable", ls("le.lab_drowner") == 0 and p0 and p0[1] < 197.5 and "1b" in R("data get entity @e[tag=le.lab_drowner,limit=1] NoAI"), p0)
     wake(); time.sleep(1.6); shot("drowner_appear1"); time.sleep(1.4); shot("drowner_appear2"); time.sleep(1.0)
     chk("it rose from the water and is alive (state 2, AI on)", ls("le.lab_drowner") == 2 and "1b" not in R("data get entity @e[tag=le.lab_drowner,limit=1] NoAI"), ls("le.lab_drowner"))
+    # not a zombie: it stops dead and twitches, then leaps at the prey (the prey keeps 6 blocks away)
+    tw = lu = False
+    for i in range(60):
+        p = pos("@e[tag=le.lab_drowner,limit=1]")
+        if p: R(f"tp Cam2 {p[0]:.2f} 200 {p[2] - 6:.2f} 0 0")
+        time.sleep(0.2)
+        if (score("@e[tag=le.lab_drowner,limit=1]", "le.lfr") or 0) > 0 and not tw: tw = True; look("le.lab_drowner", 4, 1.2, 60); shot("drowner_twitch")
+        if (score("@e[tag=le.lab_drowner,limit=1]", "le.lfd") or 0) > 60 and not lu: lu = True; look("le.lab_drowner", 5, 1.0, 80); shot("drowner_lunge")
+        if tw and lu: break
+    chk("it stops and twitches (%s) and leaps at the prey (%s)" % (tw, lu), tw and lu)
     R("tp Cam2 800.5 200 790.5 180 0"); time.sleep(2.5); look("le.lab_drowner", 4, 1.2); shot("drowner_near"); shot("drowner_near", "Cam2")
     h0 = num(R("data get entity Cam2 Health")); time.sleep(4)
     chk("it hits: the Rotten wound (poison, le.wrot)", (score("Cam2", "le.wrot") or 0) > 0 and "poison" in R("data get entity Cam2 active_effects"), score("Cam2", "le.wrot"))
@@ -198,7 +208,17 @@ def t_reload():
     chk("unloaded with the chunk (%s) and back with all 6 parts riding it (%d)" % (gone, n), gone and n == 6)
     R("forceload add 768 768 832 832")
 
-T = {"reload": t_reload, "drowner": t_drowner, "warg": t_warg, "womb": t_womb, "leshy": t_leshy, "fish": t_fish, "wounds": t_wounds, "row": t_row, "perf": t_perf}
+def t_voice():
+    print("[sound variants for Edward: lab/voice]")
+    for k in ("fish", "womb"):
+        for v in (2, 3, 1):
+            R(f'execute as Cam2 at @s run function last_ember:lab/voice {{k:"{k}",v:{v}}}'); time.sleep(0.2)
+            chk(f"{k}: variant {v} set", score(f"#v_{k}", "le.l") == v)
+    station("fish"); R("scoreboard players set #v_fish le.l 2"); R("scoreboard players set @e[tag=le.lab_fish] le.ls 1"); time.sleep(2.0)
+    chk("a sample with another sound variant still comes out alive", ls("le.lab_fish") == 2)
+    R("scoreboard players set #v_fish le.l 1"); R("function last_ember:lab/clear")
+
+T = {"voice": t_voice, "reload": t_reload, "drowner": t_drowner, "warg": t_warg, "womb": t_womb, "leshy": t_leshy, "fish": t_fish, "wounds": t_wounds, "row": t_row, "perf": t_perf}
 args = [a for a in sys.argv[1:] if a in T] or list(T)
 for a in args: T[a]()
 R("function last_ember:lab/clear")
