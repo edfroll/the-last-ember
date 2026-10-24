@@ -1,0 +1,2 @@
+execute on passengers if entity @s[tag=le.lab_ant_l] run data merge entity @s {start_interpolation:0,interpolation_duration:14,transformation:{translation:[0.31f,0.1f,0.47f],left_rotation:[0.2833f,0.3199f,-0.1009f,0.8985f],scale:[1.5f,1.5f,1.5f],right_rotation:[0f,0f,0f,1f]}}
+execute on passengers if entity @s[tag=le.lab_ant_r] run data merge entity @s {start_interpolation:0,interpolation_duration:14,transformation:{translation:[-0.31f,0.1f,0.47f],left_rotation:[0.2833f,-0.3199f,0.1009f,0.8985f],scale:[1.5f,1.5f,1.5f],right_rotation:[0f,0f,0f,1f]}}

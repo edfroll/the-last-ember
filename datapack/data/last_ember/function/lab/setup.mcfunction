@@ -32,6 +32,8 @@ scoreboard players set #360 le.l 360
 scoreboard players set #10 le.l 10
 scoreboard players set #2 le.l 2
 scoreboard players set #5 le.l 5
+scoreboard players set #6 le.l 6
+scoreboard players set #3 le.l 3
 scoreboard players set #4 le.l 4
 scoreboard players set #8 le.l 8
 scoreboard players set #dormant le.l 0

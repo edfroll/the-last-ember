@@ -145,8 +145,15 @@ chead = [B(-6, 2, -5, 6, 7.5, 5, "chitin"), B(-5, 7.5, -4, 5, 8.5, 4, "chitin_li
          B(0.6, 6.6, 5.1, 1.2, 7.2, 5.4, "glow_red"),
          B(3, 1, 5, 5, 3, 9, "chitin_light"), B(1, 1, 8.5, 3.5, 2.6, 10.5, "chitin_light"), B(0.2, 1, 10, 1.5, 2.2, 11.5, "dark"),      # venom claws
          B(-5, 1, 5, -3, 3, 9, "chitin_light"), B(-3.5, 1, 8.5, -1, 2.6, 10.5, "chitin_light"), B(-1.5, 1, 10, -0.2, 2.2, 11.5, "dark"),
-         B(3, 6.5, 5, 3.7, 7.2, 16, "leg_ochre"), B(3.6, 7.2, 15, 4.2, 10, 15.6, "leg_ochre"), B(-3.7, 6.5, 5, -3, 7.2, 14, "leg_ochre"), B(-4.2, 7.2, 13, -3.6, 9, 13.6, "leg_ochre")] \
+         B(2.8, 6.4, 4.4, 3.8, 7.4, 5.4, "chitin_light"), B(-3.8, 6.4, 4.4, -2.8, 7.4, 5.4, "chitin_light")] \
         + legs(-3, 1.6, 1) + legs(-3, -1.6, -1)
+# the feelers are their own parts (they twitch): crooked and not alike, each with kinks and a hooked tip (Edward: not like aerials)
+model("cent_ant_l", [B(-0.35, -0.35, 0, 0.35, 0.35, 3.5, "leg_ochre"), B(0.1, 0.0, 3.2, 0.8, 0.7, 6.5, "leg_ochre"), B(0.6, 0.6, 6.2, 1.2, 1.2, 8.8, "leg_ochre"),
+                     B(0.9, 0.1, 8.5, 1.5, 0.7, 11.0, "leg_ochre"), B(1.3, 0.5, 10.7, 1.8, 1.0, 12.8, "leg_ochre"), B(1.0, 1.0, 12.5, 1.5, 2.6, 13.0, "chitin_light"),
+                     B(0.6, 2.3, 12.6, 1.1, 2.8, 14.2, "chitin_light")])
+model("cent_ant_r", [B(-0.35, -0.35, 0, 0.35, 0.35, 3.0, "leg_ochre"), B(-0.9, 0.2, 2.8, -0.2, 0.9, 5.8, "leg_ochre"), B(-1.3, 0.8, 5.5, -0.7, 1.4, 7.0, "leg_ochre"),
+                     B(-1.2, 1.3, 6.8, -0.6, 3.0, 7.4, "leg_ochre"), B(-1.6, 2.8, 7.0, -1.0, 3.4, 10.0, "leg_ochre"), B(-2.2, 2.2, 9.8, -1.6, 2.8, 12.2, "leg_ochre"),
+                     B(-2.6, 1.6, 12.0, -2.1, 2.2, 14.5, "chitin_light"), B(-2.9, 2.0, 14.3, -2.5, 2.5, 15.8, "chitin_light")])
 model("cent_head", chead)
 model("cent_tail", [B(-5, 2, -5, 5, 7, 5, "chitin"), B(-4, 7, -4, 4, 8, 4, "chitin_light"), B(4, 3, -5, 5, 4, -15, "leg_ochre"), B(-5, 3, -5, -4, 4, -15, "leg_ochre"),
                     B(4.5, 0, -15, 5.5, 4, -14, "leg_ochre"), B(-5.5, 0, -15, -4.5, 4, -14, "leg_ochre")] + legs(0, 1.6, 1) + legs(0, -1.6, -1))
@@ -231,8 +238,8 @@ for y in range(h):
         if (18 <= x <= 23 or 30 <= x <= 35) and y in (22, 24, 26): c = [v * 0.55 for v in c]
         if 24 <= x <= 29 and 20 <= y <= 28 and x in (26, 27) and y % 2 == 0: c = [140, 128, 104]     # the spine
         if 18 <= x <= 41 and 26 <= y <= 28 and r.random() < 0.18: c = [96, 14, 12]                  # raw sores
-        # a bloody muzzle: the snout and the jaw (the snout box 0-13 x 10-16)
-        if x <= 13 and 10 <= y <= 16 and (y >= 13 or r.random() < 0.35): c = [110 + 30 * r.random(), 12, 10]
+        # red eyes (the front of the head: x 4-9, row 6 under the brows), the same red as its glowing eyes in the bushes (Edward)
+        if y == 6 and x in (4, 5, 8, 9): c = [235, 40, 28] if x in (5, 8) else [150, 18, 14]
         row.append(tuple(clamp(v) for v in c) + (255,))
     warg.append(row)
 for k in ("", "_angry", "_tame", "_baby", "_angry_baby", "_tame_baby"): wpng(os.path.join(RP, f"textures/entity/wolf/lab_warg{k}.png"), warg)
@@ -349,6 +356,18 @@ bl.append("scoreboard players operation @e[tag=le.cnew] le.lnk = @s le.lnk")
 for k in range(NSEG): bl.append(f"scoreboard players set @e[tag=le.cnew,tag=le.cs{k}] le.lfr {k}")
 bl.append("tag @e[tag=le.cnew] remove le.cnew")
 wtext(os.path.join(gd, "cent_build.mcfunction"), "\n".join(bl) + "\n")
+# the feelers twitch: 8 random sway poses per side (base out to the side and up), a new one every 6 ticks, 8 ticks of interpolation
+ANT = {"l": (0.31, 28), "r": (-0.31, -28)}
+ar = random.Random(7)
+for side, (ax, base) in ANT.items():
+    disp = [f"# GENERATED: as the carrier: a new random sway of the {side} feeler"]
+    disp.append(f"execute store result score #ra le.l run random value 0..7")
+    for i in range(8):
+        q = qeul(-18 + ar.uniform(-14, 14), base + ar.uniform(-16, 16), ar.uniform(-18, 18))
+        disp.append(f"execute if score #ra le.l matches {i} on passengers if entity @s[tag=le.lab_ant_{side}] run data merge entity @s " + merge((ax, 0.18, 0.47), q, 1.5, 8))
+    wtext(os.path.join(gd, f"cent_ant_{side}.mcfunction"), "\n".join(disp) + "\n")
+    q = qeul(35, base * 1.4, 0)
+    open(os.path.join(gd, "cent_ant_droop.mcfunction"), "a").write(f"execute on passengers if entity @s[tag=le.lab_ant_{side}] run data merge entity @s " + merge((ax, 0.1, 0.47), q, 1.5, 14) + "\n")
 lg = ["# GENERATED: the legs of the body step (models a/b swap; neighbours in the other phase), macro p = 0 or 1"]
 for k in range(NSEG - 1):
     a, b = ("cent_seg_a", "cent_seg_b") if k % 2 == 0 else ("cent_seg_b", "cent_seg_a")

@@ -6,3 +6,8 @@ tag @s remove le.cme
 scoreboard players operation #t3 le.l = #gt le.l
 scoreboard players operation #t3 le.l %= #3 le.l
 execute if score #t3 le.l matches 0 if score @s le.lsp matches 2.. run function last_ember:lab/cent/step
+# the feelers twitch: a new sway every 6 ticks
+scoreboard players operation #t6 le.l = #gt le.l
+scoreboard players operation #t6 le.l %= #6 le.l
+execute if score #t6 le.l matches 0 run function last_ember:lab/gen/cent_ant_l
+execute if score #t6 le.l matches 3 run function last_ember:lab/gen/cent_ant_r
