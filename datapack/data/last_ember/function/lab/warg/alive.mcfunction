@@ -13,7 +13,9 @@ execute if score #og le.l matches 0 unless score @s le.lan matches 2..3 run func
 execute if score #og le.l matches 1 if score @s le.lan matches 3 run function last_ember:lab/warg/mode {m:0,p:"idle0",d:3}
 execute if score @s le.lan matches 3 run return 0
 execute if score @s le.lan matches 2 run return run function last_ember:lab/warg/bite
-execute if score @s le.lcd matches ..0 if entity @a[distance=..3.2,gamemode=!spectator,gamemode=!creative] run return run function last_ember:lab/warg/bite_start
+# it keeps its muzzle in front of the prey: closer than 2.3 blocks it backs off (so the player sees the maw, not its back)
+execute if entity @a[distance=..2.3,gamemode=!spectator,gamemode=!creative] run function last_ember:lab/warg/back_off
+execute if score @s le.lcd matches ..0 if entity @a[distance=..3.8,gamemode=!spectator,gamemode=!creative] run return run function last_ember:lab/warg/bite_start
 execute if score @s le.lsp matches 6.. if score @s le.lan matches 0 run function last_ember:lab/warg/mode {m:1,p:"run1",d:2}
 execute if score @s le.lsp matches ..3 if score @s le.lan matches 1 run function last_ember:lab/warg/mode {m:0,p:"idle0",d:6}
 scoreboard players remove @s le.lfd 1

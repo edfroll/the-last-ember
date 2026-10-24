@@ -1,2 +1,4 @@
+# the blow of the whole body: heavy damage, the player is thrown back (a wind burst at the head) and a little up; slow falling after it, no fall damage
 damage @s 9 minecraft:mob_attack by @e[tag=le.lme,limit=1]
-function last_ember:wound/quake
+effect give @s minecraft:slow_falling 3 0 true
+execute at @e[tag=le.lme,limit=1] rotated ~ 0 positioned ^ ^ ^0.6 run summon minecraft:wind_charge ~ ~0.2 ~ {Motion:[0.0d,-1.0d,0.0d]}

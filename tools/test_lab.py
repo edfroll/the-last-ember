@@ -99,6 +99,11 @@ def t_warg():
         time.sleep(0.1); seen.add(score("@e[tag=le.lab_warg,limit=1]", "le.lan"))
         if 2 in seen and "b" not in seen: seen.add("b"); look("le.lab_warg", 3.5, 0.8, 40); shot("warg_bite"); shot("warg_bite", "Cam2")
     chk("it gallops and bites with its jaw (modes seen %s)" % sorted(x for x in seen if isinstance(x, int)), 2 in seen)
+    dmin = 99
+    for i in range(30):
+        time.sleep(0.1); pw, pc = pos("@e[tag=le.lab_warg,limit=1]"), pos("Cam2")
+        if pw and pc: dmin = min(dmin, ((pw[0] - pc[0]) ** 2 + (pw[2] - pc[2]) ** 2) ** 0.5)
+    chk("it keeps its muzzle in front of the prey: never closer than ~2 blocks (min %.2f)" % dmin, dmin > 1.8)
     R("tp Cam2 800.5 200 770.5 0 0"); time.sleep(0.6); look("le.lab_warg", 5, 1.0, 80); shot("warg_run")
     time.sleep(1.5); look("le.lab_warg", 4, 1.0, 50); shot("warg_attack"); shot("warg_attack", "Cam2")
     chk("its bite bleeds: the Blood wound (le.wbl)", (score("Cam2", "le.wbl") or 0) > 0, score("Cam2", "le.wbl"))
@@ -173,14 +178,17 @@ def t_fish():
     chk("10 body segments with hit boxes follow the head (%s / %s), spread along the path %s" % (segs, boxes, [round(p[2], 1) for p in sp if p]), "10" in segs and "10" in boxes and sp[0] and sp[2] and abs(sp[0][2] - sp[2][2]) + abs(sp[0][0] - sp[2][0]) > 4)
     look("le.lab_fish", 6, 2.5, 70); shot("fish_body"); shot("fish_body", "Cam2")
     # the rearing: the prey 5 blocks in front of it
-    R("execute as @e[tag=le.lab_fish,limit=1] at @s rotated ~ 0 positioned ^ ^ ^5 run tp Cam2 ~ ~ ~ facing entity @e[tag=le.lab_fish,limit=1] feet"); R("scoreboard players set @e[tag=le.lab_fish] le.llook 1"); R("scoreboard players set @e[tag=le.lab_fish] le.lfd 200")
-    rs = False
-    for i in range(30):
-        time.sleep(0.1)
-        if (score("@e[tag=le.lab_fish,limit=1]", "le.lfr") or 0) > 0: rs = True; break
-    time.sleep(0.8); look("le.lab_fish", 7, 1.5, 70); shot("fish_rear"); shot("fish_rear", "Cam2"); hb = num(R("data get entity Cam2 Health")); time.sleep(1.2); shot("fish_slam")
-    ha = num(R("data get entity Cam2 Health"))
-    chk("it rears up (%s) and strikes down with its whole body (prey health %s -> %s)" % (rs, hb, ha), rs and ha is not None and hb is not None and ha < hb)
+    R("execute as @e[tag=le.lab_fish,limit=1] at @s rotated ~ 0 positioned ^ ^ ^4.2 run tp Cam2 ~ ~ ~ facing entity @e[tag=le.lab_fish,limit=1] feet"); R("scoreboard players set @e[tag=le.lab_fish] le.llook 1"); R("scoreboard players set @e[tag=le.lab_fish] le.lfd 200")
+    rs = False; hb = num(R("data get entity Cam2 Health")); hmin = hb; p0 = pos("Cam2"); dmax = 0; ymax = p0[1]; shot_done = False
+    for i in range(50):
+        time.sleep(0.05)
+        if (score("@e[tag=le.lab_fish,limit=1]", "le.lfr") or 0) > 0: rs = True
+        if rs and not shot_done and (score("@e[tag=le.lab_fish,limit=1]", "le.lfr") or 99) < 22: shot_done = True; look("le.lab_fish", 7, 1.5, 70); shot("fish_rear"); shot("fish_rear", "Cam2")
+        h = num(R("data get entity Cam2 Health")); p = pos("Cam2")
+        if h is not None: hmin = min(hmin, h)
+        if p: dmax = max(dmax, ((p[0] - p0[0]) ** 2 + (p[2] - p0[2]) ** 2) ** 0.5); ymax = max(ymax, p[1])
+    shot("fish_slam")
+    chk("it rears up (%s) and strikes with its whole body: health %s -> %s, thrown back %.1f and up %.1f blocks" % (rs, hb, hmin, dmax, ymax - p0[1]), rs and hmin < hb and dmax > 1.5)
     time.sleep(1.0)
     h0 = num(R("data get entity @e[tag=le.lab_fish,limit=1] Health")); R("tp Cam2 @e[tag=le.cs6,limit=1]"); R("execute as Cam2 at @s run tp @s ~ ~ ~-1.5 0 30")
     R("execute as @e[tag=le.cb6] run data merge entity @s {attack:{player:[I;0,0,0,0],timestamp:0L}}")

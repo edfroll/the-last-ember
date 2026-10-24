@@ -447,7 +447,7 @@ def rear(fname, D, pitch, dur, claws_open):
         t = tuple(a + b + c for a, b, c in zip(HEAD_T0, D, qrot(Q, o)))
         out.append(f"execute on passengers if entity @s[tag={tg}] run data merge entity @s " + merge(t, qmul(Q, qeul(*e)), 1.5, dur))
     wtext(os.path.join(gd, f"cent_rear_{fname}.mcfunction"), "\n".join(out) + "\n")
-rear("up", (0, 2.3, -0.9), -30, 10, True)
+rear("up", (0, 3.1, -1.2), -35, 12, True)
 rear("slam", (0, 0.1, 1.4), 25, 3, False)
 rear("back", (0, 0, 0), 0, 6, False)
 lg = ["# GENERATED: the legs of the body step (models a/b swap; neighbours in the other phase), macro p = 0 or 1"]
