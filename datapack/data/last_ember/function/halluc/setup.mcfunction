@@ -8,6 +8,7 @@ scoreboard objectives add le.hfm dummy
 scoreboard objectives add le.hpu dummy
 scoreboard objectives add le.hk dummy
 scoreboard objectives add le.hst dummy
+scoreboard objectives add le.hwl dummy
 scoreboard objectives add le.hid dummy
 scoreboard players set #20 le.h 20
 scoreboard players set #360 le.h 360
