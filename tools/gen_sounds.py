@@ -41,6 +41,8 @@ for k, v in sfx.items():
         for s in v["sounds"]:
             if isinstance(s, dict): s["stream"] = True
     out[k] = v; n_sfx += 1
+    if k.startswith("sfx.mind."):   # every variant also on its own (Edward listens to them one by one: sfx.mind.whisper.1 ...)
+        for i, snd in enumerate(v["sounds"], 1): out[f"{k}.{i}"] = {"sounds": [snd]}
 missing = []
 for k, v in out.items():
     for s in v["sounds"]:

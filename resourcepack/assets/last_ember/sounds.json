@@ -8710,11 +8710,51 @@
    "last_ember:sfx/mind/breath/breath_04"
   ]
  },
+ "sfx.mind.breath.1": {
+  "sounds": [
+   "last_ember:sfx/mind/breath/breath_01"
+  ]
+ },
+ "sfx.mind.breath.2": {
+  "sounds": [
+   "last_ember:sfx/mind/breath/breath_02"
+  ]
+ },
+ "sfx.mind.breath.3": {
+  "sounds": [
+   "last_ember:sfx/mind/breath/breath_03"
+  ]
+ },
+ "sfx.mind.breath.4": {
+  "sounds": [
+   "last_ember:sfx/mind/breath/breath_04"
+  ]
+ },
  "sfx.mind.creak": {
   "sounds": [
    "last_ember:sfx/mind/creak/creak_01",
    "last_ember:sfx/mind/creak/creak_02",
    "last_ember:sfx/mind/creak/creak_03",
+   "last_ember:sfx/mind/creak/creak_04"
+  ]
+ },
+ "sfx.mind.creak.1": {
+  "sounds": [
+   "last_ember:sfx/mind/creak/creak_01"
+  ]
+ },
+ "sfx.mind.creak.2": {
+  "sounds": [
+   "last_ember:sfx/mind/creak/creak_02"
+  ]
+ },
+ "sfx.mind.creak.3": {
+  "sounds": [
+   "last_ember:sfx/mind/creak/creak_03"
+  ]
+ },
+ "sfx.mind.creak.4": {
+  "sounds": [
    "last_ember:sfx/mind/creak/creak_04"
   ]
  },
@@ -8725,10 +8765,40 @@
    "last_ember:sfx/mind/cry/cry_03"
   ]
  },
+ "sfx.mind.cry.1": {
+  "sounds": [
+   "last_ember:sfx/mind/cry/cry_01"
+  ]
+ },
+ "sfx.mind.cry.2": {
+  "sounds": [
+   "last_ember:sfx/mind/cry/cry_02"
+  ]
+ },
+ "sfx.mind.cry.3": {
+  "sounds": [
+   "last_ember:sfx/mind/cry/cry_03"
+  ]
+ },
  "sfx.mind.knock": {
   "sounds": [
    "last_ember:sfx/mind/knock/knock_01",
    "last_ember:sfx/mind/knock/knock_02",
+   "last_ember:sfx/mind/knock/knock_03"
+  ]
+ },
+ "sfx.mind.knock.1": {
+  "sounds": [
+   "last_ember:sfx/mind/knock/knock_01"
+  ]
+ },
+ "sfx.mind.knock.2": {
+  "sounds": [
+   "last_ember:sfx/mind/knock/knock_02"
+  ]
+ },
+ "sfx.mind.knock.3": {
+  "sounds": [
    "last_ember:sfx/mind/knock/knock_03"
   ]
  },
@@ -8740,10 +8810,45 @@
    "last_ember:sfx/mind/laugh/laugh_04"
   ]
  },
+ "sfx.mind.laugh.1": {
+  "sounds": [
+   "last_ember:sfx/mind/laugh/laugh_01"
+  ]
+ },
+ "sfx.mind.laugh.2": {
+  "sounds": [
+   "last_ember:sfx/mind/laugh/laugh_02"
+  ]
+ },
+ "sfx.mind.laugh.3": {
+  "sounds": [
+   "last_ember:sfx/mind/laugh/laugh_03"
+  ]
+ },
+ "sfx.mind.laugh.4": {
+  "sounds": [
+   "last_ember:sfx/mind/laugh/laugh_04"
+  ]
+ },
  "sfx.mind.ring_on": {
   "sounds": [
    "last_ember:sfx/mind/ring_on/ring_on_01",
    "last_ember:sfx/mind/ring_on/ring_on_02",
+   "last_ember:sfx/mind/ring_on/ring_on_03"
+  ]
+ },
+ "sfx.mind.ring_on.1": {
+  "sounds": [
+   "last_ember:sfx/mind/ring_on/ring_on_01"
+  ]
+ },
+ "sfx.mind.ring_on.2": {
+  "sounds": [
+   "last_ember:sfx/mind/ring_on/ring_on_02"
+  ]
+ },
+ "sfx.mind.ring_on.3": {
+  "sounds": [
    "last_ember:sfx/mind/ring_on/ring_on_03"
   ]
  },
@@ -8756,12 +8861,62 @@
    "last_ember:sfx/mind/steps/steps_05"
   ]
  },
+ "sfx.mind.steps.1": {
+  "sounds": [
+   "last_ember:sfx/mind/steps/steps_01"
+  ]
+ },
+ "sfx.mind.steps.2": {
+  "sounds": [
+   "last_ember:sfx/mind/steps/steps_02"
+  ]
+ },
+ "sfx.mind.steps.3": {
+  "sounds": [
+   "last_ember:sfx/mind/steps/steps_03"
+  ]
+ },
+ "sfx.mind.steps.4": {
+  "sounds": [
+   "last_ember:sfx/mind/steps/steps_04"
+  ]
+ },
+ "sfx.mind.steps.5": {
+  "sounds": [
+   "last_ember:sfx/mind/steps/steps_05"
+  ]
+ },
  "sfx.mind.whisper": {
   "sounds": [
    "last_ember:sfx/mind/whisper/whisper_01",
    "last_ember:sfx/mind/whisper/whisper_02",
    "last_ember:sfx/mind/whisper/whisper_03",
    "last_ember:sfx/mind/whisper/whisper_04",
+   "last_ember:sfx/mind/whisper/whisper_05"
+  ]
+ },
+ "sfx.mind.whisper.1": {
+  "sounds": [
+   "last_ember:sfx/mind/whisper/whisper_01"
+  ]
+ },
+ "sfx.mind.whisper.2": {
+  "sounds": [
+   "last_ember:sfx/mind/whisper/whisper_02"
+  ]
+ },
+ "sfx.mind.whisper.3": {
+  "sounds": [
+   "last_ember:sfx/mind/whisper/whisper_03"
+  ]
+ },
+ "sfx.mind.whisper.4": {
+  "sounds": [
+   "last_ember:sfx/mind/whisper/whisper_04"
+  ]
+ },
+ "sfx.mind.whisper.5": {
+  "sounds": [
    "last_ember:sfx/mind/whisper/whisper_05"
   ]
  },
