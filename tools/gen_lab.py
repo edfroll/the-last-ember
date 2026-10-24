@@ -22,17 +22,19 @@ def wpng(path, rows): os.makedirs(os.path.dirname(path), exist_ok=True); png.wri
 rnd = random.Random(18)
 def clamp(v): return max(0, min(255, int(v)))
 
-# ---------------------------------------------------------------- materials: a 64x64 atlas of 16 tiles of 16x16
-MATS = ["bark", "moss", "bone", "glow_amber", "dark", "slime", "slime_light", "flesh", "seaweed", "teeth", "root", "glow_green", "glow_red", "glow_violet", "mud", "bark_light"]
+# ---------------------------------------------------------------- materials: a 128x64 atlas of 32 tiles of 16x16 (8 columns, 4 rows)
+MATS = ["bark", "moss", "bone", "glow_amber", "dark", "slime", "slime_light", "flesh", "seaweed", "teeth", "root", "glow_green", "glow_red", "glow_violet", "mud", "bark_light",
+        "chitin", "chitin_light", "leg_ochre", "flesh_raw", "gore", "feather", "hair", "bone_old", "glow_white"]
 M = {n: i for i, n in enumerate(MATS)}
-GLOW = {"glow_amber", "glow_green", "glow_red", "glow_violet"}
+GLOW = {"glow_amber", "glow_green", "glow_red", "glow_violet", "glow_white"}
 def tile(name):
     t = [[None] * 16 for _ in range(16)]
     r = random.Random(name)
     base = {"bark": (58, 44, 32), "moss": (46, 62, 34), "bone": (196, 186, 160), "glow_amber": (255, 178, 70), "dark": (16, 12, 12),
             "slime": (70, 82, 48), "slime_light": (112, 120, 74), "flesh": (96, 108, 98), "seaweed": (40, 58, 36), "teeth": (210, 200, 160),
             "root": (40, 30, 24), "glow_green": (190, 255, 170), "glow_red": (255, 70, 40), "glow_violet": (220, 140, 255), "mud": (64, 52, 38),
-            "bark_light": (92, 72, 50)}[name]
+            "bark_light": (92, 72, 50), "chitin": (38, 20, 16), "chitin_light": (92, 46, 22), "leg_ochre": (176, 128, 44), "flesh_raw": (122, 40, 36),
+            "gore": (70, 14, 14), "feather": (34, 34, 40), "hair": (14, 14, 16), "bone_old": (168, 150, 108), "glow_white": (235, 245, 255)}[name]
     streak = [r.uniform(-1, 1) for _ in range(16)]
     for y in range(16):
         for x in range(16):
@@ -42,6 +44,12 @@ def tile(name):
             elif name in ("bark", "bark_light", "root"):
                 v = 1 + 0.22 * streak[x] + 0.12 * r.uniform(-1, 1) + (0.18 if (x + y // 5) % 7 == 0 else 0) * -1
                 c = tuple(clamp(b * v) for b in base); a = 255
+            elif name in ("chitin", "chitin_light"):                       # glossy plates: a bright edge on top, dark seams
+                v = 1 + 0.1 * r.uniform(-1, 1) + (0.55 if y in (1, 2) else 0) + (-0.4 if x % 8 == 0 else 0)
+                c = tuple(clamp(b * v) for b in base); a = 255
+            elif name in ("hair", "feather"):
+                v = 1 + 0.35 * streak[x] + 0.1 * r.uniform(-1, 1)
+                c = tuple(clamp(b * v + 6) for b in base); a = 255
             elif name in ("slime", "slime_light"):
                 v = 1 + 0.12 * r.uniform(-1, 1) + (0.25 if r.random() < 0.06 else 0)
                 c = tuple(clamp(b * v) for b in base); a = 238
@@ -50,9 +58,9 @@ def tile(name):
                 c = tuple(clamp(b * v) for b in base); a = 255
             t[y][x] = c + (a,)
     return t
-atlas = [[(0, 0, 0, 0)] * 64 for _ in range(64)]
+atlas = [[(0, 0, 0, 0)] * 128 for _ in range(64)]
 for i, n in enumerate(MATS):
-    t = tile(n); ox, oy = (i % 4) * 16, (i // 4) * 16
+    t = tile(n); ox, oy = (i % 8) * 16, (i // 8) * 16
     for y in range(16):
         for x in range(16): atlas[oy + y][ox + x] = t[y][x]
 wpng(os.path.join(RP, "textures/item/lab/atlas.png"), atlas)
@@ -63,9 +71,9 @@ wpng(os.path.join(RP, "textures/item/lab/atlas.png"), atlas)
 # model limits (-16..32), the display scales it back by 1/s.
 def B(x1, y1, z1, x2, y2, z2, mat): return (x1, y1, z1, x2, y2, z2, mat)
 def face_uv(mat, w, h):
-    i = M[mat]; u0, v0 = (i % 4) * 4, (i // 4) * 4
-    du, dv = min(abs(w), 16) / 4, min(abs(h), 16) / 4
-    return [u0, v0, u0 + max(du, 0.25), v0 + max(dv, 0.25)]
+    i = M[mat]; u0, v0 = (i % 8) * 2, (i // 8) * 4      # uv units: 16 = the whole atlas (128 px wide, 64 px high)
+    du, dv = min(abs(w), 16) / 8, min(abs(h), 16) / 4
+    return [u0, v0, u0 + max(du, 0.125), v0 + max(dv, 0.25)]
 def model(name, boxes, s=1.0, frame=True, display=None):
     els = []
     for (x1, y1, z1, x2, y2, z2, mat) in boxes:
@@ -94,16 +102,17 @@ model("probe", [B(-4, 0, -4, 4, 8, 4, "bone"), B(-1, 3, 4, 1, 5, 10, "glow_red")
 # ---- 1. drowner: the head (a head-slot item: model space of a carved pumpkin, the face on the north side)
 head = [B(1.5, 2, 1.5, 14.5, 15, 14.5, "flesh"), B(2, 15, 3, 9, 16, 12, "flesh"),                   # skull, a swollen crown
         B(3, 8, 1.1, 7, 11, 1.6, "dark"), B(9.5, 8.5, 1.1, 13, 11.5, 1.6, "dark"),                       # deep sockets, not alike
-        B(4.6, 9, 0.9, 5.6, 10, 1.3, "glow_green"), B(10.8, 9.5, 0.9, 11.8, 10.5, 1.3, "glow_green"),   # small pale pupils
+        B(4.6, 9, 0.9, 5.6, 10, 1.3, "glow_white"), B(10.8, 9.5, 0.9, 11.8, 10.5, 1.3, "glow_white"),   # small pale pupils
         B(7.3, 6.5, 1.1, 8.7, 8, 1.6, "dark"),                                                          # the nose hole
-        B(3, 0, 1.0, 13, 5.5, 1.6, "dark"),                                                             # the gaping maw
+        B(3, -1, 1.0, 13, 5.5, 1.6, "dark"),                                                            # the gaping maw, longer
         B(4, 3.5, 0.7, 5, 5.5, 1.1, "teeth"), B(8, 4, 0.7, 8.8, 5.5, 1.1, "teeth"), B(11, 3, 0.7, 12, 5.5, 1.1, "teeth"),
-        B(5.5, 0, 0.7, 6.5, 1.5, 1.1, "teeth"), B(10, 0, 0.7, 10.8, 2, 1.1, "teeth"),
-        B(3, -4, 0.2, 13, 0, 7, "flesh"), B(3.5, -0.5, 0.1, 12.5, 0, 6.5, "dark"),                       # the lower jaw hangs
-        B(1, 3, 0.6, 3.5, 15.5, 3, "seaweed"), B(12.5, 5, 0.6, 15, 15.5, 2.5, "seaweed"), B(1, 15, 1, 15, 16.2, 15, "seaweed"),  # weed over the face, the crown
-        B(0.8, 6, 6, 1.5, 11, 6.6, "dark"), B(0.8, 6, 8, 1.5, 11, 8.6, "dark"), B(14.5, 6, 6, 15.2, 11, 6.6, "dark"), B(14.5, 6, 8, 15.2, 11, 8.6, "dark"),  # gills
-        B(2, -7, 14.5, 5, 15, 15.6, "seaweed"), B(6.5, -10, 14.5, 9, 15, 15.6, "seaweed"), B(10.5, -6, 14.5, 14, 15, 15.6, "seaweed"),
-        B(5, 15.5, 5, 7, 16.8, 7, "mud"), B(10, 15, 9, 12, 16.5, 11, "mud")]
+        B(5.5, -1, 0.7, 6.5, 1.0, 1.1, "teeth"), B(10, -1, 0.7, 10.8, 1.5, 1.1, "teeth"),
+        B(3, -6, 0.2, 13, -1, 7, "flesh"), B(3.5, -1.5, 0.1, 12.5, -1, 6.5, "gore"),                     # the lower jaw hangs low
+        # long lank black hair: a cap, a curtain down the back, strands hanging over the face down to the chest
+        B(1, 14.5, 0.5, 15, 16.4, 15.2, "hair"), B(0.6, -12, 13.8, 15.4, 16, 15.8, "hair"), B(0.3, -9, 2, 1.5, 15.5, 14, "hair"), B(14.5, -10, 2, 15.7, 15.5, 14, "hair"),
+        B(1.2, -8, 0.2, 2.6, 15, 0.9, "hair"), B(2.9, -3, 0.1, 3.8, 15, 0.8, "hair"), B(5.6, 2, 0.1, 6.6, 15, 0.8, "hair"),
+        B(10, -5, 0.1, 11.1, 15, 0.8, "hair"), B(12.2, -11, 0.2, 13.4, 15, 0.9, "hair"), B(13.6, -6, 0.2, 14.8, 15, 0.9, "hair"),
+        B(0.8, 6, 6, 1.5, 11, 6.6, "dark"), B(14.5, 6, 8, 15.2, 11, 8.6, "dark")]                        # gills
 model("drowner_head", head, frame=False, display={"head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]}})
 
 # ---- 2. warg: glowing eyes riding the mob while it lies in ambush (scaled by the display)
@@ -121,20 +130,49 @@ womb = [B(-6, 0, -6, 6, 1.5, 6, "slime"), B(-7.5, 1.5, -7, 7.5, 4, 7.5, "slime")
         B(-6, 1, -8.2, -4, 10, -7.6, "seaweed"), B(1, 3, -8.2, 3, 11, -7.6, "seaweed"), B(-8.5, 2, 3, -8, 9, 5, "seaweed"), B(8, 1, -6, 8.5, 8, -4, "seaweed")]
 model("womb", womb)
 
-# ---- 4. leshy: six parts (pivots in the rig below)
-torso = [B(-7, 0, -4, 7, 19, 4, "bark"), B(-9, 15, -5, 9, 20, 5, "moss"), B(-6, 19, -3, 6, 21, 3, "moss"),
-         B(-6, 13, 4, 6, 14, 5, "bone"), B(-6, 10.5, 4, 6, 11.5, 5, "bone"), B(-5.5, 8, 4, 5.5, 9, 5, "bone"),   # ribs
-         B(-1.5, 9, 3.6, 1.5, 12.5, 4.2, "glow_amber"),                                                          # the ember in the chest
-         B(-6, -2, -4.5, -2, 6, -4, "moss"), B(1, -4, -4.5, 5, 7, -4, "moss"), B(-7.5, 2, -3, -7, 14, 3, "bark_light"), B(7, 4, -3, 7.5, 15, 3, "bark_light")]
+# ---- 5. scolopendra: a head with venom claws and a cluster of eyes, body segments with ochre legs in two phases of the step, a tail
+def legs(z, foot, side):  # one leg: out from the side, down to the ground with the foot at z+foot
+    x0, x1 = (7, 13) if side > 0 else (-13, -7); lx0, lx1 = (12, 13.2) if side > 0 else (-13.2, -12)
+    return [B(x0, 5, z, x1, 6.2, z + 1.2, "leg_ochre"), B(lx0, 0, z + foot, lx1, 5, z + foot + 1.2, "leg_ochre")]
+def seg(phase):
+    b = [B(-7, 2, -6, 7, 8, 6, "chitin"), B(-6, 8, -5, 6, 9.2, 5, "chitin_light"), B(-6.5, 2.5, 5.6, 6.5, 7.5, 6.3, "dark"),
+         B(5, 9, 0, 6.5, 11, 1.5, "chitin_light"), B(-6.5, 9, -2, -5, 10.5, -0.5, "chitin_light")]
+    f = 1.6 if phase == 0 else -1.6
+    return b + legs(2, f, 1) + legs(-3.2, -f, 1) + legs(2, -f, -1) + legs(-3.2, f, -1)
+model("cent_seg_a", seg(0)); model("cent_seg_b", seg(1))
+chead = [B(-6, 2, -5, 6, 7.5, 5, "chitin"), B(-5, 7.5, -4, 5, 8.5, 4, "chitin_light"), B(-4, 2.5, 4.9, 4, 6, 5.3, "dark"),
+         B(2, 6, 5, 3, 7, 5.4, "glow_red"), B(3.4, 5.4, 4.6, 4.2, 6.2, 5.0, "glow_red"), B(-3, 6, 5, -2, 7, 5.4, "glow_red"), B(-4.2, 5.4, 4.6, -3.4, 6.2, 5.0, "glow_red"),
+         B(0.6, 6.6, 5.1, 1.2, 7.2, 5.4, "glow_red"),
+         B(3, 1, 5, 5, 3, 9, "chitin_light"), B(1, 1, 8.5, 3.5, 2.6, 10.5, "chitin_light"), B(0.2, 1, 10, 1.5, 2.2, 11.5, "dark"),      # venom claws
+         B(-5, 1, 5, -3, 3, 9, "chitin_light"), B(-3.5, 1, 8.5, -1, 2.6, 10.5, "chitin_light"), B(-1.5, 1, 10, -0.2, 2.2, 11.5, "dark"),
+         B(3, 6.5, 5, 3.7, 7.2, 16, "leg_ochre"), B(3.6, 7.2, 15, 4.2, 10, 15.6, "leg_ochre"), B(-3.7, 6.5, 5, -3, 7.2, 14, "leg_ochre"), B(-4.2, 7.2, 13, -3.6, 9, 13.6, "leg_ochre")] \
+        + legs(-3, 1.6, 1) + legs(-3, -1.6, -1)
+model("cent_head", chead)
+model("cent_tail", [B(-5, 2, -5, 5, 7, 5, "chitin"), B(-4, 7, -4, 4, 8, 4, "chitin_light"), B(4, 3, -5, 5, 4, -15, "leg_ochre"), B(-5, 3, -5, -4, 4, -15, "leg_ochre"),
+                    B(4.5, 0, -15, 5.5, 4, -14, "leg_ochre"), B(-5.5, 0, -15, -4.5, 4, -14, "leg_ochre")] + legs(0, 1.6, 1) + legs(0, -1.6, -1))
+
+# ---- 4. leshy: seven parts (pivots in the rig below)
+# the torso: the right side thinner, heavy moss on the left shoulder only, a branch grows out of the right one; the chest is torn open:
+# ribs whole on the left and broken on the right, the ember deep inside, roots spilling out; an animal skull and a dead bird hang on root strings
+torso = [B(-6, 0, -4, 7, 19, 4, "bark"), B(7, 2, -3, 8.5, 12, 2, "root"),
+         B(1, 15, -5, 9.5, 21, 5, "moss"), B(-6, 18, -3, 1, 20, 3, "moss"), B(-9, 16, -1, -6, 17.5, 1, "bark_light"), B(-11, 17.5, -1, -9.5, 21, 0.5, "bark_light"),
+         B(-4, 7, 3.9, 4.5, 14.5, 4.1, "dark"), B(-1.5, 8.5, 3.6, 2.5, 12.5, 4.2, "glow_amber"),
+         B(0, 13, 4, 6, 14, 5, "bone"), B(0, 10.5, 4, 6.5, 11.5, 5, "bone"), B(0, 8, 4, 5.5, 9, 5, "bone"),
+         B(-5, 13, 4, -1.5, 14, 5, "bone"), B(-5.5, 8, 4, -3, 9, 5, "bone"), B(-4, 5.5, 4.2, -3, 10, 5, "bone"),
+         B(-2, 1, 4, -1, 8, 5, "root"), B(1.5, 0, 4, 2.5, 7, 5.2, "root"),
+         B(-5.5, 4, 4.5, -5, 9, 5, "root"), B(-7, 0.5, 4.2, -4, 4, 7, "bone_old"), B(-6.6, 2, 6.9, -6, 2.8, 7.2, "dark"), B(-5, 2, 6.9, -4.4, 2.8, 7.2, "dark"),
+         B(4, 2, 4.2, 4.5, 6, 4.7, "root"), B(3, -2, 4, 5.5, 2, 6, "feather"), B(5.5, -3, 4, 6.5, 1, 5, "feather"), B(3.6, -3.5, 4.5, 4.4, -2, 5.3, "bone_old"),
+         B(6, 4, -4.5, 7, 15, -3.5, "moss"), B(-3, -3, -4.5, -2, 9, -3.5, "moss"), B(5, 3, 4, 6, 15, 4.6, "moss"), B(0, 2.5, 4.2, 0.8, 5, 4.8, "bone")]
 # the head: a long crooked skull, sockets not alike, the jaw a little open; antlers NOT alike (Edward: a symmetric deer skull looked funny):
 # the left one big and branching outward and back, the right one broken off with moss hanging from the stump
-lhead = [B(-2, 0, -1.5, 2, 3, 2, "bark"), B(-3.5, 3, -3, 3.5, 9.5, 3.5, "bone"), B(-3.8, 7.5, 2.5, 3.8, 9, 4, "bone"),
-         B(-2, 5, 3.5, 2, 8, 10.5, "bone"), B(-1.5, 5.5, 10.5, 1, 7.5, 11.5, "bone"),                     # the muzzle, its tip broken aslant
-         B(-1.8, 2.5, 3.5, 1.8, 4, 9.5, "bone"), B(-1.7, 4, 4, 1.7, 5, 10, "dark"),                       # the lower jaw, the gap
-         B(-1.5, 4, 9, -0.9, 5, 9.6, "teeth"), B(0.9, 4, 8.5, 1.5, 5, 9.1, "teeth"), B(-0.3, 4.2, 7, 0.3, 5, 7.5, "teeth"),
-         B(1.3, 6, 3.6, 3.6, 8.6, 3.9, "dark"), B(-3.2, 6.4, 3.6, -1.5, 8, 3.9, "dark"),                  # sockets: the left one bigger
-         B(2, 6.8, 3.9, 3, 7.8, 4.1, "glow_amber"), B(-2.6, 6.9, 3.9, -2.0, 7.5, 4.1, "glow_amber"),
-         B(-4, 3, -3.2, -3.4, 8, 2, "moss"), B(-3.5, 9.5, -3, 0, 10.2, 2, "moss"),                         # moss over the right side and the crown
+lhead = [B(-2, 0, -1.5, 2, 3, 2, "bark"), B(-3.5, 4, -3, 3.5, 10, 3.5, "bone"), B(-3.8, 8, 2.5, 3.8, 9.5, 4, "bone"),
+         B(-2.5, 6, 3.5, 2.5, 8.5, 12, "bone"), B(-2.2, 5.2, 3.5, 2.2, 6, 11.5, "gore"),                  # the upper muzzle, the raw palate
+         B(1.6, 3.4, 5, 2.3, 6, 5.7, "teeth"), B(1.6, 2.8, 7, 2.3, 6, 7.7, "teeth"), B(1.6, 3.8, 9, 2.3, 6, 9.7, "teeth"),   # fangs hanging down, not alike
+         B(-2.3, 3.0, 4.5, -1.6, 6, 5.2, "teeth"), B(-2.3, 4.0, 6.5, -1.6, 6, 7.2, "teeth"), B(-2.3, 2.5, 8.5, -1.6, 6, 9.2, "teeth"),
+         B(-1, 2.5, 11.2, -0.2, 6, 11.8, "teeth"), B(0.5, 3.2, 11.2, 1.3, 6, 11.8, "teeth"),
+         B(1.3, 7, 3.6, 3.6, 9.4, 3.9, "dark"), B(-3.2, 7.4, 3.6, -1.5, 9, 3.9, "dark"),                  # sockets: the left one bigger
+         B(2, 7.8, 3.9, 3, 8.8, 4.1, "glow_amber"), B(-2.6, 7.9, 3.9, -2.0, 8.5, 4.1, "glow_amber"),
+         B(-4, 4, -3.2, -3.4, 9, 2, "moss"), B(-3.5, 10, -3, 0, 10.7, 2, "moss"),
          # the left antler
          B(2.5, 9, -1.5, 4, 13, 0, "bone"), B(4, 12, -1.5, 8, 13.4, 0, "bone"), B(6.5, 13.4, -1.5, 7.8, 21, 0, "bone"),
          B(8, 11.5, -1.5, 13, 12.8, 0, "bone"), B(11.5, 12.8, -1.5, 12.7, 17, 0, "bone"), B(5, 13.4, 0, 6.2, 17, 3.5, "bone"),
@@ -148,6 +186,10 @@ leg = [B(-2.5, -21, -2.5, 2.5, 0, 2.5, "bark"), B(-3.5, -21, -3, 3.5, -19, 5, "r
 if os.environ.get("LAB_PROBE"):   # debugging: every element of the arm alone
     for i, b in enumerate(arm): model(f"probe_arm{i}", [b], s=0.72)
     model("probe_arm_s1", [B(-2, -14, -2, 2, 0, 2, "bark")])
+ljaw = [B(-2.2, -2, 0, 2.2, 0, 8.5, "bone_old"), B(-1.9, -0.1, 0.5, 1.9, 0.2, 8, "gore"),           # the lower jaw (pivot at its hinge)
+        B(1.4, 0, 2, 2, 2, 2.6, "teeth"), B(1.4, 0, 5, 2, 1.6, 5.6, "teeth"), B(-2, 0, 3.5, -1.4, 2.2, 4.1, "teeth"), B(-2, 0, 6.5, -1.4, 1.5, 7.1, "teeth"),
+        B(-0.5, 0, 7.8, 0.4, 2.6, 8.4, "teeth"), B(1, -4.5, 7, 1.5, -2, 7.5, "moss"), B(-0.6, -3, 5.5, 0.4, -2, 6.5, "gore")]
+model("leshy_jaw", ljaw)
 model("leshy_torso", torso); model("leshy_head", lhead); model("leshy_arm", arm, s=0.72); model("leshy_leg", leg)
 
 # ---------------------------------------------------------------- 1. drowner: the skin (the humanoid layers of the equipment asset)
@@ -184,6 +226,13 @@ for y in range(h):
         c = [30 + 96 * L, 27 + 80 * L, 25 + 70 * L]                         # soot-black and ash-grey, rough
         if r.random() < 0.08: c = [v * 0.62 for v in c]
         elif r.random() < 0.05: c = [v * 1.3 for v in c]
+        # starved: ribs show through the hide on both flanks (the body box: sides at x 18-23 and 30-35, rows 20-28 along the body)
+        if (18 <= x <= 23 or 30 <= x <= 35) and y in (21, 23, 25) and r.random() < 0.85: c = [150, 140, 118]
+        if (18 <= x <= 23 or 30 <= x <= 35) and y in (22, 24, 26): c = [v * 0.55 for v in c]
+        if 24 <= x <= 29 and 20 <= y <= 28 and x in (26, 27) and y % 2 == 0: c = [140, 128, 104]     # the spine
+        if 18 <= x <= 41 and 26 <= y <= 28 and r.random() < 0.18: c = [96, 14, 12]                  # raw sores
+        # a bloody muzzle: the snout and the jaw (the snout box 0-13 x 10-16)
+        if x <= 13 and 10 <= y <= 16 and (y >= 13 or r.random() < 0.35): c = [110 + 30 * r.random(), 12, 10]
         row.append(tuple(clamp(v) for v in c) + (255,))
     warg.append(row)
 for k in ("", "_angry", "_tame", "_baby", "_angry_baby", "_tame_baby"): wpng(os.path.join(RP, f"textures/entity/wolf/lab_warg{k}.png"), warg)
@@ -198,7 +247,7 @@ wjson(os.path.join(DP, "wolf_variant/lab_warg.json"), {"assets": {"angry": "last
 PASS_Y = float(os.environ.get("LAB_PASS_Y", "3.32"))
 ARM_S = 0.72
 PARTS = {"torso": ("root", (0, 1.3, 0)), "head": ("torso", (0, 1.19, 0.05)), "arm_l": ("torso", (0.56, 1.06, 0)), "arm_r": ("torso", (-0.56, 1.06, 0)),
-         "leg_l": ("root", (0.28, 1.3, 0)), "leg_r": ("root", (-0.28, 1.3, 0))}
+         "leg_l": ("root", (0.28, 1.3, 0)), "leg_r": ("root", (-0.28, 1.3, 0)), "jaw": ("head", (0, 0.33, 0.22))}
 def qmul(a, b):
     ax, ay, az, aw = a; bx, by, bz, bw = b
     return (aw * bx + ax * bw + ay * bz - az * by, aw * by - ax * bz + ay * bw + az * bx, aw * bz + ax * by - ay * bx + az * bw, aw * bw - ax * bx - ay * by - az * bz)
@@ -214,7 +263,7 @@ def solve(pose, look=0.0):
     rp = pose.get("root", (0, 0, 0, 0)); k = pose.get("scale", 1.0)
     world = {"root": ((0, rp[3], 0), qeul(rp[0], rp[1], rp[2]))}
     out = {}
-    for part in ("torso", "head", "arm_l", "arm_r", "leg_l", "leg_r"):
+    for part in ("torso", "head", "jaw", "arm_l", "arm_r", "leg_l", "leg_r"):
         par, piv = PARTS[part]; pt, pq = world[par]
         if par == "root": piv = piv
         else: piv = tuple(a - b for a, b in zip(piv, (0, 0, 0)))
@@ -230,22 +279,23 @@ def merge(t, q, s, dur):
     return ("{start_interpolation:0,interpolation_duration:%d,transformation:{translation:[%sf,%sf,%sf],left_rotation:[%sf,%sf,%sf,%sf],scale:[%sf,%sf,%sf],right_rotation:[0f,0f,0f,1f]}}"
             % (dur, f(t[0]), f(t[1]), f(t[2]), f(q[0]), f(q[1]), f(q[2]), f(q[3]), f(s), f(s), f(s)))
 LOOKS = list(range(-60, 61, 10))   # le.llook = index 0..12 (6 = straight)
+# roll of an arm: + moves the left arm (+X) outward, - the right one. Walking it spreads its long arms wide to the sides (Edward: not a golem).
 POSES = {
-    "idle0": {"torso": (3, 0, 0), "arm_l": (4, 0, -6), "arm_r": (4, 0, 6), "head": (-4, 0, 0)},
-    "idle1": {"torso": (-1, 0, 0), "arm_l": (-2, 0, -9), "arm_r": (-2, 0, 9), "head": (2, 0, 0), "root": (0, 0, 0, 0.03)},
-    "walk0": {"leg_l": (-24, 0, 0), "leg_r": (22, 0, 0), "arm_l": (18, 0, -6), "arm_r": (-20, 0, 6), "torso": (6, -6, 0), "root": (0, 0, 0, -0.06)},
-    "walk1": {"leg_l": (0, 0, 0), "leg_r": (0, 0, 0), "arm_l": (0, 0, -6), "arm_r": (0, 0, 6), "torso": (5, 0, 0), "root": (0, 0, 0, 0.04)},
-    "walk2": {"leg_l": (22, 0, 0), "leg_r": (-24, 0, 0), "arm_l": (-20, 0, -6), "arm_r": (18, 0, 6), "torso": (6, 6, 0), "root": (0, 0, 0, -0.06)},
-    "walk3": {"leg_l": (0, 0, 0), "leg_r": (0, 0, 0), "arm_l": (0, 0, -6), "arm_r": (0, 0, 6), "torso": (5, 0, 0), "root": (0, 0, 0, 0.04)},
-    "windup": {"torso": (-12, 24, 0), "arm_r": (-165, 0, 15), "arm_l": (-30, 0, -25), "head": (-14, 0, 0), "leg_l": (-10, 0, 0), "leg_r": (8, 0, 0)},
-    "strike": {"torso": (24, -18, 0), "arm_r": (-25, 0, 0), "arm_l": (10, 0, -15), "head": (10, 0, 0), "leg_l": (-16, 0, 0), "leg_r": (14, 0, 0), "root": (0, 0, 0, -0.1)},
-    "rise0": {"root": (0, 0, 0, -4.8), "torso": (30, 0, 0), "arm_l": (-160, 0, -20), "arm_r": (-160, 0, 20), "head": (40, 0, 0)},
-    "rise1": {"root": (0, 0, 0, -1.4), "torso": (20, 0, 0), "arm_l": (-150, 0, -30), "arm_r": (-150, 0, 30), "head": (-30, 0, 0)},
-    "rise2": {"torso": (-10, 0, 0), "arm_l": (-40, 0, -40), "arm_r": (-40, 0, 40), "head": (-25, 0, 0)},
-    "die0": {"torso": (-16, 0, 6), "head": (-35, 0, 0), "arm_l": (-50, 0, -50), "arm_r": (-60, 0, 45), "leg_l": (6, 0, 0)},
-    "die1": {"root": (0, 0, 0, -0.55), "torso": (34, 0, -6), "head": (20, 0, 10), "arm_l": (-10, 0, -20), "arm_r": (5, 0, 25), "leg_l": (-30, 0, 4), "leg_r": (-40, 0, -4)},
-    "die2": {"root": (80, 0, 0, -0.35), "torso": (8, 0, -4), "head": (30, 25, 20), "arm_l": (-70, 0, -60), "arm_r": (-80, 0, 30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6)},
-    "die3": {"root": (80, 0, 0, -0.75), "torso": (8, 0, -4), "head": (30, 25, 20), "arm_l": (-70, 0, -60), "arm_r": (-80, 0, 30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6), "scale": 0.0},
+    "idle0": {"torso": (3, 0, 0), "arm_l": (4, 0, 14), "arm_r": (4, 0, -14), "head": (-4, 0, 0), "jaw": (22, 0, 0)},
+    "idle1": {"torso": (-1, 0, 0), "arm_l": (-2, 0, 19), "arm_r": (-2, 0, -19), "head": (2, 0, 0), "jaw": (32, 0, 0), "root": (0, 0, 0, 0.03)},
+    "walk0": {"leg_l": (-24, 0, 0), "leg_r": (22, 0, 0), "arm_l": (18, 0, 38), "arm_r": (-20, 0, -46), "torso": (6, -6, 0), "jaw": (26, 0, 0), "root": (0, 0, 0, -0.06)},
+    "walk1": {"leg_l": (0, 0, 0), "leg_r": (0, 0, 0), "arm_l": (0, 0, 48), "arm_r": (0, 0, -48), "torso": (5, 0, 0), "jaw": (32, 0, 0), "root": (0, 0, 0, 0.04)},
+    "walk2": {"leg_l": (22, 0, 0), "leg_r": (-24, 0, 0), "arm_l": (-20, 0, 46), "arm_r": (18, 0, -38), "torso": (6, 6, 0), "jaw": (26, 0, 0), "root": (0, 0, 0, -0.06)},
+    "walk3": {"leg_l": (0, 0, 0), "leg_r": (0, 0, 0), "arm_l": (0, 0, 48), "arm_r": (0, 0, -48), "torso": (5, 0, 0), "jaw": (32, 0, 0), "root": (0, 0, 0, 0.04)},
+    "windup": {"torso": (-12, 24, 0), "arm_r": (-165, 0, 15), "arm_l": (-30, 0, 35), "head": (-18, 0, 0), "jaw": (62, 0, 0), "leg_l": (-10, 0, 0), "leg_r": (8, 0, 0)},
+    "strike": {"torso": (24, -18, 0), "arm_r": (-25, 0, 0), "arm_l": (10, 0, 30), "head": (10, 0, 0), "jaw": (14, 0, 0), "leg_l": (-16, 0, 0), "leg_r": (14, 0, 0), "root": (0, 0, 0, -0.1)},
+    "rise0": {"root": (0, 0, 0, -4.8), "torso": (30, 0, 0), "arm_l": (-160, 0, 20), "arm_r": (-160, 0, -20), "head": (40, 0, 0), "jaw": (50, 0, 0)},
+    "rise1": {"root": (0, 0, 0, -1.4), "torso": (20, 0, 0), "arm_l": (-150, 0, 30), "arm_r": (-150, 0, -30), "head": (-30, 0, 0), "jaw": (60, 0, 0)},
+    "rise2": {"torso": (-10, 0, 0), "arm_l": (-40, 0, 50), "arm_r": (-40, 0, -50), "head": (-25, 0, 0), "jaw": (62, 0, 0)},
+    "die0": {"torso": (-16, 0, 6), "head": (-35, 0, 0), "jaw": (60, 0, 0), "arm_l": (-50, 0, 50), "arm_r": (-60, 0, -45), "leg_l": (6, 0, 0)},
+    "die1": {"root": (0, 0, 0, -0.55), "torso": (34, 0, -6), "head": (20, 0, 10), "jaw": (40, 0, 0), "arm_l": (-10, 0, 20), "arm_r": (5, 0, -25), "leg_l": (-30, 0, 4), "leg_r": (-40, 0, -4)},
+    "die2": {"root": (80, 0, 0, -0.35), "torso": (8, 0, -4), "head": (30, 25, 20), "jaw": (50, 0, 0), "arm_l": (-70, 0, 60), "arm_r": (-80, 0, -30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6)},
+    "die3": {"root": (80, 0, 0, -0.75), "torso": (8, 0, -4), "head": (30, 25, 20), "jaw": (50, 0, 0), "arm_l": (-70, 0, 60), "arm_r": (-80, 0, -30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6), "scale": 0.0},
 }
 gd = os.path.join(DP, "function/lab/gen")
 if os.path.isdir(gd): shutil.rmtree(gd)
@@ -261,15 +311,48 @@ for name, pose in POSES.items():
     # the head: the same pose, turned by the look (le.llook) unless the pose drives the head itself
     hl = [f"# GENERATED: the head in the pose {name}, turned by the look index le.llook"]
     for i, lk in enumerate(LOOKS):
-        t, q, s = solve(pose, lk if name.startswith(("idle", "walk")) else 0)["head"]
-        hl.append(f"$execute if score @s le.llook matches {i} on passengers if entity @s[tag=le.lp_head] run data merge entity @s " + merge(t, q, s, 0).replace("interpolation_duration:0", "interpolation_duration:$(d)"))
+        so = solve(pose, lk if name.startswith(("idle", "walk")) else 0)
+        for part in ("head", "jaw"):
+            t, q, s = so[part]
+            hl.append(f"$execute if score @s le.llook matches {i} on passengers if entity @s[tag=le.lp_{part}] run data merge entity @s " + merge(t, q, s, 0).replace("interpolation_duration:0", "interpolation_duration:$(d)"))
     wtext(os.path.join(gd, f"head_{name}.mcfunction"), "\n".join(hl) + "\n")
 # the parts at rest (summon data): carrier summons them as passengers
 rest = solve(POSES["idle0"])
 summ = []
-for part in ("torso", "head", "arm_l", "arm_r", "leg_l", "leg_r"):
-    t, q, s = rest[part]; mdl = {"torso": "leshy_torso", "head": "leshy_head", "arm_l": "leshy_arm", "arm_r": "leshy_arm", "leg_l": "leshy_leg", "leg_r": "leshy_leg"}[part]
+for part in ("torso", "head", "jaw", "arm_l", "arm_r", "leg_l", "leg_r"):
+    t, q, s = rest[part]; mdl = {"torso": "leshy_torso", "head": "leshy_head", "jaw": "leshy_jaw", "arm_l": "leshy_arm", "arm_r": "leshy_arm", "leg_l": "leshy_leg", "leg_r": "leshy_leg"}[part]
     tr = merge(t, q, s, 0)[1:-1].split("transformation:")[1]
     summ.append('{id:"minecraft:item_display",Tags:["le.lab_part","le.lp_%s"],teleport_duration:3,view_range:1.5f,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/%s"}},transformation:%s}' % (part, mdl, tr))
 wtext(os.path.join(gd, "leshy_parts.mcfunction"), "# GENERATED: the parts of the leshy at rest (the passengers the carrier is summoned with: lab/leshy/spawn)\ndata modify storage last_ember:lab leshy_parts set value [" + ",".join(summ) + "]\n")
+# ---------------------------------------------------------------- 5. the scolopendra: body segments that follow the path of the head
+# The carrier (an invisible silverfish, the head rides it) leaves a path: a marker le.cmark (same le.lnk) keeps points every 0.25 block in data.h
+# (newest first); segment k stands on point 3+4k and faces point 1+4k; its hit box (interaction le.cb<k>) goes with it.
+NSEG = 10
+SCALES = [1.5, 1.5, 1.45, 1.4, 1.35, 1.3, 1.25, 1.2, 1.12, 1.1]
+cl = ["# GENERATED: as the path marker after a new point: every segment to its point of the path (ch = the path)"]
+for k in range(NSEG):
+    i, j = 3 + 4 * k, 1 + 4 * k
+    cl += [f"execute unless data storage last_ember:lab ch[{i}] run return 0",
+           f"data modify storage last_ember:lab cp set from storage last_ember:lab ch[{i}]",
+           f"data modify storage last_ember:lab cp.fx set from storage last_ember:lab ch[{j}].x",
+           f"data modify storage last_ember:lab cp.fz set from storage last_ember:lab ch[{j}].z",
+           f"execute as @e[type=minecraft:item_display,tag=le.cs{k}] if score @s le.lnk = #id le.l run function last_ember:lab/cent/tp with storage last_ember:lab cp"]
+wtext(os.path.join(gd, "cent_place.mcfunction"), "\n".join(cl) + "\n")
+bl = ["# GENERATED: as the new carrier at itself: its path marker, the body segments (le.cs<k>) and their hit boxes (le.cb<k>), all with its le.lnk"]
+bl.append('summon minecraft:marker ~ ~ ~ {Tags:["le.cmark","le.cnew"],data:{h:[]}}')
+for k in range(NSEG):
+    mdl = "cent_tail" if k == NSEG - 1 else ("cent_seg_a" if k % 2 == 0 else "cent_seg_b")
+    sc = SCALES[k]
+    bl.append('summon minecraft:item_display ~ ~ ~ {Tags:["le.cseg","le.cs%d","le.cnew"],teleport_duration:2,view_range:1.5f,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/%s"}},transformation:{translation:[0f,0f,0f],left_rotation:[0f,0f,0f,1f],scale:[%sf,%sf,%sf],right_rotation:[0f,0f,0f,1f]}}' % (k, mdl, sc, sc, sc))
+    bl.append('summon minecraft:interaction ~ ~ ~ {Tags:["le.cbox","le.cb%d","le.cnew"],width:%sf,height:%sf,response:1b}' % (k, round(0.9 * sc, 2), round(0.5 * sc, 2)))
+bl.append("scoreboard players operation @e[tag=le.cnew] le.lnk = @s le.lnk")
+for k in range(NSEG): bl.append(f"scoreboard players set @e[tag=le.cnew,tag=le.cs{k}] le.lfr {k}")
+bl.append("tag @e[tag=le.cnew] remove le.cnew")
+wtext(os.path.join(gd, "cent_build.mcfunction"), "\n".join(bl) + "\n")
+lg = ["# GENERATED: the legs of the body step (models a/b swap; neighbours in the other phase), macro p = 0 or 1"]
+for k in range(NSEG - 1):
+    a, b = ("cent_seg_a", "cent_seg_b") if k % 2 == 0 else ("cent_seg_b", "cent_seg_a")
+    lg.append(f'$execute if score #lp le.l matches $(p) as @e[type=minecraft:item_display,tag=le.cs{k}] if score @s le.lnk = #id le.l run data modify entity @s item.components."minecraft:item_model" set value "last_ember:lab/{a}"')
+    lg.append(f'$execute unless score #lp le.l matches $(p) as @e[type=minecraft:item_display,tag=le.cs{k}] if score @s le.lnk = #id le.l run data modify entity @s item.components."minecraft:item_model" set value "last_ember:lab/{b}"')
+wtext(os.path.join(gd, "cent_legs.mcfunction"), "\n".join(lg) + "\n")
 print(f"lab: {len(MATS)} materials, models probe/drowner_head/warg_eyes/womb/leshy x4, drowner skin, warg variant, {len(POSES)} leshy poses (PASS_Y {PASS_Y})")

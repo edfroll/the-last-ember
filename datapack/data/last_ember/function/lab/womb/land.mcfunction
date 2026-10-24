@@ -1,6 +1,6 @@
 scoreboard players set @s le.lair 0
 scoreboard players set @s le.lsq 2
-scoreboard players set @s le.lfd 3
+scoreboard players set @s le.llook 3
 function last_ember:lab/womb/shape {s:"squash",d:2}
 function last_ember:lab/s/womb_land
 execute if score #r le.l matches 0 run function last_ember:lab/s/womb_land2

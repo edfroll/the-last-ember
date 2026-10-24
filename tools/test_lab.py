@@ -105,11 +105,18 @@ def t_womb():
     chk("dormant in the pool: an invisible slime with the blob riding it", ls("le.lab_womb") == 0 and "le.lab_blob" in R("data get entity @e[tag=le.lab_womb,limit=1] Passengers"))
     wake(); time.sleep(1.5); shot("womb_bubbles"); time.sleep(0.8); shot("womb_rise"); time.sleep(0.8); shot("womb_jump"); time.sleep(1.0)
     chk("it is out and alive", ls("le.lab_womb") == 2)
-    sq = set()
-    for i in range(30):
+    R("tp Cam2 800.5 200 778.5 0 0"); sq = set(); p0 = pos("@e[tag=le.lab_womb,limit=1]")
+    for i in range(40):
         time.sleep(0.15); sq.add(score("@e[tag=le.lab_womb,limit=1]", "le.lsq"))
-        if i in (6, 14, 22): look("le.lab_womb", 5, 1.2, 40); shot(f"womb_move{i}")
-    chk("it squashes and stretches (shapes seen: %s)" % sorted(x for x in sq if x is not None), {1, 2}.issubset(sq) or len(sq) >= 3, sq)
+        if i in (8, 18, 28): look("le.lab_womb", 5, 1.2, 40); shot(f"womb_move{i}")
+    p1 = pos("@e[tag=le.lab_womb,limit=1]"); tr = R("execute if entity @e[type=minecraft:area_effect_cloud,tag=le.lab_trail]")
+    chk("it crawls at the prey in surges, not vanilla hops (shapes seen: %s, z %.1f -> %.1f)" % (sorted(x for x in sq if x is not None), p0[2], p1[2]), 5 in sq and p1[2] < p0[2] - 3, sq)
+    chk("it leaves a stinking trail (%s)" % tr, "passed" in tr)
+    pw = pos("@e[tag=le.lab_womb,limit=1]"); R(f"tp Cam2 {pw[0]:.2f} 200 {pw[2] - 3.5:.2f} 0 0")
+    for i in range(30):
+        time.sleep(0.1)
+        if score("@e[tag=le.lab_womb,limit=1]", "le.lan") == 1: break
+    chk("close to the prey it gathers itself and leaps", score("@e[tag=le.lab_womb,limit=1]", "le.lan") == 1 or score("@e[tag=le.lab_womb,limit=1]", "le.lsq") in (1, 2, 6))
     time.sleep(2.0); look("le.lab_womb", 4, 1.0, 50); shot("womb_attack"); shot("womb_attack", "Cam2")
     chk("its touch muddles: the Murk wound (nausea, le.wmu)", (score("Cam2", "le.wmu") or 0) > 0, score("Cam2", "le.wmu"))
     look("le.lab_womb", 20, 2, 20); shot("womb_far20")
@@ -120,7 +127,7 @@ def t_womb():
 
 def t_leshy():
     print("[4 leshy: a rig of 6 parts on an invisible husk]"); field(); prey(800.5, 783.5); cam(807.5, 203, 792.5, 45, 10); station("leshy"); time.sleep(1)
-    chk("dormant under the ground with 6 parts", ls("le.lab_leshy") == 0 and R("data get entity @e[tag=le.lab_leshy,limit=1] Passengers").count("le.lp_") == 6)
+    chk("dormant under the ground with 7 parts", ls("le.lab_leshy") == 0 and R("data get entity @e[tag=le.lab_leshy,limit=1] Passengers").count("le.lp_") == 7)
     wake(); time.sleep(2.0); shot("leshy_rise1"); time.sleep(1.0); shot("leshy_rise2"); time.sleep(1.2); shot("leshy_rise3"); time.sleep(1.0)
     chk("it grew out of the ground and is alive", ls("le.lab_leshy") == 2)
     R("tp Cam2 800.5 200 784.5 0 0"); time.sleep(1.0)
@@ -137,7 +144,7 @@ def t_leshy():
     chk("after it crumbled the carrier and every part are gone", not alive("le.lab_leshy") and "passed" not in R("execute if entity @e[tag=le.lab_part]"))
 
 def t_fish():
-    print("[5 giant silverfish: vanilla re-imagined, burrows]"); field(); prey(800.5, 783.5); cam(806.5, 202.5, 793.5, 40, 12); station("fish"); time.sleep(1)
+    print("[5 giant scolopendra: a body that follows the head, burrows]"); field(); prey(800.5, 783.5); cam(806.5, 202.5, 793.5, 40, 12); station("fish"); time.sleep(1)
     chk("dormant under the ground", ls("le.lab_fish") == 0 and pos("@e[tag=le.lab_fish,limit=1]")[1] < 199)
     wake(); time.sleep(0.6); shot("fish_cracks"); time.sleep(0.5)
     lev = "levitation" in R("data get entity Cam2 active_effects")
@@ -155,8 +162,16 @@ def t_fish():
         if ls("le.lab_fish") == 2: break
     p = pos("@e[tag=le.lab_fish,limit=1]")
     chk("it came up next to the prey (within 3.5 blocks)", ls("le.lab_fish") == 2 and p and abs(p[2] - 776.5) < 3.5 and abs(p[0] - 800.5) < 3.5, p)
-    kill("le.lab_fish"); time.sleep(0.5); look("le.lab_fish", 4, 2.0, 50); shot("fish_death1"); time.sleep(1.5); shot("fish_death2"); time.sleep(2.5)
-    chk("after its death it is gone", not alive("le.lab_fish"))
+    segs = R("execute if entity @e[tag=le.cseg]"); boxes = R("execute if entity @e[type=minecraft:interaction,tag=le.cbox]")
+    sp = [pos(f"@e[tag=le.cs{k},limit=1]") for k in (0, 5, 9)]
+    chk("10 body segments with hit boxes follow the head (%s / %s), spread along the path %s" % (segs, boxes, [round(p[2], 1) for p in sp if p]), "10" in segs and "10" in boxes and sp[0] and sp[2] and abs(sp[0][2] - sp[2][2]) + abs(sp[0][0] - sp[2][0]) > 4)
+    look("le.lab_fish", 6, 2.5, 70); shot("fish_body"); shot("fish_body", "Cam2")
+    h0 = num(R("data get entity @e[tag=le.lab_fish,limit=1] Health")); R("tp Cam2 @e[tag=le.cs6,limit=1]"); R("execute as Cam2 at @s run tp @s ~ ~ ~-1.5 0 30")
+    R("execute as @e[tag=le.cb6] run data merge entity @s {attack:{player:[I;0,0,0,0],timestamp:0L}}")
+    R("data modify entity @e[tag=le.cb6,limit=1] attack.player set from entity Cam2 UUID"); time.sleep(0.4); h1 = num(R("data get entity @e[tag=le.lab_fish,limit=1] Health"))
+    chk("a blow on a body segment hurts the scolopendra (%s -> %s)" % (h0, h1), h0 and h1 and h1 < h0)
+    kill("le.lab_fish"); time.sleep(0.5); look("le.lab_fish", 5, 3.0, 60); shot("fish_death1"); time.sleep(1.5); shot("fish_death2"); time.sleep(2.5)
+    chk("after its death it is gone with its body", not alive("le.lab_fish") and "passed" not in R("execute if entity @e[tag=le.cseg]"))
 
 def t_wounds():
     print("[wounds: cures and limits]"); prey()
@@ -205,7 +220,7 @@ def t_reload():
     gone = "passed" not in R("execute if entity @e[tag=le.lab_leshy]")
     R("tp Cam2 800.5 200 783.5 0 0"); R("gamemode survival Cam2"); time.sleep(3.4)
     n = R("data get entity @e[tag=le.lab_leshy,limit=1] Passengers").count("le.lp_")
-    chk("unloaded with the chunk (%s) and back with all 6 parts riding it (%d)" % (gone, n), gone and n == 6)
+    chk("unloaded with the chunk (%s) and back with all 7 parts riding it (%d)" % (gone, n), gone and n == 7)
     R("forceload add 768 768 832 832")
 
 def t_voice():
