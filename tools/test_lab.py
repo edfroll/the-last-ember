@@ -89,12 +89,18 @@ def t_drowner():
 
 def t_warg():
     print("[2 warg: own wolf variant]"); field(); prey(800.5, 783.5); cam(806.5, 202.5, 793.5, 40, 12); station("warg"); time.sleep(1)
-    chk("dormant: invisible in the bushes, only the eyes ride it", ls("le.lab_warg") == 0 and "invisibility" in R("data get entity @e[tag=le.lab_warg,limit=1] active_effects") and "le.lab_eyes" in R("data get entity @e[tag=le.lab_warg,limit=1] Passengers"))
+    chk("dormant: an invisible wolf crouching in the bushes with its rig of 8 parts", ls("le.lab_warg") == 0 and "invisibility" in R("data get entity @e[tag=le.lab_warg,limit=1] active_effects") and R("data get entity @e[tag=le.lab_warg,limit=1] Passengers").count("le.wp_") == 8)
     chk("its variant is last_ember:lab_warg", "last_ember:lab_warg" in R("data get entity @e[tag=le.lab_warg,limit=1] variant"))
     wake(); time.sleep(1.2); shot("warg_eyes_bush"); time.sleep(1.4); shot("warg_leap"); time.sleep(0.6)
-    chk("it leapt out: visible, alive", ls("le.lab_warg") == 2 and "invisibility" not in R("data get entity @e[tag=le.lab_warg,limit=1] active_effects"))
+    chk("it leapt out and is alive", ls("le.lab_warg") == 2)
     time.sleep(1.0); chk("always angry at the prey (anger_end_time in the future, angry_at set)", "angry_at" in R("data get entity @e[tag=le.lab_warg,limit=1]"), R("data get entity @e[tag=le.lab_warg,limit=1] anger_end_time"))
-    time.sleep(2.5); look("le.lab_warg", 4, 1.0, 50); shot("warg_attack"); shot("warg_attack", "Cam2")
+    seen = set()
+    for i in range(30):
+        time.sleep(0.1); seen.add(score("@e[tag=le.lab_warg,limit=1]", "le.lan"))
+        if 2 in seen and "b" not in seen: seen.add("b"); look("le.lab_warg", 3.5, 0.8, 40); shot("warg_bite"); shot("warg_bite", "Cam2")
+    chk("it gallops and bites with its jaw (modes seen %s)" % sorted(x for x in seen if isinstance(x, int)), 2 in seen)
+    R("tp Cam2 800.5 200 770.5 0 0"); time.sleep(0.6); look("le.lab_warg", 5, 1.0, 80); shot("warg_run")
+    time.sleep(1.5); look("le.lab_warg", 4, 1.0, 50); shot("warg_attack"); shot("warg_attack", "Cam2")
     chk("its bite bleeds: the Blood wound (le.wbl)", (score("Cam2", "le.wbl") or 0) > 0, score("Cam2", "le.wbl"))
     look("le.lab_warg", 20, 2, 20); shot("warg_far20")
     kill("le.lab_warg"); time.sleep(0.6); look("le.lab_warg", 4, 1.5, 60); shot("warg_death1"); time.sleep(2); shot("warg_death2"); time.sleep(2.5)

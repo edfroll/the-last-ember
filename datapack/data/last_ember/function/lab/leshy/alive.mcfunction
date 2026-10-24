@@ -3,7 +3,7 @@ scoreboard players add @s le.lt 1
 # the head looks at the nearest player (every 5 ticks; it shows with the next frame)
 scoreboard players operation #t5 le.l = @s le.lt
 scoreboard players operation #t5 le.l %= #5 le.l
-execute if score #t5 le.l matches 0 run function last_ember:lab/leshy/look
+execute if score #t5 le.l matches 0 run function last_ember:lab/look
 # the attack is ours (the carrier's own attack does no harm): a swing when somebody is within 3.6 blocks
 execute if score @s le.lan matches 2 run return run function last_ember:lab/leshy/attack
 execute if score @s le.lcd matches ..0 if entity @a[distance=..3.6,gamemode=!spectator,gamemode=!creative] run return run function last_ember:lab/leshy/attack_start

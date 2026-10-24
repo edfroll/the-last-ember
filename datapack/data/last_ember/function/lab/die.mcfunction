@@ -3,3 +3,4 @@ scoreboard players set @s le.ls 3
 scoreboard players set @s le.lt 0
 data merge entity @s {NoAI:1b,Invulnerable:1b}
 attribute @s minecraft:movement_speed modifier remove last_ember:lab_hold
+attribute @s minecraft:movement_speed modifier remove last_ember:lab_dash

@@ -1,3 +1,5 @@
-# 2. Warg (its own wolf variant last_ember:lab_warg, scale 1.7, always angry): it waits invisible in the bushes, only its eyes glow; a howl, then it leaps out
-summon minecraft:wolf ~ ~ ~ {Tags:["le.lab","le.lab_body","le.noelite","le.keep","le.eq_done","le.rolled","le.lnew","le.lab_warg"],variant:"last_ember:lab_warg",Silent:1b,NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Health:530f,attributes:[{id:"minecraft:max_health",base:8,modifiers:[{id:"last_ember:lab_hp",amount:522.0d,operation:"add_value"}]},{id:"minecraft:scale",base:1.7},{id:"minecraft:attack_damage",base:6},{id:"minecraft:movement_speed",base:0.4},{id:"minecraft:follow_range",base:32}],active_effects:[{id:"minecraft:invisibility",duration:-1,amplifier:0,show_particles:0b}],Passengers:[{id:"minecraft:item_display",Tags:["le.lab_part","le.lab_eyes"],teleport_duration:2,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/warg_eyes"}},transformation:{translation:[0.0f,0.15f,0.98f],left_rotation:[0f,0f,0f,1f],scale:[1.7f,1.7f,1.7f],right_rotation:[0f,0f,0f,1f]}}]}
+# 2. Warg (second version: a rig of 8 parts on an invisible wolf of scale 1.7, always angry): it crouches in the bushes, its red eyes glow;
+# a howl, then it leaps out, gallops, bites with its own jaw
+function last_ember:lab/warg/summon with storage last_ember:lab
 execute as @e[tag=le.lnew] run function last_ember:lab/new
+execute as @e[tag=le.lab_warg,tag=!le.lposed] run function last_ember:lab/warg/first_pose

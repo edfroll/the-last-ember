@@ -74,8 +74,11 @@ def face_uv(mat, w, h):
     i = M[mat]; u0, v0 = (i % 8) * 2, (i // 8) * 4      # uv units: 16 = the whole atlas (128 px wide, 64 px high)
     du, dv = min(abs(w), 16) / 8, min(abs(h), 16) / 4
     return [u0, v0, u0 + max(du, 0.125), v0 + max(dv, 0.25)]
+GLOW_RGB = {"glow_amber": (255, 178, 70), "glow_green": (190, 255, 170), "glow_red": (255, 70, 40), "glow_violet": (220, 140, 255), "glow_white": (235, 245, 255)}
 def model(name, boxes, s=1.0, frame=True, display=None):
-    els = []
+    # two tints (custom_model_data colors): [0] the whole part (white by default; red for a moment when the monster is hurt),
+    # [1] the glowing eyes: their texture is white, the tint gives their colour (and a black or white flash when it is hurt)
+    els = []; eye = None
     for (x1, y1, z1, x2, y2, z2, mat) in boxes:
         if frame: fx1, fx2, fz1, fz2 = 8 - x2 * s, 8 - x1 * s, 8 - z2 * s, 8 - z1 * s
         else: fx1, fx2, fz1, fz2 = x1, x2, z1, z2
@@ -83,17 +86,19 @@ def model(name, boxes, s=1.0, frame=True, display=None):
         fr, to = [round(v, 3) for v in (fx1, fy1, fz1)], [round(v, 3) for v in (fx2, fy2, fz2)]
         assert all(-16 <= v <= 32 for v in fr + to), (name, fr, to)
         w, h, d = to[0] - fr[0], to[1] - fr[1], to[2] - fr[2]
-        faces = {f: {"uv": face_uv(mat, *wh), "texture": "#a", "tintindex": 0} for f, wh in
+        glow = mat in GLOW; tex = "glow_white" if glow else mat
+        if glow: eye = eye or GLOW_RGB[mat]
+        faces = {f: {"uv": face_uv(tex, *wh), "texture": "#a", "tintindex": 1 if glow else 0} for f, wh in
                  (("north", (w, h)), ("south", (w, h)), ("east", (d, h)), ("west", (d, h)), ("up", (w, d)), ("down", (w, d)))}
         e = {"from": fr, "to": to, "faces": faces}
-        if mat in GLOW: e["light_emission"] = 15; e["shade"] = False
+        if glow: e["light_emission"] = 15; e["shade"] = False
         els.append(e)
     m = {"textures": {"a": "last_ember:item/lab/atlas", "particle": "last_ember:item/lab/atlas"}, "elements": els}
     if display: m["display"] = display
     wjson(os.path.join(RP, f"models/item/lab/{name}.json"), m)
-    # the tint (custom_model_data colors[0], white by default) flashes the part red when the monster is hurt
+    ec = (eye[0] << 16 | eye[1] << 8 | eye[2]) - (1 << 32) + (255 << 24) if eye else -1   # ARGB as a signed int
     wjson(os.path.join(RP, f"items/lab/{name}.json"), {"model": {"type": "minecraft:model", "model": f"last_ember:item/lab/{name}",
-          "tints": [{"type": "minecraft:custom_model_data", "index": 0, "default": -1}]}})
+          "tints": [{"type": "minecraft:custom_model_data", "index": 0, "default": -1}, {"type": "minecraft:custom_model_data", "index": 1, "default": ec}]}})
 def mirror(boxes): return [B(-x2, y1, z1, -x1, y2, z2, m) for (x1, y1, z1, x2, y2, z2, m) in boxes]
 
 # ---- probe: a nose to the front (+Z of the frame), a glowing cap; to check orientation and the light of the displays
@@ -115,8 +120,6 @@ head = [B(1.5, 2, 1.5, 14.5, 15, 14.5, "flesh"), B(2, 15, 3, 9, 16, 12, "flesh")
         B(0.8, 6, 6, 1.5, 11, 6.6, "dark"), B(14.5, 6, 8, 15.2, 11, 8.6, "dark")]                        # gills
 model("drowner_head", head, frame=False, display={"head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]}})
 
-# ---- 2. warg: glowing eyes riding the mob while it lies in ambush (scaled by the display)
-model("warg_eyes", [B(-1.9, -0.45, 0, -0.9, 0.45, 0.5, "glow_red"), B(0.9, -0.45, 0, 1.9, 0.45, 0.5, "glow_red")])
 
 # ---- 3. swamp womb: a blob 1 block wide standing on its pivot (scaled with the size of the slime)
 womb = [B(-6, 0, -6, 6, 1.5, 6, "slime"), B(-7.5, 1.5, -7, 7.5, 4, 7.5, "slime"), B(-8, 4, -7.5, 8, 8, 8, "slime"),
@@ -143,8 +146,7 @@ model("cent_seg_a", seg(0)); model("cent_seg_b", seg(1))
 chead = [B(-6, 2, -5, 6, 7.5, 5, "chitin"), B(-5, 7.5, -4, 5, 8.5, 4, "chitin_light"), B(-4, 2.5, 4.9, 4, 6, 5.3, "dark"),
          B(2, 6, 5, 3, 7, 5.4, "glow_red"), B(3.4, 5.4, 4.6, 4.2, 6.2, 5.0, "glow_red"), B(-3, 6, 5, -2, 7, 5.4, "glow_red"), B(-4.2, 5.4, 4.6, -3.4, 6.2, 5.0, "glow_red"),
          B(0.6, 6.6, 5.1, 1.2, 7.2, 5.4, "glow_red"),
-         B(3, 1, 5, 5, 3, 9, "chitin_light"), B(1, 1, 8.5, 3.5, 2.6, 10.5, "chitin_light"), B(0.2, 1, 10, 1.5, 2.2, 11.5, "dark"),      # venom claws
-         B(-5, 1, 5, -3, 3, 9, "chitin_light"), B(-3.5, 1, 8.5, -1, 2.6, 10.5, "chitin_light"), B(-1.5, 1, 10, -0.2, 2.2, 11.5, "dark"),
+         B(3.6, 1, 4.4, 5.6, 3, 5.4, "chitin_light"), B(-5.6, 1, 4.4, -3.6, 3, 5.4, "chitin_light"),                                       # sockets of the venom claws
          B(2.8, 6.4, 4.4, 3.8, 7.4, 5.4, "chitin_light"), B(-3.8, 6.4, 4.4, -2.8, 7.4, 5.4, "chitin_light")] \
         + legs(-3, 1.6, 1) + legs(-3, -1.6, -1)
 # the feelers are their own parts (they twitch): crooked and not alike, each with kinks and a hooked tip (Edward: not like aerials)
@@ -155,6 +157,9 @@ model("cent_ant_r", [B(-0.35, -0.35, 0, 0.35, 0.35, 3.0, "leg_ochre"), B(-0.9, 0
                      B(-1.2, 1.3, 6.8, -0.6, 3.0, 7.4, "leg_ochre"), B(-1.6, 2.8, 7.0, -1.0, 3.4, 10.0, "leg_ochre"), B(-2.2, 2.2, 9.8, -1.6, 2.8, 12.2, "leg_ochre"),
                      B(-2.6, 1.6, 12.0, -2.1, 2.2, 14.5, "chitin_light"), B(-2.9, 2.0, 14.3, -2.5, 2.5, 15.8, "chitin_light")])
 model("cent_head", chead)
+# the venom claws are their own parts (they chew and snap); a wider gap between their tips (Edward: from afar they looked like a zipped lace)
+claw = [B(-1.2, -1, 0, 1.2, 1.2, 4, "chitin_light"), B(-2, -0.9, 3.5, 0.6, 0.9, 6.5, "chitin_light"), B(-2.8, -0.8, 6, -0.8, 0.6, 8, "dark"), B(-3.2, -0.6, 7.5, -2.0, 0.3, 9.2, "dark")]
+model("cent_claw_l", claw); model("cent_claw_r", mirror(claw))
 model("cent_tail", [B(-5, 2, -5, 5, 7, 5, "chitin"), B(-4, 7, -4, 4, 8, 4, "chitin_light"), B(4, 3, -5, 5, 4, -15, "leg_ochre"), B(-5, 3, -5, -4, 4, -15, "leg_ochre"),
                     B(4.5, 0, -15, 5.5, 4, -14, "leg_ochre"), B(-5.5, 0, -15, -4.5, 4, -14, "leg_ochre")] + legs(0, 1.6, 1) + legs(0, -1.6, -1))
 
@@ -247,47 +252,69 @@ wjson(os.path.join(DP, "wolf_variant/lab_warg.json"), {"assets": {"angry": "last
       "baby_assets": {"angry": "last_ember:entity/wolf/lab_warg_angry_baby", "tame": "last_ember:entity/wolf/lab_warg_tame_baby", "wild": "last_ember:entity/wolf/lab_warg_baby"},
       "spawn_conditions": []})
 
-# ---------------------------------------------------------------- 4. the rig of the leshy
-# Rig frame: blocks, origin at the feet of the carrier. Every part rides the carrier, so its display origin is the passenger point (0, PASS_Y, 0).
+# ---------------------------------------------------------------- rigs (4. the leshy, 2. the warg)
+# Rig frame: blocks, origin at the feet of the carrier. Every part rides the carrier, so its display origin is the passenger point (0, pass_y, 0).
 # passenger points measured in 26.3 (display Pos - mob Pos): husk scale 1.6 -> 3.32, slime Size:2 -> 1.513, wolf scale 1.7 -> 1.392, silverfish scale 3 -> 0.7125.
 # The item display shows the model turned by 180 degrees: the +Z of the rig frame is the side the display looks at (checked with lab/probe).
-PASS_Y = float(os.environ.get("LAB_PASS_Y", "3.32"))
-ARM_S = 0.72
-PARTS = {"torso": ("root", (0, 1.3, 0)), "head": ("torso", (0, 1.19, 0.05)), "arm_l": ("torso", (0.56, 1.06, 0)), "arm_r": ("torso", (-0.56, 1.06, 0)),
-         "leg_l": ("root", (0.28, 1.3, 0)), "leg_r": ("root", (-0.28, 1.3, 0)), "jaw": ("head", (0, 0.33, 0.22))}
 def qmul(a, b):
     ax, ay, az, aw = a; bx, by, bz, bw = b
     return (aw * bx + ax * bw + ay * bz - az * by, aw * by - ax * bz + ay * bw + az * bx, aw * bz + ax * by - ay * bx + az * bw, aw * bw - ax * bx - ay * by - az * bz)
 def qaxis(ax, deg):
-    t = math.radians(deg) / 2; s = math.sin(t)
-    return {"x": (s, 0, 0, math.cos(t)), "y": (0, s, 0, math.cos(t)), "z": (0, 0, s, math.cos(t))}[ax]
+    t = math.radians(deg) / 2; s_ = math.sin(t)
+    return {"x": (s_, 0, 0, math.cos(t)), "y": (0, s_, 0, math.cos(t)), "z": (0, 0, s_, math.cos(t))}[ax]
 def qeul(p, yw, rl): return qmul(qmul(qaxis("y", yw), qaxis("x", p)), qaxis("z", rl))   # yaw, then pitch, then roll
 def qrot(q, v):
     x, y, z, w_ = q; vq = (v[0], v[1], v[2], 0); qi = (-x, -y, -z, w_)
     r_ = qmul(qmul(q, vq), qi); return (r_[0], r_[1], r_[2])
-def solve(pose, look=0.0):
-    """pose: {part: (pitch, yaw, roll)}, 'root': (pitch, yaw, roll, dy), 'scale': k -> {part: (translation, quaternion, scale)}"""
-    rp = pose.get("root", (0, 0, 0, 0)); k = pose.get("scale", 1.0)
-    world = {"root": ((0, rp[3], 0), qeul(rp[0], rp[1], rp[2]))}
-    out = {}
-    for part in ("torso", "head", "jaw", "arm_l", "arm_r", "leg_l", "leg_r"):
-        par, piv = PARTS[part]; pt, pq = world[par]
-        if par == "root": piv = piv
-        else: piv = tuple(a - b for a, b in zip(piv, (0, 0, 0)))
-        pos = tuple(a + b for a, b in zip(pt, qrot(pq, piv)))
-        e = pose.get(part, (0, 0, 0)); q = qmul(pq, qeul(*e))
-        if part == "head": q = qmul(q, qaxis("y", look))
-        world[part] = (pos, q)
-        sc = k * (1 / ARM_S if part.startswith("arm") else 1.0)
-        out[part] = ((pos[0] * k + 0, (pos[1] - 0) * k - PASS_Y, pos[2] * k), q, sc)
-    return out
 def merge(t, q, s, dur):
     f = lambda v: round(v, 4)
     return ("{start_interpolation:0,interpolation_duration:%d,transformation:{translation:[%sf,%sf,%sf],left_rotation:[%sf,%sf,%sf,%sf],scale:[%sf,%sf,%sf],right_rotation:[0f,0f,0f,1f]}}"
             % (dur, f(t[0]), f(t[1]), f(t[2]), f(q[0]), f(q[1]), f(q[2]), f(q[3]), f(s), f(s), f(s)))
 LOOKS = list(range(-60, 61, 10))   # le.llook = index 0..12 (6 = straight)
+gd = os.path.join(DP, "function/lab/gen")
+if os.path.isdir(gd): shutil.rmtree(gd)
+def make_rig(rig, tag, parts, models, scales, pass_y, poses, look_parts, look_poses):
+    """parts: ordered {part: (parent, pivot in blocks in the parent's frame)}; poses: {name: {part: (pitch, yaw, roll)}, 'root': (p, y, r, dy), 'scale': k}.
+    Writes lab/gen/<rig>_pose_<p> (macro d = ticks; as the carrier), lab/gen/<rig>_head_<p> (the look parts turned by le.llook),
+    lab/gen/<rig>_parts (storage last_ember:lab <rig>_parts: the passengers to summon the carrier with)."""
+    def solve(pose, look=0.0):
+        rp = pose.get("root", (0, 0, 0, 0)); k = pose.get("scale", 1.0)
+        world = {"root": ((0, rp[3], 0), qeul(rp[0], rp[1], rp[2]))}; out = {}
+        for part, (par, piv) in parts.items():
+            pt, pq = world[par]
+            pos = tuple(a + b for a, b in zip(pt, qrot(pq, piv)))
+            q = qmul(pq, qeul(*pose.get(part, (0, 0, 0))))
+            if part == look_parts[0]: q = qmul(q, qaxis("y", look))
+            world[part] = (pos, q)
+            out[part] = ((pos[0] * k, pos[1] * k - pass_y, pos[2] * k), q, k * scales.get(part, 1.0))
+        return out
+    for name, pose in poses.items():
+        lines = [f"# GENERATED by tools/gen_lab.py: the pose {name} of the {rig} (as the carrier, macro d = ticks)"]
+        sol = solve(pose)
+        for part in parts:
+            if part in look_parts: continue
+            t, q, sc = sol[part]
+            lines.append(f"$execute on passengers if entity @s[tag={tag}{part}] run data merge entity @s " + merge(t, q, sc, 0).replace("interpolation_duration:0", "interpolation_duration:$(d)"))
+        lines.append(f"function last_ember:lab/gen/{rig}_head_{name} with storage last_ember:lab anim")
+        wtext(os.path.join(gd, f"{rig}_pose_{name}.mcfunction"), "\n".join(lines) + "\n")
+        hl = [f"# GENERATED: the head of the {rig} in the pose {name}, turned by the look index le.llook"]
+        for i, lk in enumerate(LOOKS):
+            so = solve(pose, lk if name.startswith(look_poses) else 0)
+            for part in look_parts:
+                t, q, sc = so[part]
+                hl.append(f"$execute if score @s le.llook matches {i} on passengers if entity @s[tag={tag}{part}] run data merge entity @s " + merge(t, q, sc, 0).replace("interpolation_duration:0", "interpolation_duration:$(d)"))
+        wtext(os.path.join(gd, f"{rig}_head_{name}.mcfunction"), "\n".join(hl) + "\n")
+    rest = solve(poses[next(iter(poses))]); summ = []
+    for part in parts:
+        t, q, sc = rest[part]; tr = merge(t, q, sc, 0)[1:-1].split("transformation:")[1]
+        summ.append('{id:"minecraft:item_display",Tags:["le.lab_part","%s%s"],teleport_duration:3,view_range:1.5f,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/%s"}},transformation:%s}' % (tag, part, models[part], tr))
+    wtext(os.path.join(gd, f"{rig}_parts.mcfunction"), f"# GENERATED: the parts of the {rig} at rest (the passengers the carrier is summoned with)\ndata modify storage last_ember:lab {rig}_parts set value [" + ",".join(summ) + "]\n")
+
+# ---- 4. the leshy: an invisible husk of scale 1.6, 7 parts
+ARM_S = 0.72
 # roll of an arm: + moves the left arm (+X) outward, - the right one. Walking it spreads its long arms wide to the sides (Edward: not a golem).
-POSES = {
+# It strikes with the right and the left arm in turn (windup/strike and windup_l/strike_l).
+LESHY_POSES = {
     "idle0": {"torso": (3, 0, 0), "arm_l": (4, 0, 14), "arm_r": (4, 0, -14), "head": (-4, 0, 0), "jaw": (22, 0, 0)},
     "idle1": {"torso": (-1, 0, 0), "arm_l": (-2, 0, 19), "arm_r": (-2, 0, -19), "head": (2, 0, 0), "jaw": (32, 0, 0), "root": (0, 0, 0, 0.03)},
     "walk0": {"leg_l": (-24, 0, 0), "leg_r": (22, 0, 0), "arm_l": (18, 0, 38), "arm_r": (-20, 0, -46), "torso": (6, -6, 0), "jaw": (26, 0, 0), "root": (0, 0, 0, -0.06)},
@@ -296,6 +323,8 @@ POSES = {
     "walk3": {"leg_l": (0, 0, 0), "leg_r": (0, 0, 0), "arm_l": (0, 0, 48), "arm_r": (0, 0, -48), "torso": (5, 0, 0), "jaw": (32, 0, 0), "root": (0, 0, 0, 0.04)},
     "windup": {"torso": (-12, 24, 0), "arm_r": (-165, 0, 15), "arm_l": (-30, 0, 35), "head": (-18, 0, 0), "jaw": (62, 0, 0), "leg_l": (-10, 0, 0), "leg_r": (8, 0, 0)},
     "strike": {"torso": (24, -18, 0), "arm_r": (-25, 0, 0), "arm_l": (10, 0, 30), "head": (10, 0, 0), "jaw": (14, 0, 0), "leg_l": (-16, 0, 0), "leg_r": (14, 0, 0), "root": (0, 0, 0, -0.1)},
+    "windup_l": {"torso": (-12, -24, 0), "arm_l": (-165, 0, -15), "arm_r": (-30, 0, -35), "head": (-18, 0, 0), "jaw": (62, 0, 0), "leg_r": (-10, 0, 0), "leg_l": (8, 0, 0)},
+    "strike_l": {"torso": (24, 18, 0), "arm_l": (-25, 0, 0), "arm_r": (10, 0, -30), "head": (10, 0, 0), "jaw": (14, 0, 0), "leg_r": (-16, 0, 0), "leg_l": (14, 0, 0), "root": (0, 0, 0, -0.1)},
     "rise0": {"root": (0, 0, 0, -4.8), "torso": (30, 0, 0), "arm_l": (-160, 0, 20), "arm_r": (-160, 0, -20), "head": (40, 0, 0), "jaw": (50, 0, 0)},
     "rise1": {"root": (0, 0, 0, -1.4), "torso": (20, 0, 0), "arm_l": (-150, 0, 30), "arm_r": (-150, 0, -30), "head": (-30, 0, 0), "jaw": (60, 0, 0)},
     "rise2": {"torso": (-10, 0, 0), "arm_l": (-40, 0, 50), "arm_r": (-40, 0, -50), "head": (-25, 0, 0), "jaw": (62, 0, 0)},
@@ -304,33 +333,55 @@ POSES = {
     "die2": {"root": (80, 0, 0, -0.35), "torso": (8, 0, -4), "head": (30, 25, 20), "jaw": (50, 0, 0), "arm_l": (-70, 0, 60), "arm_r": (-80, 0, -30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6)},
     "die3": {"root": (80, 0, 0, -0.75), "torso": (8, 0, -4), "head": (30, 25, 20), "jaw": (50, 0, 0), "arm_l": (-70, 0, 60), "arm_r": (-80, 0, -30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6), "scale": 0.0},
 }
-gd = os.path.join(DP, "function/lab/gen")
-if os.path.isdir(gd): shutil.rmtree(gd)
-for name, pose in POSES.items():
-    # as the carrier; the macro argument d = the duration of the move in ticks
-    lines = [f"# GENERATED by tools/gen_lab.py: the pose {name} of the leshy (as the carrier, macro d = ticks)"]
-    sol = solve(pose)
-    for part in ("torso", "arm_l", "arm_r", "leg_l", "leg_r"):
-        t, q, s = sol[part]
-        lines.append(f"$execute on passengers if entity @s[tag=le.lp_{part}] run data merge entity @s " + merge(t, q, s, 0).replace("interpolation_duration:0", "interpolation_duration:$(d)"))
-    lines.append(f"function last_ember:lab/gen/head_{name} with storage last_ember:lab anim")
-    wtext(os.path.join(gd, f"pose_{name}.mcfunction"), "\n".join(lines) + "\n")
-    # the head: the same pose, turned by the look (le.llook) unless the pose drives the head itself
-    hl = [f"# GENERATED: the head in the pose {name}, turned by the look index le.llook"]
-    for i, lk in enumerate(LOOKS):
-        so = solve(pose, lk if name.startswith(("idle", "walk")) else 0)
-        for part in ("head", "jaw"):
-            t, q, s = so[part]
-            hl.append(f"$execute if score @s le.llook matches {i} on passengers if entity @s[tag=le.lp_{part}] run data merge entity @s " + merge(t, q, s, 0).replace("interpolation_duration:0", "interpolation_duration:$(d)"))
-    wtext(os.path.join(gd, f"head_{name}.mcfunction"), "\n".join(hl) + "\n")
-# the parts at rest (summon data): carrier summons them as passengers
-rest = solve(POSES["idle0"])
-summ = []
-for part in ("torso", "head", "jaw", "arm_l", "arm_r", "leg_l", "leg_r"):
-    t, q, s = rest[part]; mdl = {"torso": "leshy_torso", "head": "leshy_head", "jaw": "leshy_jaw", "arm_l": "leshy_arm", "arm_r": "leshy_arm", "leg_l": "leshy_leg", "leg_r": "leshy_leg"}[part]
-    tr = merge(t, q, s, 0)[1:-1].split("transformation:")[1]
-    summ.append('{id:"minecraft:item_display",Tags:["le.lab_part","le.lp_%s"],teleport_duration:3,view_range:1.5f,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/%s"}},transformation:%s}' % (part, mdl, tr))
-wtext(os.path.join(gd, "leshy_parts.mcfunction"), "# GENERATED: the parts of the leshy at rest (the passengers the carrier is summoned with: lab/leshy/spawn)\ndata modify storage last_ember:lab leshy_parts set value [" + ",".join(summ) + "]\n")
+make_rig("leshy", "le.lp_",
+         {"torso": ("root", (0, 1.3, 0)), "head": ("torso", (0, 1.19, 0.05)), "jaw": ("head", (0, 0.33, 0.22)), "arm_l": ("torso", (0.56, 1.06, 0)),
+          "arm_r": ("torso", (-0.56, 1.06, 0)), "leg_l": ("root", (0.28, 1.3, 0)), "leg_r": ("root", (-0.28, 1.3, 0))},
+         {"torso": "leshy_torso", "head": "leshy_head", "jaw": "leshy_jaw", "arm_l": "leshy_arm", "arm_r": "leshy_arm", "leg_l": "leshy_leg", "leg_r": "leshy_leg"},
+         {"arm_l": 1 / ARM_S, "arm_r": 1 / ARM_S}, 3.32, LESHY_POSES, ("head", "jaw"), ("idle", "walk"))
+
+# ---- 2. the warg (second version, after Edward: "just a big vanilla wolf"): an invisible wolf of scale 1.7 (its AI, anger and bite stay vanilla)
+# carries a rig of 8 parts: a gaunt body with a shaggy mane, ribs and spine showing, a long skull with an open maw and glowing red eyes,
+# a lower jaw of its own, four long thin legs, a ragged tail. Galloping, biting (the jaw snaps), crouching in the bushes, leaping, dying.
+wtorso = [B(-6.5, -4, -6, 6.5, 7.5, 6, "hair"), B(-5, -5, -16, 5, 4, -6, "feather"), B(-4.5, -4, -26, 4.5, 3.5, -16, "hair"),
+          B(5, -4, -8, 5.4, 3, -7, "bone_old"), B(5, -4, -10.5, 5.4, 3, -9.5, "bone_old"), B(5, -4, -13, 5.4, 3, -12, "bone_old"),
+          B(-5.4, -4, -8, -5, 3, -7, "bone_old"), B(-5.4, -4, -13, -5, 3, -12, "bone_old"),
+          B(-0.8, 4, -15, 0.8, 6, -13, "bone_old"), B(-0.8, 4, -11, 0.8, 6.5, -9, "bone_old"), B(-1.5, 7.5, -5, 1.5, 10, -2, "hair"), B(-1, 7.5, 0, 1, 9, 3, "hair"),
+          B(5.4, -1, -21, 5.7, 1, -19, "gore"), B(-4.8, -3, -25, -4.5, -1.5, -23, "gore"), B(-3, -5.6, -14, 3, -5, -7, "gore")]
+whead = [B(-2.5, -2.5, 0, 2.5, 2.5, 4, "hair"), B(-3.5, -2.5, 3, 3.5, 3.5, 10, "hair"), B(-2.2, -1, 10, 2.2, 1.8, 18, "feather"),
+         B(-1.2, 0.6, 17.5, 1.2, 1.8, 18.5, "dark"), B(-2, -1.2, 10.5, 2, -0.8, 17.5, "gore"),
+         B(1.4, -3.2, 15.5, 2, -1, 16.2, "teeth"), B(-2, -3.6, 15, -1.4, -1, 15.7, "teeth"), B(1.5, -1.9, 11, 2, -1, 14, "teeth"), B(-2, -1.9, 12, -1.5, -1, 14.5, "teeth"),
+         B(-3.8, 2.2, 9, 3.8, 3.5, 10.5, "hair"), B(2.3, 1.0, 9.5, 3.6, 2.2, 10.1, "glow_red"), B(-3.6, 1.0, 9.5, -2.3, 2.2, 10.1, "glow_red"),
+         B(1.8, 3.5, 4, 3.2, 7.5, 5.5, "hair"), B(-3.2, 3.5, 4, -1.8, 5.5, 5.5, "hair"), B(-3.9, -1, 4, -3.5, 2, 8, "gore")]
+wjaw = [B(-2, -1.8, 0, 2, 0, 8, "feather"), B(-1.5, -0.1, 0.5, 1.5, 0.3, 7.2, "gore"),
+        B(1.3, 0, 5, 1.9, 1.5, 5.6, "teeth"), B(-1.9, 0, 6.2, -1.3, 1.7, 6.8, "teeth"), B(1.3, 0, 2, 1.9, 0.8, 4, "teeth"), B(-1.9, 0, 2.5, -1.3, 0.8, 4.5, "teeth"),
+        B(-0.6, -3, 3, 0.6, -1.8, 4, "gore")]
+wfleg = [B(-1.6, -9, -1.6, 1.6, 1, 1.6, "hair"), B(-1, -15, -1, 1, -9, 1, "feather"), B(-1.4, -15, -1.2, 1.4, -14, 2.6, "dark"),
+         B(-1.2, -15, 2.6, -0.6, -14.4, 3.6, "bone_old"), B(0.6, -15, 2.6, 1.2, -14.4, 3.6, "bone_old")]
+wbleg = [B(-2, -8, -2, 2, 1.5, 2, "hair"), B(-1, -15, -1.5, 1, -8, 0.5, "feather"), B(-1.4, -15, -1.2, 1.4, -14, 2.6, "dark"),
+         B(-1.2, -15, 2.6, -0.6, -14.4, 3.4, "bone_old"), B(0.6, -15, 2.6, 1.2, -14.4, 3.4, "bone_old")]
+wtail = [B(-1, -1, -6, 1, 1, 0, "hair"), B(-0.7, -0.7, -12, 0.7, 0.7, -6, "hair"), B(-0.4, -0.4, -14, 0.4, 0.4, -12, "feather")]
+# the torso is too long for the model limits: shrunk, the display scales it back
+model("warg_torso", wtorso, s=0.75); model("warg_head", whead); model("warg_jaw", wjaw); model("warg_fleg", wfleg); model("warg_bleg", wbleg); model("warg_tail", wtail)
+WARG_POSES = {
+    "idle0": {"head": (8, 0, 0), "jaw": (18, 0, 0), "tail": (-40, 0, 0)},
+    "idle1": {"head": (4, 0, 0), "jaw": (28, 0, 0), "tail": (-35, 8, 0), "torso": (-2, 0, 0), "root": (0, 0, 0, 0.02)},
+    "run0": {"leg_fl": (-38, 0, 0), "leg_fr": (-28, 0, 0), "leg_bl": (32, 0, 0), "leg_br": (40, 0, 0), "torso": (4, 0, 0), "head": (12, 0, 0), "jaw": (32, 0, 0), "tail": (-12, 0, 0), "root": (0, 0, 0, -0.03)},
+    "run1": {"leg_fl": (22, 0, 0), "leg_fr": (30, 0, 0), "leg_bl": (-28, 0, 0), "leg_br": (-20, 0, 0), "torso": (-6, 0, 0), "head": (2, 0, 0), "jaw": (22, 0, 0), "tail": (-25, 0, 0), "root": (0, 0, 0, 0.07)},
+    "run2": {"leg_fl": (-30, 0, 0), "leg_fr": (-38, 0, 0), "leg_bl": (40, 0, 0), "leg_br": (32, 0, 0), "torso": (4, 0, 0), "head": (12, 0, 0), "jaw": (34, 0, 0), "tail": (-10, 6, 0), "root": (0, 0, 0, -0.03)},
+    "run3": {"leg_fl": (30, 0, 0), "leg_fr": (22, 0, 0), "leg_bl": (-20, 0, 0), "leg_br": (-28, 0, 0), "torso": (-6, 0, 0), "head": (2, 0, 0), "jaw": (24, 0, 0), "tail": (-25, -6, 0), "root": (0, 0, 0, 0.07)},
+    "bite0": {"head": (-25, 0, 0), "jaw": (65, 0, 0), "torso": (-8, 0, 0), "leg_fl": (-15, 0, 0), "leg_fr": (-10, 0, 0), "tail": (-5, 0, 0)},
+    "bite1": {"head": (22, 0, 0), "jaw": (4, 0, 0), "torso": (10, 0, 0), "leg_bl": (15, 0, 0), "leg_br": (18, 0, 0), "tail": (-5, 0, 0), "root": (0, 0, 0, -0.06)},
+    "crouch": {"root": (0, 0, 0, -0.32), "torso": (6, 0, 0), "head": (18, 0, 0), "jaw": (36, 0, 0), "tail": (-60, 0, 0), "leg_fl": (-40, 0, 0), "leg_fr": (-40, 0, 0), "leg_bl": (40, 0, 0), "leg_br": (40, 0, 0)},
+    "leap": {"leg_fl": (-65, 0, 0), "leg_fr": (-58, 0, 0), "leg_bl": (55, 0, 0), "leg_br": (62, 0, 0), "torso": (-14, 0, 0), "head": (-6, 0, 0), "jaw": (60, 0, 0), "tail": (5, 0, 0)},
+    "die0": {"head": (-35, 0, 0), "jaw": (62, 0, 0), "torso": (-10, 0, 14), "leg_fl": (-20, 0, 15), "leg_br": (25, 0, -10), "tail": (-50, 0, 0)},
+    "die1": {"root": (0, 0, 82, 0.28), "head": (14, 12, 0), "jaw": (48, 0, 0), "torso": (0, 0, 0), "leg_fl": (-22, 0, 8), "leg_fr": (-8, 0, -6), "leg_bl": (24, 0, 6), "leg_br": (10, 0, -8), "tail": (-15, 0, 0)},
+}
+make_rig("warg", "le.wp_",
+         {"torso": ("root", (0, 0.98, 0.5)), "head": ("torso", (0, 0.12, 0.38)), "jaw": ("head", (0, -0.13, 0.62)), "tail": ("torso", (0, 0.12, -1.6)),
+          "leg_fl": ("root", (0.3, 0.92, 0.35)), "leg_fr": ("root", (-0.3, 0.92, 0.35)), "leg_bl": ("root", (0.27, 0.92, -1.0)), "leg_br": ("root", (-0.27, 0.92, -1.0))},
+         {"torso": "warg_torso", "head": "warg_head", "jaw": "warg_jaw", "tail": "warg_tail", "leg_fl": "warg_fleg", "leg_fr": "warg_fleg", "leg_bl": "warg_bleg", "leg_br": "warg_bleg"},
+         {"torso": 1 / 0.75}, 1.392, WARG_POSES, ("head", "jaw"), ("idle", "run"))
+
 # ---------------------------------------------------------------- 5. the scolopendra: body segments that follow the path of the head
 # The carrier (an invisible silverfish, the head rides it) leaves a path: a marker le.cmark (same le.lnk) keeps points every 0.25 block in data.h
 # (newest first); segment k stands on point 3+4k and faces point 1+4k; its hit box (interaction le.cb<k>) goes with it.
@@ -356,22 +407,38 @@ bl.append("scoreboard players operation @e[tag=le.cnew] le.lnk = @s le.lnk")
 for k in range(NSEG): bl.append(f"scoreboard players set @e[tag=le.cnew,tag=le.cs{k}] le.lfr {k}")
 bl.append("tag @e[tag=le.cnew] remove le.cnew")
 wtext(os.path.join(gd, "cent_build.mcfunction"), "\n".join(bl) + "\n")
-# the feelers twitch: 8 random sway poses per side (base out to the side and up), a new one every 6 ticks, 8 ticks of interpolation
+# the feelers twitch: 8 random sway poses per side (base out to the side and up), a new one every 4 ticks, 4 ticks of interpolation
 ANT = {"l": (0.31, 28), "r": (-0.31, -28)}
 ar = random.Random(7)
 for side, (ax, base) in ANT.items():
     disp = [f"# GENERATED: as the carrier: a new random sway of the {side} feeler"]
     disp.append(f"execute store result score #ra le.l run random value 0..7")
     for i in range(8):
-        q = qeul(-18 + ar.uniform(-14, 14), base + ar.uniform(-16, 16), ar.uniform(-18, 18))
-        disp.append(f"execute if score #ra le.l matches {i} on passengers if entity @s[tag=le.lab_ant_{side}] run data merge entity @s " + merge((ax, 0.18, 0.47), q, 1.5, 8))
+        q = qeul(-18 + ar.uniform(-22, 22), base + ar.uniform(-24, 24), ar.uniform(-25, 25))
+        disp.append(f"execute if score #ra le.l matches {i} on passengers if entity @s[tag=le.lab_ant_{side}] run data merge entity @s " + merge((ax, 0.18, 0.47), q, 1.5, 4))
     wtext(os.path.join(gd, f"cent_ant_{side}.mcfunction"), "\n".join(disp) + "\n")
     q = qeul(35, base * 1.4, 0)
     open(os.path.join(gd, "cent_ant_droop.mcfunction"), "a").write(f"execute on passengers if entity @s[tag=le.lab_ant_{side}] run data merge entity @s " + merge((ax, 0.1, 0.47), q, 1.5, 14) + "\n")
+# the venom claws: chewing (a random small opening every 5 ticks), opened wide before a bite, snapped shut
+CLAW = {"l": 0.431, "r": -0.431}
+def claws(open_deg, dur, jitter=0.0, rr=None):
+    out = []
+    for side, cx in CLAW.items():
+        sgn = 1 if side == "l" else -1
+        q = qeul(4 + (rr.uniform(-6, 6) if rr else 0), sgn * (open_deg + (rr.uniform(-jitter, jitter) if rr else 0)), 0)
+        out.append(f"execute on passengers if entity @s[tag=le.lab_claw_{side}] run data merge entity @s " + merge((cx, -0.2875, 0.469), q, 1.5, dur))
+    return out
+cr = random.Random(9)
+chew = ["# GENERATED: as the carrier: the venom claws chew (a random opening)", "execute store result score #ra le.l run random value 0..5"]
+for i in range(6):
+    for ln in claws(cr.uniform(-4, 14), 5, 4, cr): chew.append(f"execute if score #ra le.l matches {i} run " + ln)
+wtext(os.path.join(gd, "cent_claw_chew.mcfunction"), "\n".join(chew) + "\n")
+wtext(os.path.join(gd, "cent_claw_open.mcfunction"), "# GENERATED: the claws open wide\n" + "\n".join(claws(34, 4)) + "\n")
+wtext(os.path.join(gd, "cent_claw_snap.mcfunction"), "# GENERATED: the claws snap shut\n" + "\n".join(claws(-10, 1)) + "\n")
 lg = ["# GENERATED: the legs of the body step (models a/b swap; neighbours in the other phase), macro p = 0 or 1"]
 for k in range(NSEG - 1):
     a, b = ("cent_seg_a", "cent_seg_b") if k % 2 == 0 else ("cent_seg_b", "cent_seg_a")
     lg.append(f'$execute if score #lp le.l matches $(p) as @e[type=minecraft:item_display,tag=le.cs{k}] if score @s le.lnk = #id le.l run data modify entity @s item.components."minecraft:item_model" set value "last_ember:lab/{a}"')
     lg.append(f'$execute unless score #lp le.l matches $(p) as @e[type=minecraft:item_display,tag=le.cs{k}] if score @s le.lnk = #id le.l run data modify entity @s item.components."minecraft:item_model" set value "last_ember:lab/{b}"')
 wtext(os.path.join(gd, "cent_legs.mcfunction"), "\n".join(lg) + "\n")
-print(f"lab: {len(MATS)} materials, models probe/drowner_head/warg_eyes/womb/leshy x4, drowner skin, warg variant, {len(POSES)} leshy poses (PASS_Y {PASS_Y})")
+print(f"lab: {len(MATS)} materials, models, drowner skin, warg variant, rigs: leshy {len(LESHY_POSES)} poses, warg {len(WARG_POSES)} poses")
