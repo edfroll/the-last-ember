@@ -8,4 +8,6 @@ execute if score @s le.lfr matches 22 run function last_ember:lab/s/fish_idle2
 execute if score @s le.lfr matches 12 run function last_ember:lab/cent/rear_slam
 execute if score @s le.lfr matches 4 run function last_ember:lab/gen/cent_rear_back
 execute if score @s le.lfr matches 4 as @e[type=minecraft:marker,tag=le.cmark] if score @s le.lnk = #id le.l run function last_ember:lab/cent/replace
+execute if score @s le.lfr matches ..0 unless score @s le.ls matches 3 run data merge entity @s {NoAI:0b}
 execute if score @s le.lfr matches ..0 run attribute @s minecraft:movement_speed modifier remove last_ember:lab_hold
+execute if score @s le.lfr matches ..0 run attribute @s minecraft:knockback_resistance modifier remove last_ember:lab_rear

@@ -188,6 +188,16 @@ def t_fish():
         if h is not None: hmin = min(hmin, h)
         if p: dmax = max(dmax, ((p[0] - p0[0]) ** 2 + (p[2] - p0[2]) ** 2) ** 0.5); ymax = max(ymax, p[1])
     shot("fish_slam")
+    # the prey runs round it while it stands: the carrier must not turn (or the head and the risen body part ways)
+    R("execute as @e[tag=le.lab_fish,limit=1] at @s rotated ~ 0 positioned ^ ^ ^4.2 run tp Cam2 ~ ~ ~ facing entity @e[tag=le.lab_fish,limit=1] feet"); time.sleep(1.5)
+    R("execute as @e[tag=le.lab_fish,limit=1] at @s run function last_ember:lab/cent/rear_start"); yw = []
+    for i in range(12):
+        time.sleep(0.1)
+        if (score("@e[tag=le.lab_fish,limit=1]", "le.lfr") or 0) > 4: yw.append(num(R("data get entity @e[tag=le.lab_fish,limit=1] Rotation[0]")))
+        R("execute as Cam2 at @s at @e[tag=le.lab_fish,limit=1] rotated ~%d 0 positioned ^ ^ ^4 run tp Cam2 ~ ~ ~" % (40 + 25 * i))
+    look("le.lab_fish", 6, 1.5, 100); shot("fish_rear_side")
+    yw = [y for y in yw if y is not None]
+    chk("while it stands it does not turn after the prey (yaw %s)" % [round(y) for y in yw], len(yw) >= 3 and max(yw) - min(yw) < 2)
     chk("it rears up (%s) and strikes with its whole body: health %s -> %s, thrown back %.1f and up %.1f blocks" % (rs, hb, hmin, dmax, ymax - p0[1]), rs and hmin < hb and dmax > 1.5)
     time.sleep(1.0)
     h0 = num(R("data get entity @e[tag=le.lab_fish,limit=1] Health")); R("tp Cam2 @e[tag=le.cs6,limit=1]"); R("execute as Cam2 at @s run tp @s ~ ~ ~-1.5 0 30")

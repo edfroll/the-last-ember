@@ -4,4 +4,7 @@ scoreboard players set @s le.lfr 34
 execute store result score @s le.llook run random value 130..200
 rotate @s facing entity @p[gamemode=!spectator,gamemode=!creative] feet
 rotate @s ~ 0
+function last_ember:lab/turn
+data merge entity @s {NoAI:1b}
 attribute @s minecraft:movement_speed modifier add last_ember:lab_hold -1 add_multiplied_total
+attribute @s minecraft:knockback_resistance modifier add last_ember:lab_rear 1 add_value
