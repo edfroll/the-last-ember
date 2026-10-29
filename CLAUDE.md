@@ -24,7 +24,7 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 ## Версия 26.3 — факты (из `docs/reference/version.json`)
 - Pack format: датапак `121`, ресурс-пак `97`. В `pack.mcmeta` используются `min_format`/`max_format` (не `pack_format`).
 - Каталоги данных в единственном числе: `function/`, `tags/function/`, `advancement/`, `loot_table/`, `predicate/`.
-- Java для сервера: **25** (Temurin лежит в `server/jdk25/`, системная Java 17 не подходит).
+- Java для сервера: **25** (Temurin лежит в `server/jdk25/`, системная Java 17/21 не подходит). Скрипты находят её через `tools/env.sh` (`le_java_home`: macOS `jdk25/*/Contents/Home`, Linux `jdk25/` или `jdk25/*/`); там же `sedi` (sed -i для GNU и BSD) и `sha1`.
 
 ## Структура репозитория
 - `datapack/` — датапак (`data/last_ember/…`, теги `load`/`tick` в `data/minecraft/tags/function/`). Пространство имён: `last_ember`, префикс скорбордов/тегов `le.`.
@@ -38,7 +38,7 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Старт: `tools/server.sh start` (передний план; для агента — запускать в фоне, лог `server/logs/latest.log`).
 - Синхронизация датапака без рестарта: `tools/server.sh sync` + `reload`. Команда: `tools/server.sh rcon "reload"` / `tools/server.sh rcon "function last_ember:load"`.
 - Стоп: `tools/server.sh stop`.
-- Пересборка данных генератора: `server/jdk25/*/Contents/Home/bin/java -DbundlerMainClass=net.minecraft.data.Main -jar server/server-26.3.jar --reports --server --output server/generated`.
+- Пересборка данных генератора: `$(. tools/env.sh; le_java_home)/bin/java -DbundlerMainClass=net.minecraft.data.Main -jar server/server-26.3.jar --reports --server --output server/generated`.
 
 ## Мир без руды (шаг 2)
 - Руды в мире нет: датапак переопределяет ванильный worldgen. Файлы в `datapack/data/minecraft/worldgen/` и `datapack/data/last_ember/worldgen/` **генерируются** `python3 tools/gen_no_ore.py` из `server/generated/` — руками не править, перегенерировать скриптом (список файлов в `tools/.no-ore-manifest`).
@@ -77,8 +77,14 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Тест: `tools/test_bonfires.py` (2 клиента, клики и Q — реальный ввод через агент: строки `!use`, `!drop`, `!sneak_on/off` в `shot-request.txt`).
 - **Тест-сервер: `pause-when-empty-seconds=-1`**, иначе без игроков сервер в 26.x встаёт на паузу и `schedule`-циклы не идут.
 
+## Облако и Mac (с 29.10.2026)
+- Код пишут треды проекта в облаке (окружение `last-ember-mc26`, Linux): setup script ставит Temurin 25 в `server/jdk25/`, качает `server/server-26.3.jar`, гоняет генератор данных в `server/generated/` и принимает EULA (согласие Эдварда дано). Мир в облаке временный: сохраняется только закоммиченное. Там работает всё без живого клиента: генераторы, `server.sh`, RCON-тесты, BlockWriter/biomepaint/seedmap.
+- Живой клиент (Cam/Cam2, скриншоты, `walkbot.py`, FPS), боевой тест-мир и библиотека звуков — только на Mac Эдварда (`~/Desktop/Folders/GitHub/Repositories/the-last-ember`) через Remote Control. Что там лежит и как восстановить — `docs/handoff/builder.md`.
+- Разрешения для тредов без подтверждений: `.claude/settings.json` (`tools/*`, `python3 tools/*`).
+- Правила Архитектора (карточки локаций, разбор артов): `docs/design/architect-rules.md`.
+
 ## Порядок работы
-- Одна задача Штаба = ветка или серия коммитов. Каждую задачу проверять самому на сервере (RCON, тестовые функции, логи) до отчёта.
+- Одна задача Штаба = ветка и PR в `main` (раньше билдер коммитил прямо в `main`). В коммитах и PR без подписей Claude (`Co-Authored-By`, `Claude-Session`, «Generated with Claude Code») — правило Эдварда. Каждую задачу проверять самому на сервере (RCON, тестовые функции, логи) до отчёта.
 - Отчёт Штабу: что сделано; как проверено; что отличается от задачи и почему; что может проверить только живой игрок; вопросы.
 - Не уточнённые вещи не выдумываем — спрашиваем.
 

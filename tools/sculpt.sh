@@ -2,7 +2,7 @@
 # Heightmap sculptor (T-003). Usage: tools/sculpt.sh apply|verify <spec.json> [profiles.csv]   (server must be STOPPED; world = server/world)
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"; SRV="$ROOT/server"
-export JAVA_HOME="$(ls -d "$SRV"/jdk25/*/Contents/Home)"
+. "$ROOT/tools/env.sh"; JAVA_HOME="$(le_java_home)"; export JAVA_HOME
 B="$SRV/seedmap-build"; mkdir -p "$B"; INNER="$B/server-inner.jar"
 [ -f "$INNER" ] || unzip -p "$SRV/server-26.3.jar" META-INF/versions/26.3/server-26.3.jar > "$INNER"
 CP="$INNER:$(find "$SRV/libraries" -name '*.jar' | tr '\n' ':')"

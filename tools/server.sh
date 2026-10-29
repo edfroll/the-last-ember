@@ -3,7 +3,7 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SRV="$ROOT/server"
-export JAVA_HOME="$(ls -d "$SRV"/jdk25/*/Contents/Home)"
+. "$ROOT/tools/env.sh"; JAVA_HOME="$(le_java_home)"; export JAVA_HOME
 JAVA="$JAVA_HOME/bin/java"
 case "${1:-}" in
   setup|sync)  # copy datapack into the world, write config (EULA must already be accepted in server/eula.txt)
@@ -11,9 +11,9 @@ case "${1:-}" in
     rsync -a --delete "$ROOT/datapack/" "$SRV/world/datapacks/last_ember/"  # symlinks are forbidden in worlds
     # the map's resource pack is pushed to every client by the server (served locally over HTTP on 127.0.0.1:8765)
     mkdir -p "$SRV/rp"; rm -f "$SRV/rp/last_ember.zip"; (cd "$ROOT/resourcepack" && zip -qrX "$SRV/rp/last_ember.zip" . -x '.*')
-    SHA=$(shasum -a 1 "$SRV/rp/last_ember.zip" | cut -d' ' -f1)
+    SHA=$(sha1 "$SRV/rp/last_ember.zip")
     if [ -f "$SRV/server.properties" ]; then
-      sed -i '' -e "s#^resource-pack=.*#resource-pack=http://127.0.0.1:8765/last_ember.zip#" -e "s#^resource-pack-sha1=.*#resource-pack-sha1=$SHA#" \
+      sedi -e "s#^resource-pack=.*#resource-pack=http://127.0.0.1:8765/last_ember.zip#" -e "s#^resource-pack-sha1=.*#resource-pack-sha1=$SHA#" \
         -e "s#^require-resource-pack=.*#require-resource-pack=true#" "$SRV/server.properties"
     fi
     [ -f "$SRV/server.properties" ] || cat > "$SRV/server.properties" <<P
