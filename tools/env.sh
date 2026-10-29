@@ -7,5 +7,5 @@ le_java_home() {  # server/jdk25/<jdk>/Contents/Home (macOS), server/jdk25 or se
   done
   echo "JDK 25 not found in server/jdk25" >&2; return 1
 }
-sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sedi "$@"; fi; }  # GNU or BSD sed
+sedi() { if sed --version >/dev/null 2>&1; then sed -i "$@"; else sed -i '' "$@"; fi; }  # GNU or BSD sed
 sha1() { if command -v shasum >/dev/null; then shasum -a 1 "$1"; else sha1sum "$1"; fi | cut -d' ' -f1; }

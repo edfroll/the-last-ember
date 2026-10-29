@@ -5,7 +5,9 @@ tag @s add le.oiler
 scoreboard players set #oilhit le.e 0
 scoreboard players set #oilp le.e 0
 execute if items entity @s weapon.mainhand *[minecraft:custom_data~{le_oil:{type:"poison"}}] run scoreboard players set #oilp le.e 1
-execute as @e[type=#last_ember:monsters,distance=..6,sort=nearest,limit=1] at @s run function last_ember:potion/oil_victim
+# a blow on a centipede segment (lab/cent/hurt): the victim is its carrier, wherever it is
+execute as @e[tag=le.chitv,limit=1] at @s run function last_ember:potion/oil_victim
+execute if score #oilhit le.e matches 0 as @e[type=#last_ember:monsters,distance=..6,sort=nearest,limit=1] at @s run function last_ember:potion/oil_victim
 tag @s remove le.oiler
 execute if score #oilhit le.e matches 0 run return 0
 data modify storage last_ember:pt n set from entity @s SelectedItem.components."minecraft:custom_data".le_oil.n
