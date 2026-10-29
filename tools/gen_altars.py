@@ -62,8 +62,30 @@ for k in keys:
     comps = ('minecraft:custom_data={le_key:"%s",le_keep:1b,gen:$(gen)},minecraft:item_model="last_ember:key_%s",minecraft:custom_name={"text":"%s","color":"light_purple","italic":false},'
              'minecraft:lore=[{"text":"Ключ главы %s.","color":"gray","italic":false},{"text":"Место ему — на пьедестале алтаря.","color":"dark_gray","italic":false}],minecraft:rarity="epic",minecraft:max_stack_size=1') % (k["id"], k["id"], k["name"], ROMAN[k["ch"]])
     w("item_" + k["id"], ["$give @s %s[%s] 1" % (BASE, comps)]); w("hand_" + k["id"], ["$item replace entity @s weapon.mainhand with %s[%s] 1" % (BASE, comps)])
-w("keys_watch", ["# generated: every 10 ticks, one call per key (uniqueness, loss, stale copies)"] + ['function last_ember:altar/key_watch {id:"%s"}' % k["id"] for k in keys])
-w("keys_join", ["# generated: as a player who is online: a key that is owed to him (it was lost while he was offline)"] + ['function last_ember:altar/key_owed {id:"%s"}' % k["id"] for k in keys])
+# keys_watch (every 10 ticks): one cheap pass marks new item entities (le.kchk) and the dropped keys among them (le.kitem), then one function per key.
+# Each key has its own macro function (id baked in, only gen is a macro argument): a shared macro with 18 different arguments would miss the
+# macro cache on every call and be re-parsed; the floor checks look only at the tagged key items (no nbt= selector over every item).
+w("keys_watch", ["# generated: every 10 ticks, one call per key (uniqueness, loss, stale copies)",
+                 "execute as @e[type=minecraft:item,tag=!le.kchk] if items entity @s contents %s run tag @s add le.kitem" % BASE,
+                 "tag @e[type=minecraft:item,tag=!le.kchk] add le.kchk"] +
+  ['function last_ember:altar/gen/kw_%s with storage last_ember:keys k.%s' % (k["id"], k["id"]) for k in keys])
+for k in keys:
+    i = k["id"]; m = 'minecraft:custom_data~{le_key:"%s"}' % i; v = '*[minecraft:custom_data~{le_key:"%s",gen:$(gen)}]' % i
+    w("kw_" + i, ["# generated: macro gen (storage last_ember:keys k.%s): stale copies leave players and the floor; the holder is remembered; a loss is repaired" % i,
+                  '$clear @a *[%s,!minecraft:custom_data~{gen:$(gen)}]' % m,
+                  '$execute as @e[type=minecraft:item,tag=le.kitem] if items entity @s contents *[%s,!minecraft:custom_data~{gen:$(gen)}] run kill @s' % m,
+                  'execute if data storage last_ember:keys k.%s{st:2} run return 0' % i,
+                  'execute if data storage last_ember:keys k.%s{st:1} run return 0' % i,
+                  'scoreboard players set #kh le.alt 0'] +
+      ['$execute as @a[limit=1] if score #kh le.alt matches 0 as @a if items entity @s %s %s run function last_ember:altar/gen/kh_%s' % (sl, v, i) for sl in ("container.*", "weapon.offhand", "player.cursor", "armor.*", "enderchest.*")] +
+      ['execute if score #kh le.alt matches 1 run return 0',
+       '$execute as @e[type=minecraft:item,tag=le.kitem] if items entity @s contents %s run return run data modify storage last_ember:keys k.%s.it set value 1b' % (v, i),
+       'execute if data storage last_ember:keys k.%s{it:1b} run function last_ember:altar/key_lost {id:"%s"}' % (i, i)])
+    w("kh_" + i, ["# generated: as the holder of the valid key %s: remembered as the last one who held it" % i, "scoreboard players set #kh le.alt 1",
+                  "data modify storage last_ember:keys k.%s.h set from entity @s UUID" % i, "data modify storage last_ember:keys k.%s.it set value 0b" % i,
+                  "data modify storage last_ember:keys k.%s.got set value 1b" % i, "data modify storage last_ember:keys k.%s.pend set value 0b" % i])
+w("keys_join", ["# generated: as a player who is online: a key that is owed to him (it was lost while he was offline)"] +
+  ['execute if data storage last_ember:keys k.%s{pend:1b} run function last_ember:altar/key_owed {id:"%s"}' % (k["id"], k["id"]) for k in keys])
 w("give_dispatch", ["# macro id: gives the valid copy of that key to the player"] + [])
 open(os.path.join(GEN, "give_dispatch.mcfunction"), "w").write("# generated\n$function last_ember:altar/gen/item_$(id) with storage last_ember:keys k.$(id)\n")
 w("hand_dispatch", ["# generated"]); open(os.path.join(GEN, "hand_dispatch.mcfunction"), "w").write("# generated\n$function last_ember:altar/gen/hand_$(id) with storage last_ember:keys k.$(id)\n")
