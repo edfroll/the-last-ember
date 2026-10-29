@@ -1,4 +1,6 @@
 # as a sample at itself, every tick
+# T-020: a monster of a contract first goes through its contract (the blows, the leash, its own dormant states)
+execute if entity @s[tag=le.contract] if function last_ember:contract/m/tick run return 0
 execute if score @s le.ls matches 0 run return run function last_ember:lab/dormant
 execute if score @s le.ls matches 1 run return run function last_ember:lab/appear
 execute if score @s le.ls matches 3 run return run function last_ember:lab/dying

@@ -1,0 +1,31 @@
+# T-020 test playground at (1300, 200, 1300), floor y=200 (tools/test_contracts.py builds it). Regenerate WITHOUT this file before a commit.
+board tb overworld facing=n build=1 signs=1298,202,1289;1300,202,1289;1302,202,1289 heads=1298,205,1289;1300,205,1289;1302,205,1289
+
+item t_remains minecraft:rotten_flesh "Останки утопленника" "Утроба выйдет на этот запах"
+item t_ring minecraft:gold_nugget "Материнское кольцо" "Он не тронет того, кто его держит"
+
+# 1. the leshy: lives in its grove from the moment it is taken; the back; the brood comes for the reader; two braziers weaken it
+contract t_leshy region=r1 board=tb slot=1 monster=grove_leshy lair=1320,201,1258 spawn=lair coop=back,guard,twin guard=cave_spider:2 title="Дерево, что ходит" giver="Тестовый заказчик" text="В роще стоит дерево, которого вчера не было. Двое дровосеков не вернулись."
+clue t_leshy 1 1303 201 1284 "Щепа и кровь. Кто-то тащил дровосека к роще." p=blood
+clue t_leshy 2 1308 201 1276 "Кора содрана когтями — выше человеческого роста." p=bark
+clue t_leshy 3 1313 201 1268 "Корни вспороли землю и снова ушли под неё." p=track
+clue t_leshy 4 1317 201 1262 "Одно дерево здесь дышит." p=bark
+twin t_leshy braziers a=1312,201,1254 b=1328,201,1254 kind=brazier facing=south effect=weak dur=20 text="Огонь с двух сторон — кора Лешего трескается!"
+
+# 2. the womb: two halves of the riddle (a: its pool, b: the remains that lure it out), drags its prey to the far bank
+contract t_womb region=r1 board=tb slot=2 monster=bog_womb lair=1262,198,1258 spawn=bait need=b bait=1282,201,1258,3 bait_item=t_remains from=1262,198,1258 warn=10 coop=split,bait,drag drag=1262,201,1250 give_b=t_remains branch_a="к воде" branch_b="к останкам" title="Тварь из протоки" giver="Тестовый заказчик" text="Из протоки что-то утаскивает овец. Воду не пересечь — оно там дома."
+clue t_womb 1 1292 201 1284 "Слизь на траве. Тянется к протоке." p=slime
+clue t_womb 2 1284 201 1276 "Здесь следы расходятся: слизь — к воде, кровь — к кустам." p=slime
+clue t_womb 1 1276 201 1270 "Пузыри поднимаются со дна." branch=a p=slime
+clue t_womb 2 1268 201 1262 "Оно там, внизу. Не выйдет само." branch=a p=slime
+clue t_womb 1 1284 201 1266 "Кровь. Что-то бросили и уползли." branch=b p=blood
+clue t_womb 2 1286 201 1258 "Останки. Тварь вернётся за ними, если их поднести к воде." branch=b p=bone
+
+# 3. the heath wolf: comes at night to the bait at the mill; cursed: the ritual with the ring at midnight
+contract t_wolf region=r1 board=tb slot=3 monster=heath_wolf lair=1340,201,1300 spawn=bait when=night bait=1336,201,1290,3 from=1348,201,1268;1348,201,1318 alt=1320,201,1320 warn=15 coop=bait,ritual_hold give_m=t_ring title="Волк у мельницы" giver="Тестовый заказчик" text="По ночам у мельницы воет волк. Сын мельника пропал весной."
+clue t_wolf 1 1306 201 1294 "Клочья рыжей шерсти." p=fur
+clue t_wolf 2 1316 201 1294 "Следы лап — и рядом босые человеческие." p=track
+clue t_wolf 3 1328 201 1294 "В траве — кольцо. Оно пахнет волком." p=fur
+ritual t_wolf 1328 201 1306 r=3 item=t_ring time=midnight secs=40 hold=12 human="Сын мельника"
+
+choice t_choice "Мельник просит отдать ему кольцо сына." a="Отдать кольцо" b="Оставить себе" final=1

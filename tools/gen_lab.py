@@ -25,7 +25,8 @@ def clamp(v): return max(0, min(255, int(v)))
 
 # ---------------------------------------------------------------- materials: a 128x64 atlas of 32 tiles of 16x16 (8 columns, 4 rows)
 MATS = ["bark", "moss", "bone", "glow_amber", "dark", "slime", "slime_light", "flesh", "seaweed", "teeth", "root", "glow_green", "glow_red", "glow_violet", "mud", "bark_light",
-        "chitin", "chitin_light", "leg_ochre", "flesh_raw", "gore", "feather", "hair", "bone_old", "glow_white"]
+        "chitin", "chitin_light", "leg_ochre", "flesh_raw", "gore", "feather", "hair", "bone_old", "glow_white",
+        "rust_fur", "heather", "gold"]   # T-020: the heath wolf (appended: the tiles of the others keep their places)
 M = {n: i for i, n in enumerate(MATS)}
 GLOW = {"glow_amber", "glow_green", "glow_red", "glow_violet", "glow_white"}
 def tile(name):
@@ -35,7 +36,8 @@ def tile(name):
             "slime": (70, 82, 48), "slime_light": (112, 120, 74), "flesh": (96, 108, 98), "seaweed": (40, 58, 36), "teeth": (210, 200, 160),
             "root": (40, 30, 24), "glow_green": (190, 255, 170), "glow_red": (255, 70, 40), "glow_violet": (220, 140, 255), "mud": (64, 52, 38),
             "bark_light": (92, 72, 50), "chitin": (38, 20, 16), "chitin_light": (92, 46, 22), "leg_ochre": (176, 128, 44), "flesh_raw": (122, 40, 36),
-            "gore": (70, 14, 14), "feather": (34, 34, 40), "hair": (14, 14, 16), "bone_old": (168, 150, 108), "glow_white": (235, 245, 255)}[name]
+            "gore": (70, 14, 14), "feather": (34, 34, 40), "hair": (14, 14, 16), "bone_old": (168, 150, 108), "glow_white": (235, 245, 255),
+            "rust_fur": (86, 44, 30), "heather": (112, 60, 104), "gold": (214, 170, 60)}[name]
     streak = [r.uniform(-1, 1) for _ in range(16)]
     for y in range(16):
         for x in range(16):
@@ -48,7 +50,7 @@ def tile(name):
             elif name in ("chitin", "chitin_light"):                       # glossy plates: a bright edge on top, dark seams
                 v = 1 + 0.1 * r.uniform(-1, 1) + (0.55 if y in (1, 2) else 0) + (-0.4 if x % 8 == 0 else 0)
                 c = tuple(clamp(b * v) for b in base); a = 255
-            elif name in ("hair", "feather"):
+            elif name in ("hair", "feather", "rust_fur", "heather"):
                 v = 1 + 0.35 * streak[x] + 0.1 * r.uniform(-1, 1)
                 c = tuple(clamp(b * v + 6) for b in base); a = 255
             elif name in ("slime", "slime_light"):
@@ -203,6 +205,9 @@ ljaw = [B(-2.2, -2, 0, 2.2, 0, 8.5, "bone_old"), B(-1.9, -0.1, 0.5, 1.9, 0.2, 8,
         B(1.4, 0, 2, 2, 2, 2.6, "teeth"), B(1.4, 0, 5, 2, 1.6, 5.6, "teeth"), B(-2, 0, 3.5, -1.4, 2.2, 4.1, "teeth"), B(-2, 0, 6.5, -1.4, 1.5, 7.1, "teeth"),
         B(-0.5, 0, 7.8, 0.4, 2.6, 8.4, "teeth"), B(1, -4.5, 7, 1.5, -2, 7.5, "moss"), B(-0.6, -3, 5.5, 0.4, -2, 6.5, "gore")]
 model("leshy_jaw", ljaw)
+gtorso = torso + [B(-3.5, 9, -4.6, 2.5, 16, -4, "dark"), B(-2.5, 10, -4.4, 1.5, 15, -3.8, "glow_amber"), B(-4.5, 8, -4.8, 3.5, 9, -4.2, "root"), B(-4.5, 16, -4.8, 3.5, 17, -4.2, "root"),
+                  B(-6, 14, -5, -3.5, 17, -4.2, "moss"), B(2.5, 7, -5.2, 4, 18, -4.3, "bark_light")]   # T-020: the glowing hollow in the back (the weak place)
+model("grove_torso", gtorso)
 model("leshy_torso", torso); model("leshy_head", lhead); model("leshy_arm", arm, s=0.72); model("leshy_leg", leg)
 
 # ---------------------------------------------------------------- 1. drowner: the skin (the humanoid layers of the equipment asset)
@@ -330,6 +335,9 @@ LESHY_POSES = {
     "rise1": {"root": (0, 0, 0, -1.4), "torso": (20, 0, 0), "arm_l": (-150, 0, 30), "arm_r": (-150, 0, -30), "head": (-30, 0, 0), "jaw": (60, 0, 0)},
     "rise2": {"torso": (-10, 0, 0), "arm_l": (-40, 0, 50), "arm_r": (-40, 0, -50), "head": (-25, 0, 0), "jaw": (62, 0, 0)},
     "die0": {"torso": (-16, 0, 6), "head": (-35, 0, 0), "jaw": (60, 0, 0), "arm_l": (-50, 0, 50), "arm_r": (-60, 0, -45), "leg_l": (6, 0, 0)},
+    # T-020: the grove leshy stands as a tree (arms up and apart like branches, head bowed into the crown, legs together as a trunk) until it is touched
+    "tree": {"torso": (-3, 0, 2), "arm_l": (-172, 8, 28), "arm_r": (-168, -6, -36), "head": (24, 0, 12), "jaw": (4, 0, 0)},
+    "tree_shake": {"torso": (4, 4, -3), "arm_l": (-150, 14, 40), "arm_r": (-158, -10, -24), "head": (10, 8, -8), "jaw": (30, 0, 0), "root": (0, 0, 0, 0.05)},
     "die1": {"root": (0, 0, 0, -0.55), "torso": (34, 0, -6), "head": (20, 0, 10), "jaw": (40, 0, 0), "arm_l": (-10, 0, 20), "arm_r": (5, 0, -25), "leg_l": (-30, 0, 4), "leg_r": (-40, 0, -4)},
     "die2": {"root": (80, 0, 0, -0.35), "torso": (8, 0, -4), "head": (30, 25, 20), "jaw": (50, 0, 0), "arm_l": (-70, 0, 60), "arm_r": (-80, 0, -30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6)},
     "die3": {"root": (80, 0, 0, -0.75), "torso": (8, 0, -4), "head": (30, 25, 20), "jaw": (50, 0, 0), "arm_l": (-70, 0, 60), "arm_r": (-80, 0, -30), "leg_l": (-10, 0, 8), "leg_r": (-5, 0, -6), "scale": 0.0},
@@ -363,6 +371,16 @@ wbleg = [B(-2, -8, -2, 2, 1.5, 2, "hair"), B(-1, -15, -1.5, 1, -8, 0.5, "feather
 wtail = [B(-1, -1, -6, 1, 1, 0, "hair"), B(-0.7, -0.7, -12, 0.7, 0.7, -6, "hair"), B(-0.4, -0.4, -14, 0.4, 0.4, -12, "feather")]
 # the torso is too long for the model limits: shrunk, the display scales it back
 model("warg_torso", wtorso, s=0.75); model("warg_head", whead); model("warg_jaw", wjaw); model("warg_fleg", wfleg); model("warg_bleg", wbleg); model("warg_tail", wtail)
+# T-020: the heath wolf (the cursed miller's son): the same skeleton and poses as the warg, its own look: rust-red fur with heather in the mane,
+# a heavy shaggy collar, amber eyes (not the warg's red), a gold ring on the left fore paw, a shorter, more human brow
+def recolour(boxes, m): return [B(*b[:6], m.get(b[6], b[6])) for b in boxes]
+HM = {"hair": "rust_fur", "feather": "rust_fur", "glow_red": "glow_amber"}
+htorso = recolour(wtorso, HM) + [B(-7.5, -5, -1, 7.5, 9.5, 6.5, "rust_fur"), B(-6, 9, 0, -4.5, 12, 1.5, "heather"), B(3, 9.5, 2, 4.5, 12.5, 3.5, "heather"),
+                                 B(-1, 10, -3, 0.5, 12, -1.5, "heather"), B(5.5, 2, 2, 7.8, 5, 4, "heather")]
+hhead = recolour(whead, HM) + [B(-3.8, 3.5, 6, 3.8, 4.8, 9.5, "rust_fur"), B(-4.2, -2.5, 3, -3.6, 3, 9, "rust_fur"), B(3.6, -2.5, 3, 4.2, 3, 9, "rust_fur")]
+hfleg = recolour(wfleg, HM) + [B(-1.4, -12, -1.4, 1.4, -11, 1.4, "gold")]
+model("heath_torso", htorso, s=0.75); model("heath_head", hhead); model("heath_jaw", recolour(wjaw, HM)); model("heath_fleg", hfleg); model("heath_flegr", recolour(wfleg, HM))
+model("heath_bleg", recolour(wbleg, HM)); model("heath_tail", recolour(wtail, HM))
 WARG_POSES = {
     "idle0": {"head": (8, 0, 0), "jaw": (18, 0, 0), "tail": (-40, 0, 0)},
     "idle1": {"head": (4, 0, 0), "jaw": (28, 0, 0), "tail": (-35, 8, 0), "torso": (-2, 0, 0), "root": (0, 0, 0, 0.02)},
@@ -458,3 +476,14 @@ for k in range(NSEG - 1):
     lg.append(f'$execute unless score #lp le.l matches $(p) as @e[type=minecraft:item_display,tag=le.cs{k}] if score @s le.lnk = #id le.l run data modify entity @s item.components."minecraft:item_model" set value "last_ember:lab/{b}"')
 wtext(os.path.join(gd, "cent_legs.mcfunction"), "\n".join(lg) + "\n")
 print(f"lab: {len(MATS)} materials, models, drowner skin, warg variant, rigs: leshy {len(LESHY_POSES)} poses, warg {len(WARG_POSES)} poses")
+
+# T-020: the parts of the contract monsters that share a skeleton: the heath wolf (warg rig) and the grove leshy (leshy rig), only other models
+wp = open(os.path.join(gd, "warg_parts.mcfunction"), encoding="utf-8").read()
+hp_ = wp.replace("warg_parts", "heath_parts").replace("lab/warg_", "lab/heath_")
+hp_ = hp_.replace('"le.wp_leg_fr"],teleport_duration:3,view_range:1.5f,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/heath_fleg"', '"le.wp_leg_fr"],teleport_duration:3,view_range:1.5f,item_display:"none",item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:lab/heath_flegr"')
+assert "heath_flegr" in hp_
+wtext(os.path.join(gd, "heath_parts.mcfunction"), hp_)
+lp = open(os.path.join(gd, "leshy_parts.mcfunction"), encoding="utf-8").read()
+gp = lp.replace("leshy_parts", "grove_parts").replace("lab/leshy_torso", "lab/grove_torso"); assert "grove_torso" in gp
+wtext(os.path.join(gd, "grove_parts.mcfunction"), gp)
+print("T-020: heath wolf and grove leshy parts")

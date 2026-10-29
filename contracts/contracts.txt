@@ -1,0 +1,25 @@
+# T-020 · Contracts on monsters (tools/gen_contracts.py). One line per thing; values with spaces in "quotes".
+#
+# board <id> <dimension> facing=n|s|e|w signs=x,y,z;x,y,z;... [heads=x,y,z;...] [build=1]
+#   the signs of a board (slot 1 = the first sign); the board text faces `facing`; heads = the trophy shelf (one place per done contract);
+#   build=1 places the signs itself (test boards; the Refuge board is built by BlockWriter, T-008).
+# contract <id> region=rN board=<id> slot=<k> monster=heath_wolf|grove_leshy|bog_womb lair=x,y,z [dim=overworld] spawn=lair|night|storm|bait|event
+#   [when=night|storm] (with spawn=bait: only at night / in a storm)   [from=x,y,z;...] the points it comes from (the first one = where the warning sound is)
+#   [alt=x,y,z] the spare point (used after 15 s when all `from` points are seen)   [bait=x,y,z,r] the bait place (a player without a weapon in hand)
+#   [bait_item=<item>] the bait player must hold this quest item   [need=a|b] the bait works only after that branch is read   [warn=15] seconds of warning
+#   [coop=back,guard,split,bait,ritual_hold,twin,drag] (labels; back/guard/drag change the rules)   [guard=<mob>:<count>] the brood that comes for the reader of clues
+#   [drag=x,y,z] where it drags its prey   [leash=32]   [duo=1] taking it needs 2 players in the game   [open=N] on the board when #chapters >= N (default: region - 1)
+#   [reward=<loot table>] (default last_ember:contract/reward_rN)   [give_m|give_a|give_b=<item>] a quest item at the end of the main trail / of a branch
+#   title="…" giver="…" text="…" [branch_a="…"] [branch_b="…"] [fork_text="…"] [warn_sound=<sound event>]
+# clue <contract> <n> x y z "line over the hotbar" [branch=a|b] [p=blood|fur|scratch|track|slime|bark|bone]
+#   the main trail in order of n; branches start at its last clue (the fork); branch a/b each in order of n
+# ritual <contract> x y z [r=3] [item=<item>] [time=midnight|night|any] [secs=40] [hold=12] [human="…"] [on_cure=<function>]
+#   lifting the curse: someone stands in the circle holding the item while the monster is within `hold` blocks; it is not killed meanwhile (stays at 10%)
+# twin <contract> <name> a=x,y,z b=x,y,z [kind=brazier|lever|douse] [facing=north] [effect=weak|open] [dur=20] [open=x1,y1,z1,x2,y2,z2] [text="…"] [hint="…"] [on=<function>]
+#   two things done within 1 s: braziers lit (campfires), levers pulled, fires put out
+# choice <id> "question" a="…" b="…" [c="…"] [d="…"] [final=1] [on_a=<function>] ...   offered by function last_ember:contract/gen/offer_<id>
+# item <key> <minecraft id> "name" ["lore"]   a quest item (custom_data le_citem:<key>, le_keep — not lost on death)
+#
+# The contracts of the regions come with the region tasks (their points with the location cards). Р0: the board of the tavern of the Refuge (T-008).
+
+board r0 overworld facing=n signs=-60,103,22;-58,103,22;-56,103,22;-60,102,22;-58,102,22;-56,102,22 heads=-60,106,22;-59,106,22;-58,106,22;-57,106,22;-56,106,22;-55,106,22

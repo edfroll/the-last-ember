@@ -5,3 +5,5 @@ data merge entity @s {NoAI:1b,Invulnerable:1b}
 attribute @s minecraft:movement_speed modifier remove last_ember:lab_hold
 attribute @s minecraft:movement_speed modifier remove last_ember:lab_dash
 scoreboard players set @s le.lfr 0
+# T-020: a monster of a contract is done
+execute if entity @s[tag=le.contract] run function last_ember:contract/m/died

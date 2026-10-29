@@ -25,8 +25,15 @@ scoreboard objectives add le.wmu dummy
 scoreboard objectives add le.wrt dummy
 scoreboard objectives add le.wqk dummy
 scoreboard objectives add le.wven dummy
+scoreboard objectives add le.wfr dummy
+scoreboard objectives add le.wbu dummy
 scoreboard players set #-1 le.l -1
 scoreboard players set #20 le.l 20
+scoreboard players set #50 le.l 50
+scoreboard players set #100 le.l 100
+scoreboard players set #250 le.l 250
+scoreboard players set #10000 le.l 10000
+scoreboard objectives add le.lcbt dummy
 scoreboard players set #60 le.l 60
 scoreboard players set #80 le.l 80
 scoreboard players set #360 le.l 360
@@ -42,4 +49,7 @@ scoreboard players set #dormant le.l 0
 data modify storage last_ember:lab womb set value {big:{stretch:[1.81f,2.77f,1.81f],squash:[2.77f,1.28f,2.77f],neutral:[2.13f,2.13f,2.13f],surge:[1.8f,1.47f,2.87f],charge:[2.35f,1.81f,2.35f],splat:[4.27f,0.32f,4.27f],gone:[0.0f,0.0f,0.0f]},small:{stretch:[0.89f,1.37f,0.89f],squash:[1.37f,0.63f,1.37f],neutral:[1.05f,1.05f,1.05f],surge:[0.89f,0.72f,1.41f],charge:[1.16f,0.89f,1.16f],splat:[2.1f,0.16f,2.1f],gone:[0f,0f,0f]}}
 function last_ember:lab/gen/leshy_parts
 function last_ember:lab/gen/warg_parts
+# T-020: the contract monsters on the same rigs
+function last_ember:lab/gen/heath_parts
+function last_ember:lab/gen/grove_parts
 schedule function last_ember:lab/tick 1t replace
