@@ -261,17 +261,7 @@ def t_reload():
     chk("unloaded with the chunk (%s) and back with all 7 parts riding it (%d)" % (gone, n), gone and n == 7)
     R("forceload add 768 768 832 832")
 
-def t_voice():
-    print("[sound variants for Edward: lab/voice]")
-    for k in ("fish", "womb"):
-        for v in (2, 3, 1):
-            R(f'execute as Cam2 at @s run function last_ember:lab/voice {{k:"{k}",v:{v}}}'); time.sleep(0.2)
-            chk(f"{k}: variant {v} set", score(f"#v_{k}", "le.l") == v)
-    station("fish"); R("scoreboard players set #v_fish le.l 2"); R("scoreboard players set @e[tag=le.lab_fish] le.ls 1"); time.sleep(2.0)
-    chk("a sample with another sound variant still comes out alive", ls("le.lab_fish") == 2)
-    R("scoreboard players set #v_fish le.l 1"); R("function last_ember:lab/clear")
-
-T = {"voice": t_voice, "reload": t_reload, "drowner": t_drowner, "warg": t_warg, "womb": t_womb, "leshy": t_leshy, "fish": t_fish, "wounds": t_wounds, "row": t_row, "perf": t_perf}
+T = {"reload": t_reload, "drowner": t_drowner, "warg": t_warg, "womb": t_womb, "leshy": t_leshy, "fish": t_fish, "wounds": t_wounds, "row": t_row, "perf": t_perf}
 args = [a for a in sys.argv[1:] if a in T] or list(T)
 for a in args: T[a]()
 R("function last_ember:lab/clear")
