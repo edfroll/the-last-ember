@@ -3,10 +3,11 @@
 # generate footprint+seam chunks (forceload) -> stop -> backup -> sculpt apply -> verify. (server left stopped)
 set -euo pipefail
 cd "$(dirname "$0")/.."
+. tools/env.sh
 SEED=$1; SPEC=$2; PROF=$3
 pkill -f "net.minecraft.client.main.Main" || true; python3 -I tools/rcon.py stop >/dev/null 2>&1 || true; sleep 6; pkill -f server-26.3 || true; sleep 2
 rm -rf server/world server/world-pre-sculpt; mkdir -p server/world/datapacks
-sed -i '' "s/^level-seed=.*/level-seed=$SEED/" server/server.properties
+sedi "s/^level-seed=.*/level-seed=$SEED/" server/server.properties
 (nohup tools/server.sh start > server/console.out 2>&1 &)
 for i in $(seq 1 90); do grep -q "RCON running" server/console.out && break; sleep 2; done
 python3 -I - <<'P'

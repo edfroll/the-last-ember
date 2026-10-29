@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tools/*)",
+      "Bash(python3 tools/*)",
+      "Bash(python3 -I tools/*)"
+    ]
+  }
+}

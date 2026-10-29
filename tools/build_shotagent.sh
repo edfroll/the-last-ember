@@ -2,7 +2,7 @@
 # Builds server/shotagent.jar (dev-only screenshot agent for the local client) against the 26.3 client jar.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-export JAVA_HOME="$(ls -d "$ROOT"/server/jdk25/*/Contents/Home)"
+. "$ROOT/tools/env.sh"; JAVA_HOME="$(le_java_home)"; export JAVA_HOME
 CP=$(python3 -I - <<'P'
 import json,os
 mc=os.path.expanduser("~/Library/Application Support/minecraft")
