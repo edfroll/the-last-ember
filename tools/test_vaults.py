@@ -27,7 +27,7 @@ MARK = {1: 'le_staff: "blink"', 2: 'le_staff: "frost"', 3: 'le_staff: "flame"', 
         9: "le_windbow: 1b", 10: "le_shadow: 1b", 11: "le_old: 1b", 12: "le_herbbag: 1b", 13: "netherite_upgrade_smithing_template"}
 def dump():
     rc.run("function last_ember:vault/gen/dump"); r = rc.run("data get storage last_ember:vt d"); d = {}
-    for vid, body in re.findall(r"(\w+): \{([^}]*)\}", r):
+    for vid, body in re.findall(r"(\w+): \{([^{}]*)\}", r):
         d[vid] = {k: int(x) for k, x in re.findall(r"(\w+): (-?\d+)", body)}
     st = {int(s): int(x) for s, x in re.findall(r"st(\d): (-?\d+)", r)}
     return d, st
@@ -40,7 +40,7 @@ def platform():
     for _ in range(60):
         time.sleep(0.5)
         if "passed" in rc.run("execute if loaded 1092 200 1092") and "passed" in rc.run("execute if loaded 1118 200 1128"): break
-    rc.run("fill 1090 199 1090 1120 199 1130 stone"); rc.run("fill 1090 200 1090 1120 206 1130 air"); rc.run("time set noon")
+    rc.run("fill 1090 200 1090 1120 200 1130 stone"); rc.run("fill 1090 201 1090 1120 206 1130 air"); rc.run("time set noon")
 # ------------------------------------------------------------------ layout
 def check_layout(d, st, errs):
     where = collections.defaultdict(list)
@@ -110,25 +110,31 @@ def t_staff():
     for i in range(4): rc.run("function last_ember:vault/gen/staff_pick"); got.append(tc.score("#rnd", "le.e"))
     chk("the start staff is never the taken one", sorted(got) == [1, 2, 4, 5], got)
     if "Cam" in rc.run("list"):
-        fresh(); tc.setc(2, 3, 0); time.sleep(1.0); inv = rc.run("data get entity Cam Inventory"); m = re.search(r'le_staff: "(\w+)"', inv); d, st = dump()
+        # #autochar 1 in the test world gives the kit tag right after char/reset: remove it so char/set gives the seer kit
+        fresh(); rc.run("clear Cam"); tc.reset("Cam"); rc.run("tag Cam remove le.kit"); rc.run("execute as Cam run function last_ember:char/set {race:2,class:3,tier:0}"); time.sleep(1.0); inv = rc.run("data get entity Cam Inventory"); m = re.search(r'le_staff: "(\w+)"', inv); d, st = dump()
         chk("a real seer kit (char/set): the staff is taken (#st.N = 1)", m and sum(st.values()) == 1, (m and m.group(1), st))
 # ------------------------------------------------------------------ content (no player: loot insert into a test chest)
 TEST_CHEST = (1110, 201, 1125)
-def roll(table):
-    x, y, z = TEST_CHEST; rc.run(f"setblock {x} {y} {z} minecraft:air"); rc.run(f"setblock {x} {y} {z} minecraft:chest"); rc.run(f"loot insert {x} {y} {z} loot {table}")
-    return rc.run(f"data get block {x} {y} {z} Items")
+DROP = (1105, 205, 1120)
+def roll(table, count=False):
+    """the loot of a table as separate item entities (no merging of stacks like a chest insert); count=True -> (data, number of stacks dropped)"""
+    x, y, z = DROP; sel = f"@e[type=minecraft:item,x={x},y={y},z={z},distance=..8]"
+    rc.run(f"kill {sel}"); r = rc.run(f"loot spawn {x} {y}.5 {z} loot {table}"); it = rc.run(f"execute as {sel} run data get entity @s Item"); rc.run(f"kill {sel}")
+    n = int(m.group(1)) if (m := re.search(r"Dropped (\d+) item", r)) else 0
+    return (it, n) if count else it
 def stacks(items): return items.count("Slot:")
+def ingots(it): return max([int(c) for c in re.findall(r'count: (\d+), id: "minecraft:(?:iron|gold)_ingot"', it)] or [0])
 def t_content():
     print("[content of the treasuries]"); platform(); fresh(); d, st = dump(); errs = []
     for v in V:
-        vid = v["id"]; it = roll(f"last_ember:vault/{vid}"); m = d[vid]["m"]
+        vid = v["id"]; it, n = roll(f"last_ember:vault/{vid}", True); m = d[vid]["m"]
         if m in MARK and MARK[m] not in it: errs.append(f"{vid}: main {m} missing")
-        if m == 99 and not ("enchanted_book" in it and re.search(r'(iron|gold)_ingot", count: (\d+)', it) and int(re.search(r'(iron|gold)_ingot", count: (\d+)', it).group(2)) >= 8): errs.append(f"{vid}: filler wrong")
+        if m == 99 and not ("enchanted_book" in it and ingots(it) >= 8): errs.append(f"{vid}: filler wrong")
         if d[vid]["a"] and "golden_apple" not in it: errs.append(f"{vid}: no apple")
         if d[vid].get("e") and "mending" not in it: errs.append(f"{vid}: no Mending")
         if vid == "tr1a" and "Обрывок карты" not in it: errs.append("tr1a: no scrap of a map")
         extra = 1 + d[vid]["a"] + d[vid].get("e", 0) + (1 if vid == "tr1a" else 0) + (1 if m == 99 else 0) + (1 if vid == "tr4e" else 0)
-        n = stacks(it) - extra
+        n -= extra
         if not (3 <= n <= 5) and vid != "tr4e": errs.append(f"{vid}: {n} good things")
         if v["r"] != "r1" and "le_grimoire" not in it: errs.append(f"{vid}: no grimoire")
     chk("every treasury: its main item, 3..5 good things (1..2 grimoires from Р2), the apple / Mending / scrap where laid out", not errs, errs[:6])
@@ -138,7 +144,7 @@ def t_content():
     it = roll("last_ember:vault/good_r6"); chk("grimoires of Р6 are not Mending (Mending only by the layout)", "mending" not in it)
     cnt = collections.Counter()
     for r in ("r0", "r1", "r2", "r3", "r4", "r5", "r6"):
-        for i in range(12): cnt[(r, stacks(roll(f"last_ember:chests/{r}/common")))] += 1
+        for i in range(12): cnt[(r, roll(f"last_ember:chests/{r}/common", True)[1])] += 1
     chk("common containers: 2..4 things", all(2 <= n <= 4 for (_, n) in cnt), dict(cnt))
 def t_items():
     print("[class items]"); platform(); rc.run("kill @e[type=minecraft:item,x=1105,y=201,z=1120,distance=..10]")

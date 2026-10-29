@@ -42,7 +42,7 @@ def pool(entries, rolls=1, cond=None):
     return p
 def score_is(holder, lo, hi=None):
     return {"type": "minecraft:int_value_check", "value": {"type": "minecraft:score", "target": {"type": "minecraft:fixed", "name": holder}, "score": "le.vt"},
-            "range": {"min": lo, "max": lo if hi is None else hi}}
+            "test": lo if hi is None else {"min": lo, "max": hi}}
 
 REGIONS = ["r0", "r1", "r2", "r3", "r4", "r5", "r6"]
 ENCH_RU = {"protection": "Защита", "sharpness": "Острота", "unbreaking": "Прочность", "power": "Сила", "efficiency": "Эффективность", "projectile_protection": "Защита от снарядов",
@@ -104,9 +104,10 @@ FOOD = {"r0": ["bread", "apple", "cooked_mutton"], "r1": ["bread", "apple", "coo
 BOOK1 = {"r0": [], "r1": ["protection", "sharpness", "unbreaking", "power", "efficiency"], "r2": ["protection", "sharpness", "power", "projectile_protection", "respiration"],
          "r3": ["feather_falling", "unbreaking", "protection"], "r4": ["fire_protection", "power", "sharpness", "knockback"], "r5": ["efficiency", "fortune", "unbreaking", "protection"],
          "r6": ["fire_protection", "blast_protection", "power", "sharpness"]}
+UNSTACK = {"mushroom_stew"}
 def common(r):
     n = int(r[1]); e = []
-    for f in FOOD[r]: e.append(item(f, 10 // len(FOOD[r]) * 2 + 2, count=(1, 3)))
+    for f in FOOD[r]: e.append(item(f, 10 // len(FOOD[r]) * 2 + 2, count=1 if f in UNSTACK else (1, 3)))  # a stew does not stack: 1, else 3 stews = 3 things
     e += [item("arrow", 8, count=(4, 8)), item("soul_torch" if r == "r6" else "torch", 8, count=(2, 6)), item("bone", 6, count=(1, 3)), item("string", 6, count=(1, 3)),
           item("leather", 5, count=(1, 2)), ref("item/murky", 4, 1)]
     # ingredients of the healer's cauldron (T-010)
