@@ -10,6 +10,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MC = os.path.expanduser("~/Library/Application Support/minecraft")
 VER = "26.3"
 OS_NAME, ARCH = "osx", platform.machine()
+if platform.system() == "Linux":   # the cloud: the client downloaded by tools/cloud_client.py, software rendering on a virtual display
+    MC, OS_NAME = os.path.join(ROOT, "server/mc"), "linux"
 
 def rules_ok(rules):
     if not rules: return True
@@ -76,7 +78,18 @@ def main():
     def sub(s):
         for k, v in subs.items(): s = s.replace("${%s}" % k, v)
         return s
-    java = glob.glob(f"{ROOT}/server/jdk25/*/Contents/Home/bin/java")[0]
+    java = subprocess.run(["bash", "-c", f". '{ROOT}/tools/env.sh'; le_java_home"], capture_output=True, text=True).stdout.strip() + "/bin/java"
+    env = dict(os.environ)
+    if OS_NAME == "linux":
+        env.pop("JAVA_TOOL_OPTIONS", None)          # the proxy options only add noise; the client talks to localhost
+        if not env.get("DISPLAY"):
+            env["DISPLAY"] = ":99"
+            if subprocess.run(["pgrep", "-f", "Xvfb :99"], capture_output=True).returncode:
+                subprocess.Popen(["Xvfb", ":99", "-screen", "0", "2600x1500x24", "-nolisten", "tcp"], start_new_session=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                import time; time.sleep(2)
+        # Mesa llvmpipe; Xvfb's GLX has no sRGB framebuffers the client asks for, EGL has them (needs apt packages libegl1 libegl-mesa0)
+        env.setdefault("LIBGL_ALWAYS_SOFTWARE", "1"); env.setdefault("GALLIUM_DRIVER", "llvmpipe"); env.setdefault("SDL_VIDEO_FORCE_EGL", "1")
+        env.setdefault("XDG_RUNTIME_DIR", os.path.join(game_dir, "xdg")); os.makedirs(env["XDG_RUNTIME_DIR"], mode=0o700, exist_ok=True)
     cmd = [java, f"-Xmx{a.mem}", f"-javaagent:{ROOT}/server/shotagent.jar={game_dir}"] + [sub(s) for s in jvm] + [d["mainClass"]] + [sub(s) for s in game]
     os.makedirs(f"{game_dir}/logs", exist_ok=True)
     try:  # camera player must not die/fall on join: new joiners become spectators (best effort, server may be down)
@@ -85,7 +98,7 @@ def main():
         rc.run("defaultgamemode spectator"); rc.run(f"gamemode spectator {a.name}")
     except Exception as e:
         print("note: could not set spectator default via RCON:", e, file=sys.stderr)
-    p = subprocess.Popen(cmd, cwd=game_dir, stdout=open(f"{game_dir}/logs/stdout.txt", "w"), stderr=subprocess.STDOUT, start_new_session=True)
+    p = subprocess.Popen(cmd, cwd=game_dir, stdout=open(f"{game_dir}/logs/stdout.txt", "w"), stderr=subprocess.STDOUT, start_new_session=True, env=env)
     # once the camera is in, give the server its normal default back (real players must not join as spectators)
     restore = (f"import time,sys; sys.path.insert(0,{os.path.join(ROOT, 'tools')!r}); import rcon\n"
                f"for _ in range(120):\n    time.sleep(2)\n    if {a.name!r} in rcon.run('list'): break\n"

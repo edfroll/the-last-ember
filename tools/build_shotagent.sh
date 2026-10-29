@@ -3,9 +3,10 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 . "$ROOT/tools/env.sh"; JAVA_HOME="$(le_java_home)"; export JAVA_HOME
-CP=$(python3 -I - <<'P'
+CP=$(LE_ROOT="$ROOT" python3 -I - <<'P'
 import json,os
 mc=os.path.expanduser("~/Library/Application Support/minecraft")
+if not os.path.isdir(mc): mc=os.path.join(os.environ["LE_ROOT"],"server/mc")   # the cloud: tools/cloud_client.py
 d=json.load(open(mc+"/versions/26.3/26.3.json"))
 out=[mc+"/versions/26.3/26.3.jar"]
 for l in d["libraries"]:
