@@ -24,6 +24,7 @@ scoreboard objectives add le.wbs dummy
 scoreboard objectives add le.wmu dummy
 scoreboard objectives add le.wrt dummy
 scoreboard objectives add le.wqk dummy
+scoreboard objectives add le.wven dummy
 scoreboard players set #-1 le.l -1
 scoreboard players set #20 le.l 20
 scoreboard players set #60 le.l 60

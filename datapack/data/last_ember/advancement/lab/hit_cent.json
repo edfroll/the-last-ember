@@ -1,0 +1,1 @@
+{"criteria":{"c":{"trigger":"minecraft:entity_hurt_player","conditions":{"damage":{"source_entity":{"minecraft:nbt":"{Tags:[\"le.cent\"]}"}}}}},"rewards":{"function":"last_ember:lab/hit/cent"}}

@@ -1,19 +1,19 @@
 # generated: as a player who is online: a key that is owed to him (it was lost while he was offline)
-function last_ember:altar/key_owed {id:"seal_magister"}
-function last_ember:altar/key_owed {id:"tear_creaker"}
-function last_ember:altar/key_owed {id:"crown_witches"}
-function last_ember:altar/key_owed {id:"thread_labyrinth"}
-function last_ember:altar/key_owed {id:"drop_source"}
-function last_ember:altar/key_owed {id:"shell_sea_gods"}
-function last_ember:altar/key_owed {id:"stone_black_water"}
-function last_ember:altar/key_owed {id:"anchor_drowned"}
-function last_ember:altar/key_owed {id:"candle_unfading"}
-function last_ember:altar/key_owed {id:"tear_titan"}
-function last_ember:altar/key_owed {id:"shard_ice_crown"}
-function last_ember:altar/key_owed {id:"tablet"}
-function last_ember:altar/key_owed {id:"seal_whirl"}
-function last_ember:altar/key_owed {id:"eye_forgotten_god"}
-function last_ember:altar/key_owed {id:"banner_dawn"}
-function last_ember:altar/key_owed {id:"hammer_ancestors"}
-function last_ember:altar/key_owed {id:"crown_mountain_king"}
-function last_ember:altar/key_owed {id:"heart_silence"}
+execute if data storage last_ember:keys k.seal_magister{pend:1b} run function last_ember:altar/key_owed {id:"seal_magister"}
+execute if data storage last_ember:keys k.tear_creaker{pend:1b} run function last_ember:altar/key_owed {id:"tear_creaker"}
+execute if data storage last_ember:keys k.crown_witches{pend:1b} run function last_ember:altar/key_owed {id:"crown_witches"}
+execute if data storage last_ember:keys k.thread_labyrinth{pend:1b} run function last_ember:altar/key_owed {id:"thread_labyrinth"}
+execute if data storage last_ember:keys k.drop_source{pend:1b} run function last_ember:altar/key_owed {id:"drop_source"}
+execute if data storage last_ember:keys k.shell_sea_gods{pend:1b} run function last_ember:altar/key_owed {id:"shell_sea_gods"}
+execute if data storage last_ember:keys k.stone_black_water{pend:1b} run function last_ember:altar/key_owed {id:"stone_black_water"}
+execute if data storage last_ember:keys k.anchor_drowned{pend:1b} run function last_ember:altar/key_owed {id:"anchor_drowned"}
+execute if data storage last_ember:keys k.candle_unfading{pend:1b} run function last_ember:altar/key_owed {id:"candle_unfading"}
+execute if data storage last_ember:keys k.tear_titan{pend:1b} run function last_ember:altar/key_owed {id:"tear_titan"}
+execute if data storage last_ember:keys k.shard_ice_crown{pend:1b} run function last_ember:altar/key_owed {id:"shard_ice_crown"}
+execute if data storage last_ember:keys k.tablet{pend:1b} run function last_ember:altar/key_owed {id:"tablet"}
+execute if data storage last_ember:keys k.seal_whirl{pend:1b} run function last_ember:altar/key_owed {id:"seal_whirl"}
+execute if data storage last_ember:keys k.eye_forgotten_god{pend:1b} run function last_ember:altar/key_owed {id:"eye_forgotten_god"}
+execute if data storage last_ember:keys k.banner_dawn{pend:1b} run function last_ember:altar/key_owed {id:"banner_dawn"}
+execute if data storage last_ember:keys k.hammer_ancestors{pend:1b} run function last_ember:altar/key_owed {id:"hammer_ancestors"}
+execute if data storage last_ember:keys k.crown_mountain_king{pend:1b} run function last_ember:altar/key_owed {id:"crown_mountain_king"}
+execute if data storage last_ember:keys k.heart_silence{pend:1b} run function last_ember:altar/key_owed {id:"heart_silence"}
