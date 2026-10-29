@@ -1,0 +1,49 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_name": {
+        "text": "Гримуар",
+        "color": "light_purple",
+        "italic": false
+       },
+       "minecraft:lore": [
+        {
+         "text": "Письмена на неизвестном языке",
+         "color": "gray",
+         "italic": false
+        }
+       ],
+       "minecraft:custom_data": "{le_grimoire:{ench:\"minecraft:mending\",lvl:1}}",
+       "minecraft:max_stack_size": 1,
+       "minecraft:consumable": {
+        "consume_seconds": 0.6,
+        "animation": "none",
+        "sound": "minecraft:item.book.page_turn",
+        "has_consume_particles": false
+       },
+       "minecraft:use_remainder": {
+        "id": "minecraft:enchanted_book",
+        "count": 1,
+        "components": {
+         "minecraft:custom_data": "{le_grimoire_res:{ench:\"minecraft:mending\",lvl:1}}",
+         "minecraft:stored_enchantments": {
+          "minecraft:mending": 1
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

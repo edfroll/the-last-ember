@@ -8,4 +8,6 @@ scoreboard players add #hi le.e 3
 execute store result storage last_ember:pt lo int 1 run scoreboard players get #lo le.e
 execute store result storage last_ember:pt hi int 1 run scoreboard players get #hi le.e
 function last_ember:potion/emit_roll with storage last_ember:pt
+# T-019: the Old Herbwife's Cauldron gives one vial more
+execute if entity @s[tag=le.pot_old] run scoreboard players add #n le.e 1
 function last_ember:potion/emit_loop

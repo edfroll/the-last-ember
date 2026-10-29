@@ -1,0 +1,46 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:shield",
+     "modifier": [
+      {
+       "type": "minecraft:set_enchantments",
+       "enchantments": {
+        "minecraft:unbreaking": 3
+       }
+      },
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_data": "{le_keep:1b,le_guard:1b}",
+        "minecraft:custom_name": {
+         "text": "Щит Стража",
+         "color": "gold",
+         "italic": false
+        },
+        "minecraft:rarity": "epic",
+        "minecraft:lore": [
+         {
+          "text": "Щит последнего стража Приюта.",
+          "color": "gray",
+          "italic": false
+         },
+         {
+          "text": "Рыцарь отражает им половину удара.",
+          "color": "dark_gray",
+          "italic": false
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

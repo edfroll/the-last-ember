@@ -1,0 +1,23 @@
+# T-019 TEST treasuries on a platform at y=200 around (1100, 1100). python3 tools/gen_loot.py treasury/test_vaults.txt; before a commit regenerate WITHOUT it.
+vault tr1a r1 overworld 1100 201 1100 clue=tr2a
+vault tr1b r1 overworld 1103 201 1100 
+vault tr1c r1 overworld 1106 201 1100 
+vault tr2a r2 overworld 1100 201 1103 hint="Под корнями старого дуба|у реки, на юг от моста"
+vault tr2b r2 overworld 1103 201 1103 
+vault tr2c r2 overworld 1106 201 1103 
+vault tr2d r2 overworld 1109 201 1103 
+vault tr3a r3 overworld 1100 201 1106 
+vault tr3b r3 overworld 1103 201 1106 
+vault tr3c r3 overworld 1106 201 1106 
+vault tr4a r4 overworld 1100 201 1109 
+vault tr4b r4 overworld 1103 201 1109 
+vault tr4c r4 overworld 1106 201 1109 
+vault tr4d r4 overworld 1109 201 1109 
+vault tr4e r4 overworld 1112 201 1109 main=chests/r4/common
+vault tr5a r5 overworld 1100 201 1112 danger
+vault tr5b r5 overworld 1103 201 1112 
+vault tr5c r5 overworld 1106 201 1112 
+vault tr6a r6 overworld 1100 201 1115 
+vault tr6b r6 overworld 1103 201 1115 danger
+vault tr6c r6 overworld 1106 201 1115 
+vault tr6d r6 overworld 1109 201 1115 block=barrel[facing=up]

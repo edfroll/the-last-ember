@@ -1,0 +1,59 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:bundle",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_keep:1b,le_herbbag:1b}",
+       "minecraft:custom_name": {
+        "text": "Сумка Травницы",
+        "color": "gold",
+        "italic": false
+       },
+       "minecraft:rarity": "epic",
+       "minecraft:lore": [
+        {
+         "text": "Травница собирала это всю жизнь.",
+         "color": "gray",
+         "italic": false
+        }
+       ],
+       "minecraft:bundle_contents": [
+        {
+         "id": "minecraft:rabbit_foot",
+         "count": 2
+        },
+        {
+         "id": "minecraft:glow_berries",
+         "count": 8
+        },
+        {
+         "id": "minecraft:honey_bottle",
+         "count": 2
+        },
+        {
+         "id": "minecraft:slime_ball",
+         "count": 4
+        },
+        {
+         "id": "minecraft:spider_eye",
+         "count": 4
+        },
+        {
+         "id": "minecraft:cobweb",
+         "count": 4
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

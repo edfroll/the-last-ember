@@ -37,3 +37,5 @@ function last_ember:statue/setup
 function last_ember:trader/setup
 # T-018: the monster lab, wounds
 function last_ember:lab/setup
+# T-019: treasuries (the layout of the main items at the first start)
+function last_ember:vault/setup

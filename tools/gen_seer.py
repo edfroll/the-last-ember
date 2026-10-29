@@ -24,6 +24,17 @@ def snbt(c):
 for sid, n, name, color, text in STAFFS:
     c = comps(sid, name, color, text)
     w(f"give_{sid}", [f"# as a player: {name}", 'give @s minecraft:stick[%s,minecraft:use_remainder={id:"minecraft:stick",count:1,components:{%s}}] 1' % (",".join(c), snbt(c))])
+# T-019: every staff as a loot table last_ember:item/staff_<id> (treasuries take them from there)
+LT = os.path.join(DP, "loot_table/item"); os.makedirs(LT, exist_ok=True)
+for sid, n, name, color, text in STAFFS:
+    tx = lambda t, c: {"text": t, "color": c, "italic": False}
+    c = {"minecraft:item_model": f"last_ember:staff_{sid}", "minecraft:custom_data": f'{{le_keep:1b,le_staff:"{sid}"}}', "minecraft:custom_name": tx(name, color),
+         "minecraft:lore": [tx(text, "gray"), tx("ПКМ — заклинание, Shift + ПКМ — сменить заклинание.", "dark_gray"), tx("Пепельный Покров есть на любом посохе.", "dark_gray")],
+         "minecraft:consumable": {"consume_seconds": 10.0, "animation": "bow" if sid == "wrath" else "none", "sound": "minecraft:intentionally_empty", "has_consume_particles": False},
+         "minecraft:max_stack_size": 1}
+    c2 = dict(c); c2["minecraft:use_remainder"] = {"id": "minecraft:stick", "count": 1, "components": c}
+    json.dump({"type": "minecraft:generic", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": "minecraft:stick", "modifier": {"type": "minecraft:set_components", "components": c2}}]}]},
+              open(os.path.join(LT, f"staff_{sid}.json"), "w"), ensure_ascii=False, indent=1)
 w("staff_cast", ["# as a seer holding a staff: the staff's own spell"] + [f'execute if items entity @s weapon.mainhand *[minecraft:custom_data~{{le_staff:"{sid}"}}] run return run function last_ember:seer/cast_{n}' for sid, n, *_ in STAFFS])
 w("staff_number", ["# as a seer: #sel le.e = the number of the selected spell (1 = the Ashen Cover, else the staff's own)", "scoreboard players set #sel le.e 1",
                    "execute if score @s le.spsel matches 1 run return 1"] + [f'execute if items entity @s weapon.mainhand *[minecraft:custom_data~{{le_staff:"{sid}"}}] run scoreboard players set #sel le.e {n}' for sid, n, *_ in STAFFS])

@@ -1,0 +1,197 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": {
+    "type": "minecraft:uniform",
+    "min": 2,
+    "max": 3
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:protection": 3
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:sharpness": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:power": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:projectile_protection": 3
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:respiration": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_ingot",
+     "weight": 6,
+     "quality": 1,
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "min": 4,
+       "max": 8
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 2,
+     "modifier": {
+      "type": "minecraft:set_potion",
+      "id": "minecraft:healing"
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 2,
+     "modifier": {
+      "type": "minecraft:set_potion",
+      "id": "minecraft:water_breathing"
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 2,
+     "modifier": {
+      "type": "minecraft:set_potion",
+      "id": "minecraft:strength"
+     }
+    }
+   ]
+  },
+  {
+   "rolls": {
+    "type": "minecraft:uniform",
+    "min": 1,
+    "max": 2
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_name": {
+        "text": "Гримуар",
+        "color": "light_purple",
+        "italic": false
+       },
+       "minecraft:lore": [
+        {
+         "text": "Письмена на неизвестном языке",
+         "color": "gray",
+         "italic": false
+        }
+       ],
+       "minecraft:custom_data": "{le_grimoire:{ench:\"minecraft:sharpness\",lvl:3}}",
+       "minecraft:max_stack_size": 1,
+       "minecraft:consumable": {
+        "consume_seconds": 0.6,
+        "animation": "none",
+        "sound": "minecraft:item.book.page_turn",
+        "has_consume_particles": false
+       },
+       "minecraft:use_remainder": {
+        "id": "minecraft:enchanted_book",
+        "count": 1,
+        "components": {
+         "minecraft:custom_data": "{le_grimoire_res:{ench:\"minecraft:sharpness\",lvl:3}}",
+         "minecraft:stored_enchantments": {
+          "minecraft:sharpness": 3
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_name": {
+        "text": "Гримуар",
+        "color": "light_purple",
+        "italic": false
+       },
+       "minecraft:lore": [
+        {
+         "text": "Письмена на неизвестном языке",
+         "color": "gray",
+         "italic": false
+        }
+       ],
+       "minecraft:custom_data": "{le_grimoire:{ench:\"minecraft:protection\",lvl:3}}",
+       "minecraft:max_stack_size": 1,
+       "minecraft:consumable": {
+        "consume_seconds": 0.6,
+        "animation": "none",
+        "sound": "minecraft:item.book.page_turn",
+        "has_consume_particles": false
+       },
+       "minecraft:use_remainder": {
+        "id": "minecraft:enchanted_book",
+        "count": 1,
+        "components": {
+         "minecraft:custom_data": "{le_grimoire_res:{ench:\"minecraft:protection\",lvl:3}}",
+         "minecraft:stored_enchantments": {
+          "minecraft:protection": 3
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

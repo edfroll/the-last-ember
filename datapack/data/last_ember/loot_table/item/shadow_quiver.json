@@ -1,0 +1,48 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:tipped_arrow",
+     "modifier": [
+      {
+       "type": "minecraft:set_count",
+       "count": 16
+      },
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_data": "{le_keep:1b,le_shadow:1b}",
+        "minecraft:custom_name": {
+         "text": "Стрела Теней",
+         "color": "dark_purple",
+         "italic": false
+        },
+        "minecraft:potion_contents": {
+         "custom_color": 3484199,
+         "custom_effects": [
+          {
+           "id": "minecraft:wither",
+           "duration": 800,
+           "amplifier": 1
+          }
+         ]
+        },
+        "minecraft:lore": [
+         {
+          "text": "Из Колчана Теней. Иссушает того, в кого попала.",
+          "color": "gray",
+          "italic": false
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
