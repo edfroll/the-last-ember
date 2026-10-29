@@ -1,0 +1,38 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:cauldron",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_keep:1b,le_cauldron:1b,le_old:1b}",
+       "minecraft:custom_name": {
+        "text": "Котёл Старой Знахарки",
+        "color": "gold",
+        "italic": false
+       },
+       "minecraft:rarity": "epic",
+       "minecraft:lore": [
+        {
+         "text": "Котёл знахаря: Shift+ПКМ по горящему очагу.",
+         "color": "gray",
+         "italic": false
+        },
+        {
+         "text": "Варит на одну склянку больше.",
+         "color": "dark_gray",
+         "italic": false
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

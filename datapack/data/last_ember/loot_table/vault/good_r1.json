@@ -1,0 +1,101 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": {
+    "type": "minecraft:uniform",
+    "min": 3,
+    "max": 5
+   },
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:protection": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:sharpness": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:power": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:efficiency": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "weight": 3,
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:unbreaking": 2
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_ingot",
+     "weight": 6,
+     "quality": 1,
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "min": 4,
+       "max": 8
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 2,
+     "modifier": {
+      "type": "minecraft:set_potion",
+      "id": "minecraft:healing"
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "weight": 2,
+     "modifier": {
+      "type": "minecraft:set_potion",
+      "id": "minecraft:regeneration"
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+# T-019: treasuries (docs/tasks/T-019-treasuries-loot.md). One line per treasury:
+#   vault <id> <region r1..r6> <dimension> <x> <y> <z> [block=chest[facing=north]] [danger] [main=<item>] [clue=<vault id>] [hint="line 1|line 2"] [build=0]
+#   danger        one of the most dangerous treasuries of the region (the Wrath of the Dead Sky goes to such one in Р5/Р6)
+#   main=<item>   the main item is set by the region task and is not laid out: a known main (guard_shield, watch_plate, wind_bow, shadow_quiver,
+#                 old_cauldron, herb_bag, template, blink, frost, flame, lift, banish, wrath) or a loot table id (a biome reward)
+#   clue=<id>     a scrap of a map to the treasury <id> lies inside (its text is hint= of that treasury, lines split by |)
+#   build=0       the container is placed by the region (BlockWriter with LootTable "last_ember:vault/<id>"), the datapack does not place it
+# After a change: python3 tools/gen_loot.py. Treasuries are added by the region tasks by the location cards.

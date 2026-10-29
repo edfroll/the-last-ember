@@ -1,0 +1,37 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:feather_falling": 4
+      }
+     }
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_ingot",
+     "modifier": {
+      "type": "minecraft:set_count",
+      "count": {
+       "type": "minecraft:uniform",
+       "min": 8,
+       "max": 16
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

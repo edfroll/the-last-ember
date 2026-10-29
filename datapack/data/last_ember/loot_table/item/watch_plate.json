@@ -1,0 +1,56 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_chestplate",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_keep:1b,le_watch:1b}",
+       "minecraft:custom_name": {
+        "text": "Латы Последнего Дозора",
+        "color": "gold",
+        "italic": false
+       },
+       "minecraft:rarity": "epic",
+       "minecraft:lore": [
+        {
+         "text": "Дозор стоял до конца. Латы — до сих пор.",
+         "color": "gray",
+         "italic": false
+        }
+       ],
+       "minecraft:attribute_modifiers": [
+        {
+         "type": "minecraft:armor",
+         "id": "last_ember:watch_armor",
+         "amount": 8,
+         "operation": "add_value",
+         "slot": "chest"
+        },
+        {
+         "type": "minecraft:armor_toughness",
+         "id": "last_ember:watch_toughness",
+         "amount": 1,
+         "operation": "add_value",
+         "slot": "chest"
+        },
+        {
+         "type": "minecraft:knockback_resistance",
+         "id": "last_ember:watch_kb",
+         "amount": 0.1,
+         "operation": "add_value",
+         "slot": "chest"
+        }
+       ]
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

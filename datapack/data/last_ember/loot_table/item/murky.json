@@ -1,0 +1,370 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:weakness",
+          "duration": 600,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:poison",
+          "duration": 300,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:slowness",
+          "duration": 600,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:nausea",
+          "duration": 300,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:blindness",
+          "duration": 200,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:hunger",
+          "duration": 600,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:regeneration",
+          "duration": 400,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:speed",
+          "duration": 1200,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:strength",
+          "duration": 900,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:night_vision",
+          "duration": 2400,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:fire_resistance",
+          "duration": 1800,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:potion",
+     "modifier": {
+      "type": "minecraft:set_components",
+      "components": {
+       "minecraft:custom_data": "{le_murky:1b}",
+       "minecraft:custom_name": {
+        "text": "Мутная склянка",
+        "color": "dark_gray",
+        "italic": false
+       },
+       "minecraft:potion_contents": {
+        "custom_color": 5000268,
+        "custom_effects": [
+         {
+          "id": "minecraft:jump_boost",
+          "duration": 1200,
+          "amplifier": 0
+         }
+        ]
+       },
+       "minecraft:tooltip_display": {
+        "hidden_components": [
+         "minecraft:potion_contents"
+        ]
+       }
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
