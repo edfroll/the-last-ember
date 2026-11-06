@@ -77,9 +77,12 @@ Dark fantasy приключенческая карта для **Minecraft Java 2
 - Тест: `tools/test_bonfires.py` (2 клиента, клики и Q — реальный ввод через агент: строки `!use`, `!drop`, `!sneak_on/off` в `shot-request.txt`).
 - **Тест-сервер: `pause-when-empty-seconds=-1`**, иначе без игроков сервер в 26.x встаёт на паузу и `schedule`-циклы не идут.
 
-## Облако и Mac (с 29.10.2026)
-- Код пишут треды проекта в облаке (окружение `last-ember-mc26`, Linux): setup script ставит Temurin 25 в `server/jdk25/`, качает `server/server-26.3.jar`, гоняет генератор данных в `server/generated/` и принимает EULA (согласие Эдварда дано). Мир в облаке временный: сохраняется только закоммиченное. Там работает всё без живого клиента: генераторы, `server.sh`, RCON-тесты, BlockWriter/biomepaint/seedmap.
-- Живой клиент (Cam/Cam2, скриншоты, `walkbot.py`, FPS), боевой тест-мир и библиотека звуков — только на Mac Эдварда (`~/Desktop/Folders/GitHub/Repositories/the-last-ember`) через Remote Control. Что там лежит и как восстановить — `docs/handoff/builder.md`.
+## Облако и Mac (личный аккаунт Эдварда, с 06.11.2026)
+- Проект живёт на личном аккаунте claude.ai: координатор проекта = Штаб (и Архитектор), треды = билдер, одна задача = тред, ветка и PR в `main`. Старое окружение и сессии остались на корпоративном аккаунте, архив их истории — на Mac (`~/Desktop/Folders/For Claude/last-ember`, только справка).
+- Облачное окружение проекта — `last-ember-mc26` (личное, Linux). Сеть: limited + пакетные менеджеры + `piston-meta.mojang.com`, `piston-data.mojang.com`, `libraries.minecraft.net`, `resources.download.minecraft.net`, `api.adoptium.net`, `github.com`, `objects.githubusercontent.com`, `release-assets.githubusercontent.com`. Секретов нет (RCON локальный).
+- Setup script окружения — копия **`tools/cloud_setup.sh`** (при правке менять оба): apt-пакеты (`rsync` для `server.sh`, `vorbis-tools`, `imagemagick`, `xvfb`, `libegl*`), Temurin 25 в `server/jdk25/`, `server/server-26.3.jar`, генератор данных в `server/generated/` (запускается из `server/`, иначе бандлер мусорит `libraries/`/`versions/` в корне репо), EULA (согласие Эдварда дано). Повторный запуск ничего не перекачивает. Если в треде нет доступа к Mojang/Adoptium — тред не в `last-ember-mc26` (Project settings → Environment).
+- Мир в облаке временный: сохраняется только закоммиченное. В облаке работают генераторы, `server.sh`, RCON-тесты, BlockWriter/biomepaint/seedmap и клиенты Cam/Cam2 на Xvfb (`python3 tools/cloud_client.py` качает клиент 26.3 в `server/mc/` без звуков, дальше `client_launch.py` как обычно).
+- Только на Mac Эдварда (`~/Desktop/Folders/GitHub/Repositories/the-last-ember`, через Remote Control): звук, библиотека звуков `server/sounds_src/`, боевой тест-мир. Что там лежит и как восстановить — `docs/handoff/builder.md`.
 - Разрешения для тредов без подтверждений: `.claude/settings.json` (`tools/*`, `python3 tools/*`).
 - Правила Архитектора (карточки локаций, разбор артов): `docs/design/architect-rules.md`.
 
