@@ -1,0 +1,105 @@
+{
+ "borders": [
+  {
+   "id": "west_ridge",
+   "axis": "x",
+   "a": -665,
+   "lo": -620,
+   "hi": 650,
+   "gaps": [
+    [
+     -195,
+     -185
+    ]
+   ],
+   "test": false
+  },
+  {
+   "id": "watch_ridge",
+   "axis": "z",
+   "a": -620,
+   "lo": -1500,
+   "hi": -665,
+   "gaps": [
+    [
+     -885,
+     -875
+    ]
+   ],
+   "test": false
+  },
+  {
+   "id": "north_wall",
+   "axis": "z",
+   "a": -870,
+   "lo": -1500,
+   "hi": 1500,
+   "gaps": [
+    [
+     -563,
+     -557
+    ]
+   ],
+   "test": false
+  },
+  {
+   "id": "rift",
+   "axis": "z",
+   "a": 650,
+   "lo": -1500,
+   "hi": 1500,
+   "gaps": [
+    [
+     -2,
+     2
+    ]
+   ],
+   "test": false
+  },
+  {
+   "id": "east_ridge",
+   "axis": "x",
+   "a": 665,
+   "lo": -870,
+   "hi": 650,
+   "gaps": [],
+   "test": false
+  },
+  {
+   "id": "edge_w",
+   "axis": "x",
+   "a": -1500,
+   "lo": -1500,
+   "hi": 1500,
+   "gaps": [],
+   "test": false
+  },
+  {
+   "id": "edge_e",
+   "axis": "x",
+   "a": 1500,
+   "lo": -1500,
+   "hi": 1500,
+   "gaps": [],
+   "test": false
+  },
+  {
+   "id": "edge_n",
+   "axis": "z",
+   "a": -1500,
+   "lo": -1500,
+   "hi": 1500,
+   "gaps": [],
+   "test": false
+  },
+  {
+   "id": "edge_s",
+   "axis": "z",
+   "a": 1500,
+   "lo": -1500,
+   "hi": 1500,
+   "gaps": [],
+   "test": false
+  }
+ ]
+}

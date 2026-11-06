@@ -15,7 +15,7 @@ OUT = os.path.join(ROOT, "datapack/data/last_ember/function/zones/gen")
 CELL, OFF = 64, 8192  # OFF keeps coordinates positive so truncation == floor
 MARGIN = {"p": 5, "t": 8}
 DIMS = {"overworld": "o", "the_nether": "n", "the_end": "e"}
-FLAGS = {"no_spawn", "no_blink", "no_fire", "calm", "dungeon"}
+FLAGS = {"no_spawn", "no_blink", "no_fire", "calm", "dungeon", "border"}
 
 def parse(path):
     zones = []
@@ -52,6 +52,7 @@ def main():
     zones = parse(os.path.join(ROOT, "zones/zones.txt"))
     if os.path.exists(os.path.join(ROOT, "zones/bonfires.gen.txt")): zones += parse(os.path.join(ROOT, "zones/bonfires.gen.txt"))
     if os.path.exists(os.path.join(ROOT, "zones/traders.gen.txt")): zones += parse(os.path.join(ROOT, "zones/traders.gen.txt"))
+    if os.path.exists(os.path.join(ROOT, "zones/gates.gen.txt")): zones += parse(os.path.join(ROOT, "zones/gates.gen.txt"))
     for extra in sys.argv[1:]: zones += parse(extra)
     ids = [z["id"] for z in zones]
     if len(ids) != len(set(ids)): raise SystemExit("duplicate zone ids")

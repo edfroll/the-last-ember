@@ -1,0 +1,4 @@
+# T-021 test (tools/test_gates.py board): a contract of region r2 on its own test board: hidden while #open_r2 = 0.
+# Regenerate WITHOUT this file before a commit: python3 tools/gen_contracts.py
+board tg overworld facing=n build=1 signs=1540,202,1609 heads=1540,205,1609
+contract t_r2 region=r2 board=tg slot=1 monster=heath_wolf lair=1540,201,1640 spawn=lair title="Тест: заказ Р2" giver="Тестовый заказчик" text="Тест."

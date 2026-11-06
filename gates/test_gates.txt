@@ -1,0 +1,10 @@
+# T-021 test playground (tools/test_gates.py). Regenerate WITHOUT this file before a commit: python3 tools/gen_gates.py
+# 1) a border over the vanilla terrain (a hill, the lake south of it, a dug tunnel), a gap at z 500..502, a T-joint with a second border
+border t_axis   x -280  440  660  gap=500..502
+border t_joint  z  450  -380 -280
+# 2) gates with templates (closed/open) on the platform at y 200 near (1500, 200, 1500); t_far far away (unloaded until visited)
+gate t_gate  r2 chapter=1 at=1558,201,1600 closed=last_ember:gate/test_closed open=last_ember:gate/test_open text="Тест: ворота открыты."
+gate t_far   r3 chapter=2 at=2600,201,2600 closed=last_ember:gate/test_closed open=last_ember:gate/test_open text="Тест: дальние ворота."
+# 3) shortcut doors of r1 (opens by approach, 24) and r2 (opens by a click) on the platform
+shortcut r1 door=1520,201,1540 yaw=0 open=near:24
+shortcut r2 door=1600,201,1520 yaw=270 open=click

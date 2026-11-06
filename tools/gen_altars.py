@@ -65,25 +65,46 @@ for k in keys:
 # keys_watch (every 10 ticks): one cheap pass marks new item entities (le.kchk) and the dropped keys among them (le.kitem), then one function per key.
 # Each key has its own macro function (id baked in, only gen is a macro argument): a shared macro with 18 different arguments would miss the
 # macro cache on every call and be re-parsed; the floor checks look only at the tagged key items (no nbt= selector over every item).
+# T-021: players are looked at only when they carry a key item at all (one cheap item-id test per slot group, tag le.khas); when nobody
+# carries one and none lies on the floor, the per-key functions are skipped and only the loss check of keys last seen on the floor runs.
 w("keys_watch", ["# generated: every 10 ticks, one call per key (uniqueness, loss, stale copies)",
                  "execute as @e[type=minecraft:item,tag=!le.kchk] if items entity @s contents %s run tag @s add le.kitem" % BASE,
-                 "tag @e[type=minecraft:item,tag=!le.kchk] add le.kchk"] +
+                 "tag @e[type=minecraft:item,tag=!le.kchk] add le.kchk",
+                 "scoreboard players add #kphase le.alt 1", "execute if score #kphase le.alt matches 4.. run scoreboard players set #kphase le.alt 0",
+                 "tag @a[tag=le.khas] remove le.khas"] +
+  ["execute as @a[tag=!le.khas] if items entity @s %s %s run tag @s add le.khas" % (sl, BASE) for sl in ("container.*", "weapon.offhand", "player.cursor", "armor.*", "enderchest.*")] +
+  ["execute unless entity @a[tag=le.khas,limit=1] unless entity @e[type=minecraft:item,tag=le.kitem,limit=1] run return run function last_ember:altar/gen/keys_lost"] +
   ['function last_ember:altar/gen/kw_%s with storage last_ember:keys k.%s' % (k["id"], k["id"]) for k in keys])
-for k in keys:
-    i = k["id"]; m = 'minecraft:custom_data~{le_key:"%s"}' % i; v = '*[minecraft:custom_data~{le_key:"%s",gen:$(gen)}]' % i
+w("keys_lost", ["# generated: nobody carries a key and none lies on the floor: a key last seen on the floor is lost"] +
+  ['execute if data storage last_ember:keys k.%s{it:1b} unless data storage last_ember:keys k.%s{st:1} unless data storage last_ember:keys k.%s{st:2} run function last_ember:altar/key_lost {id:"%s"}' % (k["id"], k["id"], k["id"], k["id"]) for k in keys])
+for ki, k in enumerate(keys):
+    # T-021 (keys_loop with players was ~1% of the server): a key held or stored (got:1b, it:0b) can only be lost after it lands on the floor,
+    # so the players are scanned only when the key was on the floor at the last pass (picked up or lost?) or was never held (the first pickup,
+    # every 4th pass). The holder that drops a key is read from the item's Thrower when it first lands. Stale copies on players exist only
+    # after a new generation (gen > 1): only then the players with a key item are cleared of them.
+    i = k["id"]; m = 'minecraft:custom_data~{le_key:"%s"}' % i; v = '*[minecraft:custom_data~{le_key:"%s",gen:$(gen)}]' % i; P = ki % 4
+    scan = ['execute as @a[tag=le.khas] if items entity @s %s %s run return run function last_ember:altar/gen/kh_%s' % (sl, v, i) for sl in ("container.*", "weapon.offhand", "player.cursor", "armor.*", "enderchest.*")]
     w("kw_" + i, ["# generated: macro gen (storage last_ember:keys k.%s): stale copies leave players and the floor; the holder is remembered; a loss is repaired" % i,
-                  '$clear @a *[%s,!minecraft:custom_data~{gen:$(gen)}]' % m,
                   '$execute as @e[type=minecraft:item,tag=le.kitem] if items entity @s contents *[%s,!minecraft:custom_data~{gen:$(gen)}] run kill @s' % m,
+                  '$execute unless data storage last_ember:keys k.%s{gen:1} run clear @a[tag=le.khas] *[%s,!minecraft:custom_data~{gen:$(gen)}]' % (i, m),
                   'execute if data storage last_ember:keys k.%s{st:2} run return 0' % i,
                   'execute if data storage last_ember:keys k.%s{st:1} run return 0' % i,
-                  'scoreboard players set #kh le.alt 0'] +
-      ['$execute as @a[limit=1] if score #kh le.alt matches 0 as @a if items entity @s %s %s run function last_ember:altar/gen/kh_%s' % (sl, v, i) for sl in ("container.*", "weapon.offhand", "player.cursor", "armor.*", "enderchest.*")] +
-      ['execute if score #kh le.alt matches 1 run return 0',
-       '$execute as @e[type=minecraft:item,tag=le.kitem] if items entity @s contents %s run return run data modify storage last_ember:keys k.%s.it set value 1b' % (v, i),
-       'execute if data storage last_ember:keys k.%s{it:1b} run function last_ember:altar/key_lost {id:"%s"}' % (i, i)])
+                  '$execute as @e[type=minecraft:item,tag=le.kitem,tag=!le.kthr] if items entity @s contents %s run function last_ember:altar/gen/kf_%s' % (v, i),
+                  '$execute as @e[type=minecraft:item,tag=le.kitem] if items entity @s contents %s run return run data modify storage last_ember:keys k.%s.it set value 1b' % (v, i),
+                  'execute if data storage last_ember:keys k.%s{it:0b} if data storage last_ember:keys k.%s{got:1b} run return 0' % (i, i),
+                  'execute if data storage last_ember:keys k.%s{it:0b} unless score #kphase le.alt matches %d run return 0' % (i, P),
+                  'function last_ember:altar/gen/kp_%s with storage last_ember:keys k.%s' % (i, i),
+                  'execute if data storage last_ember:keys k.%s{it:1b} run function last_ember:altar/key_lost {id:"%s"}' % (i, i)])
+    w("kp_" + i, ["# generated: macro gen: the players with a key item: the holder of the valid key %s (returns 1 when found)" % i] + ["$" + l for l in scan] + ["return 0"])
+    w("kf_" + i, ["# generated: as the valid key %s that just landed on the floor: the player who threw it is its last holder" % i, "tag @s add le.kthr",
+                  "execute if data entity @s Thrower run data modify storage last_ember:keys k.%s.h set from entity @s Thrower" % i])
     w("kh_" + i, ["# generated: as the holder of the valid key %s: remembered as the last one who held it" % i, "scoreboard players set #kh le.alt 1",
-                  "data modify storage last_ember:keys k.%s.h set from entity @s UUID" % i, "data modify storage last_ember:keys k.%s.it set value 0b" % i,
+                  "execute unless entity @s[tag=le.kh_%s] run function last_ember:altar/gen/khn_%s" % (i, i), "data modify storage last_ember:keys k.%s.it set value 0b" % i,
                   "data modify storage last_ember:keys k.%s.got set value 1b" % i, "data modify storage last_ember:keys k.%s.pend set value 0b" % i])
+for k in keys:
+    w("khn_" + k["id"], ["# generated: a new holder of the key %s: his UUID is stored (reading the player's data only when the holder changes)" % k["id"],
+                         "tag @a[tag=le.kh_%s] remove le.kh_%s" % (k["id"], k["id"]), "tag @s add le.kh_%s" % k["id"],
+                         "data modify storage last_ember:keys k.%s.h set from entity @s UUID" % k["id"]])
 w("keys_join", ["# generated: as a player who is online: a key that is owed to him (it was lost while he was offline)"] +
   ['execute if data storage last_ember:keys k.%s{pend:1b} run function last_ember:altar/key_owed {id:"%s"}' % (k["id"], k["id"]) for k in keys])
 w("give_dispatch", ["# macro id: gives the valid copy of that key to the player"] + [])

@@ -1,6 +1,15 @@
 # generated: every 10 ticks, one call per key (uniqueness, loss, stale copies)
 execute as @e[type=minecraft:item,tag=!le.kchk] if items entity @s contents minecraft:ominous_trial_key run tag @s add le.kitem
 tag @e[type=minecraft:item,tag=!le.kchk] add le.kchk
+scoreboard players add #kphase le.alt 1
+execute if score #kphase le.alt matches 4.. run scoreboard players set #kphase le.alt 0
+tag @a[tag=le.khas] remove le.khas
+execute as @a[tag=!le.khas] if items entity @s container.* minecraft:ominous_trial_key run tag @s add le.khas
+execute as @a[tag=!le.khas] if items entity @s weapon.offhand minecraft:ominous_trial_key run tag @s add le.khas
+execute as @a[tag=!le.khas] if items entity @s player.cursor minecraft:ominous_trial_key run tag @s add le.khas
+execute as @a[tag=!le.khas] if items entity @s armor.* minecraft:ominous_trial_key run tag @s add le.khas
+execute as @a[tag=!le.khas] if items entity @s enderchest.* minecraft:ominous_trial_key run tag @s add le.khas
+execute unless entity @a[tag=le.khas,limit=1] unless entity @e[type=minecraft:item,tag=le.kitem,limit=1] run return run function last_ember:altar/gen/keys_lost
 function last_ember:altar/gen/kw_seal_magister with storage last_ember:keys k.seal_magister
 function last_ember:altar/gen/kw_tear_creaker with storage last_ember:keys k.tear_creaker
 function last_ember:altar/gen/kw_crown_witches with storage last_ember:keys k.crown_witches

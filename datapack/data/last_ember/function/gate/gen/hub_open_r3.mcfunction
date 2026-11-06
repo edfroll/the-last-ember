@@ -1,0 +1,45 @@
+# generated: the Refuge side of the shortcut r3: open (portcullis up, doors open, lanterns, banner)
+setblock -2 103 -31 minecraft:air
+setblock -2 104 -31 minecraft:air
+setblock -2 105 -31 minecraft:air
+setblock -2 106 -31 minecraft:air
+setblock -2 107 -31 minecraft:air
+setblock -2 108 -31 minecraft:air
+setblock -2 109 -31 minecraft:air
+setblock -1 103 -31 minecraft:air
+setblock -1 104 -31 minecraft:air
+setblock -1 105 -31 minecraft:air
+setblock -1 106 -31 minecraft:air
+setblock -1 107 -31 minecraft:air
+setblock -1 108 -31 minecraft:air
+setblock -1 109 -31 minecraft:air
+setblock 0 103 -31 minecraft:air
+setblock 0 104 -31 minecraft:air
+setblock 0 105 -31 minecraft:air
+setblock 0 106 -31 minecraft:air
+setblock 0 107 -31 minecraft:air
+setblock 0 108 -31 minecraft:air
+setblock 0 109 -31 minecraft:air
+setblock 1 103 -31 minecraft:air
+setblock 1 104 -31 minecraft:air
+setblock 1 105 -31 minecraft:air
+setblock 1 106 -31 minecraft:air
+setblock 1 107 -31 minecraft:air
+setblock 1 108 -31 minecraft:air
+setblock 1 109 -31 minecraft:air
+setblock 2 103 -31 minecraft:air
+setblock 2 104 -31 minecraft:air
+setblock 2 105 -31 minecraft:air
+setblock 2 106 -31 minecraft:air
+setblock 2 107 -31 minecraft:air
+setblock 2 108 -31 minecraft:air
+setblock 2 109 -31 minecraft:air
+setblock -2 103 -32 minecraft:dark_oak_door[facing=south,half=lower,hinge=left,open=true]
+setblock -1 103 -32 minecraft:dark_oak_door[facing=south,half=lower,hinge=right,open=true]
+setblock 1 103 -32 minecraft:dark_oak_door[facing=south,half=lower,hinge=left,open=true]
+setblock 2 103 -32 minecraft:dark_oak_door[facing=south,half=lower,hinge=right,open=true]
+setblock 0 108 -35 minecraft:lantern[hanging=true]
+setblock 0 108 -39 minecraft:lantern[hanging=true]
+setblock 0 112 -29 minecraft:white_wall_banner[facing=south]{patterns:[{pattern:"minecraft:bricks",color:"light_gray"},{pattern:"minecraft:triangles_top",color:"white"},{pattern:"minecraft:stripe_bottom",color:"gray"},{pattern:"minecraft:border",color:"light_blue"}]}
+kill @e[type=minecraft:interaction,tag=le.schub,scores={le.scw=3}]
+scoreboard players set #scvh_r3 le.gate 1
