@@ -41,3 +41,5 @@ function last_ember:lab/setup
 function last_ember:vault/setup
 # T-020: contracts on monsters
 function last_ember:contract/setup
+# T-021: region borders, chapter gates, shortcuts
+function last_ember:gate/setup

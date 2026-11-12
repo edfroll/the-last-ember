@@ -8,7 +8,7 @@
 #   [alt=x,y,z] the spare point (used after 15 s when all `from` points are seen)   [bait=x,y,z,r] the bait place (a player without a weapon in hand)
 #   [bait_item=<item>] the bait player must hold this quest item   [need=a|b] the bait works only after that branch is read   [warn=15] seconds of warning
 #   [coop=back,guard,split,bait,ritual_hold,twin,drag] (labels; back/guard/drag change the rules)   [guard=<mob>:<count>] the brood that comes for the reader of clues
-#   [drag=x,y,z] where it drags its prey   [leash=32]   [duo=1] taking it needs 2 players in the game   [open=N] on the board when #chapters >= N (default: region - 1)
+#   [drag=x,y,z] where it drags its prey   [leash=32]   [duo=1] taking it needs 2 players in the game   [open=N] also needs #chapters >= N (T-021: a contract is on the board when the path to its region is open, #open_rN le.gate)
 #   [reward=<loot table>] (default last_ember:contract/reward_rN)   [give_m|give_a|give_b=<item>] a quest item at the end of the main trail / of a branch
 #   title="…" giver="…" text="…" [branch_a="…"] [branch_b="…"] [fork_text="…"] [warn_sound=<sound event>]
 # clue <contract> <n> x y z "line over the hotbar" [branch=a|b] [p=blood|fur|scratch|track|slime|bark|bone]

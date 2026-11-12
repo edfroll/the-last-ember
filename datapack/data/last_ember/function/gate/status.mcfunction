@@ -1,0 +1,3 @@
+# ADMIN: the state of the gates, the path flags and the shortcuts
+function last_ember:gate/gen/status
+tellraw @s [{"text":" флаги пути: ","color":"gray"},{"text":"r2 ","color":"white"},{"score":{"name":"#open_r2","objective":"le.gate"}},{"text":" r3 ","color":"white"},{"score":{"name":"#open_r3","objective":"le.gate"}},{"text":" r4 ","color":"white"},{"score":{"name":"#open_r4","objective":"le.gate"}},{"text":" r5 ","color":"white"},{"score":{"name":"#open_r5","objective":"le.gate"}},{"text":" r6 ","color":"white"},{"score":{"name":"#open_r6","objective":"le.gate"}},{"text":" final ","color":"white"},{"score":{"name":"#open_final","objective":"le.gate"}}]

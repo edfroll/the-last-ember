@@ -65,6 +65,7 @@ for c in contracts.values():
     c["lair"] = P3(c["lair"]); c.setdefault("dim", "overworld"); c["coop"] = [x for x in c.get("coop", "").split(",") if x]
     c["hp"], c["dmg"], c["arm"] = STRENGTH[c["region"]]
     c["duo"] = c.get("duo", "1") == "1"; c["slot"] = int(c.get("slot", 1)); c["warn"] = int(c.get("warn", 15))
+    c["open_given"] = "open" in c
     c["open"] = int(c.get("open", max(0, int(c["region"][1:]) - 1)))
     c["from"] = [P3(p) for p in c.get("from", "").split(";") if p] or [c["lair"]]
     c["main"] = sorted([k for k in clues if k["c"] == c["id"] and "branch" not in k], key=lambda k: k["n"])
@@ -205,7 +206,9 @@ for c in contracts.values():
                    "execute if score %s matches 2..4 run scoreboard players set #active le.ct 1" % st,
                    "function last_ember:contract/gen/board_%s" % c["board"]])
     # --- visible on the board when the path to its region is open
-    sec.append("execute if score %s matches 0 if score #chapters le.alt matches %d.. run function last_ember:contract/gen/reveal_%s" % (st, c["open"], i))
+    # T-021: the path to the region must be open (#open_rN le.gate, set by the gates of the chapters); open= is an extra threshold
+    sec.append("execute if score %s matches 0 if score #open_%s le.gate matches 1 %srun function last_ember:contract/gen/reveal_%s"
+               % (st, c["region"], ("if score #chapters le.alt matches %d.. " % c["open"]) if c["open_given"] else "", i))
     w("reveal_" + i, ["# generated"] + setst(1))
     # --- the window (dialog): the offer with the take button, or the notice when it is taken
     body = [{"type": "minecraft:plain_message", "contents": tx(c.get("giver", "Заказчик"), "dark_gray"), "width": 300},

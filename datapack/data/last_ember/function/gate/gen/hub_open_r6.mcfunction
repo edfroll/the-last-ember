@@ -1,0 +1,45 @@
+# generated: the Refuge side of the shortcut r6: open (portcullis up, doors open, lanterns, banner)
+setblock 31 103 -2 minecraft:air
+setblock 31 104 -2 minecraft:air
+setblock 31 105 -2 minecraft:air
+setblock 31 106 -2 minecraft:air
+setblock 31 107 -2 minecraft:air
+setblock 31 108 -2 minecraft:air
+setblock 31 109 -2 minecraft:air
+setblock 31 103 -1 minecraft:air
+setblock 31 104 -1 minecraft:air
+setblock 31 105 -1 minecraft:air
+setblock 31 106 -1 minecraft:air
+setblock 31 107 -1 minecraft:air
+setblock 31 108 -1 minecraft:air
+setblock 31 109 -1 minecraft:air
+setblock 31 103 0 minecraft:air
+setblock 31 104 0 minecraft:air
+setblock 31 105 0 minecraft:air
+setblock 31 106 0 minecraft:air
+setblock 31 107 0 minecraft:air
+setblock 31 108 0 minecraft:air
+setblock 31 109 0 minecraft:air
+setblock 31 103 1 minecraft:air
+setblock 31 104 1 minecraft:air
+setblock 31 105 1 minecraft:air
+setblock 31 106 1 minecraft:air
+setblock 31 107 1 minecraft:air
+setblock 31 108 1 minecraft:air
+setblock 31 109 1 minecraft:air
+setblock 31 103 2 minecraft:air
+setblock 31 104 2 minecraft:air
+setblock 31 105 2 minecraft:air
+setblock 31 106 2 minecraft:air
+setblock 31 107 2 minecraft:air
+setblock 31 108 2 minecraft:air
+setblock 31 109 2 minecraft:air
+setblock 32 103 -2 minecraft:dark_oak_door[facing=west,half=lower,hinge=left,open=true]
+setblock 32 103 -1 minecraft:dark_oak_door[facing=west,half=lower,hinge=right,open=true]
+setblock 32 103 1 minecraft:dark_oak_door[facing=west,half=lower,hinge=left,open=true]
+setblock 32 103 2 minecraft:dark_oak_door[facing=west,half=lower,hinge=right,open=true]
+setblock 35 108 0 minecraft:soul_lantern[hanging=true]
+setblock 39 108 0 minecraft:soul_lantern[hanging=true]
+setblock 29 112 0 minecraft:black_wall_banner[facing=west]{patterns:[{pattern:"minecraft:triangle_bottom",color:"gray"},{pattern:"minecraft:gradient_up",color:"red"},{pattern:"minecraft:rhombus",color:"orange"},{pattern:"minecraft:border",color:"black"}]}
+kill @e[type=minecraft:interaction,tag=le.schub,scores={le.scw=6}]
+scoreboard players set #scvh_r6 le.gate 1
