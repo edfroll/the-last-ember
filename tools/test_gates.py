@@ -5,7 +5,7 @@ Before (fresh world with the Refuge, see docs/reports/T-021-report.md):
   python3 tools/gen_contracts.py contracts/test_contracts.txt contracts/test_gate_contracts.txt
   server STOPPED: tools/borders.sh apply t_axis t_joint (the test border over the vanilla terrain at x -280, z 440..660)
   tools/server.sh sync, RESTART the server (dialogs), clients Cam and Cam2.
-Usage: python3 tools/test_gates.py [build border gate shortcut multi pets ember board perf shots]
+Usage: python3 tools/test_gates.py [build border gate shortcut multi pets ember board perf shots | chorus (T-022, R1 world)]
 Frames go to docs/reports/T-021/ (section shots)."""
 import importlib.util, math, os, re, shutil, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -307,6 +307,34 @@ def t_shots():
     for f in os.listdir(OUT):
         if f.endswith(".png"):
             src = os.path.join(OUT, f); subprocess.run(["convert", src, "-resize", "1280x", "-quality", "78", src[:-4] + ".jpg"], check=False); os.remove(src)
+
+def chorus_at(name, axis, a0, x, z, n=12, gap=False, sign=1):
+    """T-022: Cam stands next to the axis (sign 1: on the low side, -1: on the high side) and eats chorus fruit n times: never ends up across the axis
+    (gap=True: in an open gap crossing is allowed, at least one hop crosses)"""
+    gy = ground(x, z); crossed = back = hops = 0
+    for i in range(n):
+        R(f"tp Cam {x} {gy} {z}"); R("clear Cam"); R("item replace entity Cam weapon.mainhand with minecraft:chorus_fruit 4"); time.sleep(0.5)
+        start = pos("Cam"); tc.act("Cam", "!use_on"); time.sleep(2.0); tc.act("Cam", "!use_off"); time.sleep(0.6)
+        p = pos("Cam")
+        if dist(p, start) > 1.0: hops += 1
+        v = p[0] if axis == "x" else p[2]
+        if (v - a0) * sign > 0: crossed += 1
+        if abs(score("Cam", "le.chx") / 10 - p[0]) < 0.2 and abs(score("Cam", "le.chz") / 10 - p[2]) < 0.2 and dist(p, start) < 1.0: back += 1
+    if gap: chk(f"chorus in the open gap of {name}: {hops} hops, {crossed} across the axis (allowed)", crossed >= 1 and hops >= n // 2)
+    else: chk(f"chorus next to {name}: {hops}/{n} hops, {crossed} across the axis, {back} at the eat point", crossed == 0 and hops + back >= n // 2)
+
+def t_chorus():
+    """T-022 (R1 world): chorus fruit at the west ridge (x -665), the rift (z 650) and at the closed pass gate"""
+    print("[chorus: a chorus fruit never carries a player across a border axis outside an open gap]")
+    safe("Cam"); R("gamemode spectator Cam2"); R("tp Cam2 -700 200 0"); R("gamerule fall_damage false")
+    chorus_at("the west ridge (Dol side)", "x", -665, -663.5, 100.5, sign=-1)
+    chorus_at("the rift (north rim)", "z", 650, 120.5, 648.5)
+    R('function last_ember:gate/close {id:"west_pass"}'); time.sleep(1.5)
+    chorus_at("the closed pass gate (rubble, Dol side)", "x", -648, -631.5, -189.5, sign=-1)
+    R('function last_ember:gate/open {id:"west_pass"}'); time.sleep(1.5)
+    chorus_at("the open pass", "x", -665, -663.5, -189.5, gap=True, sign=-1)
+    R('function last_ember:gate/close {id:"west_pass"}')
+    R("clear Cam"); R("gamerule fall_damage true"); safe("Cam")
 
 if __name__ == "__main__":
     want = [a for a in sys.argv[1:] if not a.startswith("--")] or ["build", "border", "gate", "shortcut", "multi", "pets", "ember", "board", "perf"]

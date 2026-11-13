@@ -27,7 +27,8 @@ execute unless score #gatev_ash_summit le.gate matches -2147483648.. run scorebo
 execute unless score #sc_r1 le.gate matches -2147483648.. run scoreboard players set #sc_r1 le.gate 0
 execute unless score #scvh_r1 le.gate matches -2147483648.. run scoreboard players set #scvh_r1 le.gate 0
 execute unless score #schb_r1 le.gate matches -2147483648.. run scoreboard players set #schb_r1 le.gate 0
-scoreboard players set #scb_r1 le.gate 0
+execute unless score #scb_r1 le.gate matches -2147483648.. run scoreboard players set #scb_r1 le.gate 0
+execute unless score #scvd_r1 le.gate matches -2147483648.. run scoreboard players set #scvd_r1 le.gate 0
 execute unless score #sc_r2 le.gate matches -2147483648.. run scoreboard players set #sc_r2 le.gate 0
 execute unless score #scvh_r2 le.gate matches -2147483648.. run scoreboard players set #scvh_r2 le.gate 0
 execute unless score #schb_r2 le.gate matches -2147483648.. run scoreboard players set #schb_r2 le.gate 0

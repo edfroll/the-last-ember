@@ -1,0 +1,9 @@
+{
+  "criteria": {
+    "eat": {
+      "trigger": "minecraft:consume_item",
+      "conditions": { "item": { "items": "minecraft:chorus_fruit" } }
+    }
+  },
+  "rewards": { "function": "last_ember:gate/chorus_eat" }
+}

@@ -17,10 +17,10 @@
 #   ворота Приюта заперты («Заперто с той стороны»).
 
 # ---- Границы (docs/design/locations/Границы регионов.md). Проёмы — предварительные: точную ширину даст задача региона.
-border west_ridge   x -665  -620  650   gap=-195..-185
+border west_ridge   x -665  -620  650   gap=-194..-186:west_pass
 border watch_ridge  z -620  -1500 -665  gap=-885..-875
 border north_wall   z -870  -1500 1500  gap=-563..-557
-border rift         z  650  -1500 1500  gap=-2..2
+border rift         z  650  -1500 1500  gap=-2..2:south_bridge
 border east_ridge   x  665  -870  650
 border edge_w       x -1500 -1500 1500
 border edge_e       x  1500 -1500 1500
@@ -28,13 +28,13 @@ border edge_n       z -1500 -1500 1500
 border edge_s       z  1500 -1500 1500
 
 # ---- Ворота глав (шаблонов «закрыто/открыто» пока нет: их добавят задачи регионов)
-gate west_pass     r2    chapter=1 at=-640,~,-190  text="Где-то на западе обрушился завал."
+gate west_pass     r2    chapter=1 at=-648,77,-194 closed=last_ember:gates/west_pass_closed open=last_ember:gates/west_pass_open hold=-664,-195,-649,-185 text="Где-то на западе обрушился завал."
 gate watch_gates   r3    chapter=2 at=-880,~,-640  text="Далеко на севере открылись ворота."
-gate south_bridge  r4    chapter=3 at=0,~,650      text="На юге опустился мост."
+gate south_bridge  r4    chapter=3 at=-3,126,633 closed=last_ember:gates/south_bridge_closed open=last_ember:gates/south_bridge_open text="На юге опустился мост."
 gate sealed_well   r5    chapter=4 at=40,101,-44   text="Земля под Приютом дрогнула."
 gate ancestor_frame r6   chapter=5   text="Рамка Предков ожила."
 gate ash_summit    final chapter=6 text="Вершина Пепельной горы ждёт."
 
 # ---- Шорткаты: двери в регионах ставят задачи регионов (рельефа ещё нет). Координаты из карточек — для справки:
-# shortcut r1 door=-380,?,-196 yaw=270 open=near:24      (у Круга Плакальщиц, лицом на восток)
+shortcut r1 door=-380,111,-196 yaw=270 open=near:24 build=1      # T-022: у Круга Плакальщиц, лицом на восток, в скальном выступе
 # shortcut r2 door=-918,?,20 ...   r3 door=-560,?,-905 ...   r4 (Застава)   r5 door=150,16,-120 ...   r6 door=760,?,0 ...

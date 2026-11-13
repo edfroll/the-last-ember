@@ -8,3 +8,4 @@ border_edge_w overworld box -1540 -64 -1500 -1460 320 1500 border
 border_edge_e overworld box 1460 -64 -1500 1540 320 1500 border
 border_edge_n overworld box -1500 -64 -1540 1500 320 -1460 border
 border_edge_s overworld box -1500 -64 1460 1500 320 1540 border
+scdoor_r1 overworld cyl -380 -196 8 107 121
