@@ -199,9 +199,14 @@ def ground_at(x, z):
     return "minecraft:moss_block" if m < 0.9 else "minecraft:podzol[snowy=false]"
 class Bark(Mix):
     def __init__(self): pass
-    """stripped pale oak with charred patches of dark oak (blotches 2x3 tall) and a few mangrove roots"""
+    """stripped pale oak with 5 charred patches of dark oak (2x3 .. 3x5: more at the foot and at the crown, where the strike comes;
+    HQ review T-023, 3) and a few mangrove roots"""
+    # patch: centre (dx, dy, dz) from the trunk's foot centre, horizontal and vertical half-sizes
+    PATCHES = [((2, 2, 0), 1.7, 2.6), ((-2, 4, 1), 1.5, 2.2), ((0, 1, -2), 2.0, 1.6), ((1, 12, 2), 1.4, 2.0), ((0, 24, 0), 1.6, 3.4)]
     def at(self, x, y, z):
-        if hsh(x // 2, y // 3, z // 2, 2319) < 0.2: return "minecraft:dark_oak_log[axis=y]"
+        for (px, py, pz), rh, rv in self.PATCHES:
+            dx, dy, dz = x - CX - px, y - Y - py, z - CZ - pz
+            if (dx * dx + dz * dz) / (rh * rh) + dy * dy / (rv * rv) <= 1.0: return "minecraft:dark_oak_log[axis=y]"
         if hsh(x, y, z, 2314) < 0.08: return "minecraft:mangrove_roots[waterlogged=false]"
         return "minecraft:stripped_pale_oak_log[axis=y]"
 BARK = Bark()
@@ -399,12 +404,16 @@ def gen_datapack(sts):
     L = [hdr + "the inscriptions on the plinths of the key Weepers (text_display, dim, readable from ~6 blocks)", "kill @e[type=minecraft:text_display,tag=le.wp_lbl]"]
     for s in sts:
         if not s["text"]: continue
-        vx, vz = CX - s["x"], CZ - s["z"]; d = math.hypot(vx, vz); ux, uz = vx / d, vz / d
-        lx, lz = s["x"] + 0.5 + ux * 1.53, s["z"] + 0.5 + uz * 1.53
+        # on the face of the plinth that looks most towards the centre (ortho plinth 5x5: a side; diag plinth: a stepped diagonal side)
+        vx, vz = CX - s["x"], CZ - s["z"]; diag = WS.facing_rot(s["face"])[0]
+        cands = [(1, 1), (1, -1), (-1, 1), (-1, -1)] if diag else [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        nx, nz = max(cands, key=lambda c: (c[0] * vx + c[1] * vz) / math.hypot(*c)); L_ = math.hypot(nx, nz); ux, uz = nx / L_, nz / L_
+        off = 2.85 if diag else 2.53
+        lx, lz = s["x"] + 0.5 + ux * off, s["z"] + 0.5 + uz * off
         yaw = math.degrees(math.atan2(-ux, uz))                  # the text faces the centre (towards the reader standing at the circle)
         L.append('summon minecraft:text_display %.2f %.2f %.2f {Tags:["le.wp_lbl"],Rotation:[%.1ff,0f],billboard:"fixed",line_width:120,background:0,'
                  'see_through:0b,view_range:0.12f,brightness:{sky:5,block:4},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.42f,0.42f,0.42f]},'
-                 'text:{"text":"%s","color":"#8f8a80","italic":true}}' % (lx, Y + 0.95, lz, (yaw + 180) % 360 - 180, s["text"]))
+                 'text:{"text":"%s","color":"#8f8a80","italic":true}}' % (lx, Y + 0.35, lz, (yaw + 180) % 360 - 180, s["text"]))
     L.append("data modify storage last_ember:weepers built set value 1b")
     w("labels", L)
     w("markers", [hdr + "mechanic points of the Circle (storage only)", "data remove storage last_ember:r1 m.weepers_advisor",

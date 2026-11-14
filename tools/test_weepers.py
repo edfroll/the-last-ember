@@ -52,8 +52,8 @@ def rc_candles(lit):
     if not CANDLES:
         for x in range(CX - 18, CX + 19):
             for z in range(CZ - 18, CZ + 19):
-                if 10.5 <= ((x - CX) ** 2 + (z - CZ) ** 2) ** 0.5 <= 17.5 and passed(f"execute if block {x} {Y} {z} minecraft:candle"): CANDLES.append((x, z))
-    return sum(passed(f"execute if block {x} {Y} {z} minecraft:candle[lit={'true' if lit else 'false'}]") for x, z in CANDLES)
+                if 10.5 <= ((x - CX) ** 2 + (z - CZ) ** 2) ** 0.5 <= 17.5 and passed(f"execute if block {x} {Y + 1} {z} minecraft:candle"): CANDLES.append((x, z))
+    return sum(passed(f"execute if block {x} {Y + 1} {z} minecraft:candle[lit={'true' if lit else 'false'}]") for x, z in CANDLES)
 def lit(n): return "state: 1" in sto(f"bonfires by.b{n}")
 
 def t_peds():
@@ -179,16 +179,23 @@ def t_zones():
 def mspt():
     m = re.search(r"([0-9.]+)\s*ms", rc.run("tick query")); return float(m.group(1)) if m else None
 def t_perf():
-    print("[perf]"); stage(); time.sleep(3)
-    idle = [mspt() for _ in range(3) if not time.sleep(1.5)]
-    rc.run(f"tp Cam {CX + 20}.5 120 {CZ + 30}.5")
+    """both players stand still at the circle for the whole run (no chunks or animals loaded in between): Cam2 places the keys,
+    the Ember is given to Cam (already within 10) last; peaceful (no natural mobs piling up during the run)"""
+    print("[perf]"); stage(); rc.run("difficulty peaceful"); rc.run("time set day")
+    for q in ("Cam", "Cam2"): rc.run(f"tag {q} remove le.carrier"); rc.run(f"clear {q} minecraft:trial_key")
+    rc.run("data remove storage last_ember:ember carrier")
+    rc.run(f"tp Cam {CX + 7}.5 {Y} {CZ + 3}.5 90 0")
+    def ents(): rc.run("execute store result score #n le.e if entity @e"); return score("#n", "le.e")
+    time.sleep(40); n0 = ents(); idle = [mspt() for _ in range(4) if not time.sleep(2)]
     for k in PEDS: hand_key("Cam2", k); time.sleep(0.2); click("Cam2", k)
-    rc.run(f"tp Cam {CX + 7}.5 {Y} {CZ + 3}.5"); wait(lambda: "ev: -1" not in sto("altars a.weepers"), 3)
+    rc.run("execute as Cam run function last_ember:ember/give_to_me"); wait(lambda: "ev: -1" not in sto("altars a.weepers"), 3)
     ev = []
     while "done: 1b" not in sto("altars a.weepers") and len(ev) < 40: ev.append(mspt()); time.sleep(0.7)
     time.sleep(2); after = [mspt() for _ in range(3) if not time.sleep(1.5)]
-    print(f"     mspt (average of the last 100 ticks): before {idle}, during the event {ev}, after {after}")
+    time.sleep(60); after60 = [mspt() for _ in range(4) if not time.sleep(2)]; n1 = ents(); rc.run("difficulty normal")
+    print(f"     mspt (average of the last 100 ticks): before {idle}, during the event {ev}, just after {after}, 60 s after {after60}; entities {n0} -> {n1}")
     chk("tick stays under 25 ms during the event", max(x for x in ev if x is not None) < 25, ev)
+    chk("60 s after the event the tick is back (within 1 ms of before)", max(after60) <= max(idle) + 1.0, (idle, after60))
 
 T = {"peds": t_peds, "event": t_event, "fade": t_fade, "reset": t_reset, "restart": t_restart, "zones": t_zones, "perf": t_perf}
 for n in (sys.argv[1:] or ["peds", "event", "fade", "reset", "zones"]): T[n]()

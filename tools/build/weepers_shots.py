@@ -26,9 +26,15 @@ def prep():
     rc.run("gamerule advance_time false"); rc.run("gamerule locator_bar false"); rc.run("difficulty peaceful")
 EAST = shot("w_east_trail", (-382.5, 115.6, -177.5), (-420, 121, -180))
 def before():
-    prep(); rc.run("function last_ember:altar/reset {chapter:1}"); rc.run("function last_ember:altar/set_chapters {n:0}"); time.sleep(3)
+    prep(); rc.run("function last_ember:altar/reset {chapter:1}"); rc.run("function last_ember:altar/set_chapters {n:0}")
+    rc.run("gamemode spectator Cam"); rc.run("tp Cam -424.5 116 -179.5"); time.sleep(25)   # the Circle's chunks loaded, then the templates (the probes miss a changed model)
+    rc.run("function last_ember:weepers/gen/statues_up"); time.sleep(3)
     run([EAST, shot("w_stair_up", (-448.5, 91.7, -157.5), (-448, 109, -184)),
-         shot("w_weeper_face", (-401.5, 120.6, -179.5), (-406, 119.5, -179.5)),              # the Weeper of the Garden (90 deg, faces east)
+         shot("w_weeper_face", (-428.5, 118.4, -179.5), (-433.5, 120.0, -179.5)),            # a Weeper close (270 deg, faces the tree), at the face's height
+         shot("w_diag_face", (-427.0, 119.4, -187.0), (-430.5, 120.0, -190.5)),              # the diagonal Weeper's face (315 deg) close
+         shot("w_pose_ortho_up", (-424.5, 116.0, -179.5), (-433.5, 116.5, -179.5)),           # ortho (270 deg, faces east to the tree): from the tree's side
+         shot("w_pose_diag_up", (-423.0, 116.0, -183.0), (-429.5, 116.5, -189.5)),            # diagonal (315 deg, faces SE to the tree)
+         shot("w_stair_down", (-447.5, 106.0, -178.5), (-447.5, 96, -164.5)),                # the stair from above (where the bot reports a false 'fall')
          shot("w_circle_from_west_arch", (-443.5, 114.5, -185.5), (-420, 113, -180))], "noon", "_day")
     e = dict(EAST, name="w_east_trail_night"); run([e], "midnight", "_night")
 def strike(): event("w_strike", 239, (-404.5, 127.5, -166.5), (-420, 138, -180))
@@ -54,6 +60,9 @@ def event(name, tick, c, t):
 def after():
     prep()
     if "done: 1b" not in rc.run("data get storage last_ember:altars a.weepers"): strike()
+    run([shot("w_pose_ortho_down", (-424.5, 116.0, -179.5), (-433.5, 116.5, -179.5)),
+         shot("w_pose_diag_down", (-423.0, 116.0, -183.0), (-429.5, 116.5, -189.5)),
+         shot("w_east_trail_after", (-382.5, 115.6, -177.5), (-420, 121, -180))], "noon", "_poses")
     run([shot("w_pedestals_keys", (-413.5, 116.5, -193.5), (-414, 112, -180)),
          shot("w_after_night", (-388.5, 127.5, -160.5), (-420, 122, -180))], "midnight", "_after")
     run([shot("w_faded_bonfire", (-150.5, 114.6, -356.5), (-150, 112, -362))], "noon", "_faded")
