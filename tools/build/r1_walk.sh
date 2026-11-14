@@ -6,7 +6,7 @@ cd "$(dirname "$0")/../.."
 LOG=server/build/walk/r1_walk.log; : > "$LOG"
 tools/server.sh rcon 'function last_ember:gate/open {id:"west_pass"}' >/dev/null; sleep 2     # the gorge route goes through the rubble
 for f in server/build/walk/r1_*.json; do
-  n=$(basename "$f" .json); j=""; case "$n" in *_stub) j="--jump";; esac
+  n=$(basename "$f" .json); j=""; case "$n" in r1_gate_*) continue;; *_stub) j="--jump";; esac   # gates: r1_gates_test.py
   [ -n "${1:-}" ] && [[ "$n" != *$1* ]] && continue
   out=$(python3 tools/walkbot.py "$f" $j --out "server/build/walk/$n" 2>&1 | grep -E "PROBLEM|END")
   echo "$n $j :: $(echo "$out" | tr '\n' ' ')" | tee -a "$LOG"
