@@ -10,5 +10,9 @@ for f in server/build/walk/r1_*.json; do
   [ -n "${1:-}" ] && [[ "$n" != *$1* ]] && continue
   out=$(python3 tools/walkbot.py "$f" $j --out "server/build/walk/$n" 2>&1 | grep -E "PROBLEM|END")
   echo "$n $j :: $(echo "$out" | tr '\n' ' ')" | tee -a "$LOG"
+  if echo "$out" | grep -q PROBLEM; then      # once more: a mob in the way or a lag spike of the cloud client is not the trail's fault
+    out=$(python3 tools/walkbot.py "$f" $j --out "server/build/walk/$n" 2>&1 | grep -E "PROBLEM|END")
+    echo "$n $j RETRY :: $(echo "$out" | tr '\n' ' ')" | tee -a "$LOG"
+  fi
 done
 tools/server.sh rcon 'function last_ember:gate/close {id:"west_pass"}' >/dev/null

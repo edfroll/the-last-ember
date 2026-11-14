@@ -348,6 +348,8 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None, inplot=False):
     if start_y is not None: t[0] = 2 * start_y
     if end_y is not None: t[-1] = 2 * end_y
     fixed = {i: LAID[c] for i, c in enumerate(cells) if c in LAID}
+    if start_y is not None and 0 not in fixed: fixed[0] = 2 * start_y              # anchors are pinned: the end meets the pad / the deck
+    if end_y is not None and len(t) - 1 not in fixed: fixed[len(t) - 1] = 2 * end_y
     for i, v in fixed.items(): t[i] = v
     for _ in range(6):
         for i in range(1, len(t)):
@@ -454,7 +456,7 @@ def trails(W, P, bonf, door_y):
         ey = W.at(*cells[-1]) + 1 if cells and i1 < len(path) - 1 else None
         sy = W.at(*cells[0]) + 1 if cells and i0 > 0 else None
         if appr:
-            ey = W.at(*cells[-1]) + 1 if cells and b != "S" else None; sy = W.at(*cells[0]) + 1 if cells and a not in ("R", "W") else None
+            ey = BY[b] if cells and b != "S" else None; sy = BY[a] if cells and a not in ("R", "W") else None   # = the pad surface
         prof = lay_trail(W, P, cells, 1, end_y=ey, start_y=sy, inplot=appr)
         for c in cells:
             for dx in (-1, 0, 1):
