@@ -1,5 +1,5 @@
 # generated: as a player who is online: a key that is owed to him (it was lost while he was offline)
-execute if data storage last_ember:keys k.seal_magister{pend:1b} run function last_ember:altar/key_owed {id:"seal_magister"}
+execute if data storage last_ember:keys k.signet_king{pend:1b} run function last_ember:altar/key_owed {id:"signet_king"}
 execute if data storage last_ember:keys k.tear_creaker{pend:1b} run function last_ember:altar/key_owed {id:"tear_creaker"}
 execute if data storage last_ember:keys k.crown_witches{pend:1b} run function last_ember:altar/key_owed {id:"crown_witches"}
 execute if data storage last_ember:keys k.thread_labyrinth{pend:1b} run function last_ember:altar/key_owed {id:"thread_labyrinth"}

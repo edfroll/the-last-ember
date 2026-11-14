@@ -1,1 +1,3 @@
 # generated: every second: an altar with all pedestals filled starts the event when the Ember carrier is within 10 blocks, else asks for the Ember
+execute if score #fill_weepers le.alt matches 4.. if data storage last_ember:altars a.weepers{built:1b,done:0b,ev:-1} in minecraft:overworld positioned -420 111 -180 if entity @a[tag=le.carrier,distance=..10] run function last_ember:altar/event_start {aid:"weepers"}
+execute if score #fill_weepers le.alt matches 4.. if data storage last_ember:altars a.weepers{built:1b,done:0b,ev:-1} in minecraft:overworld positioned -420 111 -180 unless entity @a[tag=le.carrier,distance=..10] if entity @a[distance=..10] run title @a[distance=..10] actionbar {"text":"Нужен Уголь","color":"gold"}

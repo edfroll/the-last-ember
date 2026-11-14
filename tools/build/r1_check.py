@@ -4,6 +4,7 @@
   seam     steps > 4 between neighbouring ground columns in the low part of the sculpted relief (and how many are steeper than natural)
   plots    places of locations untouched: ground of every plot column equals the natural scan (except bonfire pads and the ledge)
   water    no water on the rift floor, no water in rewritten columns that was not there
+  places   T-023: the build step of a place (weepers) changed nothing outside it: scans weepers_pre.bin / weepers_post.bin (r1_apply.sh)
 Usage: python3 tools/build/r1_check.py [after.bin] [wall seam plots water]"""
 import csv, os, sys, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -12,6 +13,17 @@ import r1
 ROOT = r1.ROOT
 args = sys.argv[1:]; path = args[0] if args and args[0].endswith(".bin") else os.path.join(ROOT, "server/build/r1/after.bin")
 what = [a for a in args if not a.endswith(".bin")] or ["wall", "seam", "plots", "water"]
+BUILT = {"weepers"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
+if what == ["places"]:
+    W0 = r1.World(); pre = Scan(os.path.join(r1.OUT, "weepers_pre.bin")); post = Scan(os.path.join(r1.OUT, "weepers_post.bin"))
+    X, Z = np.meshgrid(np.arange(pre.x0, pre.x0 + pre.w), np.arange(pre.z0, pre.z0 + pre.h))
+    p = [q for q in W0.plots if q["id"] == "weepers"][0]
+    outside = r1.plot_dist(p, X, Z) - p["m"] > 0
+    d = outside & ((pre.ground != post.ground) | (pre.top != post.top) | (pre.water != post.water))
+    inside_changed = int((~outside & ((pre.ground != post.ground) | (pre.top != post.top))).sum())
+    print(f"places: weepers: {int(outside.sum())} columns around the place checked, {int(d.sum())} changed (inside the place {inside_changed} changed)")
+    if d.any(): zz, xx = np.nonzero(d); print("   e.g.", [(int(x + pre.x0), int(z + pre.z0)) for z, x in list(zip(zz, xx))[:8]])
+    print("OK" if not d.any() else "CHECK"); sys.exit(0 if not d.any() else 1)
 S = Scan(path); ok = True
 def g(x, z): return int(S.ground[z - S.z0, x - S.x0])
 if "wall" in what:
@@ -36,6 +48,8 @@ if "plots" in what or "seam" in what or "water" in what:
     W = r1.World(); N = W.nat
 if "plots" in what:
     inside = W.pd <= 0
+    for p in W.plots:
+        if p["id"] in BUILT: inside &= ~(r1.plot_dist(p, W.X, W.Z) - p["m"] <= 0)
     # allowed inside plots: bonfire pads and their slopes, approaches to them (HQ review T-022, 1), the shortcut ledge
     # bonfire pads with their slopes and the approach strips (trail + berm + shoulders): server/build/r1/allow.npz from r1.py
     allow = np.load(os.path.join(r1.OUT, "allow.npz"))["allow"].copy()

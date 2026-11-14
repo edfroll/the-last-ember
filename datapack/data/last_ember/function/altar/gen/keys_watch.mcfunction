@@ -10,7 +10,7 @@ execute as @a[tag=!le.khas] if items entity @s player.cursor minecraft:ominous_t
 execute as @a[tag=!le.khas] if items entity @s armor.* minecraft:ominous_trial_key run tag @s add le.khas
 execute as @a[tag=!le.khas] if items entity @s enderchest.* minecraft:ominous_trial_key run tag @s add le.khas
 execute unless entity @a[tag=le.khas,limit=1] unless entity @e[type=minecraft:item,tag=le.kitem,limit=1] run return run function last_ember:altar/gen/keys_lost
-function last_ember:altar/gen/kw_seal_magister with storage last_ember:keys k.seal_magister
+function last_ember:altar/gen/kw_signet_king with storage last_ember:keys k.signet_king
 function last_ember:altar/gen/kw_tear_creaker with storage last_ember:keys k.tear_creaker
 function last_ember:altar/gen/kw_crown_witches with storage last_ember:keys k.crown_witches
 function last_ember:altar/gen/kw_thread_labyrinth with storage last_ember:keys k.thread_labyrinth

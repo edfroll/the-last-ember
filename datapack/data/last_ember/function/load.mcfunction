@@ -16,7 +16,8 @@ scoreboard players set #20 le.z 20
 function last_ember:zones/setup
 # T-005: bonfires and the Ember
 function last_ember:bonfire/setup
-# T-006: safe biomes sweep
+# T-006: safe biomes sweep (T-023: + the faded versions of the chapters)
+function last_ember:biomes/setup
 schedule function last_ember:biomes/safe_sweep 20t replace
 # T-007: death, ash trails, urns
 function last_ember:death/setup
@@ -43,3 +44,5 @@ function last_ember:vault/setup
 function last_ember:contract/setup
 # T-021: region borders, chapter gates, shortcuts
 function last_ember:gate/setup
+# T-023: the Circle of the Weepers (Altar I)
+function last_ember:weepers/setup

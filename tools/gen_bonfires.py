@@ -33,6 +33,10 @@ with open(os.path.join(out, "build_pending.mcfunction"), "w") as f:
     f.write("# generated: registered but not yet built bonfires are built once their chunk is loaded (checked every second)\n")
     for r in rows:
         f.write(f'execute if data storage last_ember:bonfires by.b{r["i"]}{{built:0b}} in minecraft:{r["dim"]} if loaded {r["x"]} {r["y"]} {r["z"]} positioned {r["x"]} {r["y"]} {r["z"]} run function last_ember:bonfire/build_now {{i:{r["i"]}}}\n')
+        if r["kind"] == "main": continue
+        # T-023: the look follows the state (lv = what it shows): a bonfire faded with its region goes out, one lit again by a reset burns
+        f.write(f'execute if data storage last_ember:bonfires by.b{r["i"]}{{built:1b,state:0,lv:1b}} in minecraft:{r["dim"]} if loaded {r["x"]} {r["y"]} {r["z"]} positioned {r["x"]} {r["y"]} {r["z"]} run function last_ember:bonfire/unlit with storage last_ember:bonfires by.b{r["i"]}\n')
+        f.write(f'execute if data storage last_ember:bonfires by.b{r["i"]}{{built:1b,state:1,lv:0b}} in minecraft:{r["dim"]} if loaded {r["x"]} {r["y"]} {r["z"]} positioned {r["x"]} {r["y"]} {r["z"]} run function last_ember:bonfire/set_lit with storage last_ember:bonfires by.b{r["i"]}\n')
 with open(os.path.join(out, "start.mcfunction"), "w") as f:
     f.write("# generated: index of the start bonfire (-1 = none)\n")
     f.write(f"scoreboard players set #start le.e {starts[0]['i'] if starts else -1}\n")

@@ -2,3 +2,8 @@
 #   chapter id dimension x y z          - the altar; the centre of the event, the Ember carrier must be within 10 blocks
 #   ped px py pz key_id                 - a pedestal of that altar (one per key), on the lines below the altar
 # Not placed yet: the regions' tasks add the altars of chapters I-V here, then:  python3 tools/gen_altars.py
+1 weepers overworld -420 111 -180 ev=last_ember:weepers/ev nofx       # T-023: Circle of the Weepers (tools/build/r1_weepers.py)
+ped -414 111 -186 thread_labyrinth
+ped -411 111 -180 tear_creaker
+ped -414 111 -174 signet_king
+ped -420 111 -171 crown_witches

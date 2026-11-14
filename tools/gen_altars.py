@@ -26,13 +26,16 @@ altars = []
 for l in rows(altar_file):
     f = l.split()
     if f[0] == "ped": altars[-1]["peds"].append(dict(x=int(f[1]), y=int(f[2]), z=int(f[3]), key=f[4]))
-    else: altars.append(dict(ch=int(f[0]), id=f[1], dim=f[2], x=int(f[3]), y=int(f[4]), z=int(f[5]), peds=[]))
+    else:
+        opt = dict(o.split("=", 1) if "=" in o else (o, "1") for o in f[6:])      # T-023: ev=<function> (called every tick of the event), nofx (no generic burst)
+        altars.append(dict(ch=int(f[0]), id=f[1], dim=f[2], x=int(f[3]), y=int(f[4]), z=int(f[5]), peds=[], ev=opt.get("ev"), nofx="nofx" in opt))
 pid = 0
 for a in altars:
     if a["dim"] not in DIMS: raise SystemExit("bad dimension " + a["dim"])
     for p in a["peds"]:
         if p["key"] not in kid: raise SystemExit("unknown key " + p["key"])
         pid += 1; p["pid"] = pid; p["aid"] = a["id"]
+def c(v): return "%.1f" % (v + 0.5)     # T-023: the centre of a block (negative coordinates: block -414 -> -413.5, not "-414.5")
 ROMAN = {1: "I", 2: "II", 3: "III", 4: "IV", 5: "V", 6: "VI"}
 PROPS = {1: ("Свет", "Свет — светло вокруг Несущего, пока Уголь в руке."), 2: ("Тепло", "Тепло — друзья рядом с Несущим не мёрзнут."), 3: ("Зов", "Зов — Shift + ПКМ: искры укажут, куда идти дальше."),
          4: ("Взор", "Взор — тьма не касается друзей рядом с Несущим."), 5: ("Пламя", "Пламя — огонь не жжёт друзей рядом с Несущим."), 6: ("Ключ Края", "Ключ Края — нужен в конце пути.")}
@@ -50,10 +53,10 @@ for a in altars:
     b = ["# generated: the interactions and labels of the pedestals of %s (as a function run in the dimension)" % a["id"]]
     for p in a["peds"]:
         n = kid[p["key"]]["name"]
-        b += ['summon minecraft:interaction %d.5 %d %d.5 {width:0.9f,height:1.4f,response:1b,Tags:["le.ped","le.ped%d"]}' % (p["x"], p["y"], p["z"], p["pid"]),
+        b += ['summon minecraft:interaction %s %d %s {width:0.9f,height:1.4f,response:1b,Tags:["le.ped","le.ped%d"]}' % (c(p["x"]), p["y"], c(p["z"]), p["pid"]),
               'scoreboard players set @e[type=minecraft:interaction,tag=le.ped%d,limit=1,sort=nearest,distance=..2] le.pid %d' % (p["pid"], p["pid"]) if False else
-              'execute positioned %d.5 %d %d.5 run scoreboard players set @e[type=minecraft:interaction,tag=le.ped%d,distance=..1] le.pid %d' % (p["x"], p["y"], p["z"], p["pid"], p["pid"]),
-              'summon minecraft:text_display %d.5 %d.95 %d.5 {billboard:"center",text:{"text":"%s","color":"dark_gray"},background:0,see_through:0b,Tags:["le.ped_lbl","le.ped_lbl%d"],brightness:{sky:6,block:6}}' % (p["x"], p["y"] + 1, p["z"], n, p["pid"])]
+              'execute positioned %s %d %s run scoreboard players set @e[type=minecraft:interaction,tag=le.ped%d,distance=..1] le.pid %d' % (c(p["x"]), p["y"], c(p["z"]), p["pid"], p["pid"]),
+              'summon minecraft:text_display %s %d.95 %s {billboard:"center",text:{"text":"%s","color":"dark_gray"},background:0,see_through:0b,Tags:["le.ped_lbl","le.ped_lbl%d"],brightness:{sky:6,block:6}}' % (c(p["x"]), p["y"] + 1, c(p["z"]), n, p["pid"])]
     b.append('data modify storage last_ember:altars a.%s.built set value 1b' % a["id"])
     w("build_" + a["id"], b)
 # ---------------------------------------------------------------- keys: give / hand
@@ -129,15 +132,17 @@ for a in altars:
          "execute if score #ev le.alt matches 1 run title @a[distance=..40] actionbar {\"text\":\"Гул под землёй…\",\"color\":\"gray\"}",
          "execute if score #ev le.alt matches 20 run playsound minecraft:ambient.cave block @a[distance=..40] ~ ~ ~ 2 0.5",
          "execute if score #ev le.alt matches 40 run playsound minecraft:block.beacon.ambient block @a[distance=..40] ~ ~ ~ 2 0.6",
-         "execute if score #ev le.alt matches 150 run playsound minecraft:entity.lightning_bolt.thunder weather @a[distance=..80] ~ ~ ~ 5 0.7",
-         "execute if score #ev le.alt matches 200 run playsound minecraft:entity.lightning_bolt.thunder weather @a[distance=..80] ~ ~ ~ 6 1.0",
-         "execute if score #ev le.alt matches 200 run particle minecraft:explosion_emitter ~ ~1 ~ 0 0 0 0 1 force",
-         "execute if score #ev le.alt matches 200 run particle minecraft:end_rod ~ ~2 ~ 3 3 3 0.2 300 force",
-         "execute if score #ev le.alt matches 200 run effect give @a[distance=..40] minecraft:night_vision 2 0 true",
-         "scoreboard players operation #m le.alt = #ev le.alt", "scoreboard players operation #m le.alt %= #5 le.alt"]
+         "execute if score #ev le.alt matches 150 run playsound minecraft:entity.lightning_bolt.thunder weather @a[distance=..80] ~ ~ ~ 5 0.7"]
+    if not a["nofx"]:
+        L += ["execute if score #ev le.alt matches 200 run playsound minecraft:entity.lightning_bolt.thunder weather @a[distance=..80] ~ ~ ~ 6 1.0",
+              "execute if score #ev le.alt matches 200 run particle minecraft:explosion_emitter ~ ~1 ~ 0 0 0 0 1 force",
+              "execute if score #ev le.alt matches 200 run particle minecraft:end_rod ~ ~2 ~ 3 3 3 0.2 300 force",
+              "execute if score #ev le.alt matches 200 run effect give @a[distance=..40] minecraft:night_vision 2 0 true"]
+    if a["ev"]: L.append("function %s" % a["ev"])
+    L += ["scoreboard players operation #m le.alt = #ev le.alt", "scoreboard players operation #m le.alt %= #5 le.alt"]
     for p in a["peds"]:
-        L.append("execute if score #m le.alt matches 0 positioned %d.5 %d.4 %d.5 facing entity @a[tag=le.carrier,limit=1,sort=nearest] eyes run function last_ember:altar/beam" % (p["x"], p["y"] + 1, p["z"]))
-        L.append("execute if score #m le.alt matches 0 run particle minecraft:enchant %d.5 %d.4 %d.5 0.3 0.3 0.3 0.5 4" % (p["x"], p["y"] + 1, p["z"]))
+        L.append("execute if score #m le.alt matches 0 positioned %s %d.4 %s facing entity @a[tag=le.carrier,limit=1,sort=nearest] eyes run function last_ember:altar/beam" % (c(p["x"]), p["y"] + 1, c(p["z"])))
+        L.append("execute if score #m le.alt matches 0 run particle minecraft:enchant %s %d.4 %s 0.3 0.3 0.3 0.5 4" % (c(p["x"]), p["y"] + 1, c(p["z"])))
     L.append("execute if score #ev le.alt matches %d.. run function last_ember:altar/gen/done_%s" % (EVT, a["id"]))
     w("ev_" + a["id"], L)
     D = ["# generated: the event of %s ends: the chapter %d is done" % (a["id"], a["ch"]),
@@ -151,15 +156,17 @@ for a in altars:
     w("done_" + a["id"], D)
 # ---------------------------------------------------------------- admin reset by chapter
 for ch in sorted({a["ch"] for a in altars}):
-    R = ["# generated: the altars of the chapter %d back to the start (test): pedestals emptied, keys invalid and free, the event can run again" % ch]
+    R = ["# generated: the altars of the chapter %d back to the start (test): pedestals emptied, keys invalid and free, the event can run again;" % ch,
+         "# T-023: a chapter that was done is taken back (#chapters - 1, tiers, the lore of the Ember) and its hook altar/hook/reset_%d undoes the world" % ch]
     for a in altars:
         if a["ch"] != ch: continue
-        R += ["data modify storage last_ember:altars a.%s.done set value 0b" % a["id"], "data modify storage last_ember:altars a.%s.ev set value -1" % a["id"], "scoreboard players set #fill_%s le.alt 0" % a["id"]]
+        R += ["execute if data storage last_ember:altars a.%s{done:1b} run scoreboard players remove #chapters le.alt 1" % a["id"], "data modify storage last_ember:altars a.%s.done set value 0b" % a["id"], "data modify storage last_ember:altars a.%s.ev set value -1" % a["id"], "scoreboard players set #fill_%s le.alt 0" % a["id"]]
         for p_ in a["peds"]:
             R += ["data modify storage last_ember:altars p.p%d.filled set value 0b" % p_["pid"], "kill @e[type=minecraft:item_display,tag=le.ped_item%d]" % p_["pid"],
                   "data modify entity @e[type=minecraft:text_display,tag=le.ped_lbl%d,limit=1] text.color set value \"dark_gray\"" % p_["pid"],
                   'data modify storage last_ember:keys k.%s.st set value 0' % p_["key"], 'data modify storage last_ember:keys k.%s.got set value 0b' % p_["key"], 'data modify storage last_ember:keys k.%s.it set value 0b' % p_["key"], 'data modify storage last_ember:keys k.%s.pend set value 0b' % p_["key"],
                   'function last_ember:altar/gen_bump {key:"%s"}' % p_["key"]]
+    R += ["function last_ember:altar/chapters_changed", "function last_ember:altar/hook/reset_%d" % ch]
     w("reset_%d" % ch, R)
 # ---------------------------------------------------------------- the Call: the nearest key point not found yet, of the chapter being worked on
 call = ["# generated: as the carrier: #tx le.alt #tz le.alt = the nearest source of a key of the current chapter that nobody has found yet; #found = 1 when there is one",
@@ -203,4 +210,8 @@ for k in keys:
     png(os.path.join(RP, "textures/item/key_%s.png" % k["id"]), px)
     open(os.path.join(RP, "models/item/key_%s.json" % k["id"]), "w").write('{ "parent": "minecraft:item/generated", "textures": { "layer0": "last_ember:item/key_%s" } }\n' % k["id"])
     open(os.path.join(RP, "items/key_%s.json" % k["id"]), "w").write('{ "model": { "type": "minecraft:model", "model": "last_ember:item/key_%s" } }\n' % k["id"])
+HOOKS = os.path.join(DP, "function/altar/hook")
+for ch in range(1, 7):     # T-023: the reset hooks of the chapters (hand-written once created; a stub when missing)
+    f = os.path.join(HOOKS, "reset_%d.mcfunction" % ch)
+    if not os.path.exists(f): open(f, "w").write("# altar/reset {chapter:%d}: undo what the end of the chapter changed in the world (filled by the region tasks)\n" % ch)
 print("altars: %d, pedestals: %d, keys: %d" % (len(altars), pid, len(keys)))

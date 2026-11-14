@@ -1,5 +1,5 @@
 # generated: nobody carries a key and none lies on the floor: a key last seen on the floor is lost
-execute if data storage last_ember:keys k.seal_magister{it:1b} unless data storage last_ember:keys k.seal_magister{st:1} unless data storage last_ember:keys k.seal_magister{st:2} run function last_ember:altar/key_lost {id:"seal_magister"}
+execute if data storage last_ember:keys k.signet_king{it:1b} unless data storage last_ember:keys k.signet_king{st:1} unless data storage last_ember:keys k.signet_king{st:2} run function last_ember:altar/key_lost {id:"signet_king"}
 execute if data storage last_ember:keys k.tear_creaker{it:1b} unless data storage last_ember:keys k.tear_creaker{st:1} unless data storage last_ember:keys k.tear_creaker{st:2} run function last_ember:altar/key_lost {id:"tear_creaker"}
 execute if data storage last_ember:keys k.crown_witches{it:1b} unless data storage last_ember:keys k.crown_witches{st:1} unless data storage last_ember:keys k.crown_witches{st:2} run function last_ember:altar/key_lost {id:"crown_witches"}
 execute if data storage last_ember:keys k.thread_labyrinth{it:1b} unless data storage last_ember:keys k.thread_labyrinth{st:1} unless data storage last_ember:keys k.thread_labyrinth{st:2} run function last_ember:altar/key_lost {id:"thread_labyrinth"}
