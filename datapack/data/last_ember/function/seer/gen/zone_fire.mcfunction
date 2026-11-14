@@ -2,4 +2,15 @@
 scoreboard players set #inz le.e 0
 execute if entity @s[x=-205,y=45,z=-205,dx=410,dy=280,dz=410] run scoreboard players set #inz le.e 1
 execute if entity @s[x=23,y=15,z=-61,dx=34,dy=99,dz=34] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-457,y=80,z=-217,dx=74,dy=74,dz=74] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-439,y=101,z=-199,dx=38,dy=53,dz=38] run scoreboard players set #inz le.e 1
 execute if entity @s[x=-11,y=97,z=-11,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=107,y=184,z=437,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-161,y=104,z=-373,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=227,y=113,z=-269,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-287,y=82,z=239,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-403,y=103,z=-191,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=345,y=160,z=-51,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=429,y=155,z=-21,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=59,y=56,z=-431,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-415,y=129,z=61,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1

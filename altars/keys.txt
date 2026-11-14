@@ -1,10 +1,11 @@
 # T-013: key items of the chapters. Format:  id chapter source name...
 #   source = x,y,z[,dimension] (where the key comes from: the Call of the Ember points to it) or "-" (not known yet)
 # Chapter VI has no pedestals (the summoning of the Withered, region R6): its keys are not listed here.
-seal_magister 1 - Печать Магистра
-tear_creaker 1 - Слеза Скрипуна
-crown_witches 1 - Венец Трёх Ведьм
-thread_labyrinth 1 - Нить Лабиринта
+# T-023: chapter I (Circle of the Weepers); the source = the centre of the place, y = its ground (the Call of the Ember points there)
+signet_king 1 450,147,0 Перстень Спящего Короля
+tear_creaker 1 330,84,-350 Слеза Скрипуна
+crown_witches 1 -390,134,340 Венец Трёх Ведьм
+thread_labyrinth 1 -150,88,-430 Нить Лабиринта
 drop_source 2 - Капля Истока
 shell_sea_gods 2 - Раковина Морских Богов
 stone_black_water 2 - Камень Чёрной Воды

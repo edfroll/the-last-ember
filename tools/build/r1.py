@@ -30,6 +30,7 @@ BONFIRES = [  # (number, id, x, z, card y note) — «Карточки лока�
 TRAILS = [("R", 6, 210), ("R", 5, 190), ("R", 3, 230), ("R", 9, 220), ("R", 4, 150), ("R", 2, 270), ("R", 7, 160),
           (7, 8, 100), (6, 10, 220), (10, 5, 225), (3, 9, 230), (9, 4, 250), (4, 7, 250), ("W", 6, 0),   # W = the west pass gorge (not in the table)
           ("R", "S", 450)]   # S = the South road: from the south gate of the Refuge (r4, 160°) to the north ramp of the bridge (HQ review T-022, 4)
+NOFADE = {6, 10}          # T-023: bonfires of R1 that never fade (the Circle: the altar keeps the memory; the Grove never fades)
 NO_APPROACH = {(7, 8)}    # causeway -> before the bridge: the castle stairs (castle task); every other trail runs on to the bonfire pad (HQ review, 1)
 SOUTH_GATE = 160          # compass angle of the Refuge gate r4 (tools/build/plaza.py GATES)
 REFUGE_R = 200            # «стены Приюта» of the distance table = the Refuge zone (r 200)
@@ -485,6 +486,22 @@ def trails(W, P, bonf, door_y):
                         total_len=round(sum(math.hypot(q[0] - p[0], q[1] - p[1]) for p, q in zip(path, path[1:])))))
         print(f"trail {a}->{b}: trail {out[-1]['trail_len']} (+stubs {len(out[-1]['stub_a'])}/{len(out[-1]['stub_b'])}), path {out[-1]['total_len']}, card {card}")
     return out
+SPURS = [("weepers_mouth", (-452, -145), 92, "W")]   # T-023: (name, start at the edge of a place, feet y there, the trail it joins ('a' of TRAILS))
+def spurs(W, P, tr):
+    """short trails from an exit of a built place (its edge) to the nearest cell of a frame trail: the place itself is built by its own
+    tool (T-023: the mouth of the Weepers' ravine -> the pass trail)"""
+    out = []
+    for name, (sx, sz), sy, ta in SPURS:
+        cells = [t for t in tr if t["a"] == ta][0]["cells"]
+        goal = min(cells, key=lambda c: math.hypot(c[0] - sx, c[1] - sz))
+        box = (min(sx, goal[0]) - 30, min(sz, goal[1]) - 30, max(sx, goal[0]) + 30, max(sz, goal[1]) + 30)
+        cost = cost_field(W, box, set())
+        path = astar(W, (sx, sz), tuple(goal), cost, box)
+        cl = cells_of(simplify(path, 3) if len(path) > 6 else path)
+        prof = lay_trail(W, P, cl, 1, start_y=sy, inplot=True)
+        out.append(dict(name=name, cells=cl, prof=[[round(x, 2), round(z, 2), s] for (x, z), s in prof]))
+        print(f"spur {name}: {len(cl)} cells -> {goal}")
+    return out
 def signposts(W, P, tr):
     """at the forks: a post with an empty hanging sign towards each branch"""
     cnt = {}
@@ -749,6 +766,7 @@ def build():
     # 4. placements: trails, signposts, bridge, forests, wall scree
     P = Placer()
     tr = trails(W, P, bonf, door_y)
+    sp = spurs(W, P, tr)
     nsign = signposts(W, P, tr)
     deck, bc, bo = bridge(W, P)
     gfl = int(round(W.H[(GORGE_Z[0] + GORGE_Z[1]) // 2 - W.z0, PASS[0] - W.x0]))
@@ -762,7 +780,7 @@ def build():
     mr = write_template("west_pass_closed", rc, None); write_template("west_pass_open", ro, None)
     update_files(bonf, door_y, mb, mr)
     meta = dict(bonfires=bonf, door=[DOOR[0], door_y, DOOR[1]], bridge=dict(deck=deck, at=list(mb)), pass_=dict(at=list(mr), floor=gfl),
-                trails=tr, signs=nsign, trees=nf, rift_hw=[float(hw.min()), float(hw.max())])
+                trails=tr, spurs=sp, signs=nsign, trees=nf, rift_hw=[float(hw.min()), float(hw.max())])
     json.dump(meta, open(os.path.join(OUT, "r1.json"), "w"))
     np.savez_compressed(os.path.join(OUT, "allow.npz"), allow=W.allow, x0=W.x0, z0=W.z0)    # columns r1_check plots may find changed
     name = {n: bid for n, bid, *_ in bonf}; name.update({"R": "refuge", "W": "pass", "S": "south_road"})
@@ -786,7 +804,7 @@ def replace_lines(path, keys, new):
 def update_files(bonf, door_y, mb, mr):
     """bonfires of R1, the two gate templates, the west gap by the gorge, the R1 shortcut door: written into the data files"""
     replace_lines(os.path.join(ROOT, "bonfires/bonfires.txt"), [f"{n} " for n, *_ in bonf] + [f"{n}  " for n, *_ in bonf],
-                  [f"{n:<2} {bid:<13} overworld  {x} {y} {z}  normal  r1" for n, bid, x, y, z in bonf])
+                  [f"{n:<2} {bid:<13} overworld  {x} {y} {z}  normal  r1" + ("  nofade" if n in NOFADE else "") for n, bid, x, y, z in bonf])
     g = os.path.join(ROOT, "gates/gates.txt"); gz = GORGE_Z
     replace_lines(g, ["border west_ridge"], [f"border west_ridge   x -665  -620  650   gap={gz[0]}..{gz[1]}:west_pass"])
     replace_lines(g, ["border rift"], ["border rift         z  650  -1500 1500  gap=-2..2:south_bridge"])

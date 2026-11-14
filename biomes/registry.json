@@ -47,7 +47,7 @@
     {"id": "weeping_vale", "shape": "rect", "v": [-652, -848, 652, 652], "trans": 32},
     {"id": "weeping_vale", "shape": "rect", "v": [-1500, -848, -652, -620], "trans": 32},
     {"id": "twilight_refuge", "shape": "rect", "v": [-200, -200, 200, 200], "trans": 24}, {"id": "font_of_callings", "shape": "rect", "v": [-16, 44, 16, 68], "y": [53, 73], "trans": 0},
-    {"id": "barrows", "shape": "rect", "v": [124, 372, 276, 524], "trans": 16},
+    {"id": "barrows", "shape": "rect", "v": [124, 374, 276, 526], "trans": 16},
     {"id": "castle_dream", "shape": "circle", "v": [450, 0, 100], "trans": 16},
     {"id": "crooked_fens", "shape": "rect", "v": [-492, 240, -268, 420], "trans": 24},
     {"id": "mushroom_grove", "shape": "circle", "v": [-420, 60, 45], "trans": 16},
@@ -60,7 +60,7 @@
   "fade": {
     "chapter1": [
       {"from": "weeping_vale", "to": "blood_vale", "rects": [[224, -120, 348, 120], [72, -380, 212, -228]]},
-      {"from": "barrows", "to": "barrows_faded", "rects": [[124, 372, 276, 524]]},
+      {"from": "barrows", "to": "barrows_faded", "rects": [[124, 374, 276, 526]]},
       {"from": "castle_dream", "to": "castle_dream_faded", "rects": [[460, -40, 540, 40]], "y": [40, 120]}
     ]
   }

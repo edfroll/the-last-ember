@@ -1,12 +1,9 @@
+../last_ember/tags/item/metal_gear.json
 loot_table/archaeology/desert_pyramid.json
 loot_table/archaeology/desert_well.json
 loot_table/archaeology/ocean_ruin_cold.json
 loot_table/archaeology/ocean_ruin_warm.json
 loot_table/archaeology/trail_ruins_common.json
-loot_table/pots/trial_chambers/corridor.json
-loot_table/gameplay/hero_of_the_village/armorer_gift.json
-loot_table/gameplay/hero_of_the_village/cleric_gift.json
-loot_table/gameplay/hero_of_the_village/weaponsmith_gift.json
 loot_table/chests/abandoned_camp_common_chest.json
 loot_table/chests/abandoned_camp_secret_chest.json
 loot_table/chests/abandoned_mineshaft.json
@@ -29,9 +26,6 @@ loot_table/chests/shipwreck_treasure.json
 loot_table/chests/simple_dungeon.json
 loot_table/chests/stronghold_corridor.json
 loot_table/chests/stronghold_crossing.json
-loot_table/chests/underwater_ruin_big.json
-loot_table/chests/underwater_ruin_small.json
-loot_table/chests/woodland_mansion.json
 loot_table/chests/trial_chambers/corridor.json
 loot_table/chests/trial_chambers/intersection.json
 loot_table/chests/trial_chambers/intersection_barrel.json
@@ -39,6 +33,8 @@ loot_table/chests/trial_chambers/reward_common.json
 loot_table/chests/trial_chambers/reward_ominous_common.json
 loot_table/chests/trial_chambers/reward_ominous_rare.json
 loot_table/chests/trial_chambers/reward_rare.json
+loot_table/chests/underwater_ruin_big.json
+loot_table/chests/underwater_ruin_small.json
 loot_table/chests/village/village_armorer.json
 loot_table/chests/village/village_butcher.json
 loot_table/chests/village/village_desert_house.json
@@ -54,8 +50,7 @@ loot_table/chests/village/village_tannery.json
 loot_table/chests/village/village_temple.json
 loot_table/chests/village/village_toolsmith.json
 loot_table/chests/village/village_weaponsmith.json
-loot_table/equipment/trial_chamber.json
-loot_table/equipment/trial_chamber_melee.json
+loot_table/chests/woodland_mansion.json
 loot_table/entities/copper_golem.json
 loot_table/entities/drowned.json
 loot_table/entities/evoker.json
@@ -66,6 +61,13 @@ loot_table/entities/witch.json
 loot_table/entities/zombie.json
 loot_table/entities/zombie_villager.json
 loot_table/entities/zombified_piglin.json
+loot_table/equipment/trial_chamber.json
+loot_table/equipment/trial_chamber_melee.json
+loot_table/gameplay/hero_of_the_village/armorer_gift.json
+loot_table/gameplay/hero_of_the_village/cleric_gift.json
+loot_table/gameplay/hero_of_the_village/weaponsmith_gift.json
+loot_table/pots/trial_chambers/corridor.json
+worldgen/feature/monster_room.json
 worldgen/structure_set/abandoned_camp.json
 worldgen/structure_set/ancient_cities.json
 worldgen/structure_set/buried_treasures.json
@@ -87,5 +89,3 @@ worldgen/structure_set/trail_ruins.json
 worldgen/structure_set/trial_chambers.json
 worldgen/structure_set/villages.json
 worldgen/structure_set/woodland_mansions.json
-../last_ember/tags/item/metal_gear.json
-worldgen/feature/monster_room.json

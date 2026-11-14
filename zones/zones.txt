@@ -10,3 +10,5 @@
 # T-008 Приют (Р0): весь хаб с фундаментом (Зал Пробуждения и Купель до y 51) и колодец (шахта ниже фундамента)
 refuge       overworld box  -200 50 -200  200 320 200   no_spawn,calm
 refuge_well  overworld cyl  40 -44 12  20 109           no_spawn,calm
+weepers         overworld cyl  -420 -180 32  85 149                  # T-023: Circle of the Weepers, Altar I (bottom of the ravine .. the crown + 10)
+weepers_circle  overworld cyl  -420 -180 14  106 149     no_spawn

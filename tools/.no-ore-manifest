@@ -1,3 +1,4 @@
+last_ember/worldgen/processor_list/strip_ores.json
 minecraft/worldgen/feature/ore_ancient_debris_large.json
 minecraft/worldgen/feature/ore_ancient_debris_small.json
 minecraft/worldgen/feature/ore_coal.json
@@ -18,11 +19,10 @@ minecraft/worldgen/feature/ore_lapis_buried.json
 minecraft/worldgen/feature/ore_nether_gold.json
 minecraft/worldgen/feature/ore_quartz.json
 minecraft/worldgen/feature/ore_redstone.json
-last_ember/worldgen/processor_list/strip_ores.json
+minecraft/worldgen/material_rule/overworld/copper_ore_vein.json
+minecraft/worldgen/material_rule/overworld/iron_ore_vein.json
 minecraft/worldgen/processor_list/fossil_coal.json
 minecraft/worldgen/processor_list/fossil_diamonds.json
 minecraft/worldgen/template_pool/abandoned_camp/camp/forest.json
-minecraft/worldgen/template_pool/abandoned_camp/camp/wooded_badlands.json
 minecraft/worldgen/template_pool/abandoned_camp/camp/windswept_forest.json
-minecraft/worldgen/material_rule/overworld/copper_ore_vein.json
-minecraft/worldgen/material_rule/overworld/iron_ore_vein.json
+minecraft/worldgen/template_pool/abandoned_camp/camp/wooded_badlands.json

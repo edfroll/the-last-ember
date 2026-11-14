@@ -1,0 +1,8 @@
+# T-023: угасание регионов. Одна строка = регион, который угасает в конце главы. Генератор: python3 tools/gen_regions.py
+# Поля:  регион  глава  [biomes=<имя fade в biomes/registry.json>]  [hooks=место,место…]  [text="строка над хотбаром"]
+#   регион — как в death/regions.txt (r1…r6; номер — для «игроки в регионе», elite/gen/region);
+#   глава — после какой главы (altar/hook/chapter_N → region/gen/chapter_N);
+#   костры региона гаснут все обычные (normal) из bonfires/bonfires.txt, кроме помеченных nofade; главный костёр Приюта не гаснет никогда;
+#   hooks — пустые крючки region/hook/fade_<регион>_<место> (и unfade_… для отката) под «угасшие» версии мест: их наполняют задачи мест.
+# Откат (тест/админ): altar/reset {chapter:N} → altar/hook/reset_N → region/gen/unfade_<регион>.
+r1  1  biomes=chapter1  hooks=lake,cemetery  text="Костры Дола гаснут."

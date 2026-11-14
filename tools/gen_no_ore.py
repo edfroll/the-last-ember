@@ -121,7 +121,7 @@ def main():
         report.append(f"material_rule overworld/{v}: disabled")
 
     with open(MARK, "w") as f:
-        f.write("\n".join(written) + "\n")
+        f.write("\n".join(sorted(written)) + "\n")
     print("\n".join(report))
     print(f"{len(written)} files written")
 
