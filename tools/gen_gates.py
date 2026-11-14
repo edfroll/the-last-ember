@@ -330,12 +330,9 @@ def main():
             cond = "if score #gate_%s le.gate matches 1 " % gid if gid else ""
             ch.append("execute %sif score @s %s matches %d..%d run return 0" % (cond, cb, g0 * 10, g1 * 10 + 9))
         ch.append("execute unless score @s %s matches %d..%d run return 0" % (cb, lo * 10 - 9, hi * 10 + 9))
-        if b["axis"] == "x":
-            hi_box = "x=%d,y=-64,z=%d,dx=40,dy=500,dz=%d" % (a + 1, lo - 1, hi - lo + 2); lo_box = "x=%d,y=-64,z=%d,dx=40,dy=500,dz=%d" % (a - 41, lo - 1, hi - lo + 2)
-        else:
-            hi_box = "x=%d,y=-64,z=%d,dx=%d,dy=500,dz=40" % (lo - 1, a + 1, hi - lo + 2); lo_box = "x=%d,y=-64,z=%d,dx=%d,dy=500,dz=40" % (lo - 1, a - 41, hi - lo + 2)
-        ch.append("execute if score @s %s matches ..%d if entity @s[%s] run return run function last_ember:gate/chorus_back" % (ca, a * 10 - 1, hi_box))
-        ch.append("execute if score @s %s matches %d.. if entity @s[%s] run return run function last_ember:gate/chorus_back" % (ca, (a + 1) * 10, lo_box))
+        na = "le.cnx" if b["axis"] == "x" else "le.cnz"      # where the player is now (x10, gate/chorus_check); the barrier block a is [a, a+1)
+        ch.append("execute if score @s %s matches ..%d if score @s %s matches %d..%d run return run function last_ember:gate/chorus_back" % (ca, a * 10 - 1, na, (a + 1) * 10, (a + 41) * 10))
+        ch.append("execute if score @s %s matches %d.. if score @s %s matches %d..%d run return run function last_ember:gate/chorus_back" % (ca, (a + 1) * 10, na, (a - 40) * 10, a * 10 - 1))
         w("chorus_%s" % b["id"], ch)
         chorus.append("function last_ember:gate/gen/chorus_%s" % b["id"])
         pearl.append("execute if entity @s[%s] run return run kill @s" % box)

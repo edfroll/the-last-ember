@@ -280,6 +280,8 @@ class Placer:
     def __init__(self): self.v = {}
     def set(self, x, y, z, s): self.v[(x, y, z)] = s if ":" in s.split("[")[0] else "minecraft:" + s
     def get(self, x, y, z): return self.v.get((x, y, z))
+APPROACH = os.environ.get("LE_R1_APPROACH") == "1"   # question to HQ: lay the trails on into the places up to the bonfire pads (default: stop at the place edge)
+LAID = {}      # (x, z) -> surface in half blocks of the trails already laid: a later trail joins them and never rewrites them
 def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
     """graded path (T-008 rules): surfaces in half blocks change by at most 0.5 per step along the line and across the width;
     cut into slopes, banked over hollows (earth down to the ground), fords (gravel up to the water level) and boardwalks over deeper water."""
@@ -289,9 +291,13 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
     t = [surf0(c) for c in cells]
     if start_y is not None: t[0] = 2 * start_y
     if end_y is not None: t[-1] = 2 * end_y
-    for _ in range(4):
-        for i in range(1, len(t)): t[i] = max(min(t[i], t[i - 1] + 1), t[i - 1] - 1)
-        for i in range(len(t) - 2, -1, -1): t[i] = max(min(t[i], t[i + 1] + 1), t[i + 1] - 1)
+    fixed = {i: LAID[c] for i, c in enumerate(cells) if c in LAID}
+    for i, v in fixed.items(): t[i] = v
+    for _ in range(6):
+        for i in range(1, len(t)):
+            if i not in fixed: t[i] = max(min(t[i], t[i - 1] + 1), t[i - 1] - 1)
+        for i in range(len(t) - 2, -1, -1):
+            if i not in fixed: t[i] = max(min(t[i], t[i + 1] + 1), t[i + 1] - 1)
     surf = {}; best = {}
     for c, s2 in zip(cells, t):
         for dx in range(-w, w + 1):
@@ -299,14 +305,22 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
                 if dx * dx + dz * dz > w * w + 1: continue
                 q = (c[0] + dx, c[1] + dz); d = dx * dx + dz * dz
                 if q not in best or d < best[q] or (d == best[q] and s2 < surf[q]): best[q] = d; surf[q] = s2
-    changed = True
-    while changed:
-        changed = False
+    for q in surf:
+        if q in LAID: surf[q] = LAID[q]
+    def nb(x, z): return [surf.get(q, LAID.get(q)) for q in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)) if q in surf or q in LAID]
+    changed = True; it = 0
+    while changed and it < 300:                     # across the width (and against older trails next to it) at most half a block
+        changed = False; it += 1
         for (x, z), s2 in list(surf.items()):
-            m = min([surf[q] for q in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)) if q in surf] + [s2 + 1]) + 1
-            if m < s2: surf[(x, z)] = m; changed = True
+            if (x, z) in LAID: continue
+            n = nb(x, z)
+            if not n: continue
+            if s2 > min(n) + 1: surf[(x, z)] = min(n) + 1; changed = True
+            elif s2 < max(n) - 1: surf[(x, z)] = max(n) - 1; changed = True
     for (x, z), s2 in surf.items():
-        if best[(x, z)] > 0 and W.inplot(x, z) and math.hypot(x, z) > REFUGE_R: continue
+        if (x, z) in LAID: continue
+        if best[(x, z)] > 0 and W.inplot(x, z) and math.hypot(x, z) > REFUGE_R and not APPROACH: continue
+        LAID[(x, z)] = s2
         y = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
         g = W.at(x, z); wn = W.Wn[z - W.z0, x - W.x0]; wet = wn != NONE and wn >= y - 1
         if wet and wn - W.at(x, z) > 2:                        # boardwalk
@@ -320,7 +334,17 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
             for yy in range(min(g, y - 1) - 1 if not wet else g + 1, y):
                 P.set(x, yy, z, "gravel" if wet else ("dirt" if yy >= y - 3 else "stone"))
         for yy in range(y + 1, max(y + 4, g + 1)): P.set(x, yy, z, "air")
-    return [((c[0] + 0.5, c[1] + 0.5), s2 / 2) for c, s2 in zip(cells, t)]
+        if y - g > 2 and best[(x, z)] > 0:          # an embankment: earth shoulders falling 1 per block, no vertical drop at the edge
+            k = min(y - g, 14)
+            for dx in range(-k, k + 1):
+                for dz in range(-k, k + 1):
+                    q = (x + dx, z + dz); r = max(abs(dx), abs(dz))
+                    if r == 0 or q in surf or q in LAID or W.inplot(*q): continue
+                    gq = W.at(*q); top = y - r
+                    if top <= gq: continue
+                    for yy in range(gq + 1, top + 1):
+                        if P.get(q[0], yy, q[1]) is None: P.set(q[0], yy, q[1], "grass_block[snowy=false]" if yy == top else "dirt")
+    return [((c[0] + 0.5, c[1] + 0.5), surf.get(c, s2) / 2) for c, s2 in zip(cells, t)]
 def cells_of(pts):
     line = []
     for (ax, az), (bx, bz) in zip(pts, pts[1:]):
@@ -354,12 +378,13 @@ def trails(W, P, bonf, door_y):
         # cut at the plot edges: the trail runs only outside the places of locations
         inp = [W.inplot(x, z) for x, z in path]
         i0 = 0
+        if APPROACH: inp = [math.hypot(x - goal[0], z - goal[1]) <= 8 or a not in ("R", "W") and math.hypot(x - start[0], z - start[1]) <= 8 for x, z in path]
         while i0 < len(path) - 1 and inp[i0] and a != "R" and a != "W": i0 += 1
         i1 = len(path) - 1
         while i1 > i0 and inp[i1]: i1 -= 1
         core = path[i0:i1 + 1]
         pts = simplify(core) if len(core) > 6 else core
-        cells = [c for c in cells_of(pts) if not W.inplot(*c) or a in ("R", "W") and math.hypot(*c) < REFUGE_R]
+        cells = [c for c in cells_of(pts) if APPROACH or not W.inplot(*c) or a in ("R", "W") and math.hypot(*c) < REFUGE_R]
         # the ends at a plot edge meet the natural ground of the place (no step down from an embankment into it)
         ey = W.at(*cells[-1]) + 1 if cells and i1 < len(path) - 1 else None
         sy = W.at(*cells[0]) + 1 if cells and i0 > 0 else None
@@ -518,8 +543,8 @@ def bridge(W, P):
     for d in (static,): pass
     for k, s in static.items(): P.v[k] = s
     # approaches: graded ramps from the deck ends into the ground on both sides (5 wide)
-    lay_trail(W, P, cells_of([(0.5, BRIDGE_Z[0] - 6.5), (0.5, BRIDGE_Z[0] - 140.5)]), 2, start_y=deck + 1)
-    lay_trail(W, P, cells_of([(0.5, BRIDGE_Z[1] + 6.5), (0.5, BRIDGE_Z[1] + 80.5)]), 2, start_y=deck + 1)
+    lay_trail(W, P, cells_of([(0.5, BRIDGE_Z[0] - 6.5), (0.5, BRIDGE_Z[0] - 105.5)]), 2, start_y=deck + 1)
+    lay_trail(W, P, cells_of([(0.5, BRIDGE_Z[1] + 6.5), (0.5, BRIDGE_Z[1] + 70.5)]), 2, start_y=deck + 1)
     return deck, tpl_closed, tpl_open
 def rubble(W, P, gorge_floor):
     """west pass rubble (card «Завал на Западном перевале»): closed = rock fall across the whole gorge up to 14 high, a fallen dead

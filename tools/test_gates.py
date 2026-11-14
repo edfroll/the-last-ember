@@ -318,7 +318,7 @@ def chorus_at(name, axis, a0, x, z, n=12, gap=False, sign=1):
         p = pos("Cam")
         if dist(p, start) > 1.0: hops += 1
         v = p[0] if axis == "x" else p[2]
-        if (v - a0) * sign > 0: crossed += 1
+        if (v - a0) * sign > 0: crossed += 1; print('     crossed:', [round(c, 2) for c in start], [round(c, 2) for c in p], score('Cam', 'le.chx'), score('Cam', 'le.chz'), score('Cam', 'le.cnx'), score('Cam', 'le.cnz'))
         if abs(score("Cam", "le.chx") / 10 - p[0]) < 0.2 and abs(score("Cam", "le.chz") / 10 - p[2]) < 0.2 and dist(p, start) < 1.0: back += 1
     if gap: chk(f"chorus in the open gap of {name}: {hops} hops, {crossed} across the axis (allowed)", crossed >= 1 and hops >= n // 2)
     else: chk(f"chorus next to {name}: {hops}/{n} hops, {crossed} across the axis, {back} at the eat point", crossed == 0 and hops + back >= n // 2)
@@ -328,6 +328,7 @@ def t_chorus():
     print("[chorus: a chorus fruit never carries a player across a border axis outside an open gap]")
     safe("Cam"); R("gamemode spectator Cam2"); R("tp Cam2 -700 200 0"); R("gamerule fall_damage false")
     chorus_at("the west ridge (Dol side)", "x", -665, -663.5, 100.5, sign=-1)
+    if "--west" in sys.argv: return
     chorus_at("the rift (north rim)", "z", 650, 120.5, 648.5)
     R('function last_ember:gate/close {id:"west_pass"}'); time.sleep(1.5)
     chorus_at("the closed pass gate (rubble, Dol side)", "x", -648, -631.5, -189.5, sign=-1)

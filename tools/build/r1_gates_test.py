@@ -36,7 +36,8 @@ def run(what):
     for gid, route, nm, where in (("west_pass", pz, "pass", "the west pass"), ("south_bridge", br, "bridge", "the south bridge")):
         if nm not in what: continue
         print(f"[{where}]")
-        rc.run(f'function last_ember:gate/close {{id:"{gid}"}}'); time.sleep(3)
+        rc.run(f'function last_ember:gate/close {{id:"{gid}"}}')
+        sx, sy, sz = route["start"]; rc.run(f"gamemode spectator Cam"); rc.run(f"tp Cam {sx} {sy + 20} {sz}"); time.sleep(5)   # the template is placed once its chunk is loaded
         probs, end = walk(route, f"r1_gate_{nm}_closed")
         chk(f"{where} closed: the bot is stopped ({len(probs)} problems; {end})", len(probs) > 0, probs)
         rc.run(f'function last_ember:gate/open {{id:"{gid}"}}'); time.sleep(4)
