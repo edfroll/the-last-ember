@@ -15,7 +15,7 @@ shots = []
 def add(name, c, t, h=None, settle=10):
     """c = (x, y, z) or (x, z) with h: the camera h blocks above the highest block there (trees included)"""
     if h is not None: c = (c[0], max(top(c[0] - 1, c[1]), top(c[0], c[1]), top(c[0] + 1, c[1]), top(c[0], c[1] - 1), top(c[0], c[1] + 1)) + h, c[1])
-    yaw, pitch = look(*c, *t); shots.append(dict(name=name, x=c[0], y=c[1], z=c[2], yaw=yaw, pitch=pitch, settle=settle))
+    yaw, pitch = look(*c, *t); shots.append(dict(name=name, x=c[0], y=c[1], z=c[2], yaw=yaw, pitch=pitch, settle=max(settle, 20)))   # the cloud client renders at a few FPS
 add("r1_wall_from_north_edge", (-300.5, -700.5), (-250, 150, -870), h=18, settle=12)
 add("r1_bridge_over_rift", (-45.5, 118, 650.5), (0, 120, 650))
 add("r1_rift_walls", (90.5, 72, 646.5), (210, 40, 652))       # rims, ledges, cornices, scree, horizontal strata (HQ review, 5)
@@ -41,6 +41,7 @@ for bid in ("r1_garden", "r1_grove", "r1_fens"):                       # a bonfi
             if clear(c, tg): pick = c; break
         if pick: break
     pick = pick or (pr[max(0, len(pr) - 30)][0], pr[max(0, len(pr) - 30)][2] + 8, pr[max(0, len(pr) - 30)][1])
+    if bid == "r1_garden": pick = (bx + 12.5, by + 10, bz + 18.5)        # the trail comes up behind a rock shoulder: from above the approach
     add(f"r1_bonfire_from_trail_{bid[3:]}", pick, tg)
 # overviews from high above the Refuge (HQ review: «камера над Приютом, взгляд на север и на юг», 12 chunks)
 add("r1_overview_north", (0.5, 205, 60.5), (0.5, 110, -170.5), settle=20)
@@ -51,9 +52,12 @@ if tm != "noon": shots = [dict(s, name=s["name"] + "_night") for s in shots if s
 sys.path.insert(0, os.path.join(ROOT, "tools")); import importlib.util
 sp = importlib.util.spec_from_file_location("rcon", os.path.join(ROOT, "tools/rcon.py")); rc = importlib.util.module_from_spec(sp); sp.loader.exec_module(rc)
 rc.run("gamerule locator_bar false")          # the locator bar is drawn even with the HUD hidden
-spec = os.path.join(ROOT, f"server/build/r1/shots_{tm}.json"); json.dump({"time": tm, "weather": "clear", "shots": shots}, open(spec, "w"), indent=1)
 out = os.path.join(ROOT, "docs/reports/T-022"); os.makedirs(out, exist_ok=True)
-subprocess.run([sys.executable, os.path.join(ROOT, "tools/screenshot.py"), spec, "--out", out], check=False)
+adv = rc.run("gamerule advance_time"); rc.run("gamerule advance_time false")     # the clock must not run on during the series
+for sh in shots:   # one call per frame: in a long series the cloud client (software GL) sometimes saves the frame of an earlier place
+    spec = os.path.join(ROOT, f"server/build/r1/shots_{tm}_{sh['name']}.json"); json.dump({"time": tm, "weather": "clear", "shots": [sh]}, open(spec, "w"), indent=1)
+    subprocess.run([sys.executable, os.path.join(ROOT, "tools/screenshot.py"), spec, "--out", out, "--double"], check=False)
+if adv.strip().endswith("true"): rc.run("gamerule advance_time true")
 rc.run("gamerule locator_bar true")
 for s in shots:
     src = os.path.join(out, s["name"] + ".png")
