@@ -26,9 +26,14 @@ for t in m["trails"]:
     if b not in B:                                   # the South road: no bonfire at its end
         rows.append((name(a), name(b), t["card"], round(L(t["line"])), 0, round(L([p for p in t["line"] if math.hypot(*p) >= 200])), None)); continue
     bx, by, bz = B[b]; stub = t["stub_b"]
-    sp = [[x + 0.5, z + 0.5, gy(x, z)] for x, z in stub] + [[bx + 0.5, bz - 2.5, by]]     # ends on the respawn pad side of the hearth (z-? north stela)
+    # over the pad up to 5.5 from the hearth (the hearth, the stela and the ring of the bonfire stand inside r 5)
+    sp = [[x + 0.5, z + 0.5, gy(x, z)] for x, z in stub if math.hypot(x - bx, z - bz) >= 5.5]
+    if not sp or math.hypot(sp[-1][0] - bx - 0.5, sp[-1][1] - bz - 0.5) > 6.5:
+        ox, oz = (sp[-1][0], sp[-1][1]) if sp else (stub[0][0] + 0.5, stub[0][1] + 0.5); d = math.hypot(ox - bx - 0.5, oz - bz - 0.5) or 1
+        sp.append([round(bx + 0.5 + (ox - bx - 0.5) * 5.5 / d, 2), round(bz + 0.5 + (oz - bz - 0.5) * 5.5 / d, 2), by])
     sp = [p for i, p in enumerate(sp) if i % 2 == 0 or i == len(sp) - 1]
     st = [pts[-1][0], pts[-1][2] + 0.2, pts[-1][1]] if pts else [stub[0][0] + 0.5, gy(*stub[0]) + 0.2, stub[0][1] + 0.5]
+    sp = [p for p in sp if math.hypot(p[0] - st[0], p[1] - st[2]) >= 1.0] or sp[-1:]      # a point on the start itself: no direction to walk
     json.dump({"start": st, "points": [[x, z, y if y is not None else -999] for x, z, y in sp]}, open(os.path.join(OUT, nm + "_stub.json"), "w"))
     trail = [tuple(p) for p in t["line"]]       # the smoothed centre line (the cells of the profile are 4-connected: their length is Manhattan)
     outside = [p for p in trail if math.hypot(*p) >= 200] if a == "R" else trail

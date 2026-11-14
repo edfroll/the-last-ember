@@ -19,11 +19,17 @@ def pos(p):
     r = rc.run(f"data get entity {p} Pos")
     v = r.split(":", 1)[1].strip().strip("[]").replace("d", "").split(",")
     return [float(t) for t in v]
+NOT = ",".join("type=!" + t for t in ("player", "item", "arrow", "spectral_arrow", "trident", "experience_orb", "interaction", "item_display", "text_display",
+                                      "block_display", "marker", "armor_stand", "item_frame", "glow_item_frame", "painting", "leash_knot", "area_effect_cloud"))
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("route"); ap.add_argument("--player", default="Cam"); ap.add_argument("--out", default=os.path.join(ROOT, "server/build/walk")); ap.add_argument("--jump", action="store_true")
+    ap = argparse.ArgumentParser(); ap.add_argument("route"); ap.add_argument("--player", default="Cam"); ap.add_argument("--out", default=os.path.join(ROOT, "server/build/walk")); ap.add_argument("--jump", action="store_true"); ap.add_argument("--clear", action="store_true", help="remove mobs within 6 blocks of the bot while it walks (tests the route, not the fauna)")
     a = ap.parse_args(); route = json.load(open(a.route)); os.makedirs(a.out, exist_ok=True); P = a.player
     rc.run(f"gamemode survival {P}"); rc.run(f"effect give {P} minecraft:saturation infinite 1 true"); rc.run(f"effect give {P} minecraft:resistance infinite 4 true")
     sx, sy, sz = route["start"]; rc.run(f"tp {P} {sx} {sy} {sz}"); time.sleep(2)
+    for _ in range(20):                       # far routes: wait until the client is really there (chunks loaded, the tp applied)
+        x, y, z = pos(P)
+        if math.hypot(x - sx, z - sz) < 1.5 and abs(y - sy) < 2: break
+        rc.run(f"tp {P} {sx} {sy} {sz}"); time.sleep(0.5)
     problems = []; jumps = [0]; i = 0; top = -999; pts = route["points"]
     while i < len(pts):
         tx, tz, ey = pts[i]; prev_ey = pts[i - 1][2] if i else ey; x, y, z = pos(P)
@@ -32,6 +38,7 @@ def main():
         used = False; side = False; last_jump = 0; t0 = time.time(); best = math.hypot(tx - x, tz - z); last_improve = t0
         while True:
             time.sleep(0.12); x, y, z = pos(P); d = math.hypot(tx - x, tz - z)
+            if a.clear: rc.run(f"execute at {P} run tp @e[distance=..6,{NOT}] ~ -200 ~")
             if d < 0.6: break
             if d < best - 0.05: best = d; last_improve = time.time()
             if y < min(ey, prev_ey) - 1.6:

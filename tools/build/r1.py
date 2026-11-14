@@ -404,6 +404,21 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None, inplot=False):
                     if top <= gq: continue
                     for yy in range(gq + 1, top + 1):
                         if P.get(q[0], yy, q[1]) is None: P.set(q[0], yy, q[1], "grass_block[snowy=false]" if yy == top else "dirt")
+        if g - y >= 2 and best[(x, z)] > 0:         # a cutting: the side walls go back 1 per block from a berm level with the trail
+            k = min(g - y, 14) + 1                   # (no vertical cut wall above the trail)
+            for dx in range(-k, k + 1):
+                for dz in range(-k, k + 1):
+                    q = (x + dx, z + dz); r = max(abs(dx), abs(dz))
+                    qi = (q[1] - W.z0, q[0] - W.x0)
+                    if not (0 <= qi[0] < W.h and 0 <= qi[1] < W.w): continue
+                    if r == 0 or q in surf or q in LAID or (W.inplot(*q) and not inplot): continue
+                    if W.touch[qi] and W.R[qi] != R_STONE: continue      # ridges, the Wall, the rift
+                    gq = W.at(*q); top = y + max(0, r - 1)
+                    if gq <= top: continue
+                    if W.inplot(*q): W.allow[qi] = True
+                    if P.get(q[0], top, q[1]) is None: P.set(q[0], top, q[1], "grass_block[snowy=false]")
+                    for yy in range(top + 1, gq + 12):
+                        if P.get(q[0], yy, q[1]) is None: P.set(q[0], yy, q[1], "air")
     return [((c[0] + 0.5, c[1] + 0.5), surf.get(c, s2) / 2) for c, s2 in zip(cells, t)]
 def cells_of(pts):
     line = []
