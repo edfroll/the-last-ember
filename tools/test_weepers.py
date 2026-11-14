@@ -46,14 +46,14 @@ def stage():
     wait(lambda: not passed("execute if function last_ember:weepers/gen/probe_up") and score("#wpc", "le.alt") == 1, 8)
     for n in FADED + KEPT: rc.run(f"data modify storage last_ember:bonfires by.b{n} merge value {{state:1}}")   # as if lit on the way
     carrier()
+CANDLES = []
 def rc_candles(lit):
-    """lit (or unlit) candles at the statues' feet (dy 0 ring r 11..17), counted cell by cell over the statue boxes"""
-    n = 0
-    for x in range(CX - 18, CX + 19):
-        for z in range(CZ - 18, CZ + 19):
-            if not 10.5 <= ((x - CX) ** 2 + (z - CZ) ** 2) ** 0.5 <= 17.5: continue
-            if passed(f"execute if block {x} {Y} {z} minecraft:candle[lit={'true' if lit else 'false'}]"): n += 1
-    return n
+    """lit (or unlit) candles at the statues' feet: the cells are found once (ring r 10.5..17.5 at the floor), then only they are asked"""
+    if not CANDLES:
+        for x in range(CX - 18, CX + 19):
+            for z in range(CZ - 18, CZ + 19):
+                if 10.5 <= ((x - CX) ** 2 + (z - CZ) ** 2) ** 0.5 <= 17.5 and passed(f"execute if block {x} {Y} {z} minecraft:candle"): CANDLES.append((x, z))
+    return sum(passed(f"execute if block {x} {Y} {z} minecraft:candle[lit={'true' if lit else 'false'}]") for x, z in CANDLES)
 def lit(n): return "state: 1" in sto(f"bonfires by.b{n}")
 
 def t_peds():
@@ -76,6 +76,7 @@ def t_event():
     print("[the event]"); stage()
     rc.run("forceload add -680 -210 -630 -170")           # the west pass: the gate template is placed when its chunk is loaded
     G0 = {k: int(tc.num(sto(f"keys k.{k}.gen")) or 0) for k in PEDS}
+    rc_candles(True)                                      # find the candle cells before the event
     rc.run(f"tp Cam {CX + 20}.5 120 {CZ + 30}.5")         # the carrier is away (> 10)
     for k in PEDS: hand_key("Cam2", k); time.sleep(0.2); click("Cam2", k)
     time.sleep(2.2)
@@ -105,7 +106,7 @@ def t_fade():
     if score("#fade_r1", "le.alt") != 1: t_event()
     chk("bonfires 2,3,4,5,7,8,9 out (state 0, faded)", all("state: 0" in sto(f"bonfires by.b{n}") and "faded: 1b" in sto(f"bonfires by.b{n}") for n in FADED), {n: sto(f"bonfires by.b{n}")[-120:] for n in FADED})
     chk("bonfires 6 and 10 are not touched", all("faded: 1b" not in sto(f"bonfires by.b{n}") for n in KEPT))
-    chk("the Refuge bonfire is not touched", "faded" not in sto("bonfires by.b1"))
+    chk("the Refuge bonfire is not touched", "faded: 1b" not in sto("bonfires by.b1") and "state: 1" in sto("bonfires by.b1"))
     # the look of a faded bonfire when its chunk loads: bonfire 2 (cemetery)
     b2 = re.findall(r"r[xyz]: (-?\d+)", sto("bonfires by.b2")); print("     b2", sto("bonfires by.b2")[:200])
     rc.run("tp Cam2 118 200 448"); time.sleep(4)
@@ -142,7 +143,7 @@ def t_reset():
 
 def t_restart():
     print("[restart]")
-    if "done: 1b" not in sto("altars a.weepers"): t_event()
+    if "done: 1b" not in sto("altars a.weepers") or score("#fade_r1", "le.alt") != 1: t_event()
     subprocess.run([os.path.join(ROOT, "tools/server.sh"), "stop"], capture_output=True); time.sleep(8)
     subprocess.Popen(f"cd {ROOT} && tools/server.sh start > server/console.out 2>&1", shell=True)
     for _ in range(90):
@@ -175,9 +176,19 @@ def t_zones():
     chk("Cam2 in the zone is in adventure mode", "adventure" in rc.run("data get entity Cam2 playerGameType") or "2" in rc.run("data get entity Cam2 playerGameType"), rc.run("data get entity Cam2 playerGameType"))
     rc.run("time set day"); rc.run("difficulty normal")
 
+def mspt():
+    m = re.search(r"([0-9.]+)\s*ms", rc.run("tick query")); return float(m.group(1)) if m else None
 def t_perf():
-    print("[perf]"); rc.run(f"tp Cam {CX + 7}.5 {Y} {CZ + 3}.5"); rc.run("tick query")
-    print("     ", rc.run("tick query")[:300])
+    print("[perf]"); stage(); time.sleep(3)
+    idle = [mspt() for _ in range(3) if not time.sleep(1.5)]
+    rc.run(f"tp Cam {CX + 20}.5 120 {CZ + 30}.5")
+    for k in PEDS: hand_key("Cam2", k); time.sleep(0.2); click("Cam2", k)
+    rc.run(f"tp Cam {CX + 7}.5 {Y} {CZ + 3}.5"); wait(lambda: "ev: -1" not in sto("altars a.weepers"), 3)
+    ev = []
+    while "done: 1b" not in sto("altars a.weepers") and len(ev) < 40: ev.append(mspt()); time.sleep(0.7)
+    time.sleep(2); after = [mspt() for _ in range(3) if not time.sleep(1.5)]
+    print(f"     mspt (average of the last 100 ticks): before {idle}, during the event {ev}, after {after}")
+    chk("tick stays under 25 ms during the event", max(x for x in ev if x is not None) < 25, ev)
 
 T = {"peds": t_peds, "event": t_event, "fade": t_fade, "reset": t_reset, "restart": t_restart, "zones": t_zones, "perf": t_perf}
 for n in (sys.argv[1:] or ["peds", "event", "fade", "reset", "zones"]): T[n]()
