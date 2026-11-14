@@ -356,7 +356,7 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None, inplot=False):
             if i not in fixed: t[i] = max(min(t[i], t[i - 1] + 1), t[i - 1] - 1)
         for i in range(len(t) - 2, -1, -1):
             if i not in fixed: t[i] = max(min(t[i], t[i + 1] + 1), t[i + 1] - 1)
-    surf = {}; best = {}
+    surf = {}; best = {}; fill = {}; cut = {}
     for c, s2 in zip(cells, t):
         for dx in range(-w, w + 1):
             for dz in range(-w, w + 1):
@@ -393,32 +393,34 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None, inplot=False):
             for yy in range(min(g, y - 1) - 1 if not wet else g + 1, y):
                 P.set(x, yy, z, "gravel" if wet else ("dirt" if yy >= y - 3 else "stone"))
         for yy in range(y + 1, max(y + 4, g + 1)): P.set(x, yy, z, "air")
-        if y - g >= 1 and best[(x, z)] > 0:         # an embankment: a berm 1 wide level with the trail (HQ review T-022, 2), then
-            k = min(y - g, 14) + 1                   # earth shoulders falling 1 per block, no vertical drop at the edge
-            for dx in range(-k, k + 1):
-                for dz in range(-k, k + 1):
-                    q = (x + dx, z + dz); r = max(abs(dx), abs(dz))
-                    if r == 0 or q in surf or q in LAID or (W.inplot(*q) and not inplot): continue
-                    gq = W.at(*q); top = y - max(0, r - 1)
-                    if W.inplot(*q) and top > gq: W.allow[q[1] - W.z0, q[0] - W.x0] = True
-                    if top <= gq: continue
-                    for yy in range(gq + 1, top + 1):
-                        if P.get(q[0], yy, q[1]) is None: P.set(q[0], yy, q[1], "grass_block[snowy=false]" if yy == top else "dirt")
-        if g - y >= 2 and best[(x, z)] > 0:         # a cutting: the side walls go back 1 per block from a berm level with the trail
-            k = min(g - y, 14) + 1                   # (no vertical cut wall above the trail)
+        if best[(x, z)] > 0 and (y - g >= 1 or g - y >= 2):
+            # an embankment: a berm 1 wide level with the trail (HQ review T-022, 2), then earth shoulders falling 1 per block;
+            # a cutting: the side walls go back 1 per block from a berm level with the trail (no vertical wall at the trail)
+            k = min(abs(y - g), 14) + 1; emb = y > g
             for dx in range(-k, k + 1):
                 for dz in range(-k, k + 1):
                     q = (x + dx, z + dz); r = max(abs(dx), abs(dz))
                     qi = (q[1] - W.z0, q[0] - W.x0)
                     if not (0 <= qi[0] < W.h and 0 <= qi[1] < W.w): continue
                     if r == 0 or q in surf or q in LAID or (W.inplot(*q) and not inplot): continue
-                    if W.touch[qi] and W.R[qi] != R_STONE: continue      # ridges, the Wall, the rift
-                    gq = W.at(*q); top = y + max(0, r - 1)
-                    if gq <= top: continue
-                    if W.inplot(*q): W.allow[qi] = True
-                    if P.get(q[0], top, q[1]) is None: P.set(q[0], top, q[1], "grass_block[snowy=false]")
-                    for yy in range(top + 1, gq + 12):
-                        if P.get(q[0], yy, q[1]) is None: P.set(q[0], yy, q[1], "air")
+                    if emb: top = y - max(0, r - 1); fill[q] = max(fill.get(q, -999), top)
+                    else:
+                        if W.touch[qi] and W.R[qi] != R_STONE: continue      # ridges, the Wall, the rift
+                        top = y + max(0, r - 1); cut[q] = min(cut.get(q, 9999), top)
+    # applied after the whole trail: the highest shoulder / the lowest cut of all trail cells wins (no layered leftovers)
+    for q in set(fill) | set(cut):
+        gq = W.at(*q); qi = (q[1] - W.z0, q[0] - W.x0)
+        if q in fill and fill[q] > gq:
+            top = fill[q]
+            for yy in range(gq + 1, top + 1):
+                if P.get(q[0], yy, q[1]) in (None, "minecraft:air"): P.set(q[0], yy, q[1], "grass_block[snowy=false]" if yy == top else "dirt")
+        elif q in cut and cut[q] < gq:
+            top = cut[q]
+            if P.get(q[0], top, q[1]) in (None, "minecraft:air"): P.set(q[0], top, q[1], "grass_block[snowy=false]")
+            for yy in range(top + 1, gq + 12):
+                if P.get(q[0], yy, q[1]) in (None, "minecraft:grass_block[snowy=false]", "minecraft:dirt"): P.set(q[0], yy, q[1], "air")
+        else: continue
+        if W.inplot(*q): W.allow[qi] = True
     return [((c[0] + 0.5, c[1] + 0.5), surf.get(c, s2) / 2) for c, s2 in zip(cells, t)]
 def cells_of(pts):
     line = []
