@@ -53,7 +53,7 @@ for a in altars:
     b = ["# generated: the interactions and labels of the pedestals of %s (as a function run in the dimension)" % a["id"]]
     for p in a["peds"]:
         n = kid[p["key"]]["name"]
-        b += ['summon minecraft:interaction %s %d %s {width:0.9f,height:1.4f,response:1b,Tags:["le.ped","le.ped%d"]}' % (c(p["x"]), p["y"], c(p["z"]), p["pid"]),
+        b += ['summon minecraft:interaction %s %d %s {width:1.1f,height:1.6f,response:1b,Tags:["le.ped","le.ped%d"]}' % (c(p["x"]), p["y"], c(p["z"]), p["pid"]),
               'scoreboard players set @e[type=minecraft:interaction,tag=le.ped%d,limit=1,sort=nearest,distance=..2] le.pid %d' % (p["pid"], p["pid"]) if False else
               'execute positioned %s %d %s run scoreboard players set @e[type=minecraft:interaction,tag=le.ped%d,distance=..1] le.pid %d' % (c(p["x"]), p["y"], c(p["z"]), p["pid"], p["pid"]),
               'summon minecraft:text_display %s %d.95 %s {billboard:"center",text:{"text":"%s","color":"dark_gray"},background:0,see_through:0b,Tags:["le.ped_lbl","le.ped_lbl%d"],brightness:{sky:6,block:6}}' % (c(p["x"]), p["y"] + 1, c(p["z"]), n, p["pid"])]

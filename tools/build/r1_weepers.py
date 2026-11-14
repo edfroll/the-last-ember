@@ -165,13 +165,28 @@ def terrain():
     # only the columns whose ground is not yet what it should be: a re-run on the built Circle rewrites no column (the entities of the
     # altar, the labels and the templates stay); trees on the clearing are cleared by air placements (blocks()), not by the terrain
     wnow = grid(pre, pre.water)
-    touch = inside & ((np.abs(T - now) > 0.4) | ((Wt != NONE) & (wnow != Wt)))
+    return dict(X=X, Z=Z, T=T, nat=nat, now=now, inside=inside, Wt=Wt, wnow=wnow, x1=x1, z1=z1, terr=terr, S=S, Rk=Rk)
+
+def write_terrain(tr, b, sts):
+    """only the columns whose ground is not yet what it should be: a re-run on the built Circle rewrites no column (terrain apply removes
+    the entities of the touched columns: the altar, the labels). Ground higher than wanted under our own blocks (statues, pedestals,
+    arches, the stair, the rock on the faces: the scan sees them as ground) is not a reason to rewrite."""
+    T, now, inside, Wt, X, Z, x1, z1, nat = tr["T"], tr["now"], tr["inside"], tr["Wt"], tr["X"], tr["Z"], tr["x1"], tr["z1"], tr["nat"]
+    top = np.full(T.shape, -999, int); Tr = np.round(T).astype(int)       # the top of our own blocks over the wanted ground
+    for (x, y, z), st in b.v.items():
+        if str(st).split("[")[0] in ("minecraft:air", "air", "minecraft:cave_air"): continue
+        i, j = z - z1, x - x1
+        if 0 <= i < T.shape[0] and 0 <= j < T.shape[1] and y > Tr[i, j]: top[i, j] = max(top[i, j], y)
+    for st in sts:
+        m = (np.abs(X - st["x"]) <= WS.K) & (np.abs(Z - st["z"]) <= WS.K); top[m] = np.maximum(top[m], Y + WS.H - 1)
+    own = now <= top                                                      # the scan sees our blocks (or less), not a hill to cut
+    touch = inside & ((now < T - 0.4) | ((now > T + 0.4) & ~own) | ((Wt != NONE) & (tr["wnow"] != Wt)))
     H = np.where(touch, T, NONE).astype(np.int32)
     lo = np.round(T).astype(np.int32)
     for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): lo = np.minimum(lo, np.roll(np.roll(lo, dz, 0), dx, 1))
     F = np.minimum(np.minimum(np.round(T).astype(np.int32), nat.astype(np.int32)), lo) - 4
-    write_grid(os.path.join(OUT, "weepers_terrain.bin"), x1, z1, H, F, np.where(touch, Wt, NONE), S, Rk, np.zeros(X.shape, np.uint8))
-    return dict(X=X, Z=Z, T=T, nat=nat, now=now, inside=inside, touch=touch, Wt=Wt, x1=x1, z1=z1, terr=terr)
+    write_grid(os.path.join(OUT, "weepers_terrain.bin"), x1, z1, H, F, np.where(touch, Wt, NONE), tr["S"], tr["Rk"], np.zeros(X.shape, np.uint8))
+    tr["touch"] = touch
 
 # ---------------------------------------------------------------- blocks
 CIRCLE = Mix({"stone_bricks": 30, "mossy_stone_bricks": 20, "tuff_bricks": 15, "mossy_cobblestone": 15, "cracked_stone_bricks": 10, "chiseled_stone_bricks": 0.01}, 2311)
@@ -264,7 +279,7 @@ def arch(b, cx, cz, d, g, state):
         if abs(k) == g - 1:
             f = ("east" if k < 0 else "west") if dx else ("south" if k < 0 else "north")
             b.set(x, Y + 5, z, "stone_brick_stairs[facing=%s,half=top,shape=straight,waterlogged=false]" % f)
-    for i in range(1 if state == "whole" else 4):  # fallen blocks beside the arch
+    for i in range(0 if state == "whole" else 4):  # fallen blocks beside a ruined arch (the whole one stands on the way: none)
         o = 2 + i % 2; fx = cx + dz * o * (1 if i < 2 else -1) + dx * (i - 1); fz = cz + dx * o * (1 if i < 2 else -1) + dz * (i - 1)
         if b.get(fx, Y, fz) in (None, "minecraft:air"): b.set(fx, Y, fz, ARCH if i % 2 else "cracked_stone_bricks")
 def blocks(tr):
@@ -436,7 +451,7 @@ def data_files(tr):
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["weepers "], ["weepers         overworld cyl  %d %d 32  %d %d                  # T-023: Circle of the Weepers, Altar I (bottom of the ravine .. the crown + 10)" % (CX, CZ, lo, TOP[1] + 10)])
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["weepers_circle "], ["weepers_circle  overworld cyl  %d %d 14  %d %d     no_spawn" % (CX, CZ, G - 4, TOP[1] + 10)])
 def main():
-    tr = terrain(); b = blocks(tr); sts = statues()
+    tr = terrain(); b = blocks(tr); sts = statues(); write_terrain(tr, b, sts)
     n = b.write_placements(os.path.join(OUT, "weepers.txt"))
     # every write must be inside the place
     bad = [k for k in b.v if math.hypot(k[0] - CX, k[2] - CZ) > R_PLOT + MARGIN]
