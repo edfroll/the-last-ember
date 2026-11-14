@@ -94,7 +94,7 @@ def main():
     rel = "worldgen/feature/monster_room.json"
     dump(os.path.join(OUT, rel), {"type": "minecraft:no_op", "config": {}}); written.append(rel)
     report.append("feature monster_room: disabled (dungeons)")
-    with open(MANIFEST, "w") as f: f.write("\n".join(written) + "\n")
+    with open(MANIFEST, "w") as f: f.write("\n".join(sorted(written)) + "\n")
     print("\n".join(report)); print(f"{len(written)} files written")
 
 if __name__ == "__main__":

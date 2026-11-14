@@ -11,6 +11,7 @@ sys.path.insert(0, os.path.join(ROOT, "tools/lab")); import png
 RP = os.path.join(ROOT, "resourcepack/assets/last_ember"); DP = os.path.join(ROOT, "datapack/data/last_ember")
 JAR = os.path.expanduser("~/Library/Application Support/minecraft/versions/26.3/26.3.jar")
 if not os.path.exists(JAR): JAR = os.path.join(ROOT, "server/clientjar/26.3.jar")   # the cloud: the client jar downloaded from Mojang (not in git)
+if not os.path.exists(JAR): JAR = os.path.join(ROOT, "server/mc/versions/26.3/26.3.jar")   # the cloud client of tools/cloud_client.py
 jar = zipfile.ZipFile(JAR)
 def vanilla(p): return png.read(jar.read("assets/minecraft/textures/" + p))
 def wjson(path, obj):

@@ -1,5 +1,6 @@
 # generated from death/regions.txt: #rg le.el = the region of this mob (0..6, 7 = Nether, -1 = none); the first matching line wins
 scoreboard players set #rg le.el -1
+execute if score #rg le.el matches -1 if dimension minecraft:overworld if entity @s[x=-665,y=-64,z=600,dx=1330,dy=384,dz=50] run scoreboard players set #rg le.el 1
 execute if score #rg le.el matches -1 if dimension minecraft:overworld if entity @s[x=-665,y=-64,z=-870,dx=1330,dy=84,dz=1520] run scoreboard players set #rg le.el 5
 execute if score #rg le.el matches -1 if dimension minecraft:overworld if entity @s[x=-200,y=21,z=-200,dx=400,dy=299,dz=400] run scoreboard players set #rg le.el 0
 execute if score #rg le.el matches -1 if dimension minecraft:overworld if entity @s[x=-665,y=-64,z=-870,dx=1330,dy=384,dz=1520] run scoreboard players set #rg le.el 1
