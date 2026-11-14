@@ -36,9 +36,9 @@ if "plots" in what or "seam" in what or "water" in what:
     W = r1.World(); N = W.nat
 if "plots" in what:
     inside = W.pd <= 0
-    # allowed inside plots: bonfire pads (14x14 + rim), the shortcut ledge, the trail ends do not enter plots
-    allow = np.zeros_like(inside)
-    for n_, bid, x, z in r1.BONFIRES: allow[z - 9 - W.z0:z + 13 - W.z0, x - 10 - W.x0:x + 12 - W.x0] = True
+    # allowed inside plots: bonfire pads and their slopes, approaches to them (HQ review T-022, 1), the shortcut ledge
+    # bonfire pads with their slopes and the approach strips (trail + berm + shoulders): server/build/r1/allow.npz from r1.py
+    allow = np.load(os.path.join(r1.OUT, "allow.npz"))["allow"].copy()
     allow[-207 - W.z0:-187 - W.z0, -398 - W.x0:-372 - W.x0] = True
     m = inside & ~allow & ((S.flags & 16) == 0)
     base = W.base.ground

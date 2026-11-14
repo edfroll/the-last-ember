@@ -154,7 +154,7 @@ public class Terrain {
             case 1: return switch (b) { case 0, 3 -> T("stone"); case 1 -> T("andesite"); case 2, 5 -> T("tuff"); default -> pick(x, y, z, 3, 3, "stone", 2, "cobblestone", 1, "andesite"); };
             case 2: return switch (b) { case 0, 3 -> T("basalt[axis=y]"); case 1 -> T("blackstone"); case 2 -> T("tuff"); case 4 -> T("smooth_basalt"); default -> pick(x, y, z, 4, 3, "blackstone", 2, "basalt[axis=y]", 1, "tuff"); };
             case 3: return switch (b) { case 0, 3 -> T("deepslate[axis=y]"); case 1 -> T("tuff"); case 2 -> T("cobbled_deepslate"); case 4 -> T("smooth_basalt"); default -> pick(x, y, z, 5, 3, "deepslate[axis=y]", 2, "tuff", 1, "andesite"); };
-            case 4: { int bb = Math.floorMod((int) Math.floor((y + vnoise(x / 31.0, z / 31.0, 61) * 5) / 3.0), 7);
+            case 4: { int bb = Math.floorMod(Math.floorDiv(y, 3), 7);   // horizontal strata (HQ review T-022, 5); same as rift_rock() in r1.py
                 return switch (bb) { case 0 -> T("red_terracotta"); case 1 -> T("terracotta"); case 2 -> T("red_sandstone"); case 3 -> T("orange_terracotta"); case 4 -> T("sandstone"); case 5 -> T("brown_terracotta"); default -> T("red_sandstone"); }; }
             case 5: return switch (b) { case 0, 3 -> T("stone"); case 1 -> T("andesite"); case 2 -> T("tuff"); case 4 -> T("calcite"); default -> T("stone"); };
             case 8: return pick(x, y, z, 8, 5, "deepslate[axis=y]", 2, "tuff", 2, "cobbled_deepslate");

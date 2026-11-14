@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """T-022: walk-bot routes of the R1 trails (server/build/r1/r1.json from tools/build/r1.py) -> server/build/walk/r1_*.json
   r1_<a>_<b>.json       the trail itself (no jumps allowed: tools/walkbot.py without --jump)
-  r1_<a>_<b>_stub.json  from the trail's end over the natural ground of the place to the bonfire (the place is not sculpted: --jump)
+  r1_<a>_<b>_stub.json  from the trail's end over the bonfire pad to the hearth (since the HQ review the trail itself runs through the
+                        place up to the pad; only causeway -> bridge is a walk over the natural ground: the castle stairs, --jump)
 Also prints the length table (from the Refuge walls, r 200, like the card's table) -> server/build/r1/lengths.txt"""
 import json, math, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "server/build/walk"); os.makedirs(OUT, exist_ok=True)
 m = json.load(open(os.path.join(ROOT, "server/build/r1/r1.json")))
 B = {n: (x, y, z) for n, bid, x, y, z in m["bonfires"]}; NAME = {n: bid for n, bid, x, y, z in m["bonfires"]}
-def name(k): return {"R": "refuge", "W": "pass"}.get(k, NAME.get(k, str(k)))
+def name(k): return {"R": "refuge", "W": "pass", "S": "south_road"}.get(k, NAME.get(k, str(k)))
 def L(pts): return sum(math.hypot(b[0] - a[0], b[1] - a[1]) for a, b in zip(pts, pts[1:]))
 sys.path.insert(0, os.path.join(ROOT, "tools/build")); from scanio import Scan
 _scan = os.path.join(ROOT, "server/build/r1/after.bin"); GS = Scan(_scan if os.path.exists(_scan) else os.path.join(ROOT, "server/build/r1/base.bin"))
@@ -22,6 +23,8 @@ for t in m["trails"]:
     nm = "r1_%s_%s" % (name(a), name(b))
     if pts:
         json.dump({"start": [pts[0][0], pts[0][2] + 0.2, pts[0][1]], "points": pts[1:]}, open(os.path.join(OUT, nm + ".json"), "w"))
+    if b not in B:                                   # the South road: no bonfire at its end
+        rows.append((name(a), name(b), t["card"], round(L(t["line"])), 0, round(L([p for p in t["line"] if math.hypot(*p) >= 200])), None)); continue
     bx, by, bz = B[b]; stub = t["stub_b"]
     sp = [[x + 0.5, z + 0.5, gy(x, z)] for x, z in stub] + [[bx + 0.5, bz - 2.5, by]]     # ends on the respawn pad side of the hearth (z-? north stela)
     sp = [p for i, p in enumerate(sp) if i % 2 == 0 or i == len(sp) - 1]

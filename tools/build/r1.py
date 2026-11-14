@@ -28,7 +28,10 @@ BONFIRES = [  # (number, id, x, z, card y note) — «Карточки лока�
     (6, "r1_weepers", -392, -180), (7, "r1_causeway", 356, -40), (8, "r1_bridge", 440, -10), (9, "r1_heather", 70, -420), (10, "r1_grove", -404, 72)]
 # trails: Refuge -> each bonfire (table «Расстояния по путям»), then the ring links; (from, to, card length)
 TRAILS = [("R", 6, 210), ("R", 5, 190), ("R", 3, 230), ("R", 9, 220), ("R", 4, 150), ("R", 2, 270), ("R", 7, 160),
-          (7, 8, 100), (6, 10, 220), (10, 5, 225), (3, 9, 230), (9, 4, 250), (4, 7, 250), ("W", 6, 0)]   # W = the west pass gorge (not in the table)
+          (7, 8, 100), (6, 10, 220), (10, 5, 225), (3, 9, 230), (9, 4, 250), (4, 7, 250), ("W", 6, 0),   # W = the west pass gorge (not in the table)
+          ("R", "S", 450)]   # S = the South road: from the south gate of the Refuge (r4, 160°) to the north ramp of the bridge (HQ review T-022, 4)
+NO_APPROACH = {(7, 8)}    # causeway -> before the bridge: the castle stairs (castle task); every other trail runs on to the bonfire pad (HQ review, 1)
+SOUTH_GATE = 160          # compass angle of the Refuge gate r4 (tools/build/plaza.py GATES)
 REFUGE_R = 200            # «стены Приюта» of the distance table = the Refuge zone (r 200)
 TRAILHEAD_R = 92          # the trails start where the sculpted plateau of the hub ends (T-008: y 99 at r 90)
 DOOR = (-380, -196)       # shortcut door of R1 (card, party 2), faces east
@@ -76,7 +79,7 @@ class World:
         self.G = s.ground.astype(float); self.missing = (s.flags & 16) > 0; self.G[self.missing] = 63
         self.Wn = np.where((s.water != NONE) & (s.water > s.ground), s.water, NONE)     # natural water surface
         self.H = self.G.copy(); self.S = np.zeros_like(self.G, np.uint8); self.R = np.zeros_like(self.G, np.uint8); self.A = np.zeros_like(self.G, np.uint8)
-        self.Wset = np.full(self.G.shape, NONE); self.touch = np.zeros(self.G.shape, bool)
+        self.Wset = np.full(self.G.shape, NONE); self.touch = np.zeros(self.G.shape, bool); self.allow = np.zeros(self.G.shape, bool)
         self.plots = read_plots(); self.pd = np.full(self.G.shape, 1e9)
         for p in self.plots: self.pd = np.minimum(self.pd, plot_dist(p, self.X, self.Z) - p["m"])
         self.pd = np.maximum(self.pd, 0)             # 0 = inside a plot (core + margin)
@@ -165,21 +168,29 @@ def raise_cut(W, sel, T, rock):
     W.H[m] = T2[m]; W.R[m] = rock; W.touch[m] = True; W.S[m] = S_GRASS
 def rift(W):
     """Ржавый Разлом: canyon along z 650, 30..50 wide, floor y 0..3 with a dry riverbed; dark stone on the Vale side, red clay and
-    sandstone on the south side. Natural water at the rims is dammed (raised to its level) so nothing pours in."""
-    xs = np.arange(W.x0, W.x0 + W.w); hw = 20 + 5 * fbm1(len(xs), (120, 40, 15), 11)
-    hw = np.where(np.abs(xs) < 40, 22 + (hw - 22) * smooth((np.abs(xs) - 25) / 15), hw)
-    fl = 1.5 + 1.5 * fbm1(len(xs), (60, 20), 12); cen = 5 * fbm1(len(xs), (80, 25), 13)
-    HW = hw[None, :]; FL = fl[None, :]; CE = cen[None, :]
-    dz = np.abs(W.Z - 650 - CE * 0.3)
-    wallw = 8 + 3 * vnoise2(W.G.shape, 9, 14)
+    sandstone on the south side. The land cracked here: each rim wanders on its own (±3..5 blocks over 10..30), the walls lean
+    differently (profile exponent and width vary), uneven ledges at different heights (HQ review T-022, 5). Natural water at the rims
+    is dammed (raised to its level) so nothing pours in. Overhangs and the scree on the floor: rift_details()."""
+    xs = np.arange(W.x0, W.x0 + W.w); n = len(xs); ax = np.abs(xs)
+    base = 20 + 4 * fbm1(n, (120, 40), 11)
+    hn = base + 4 * fbm1(n, (22, 9, 4), 16); hs = base + 4 * fbm1(n, (26, 11, 5), 17)
+    near = ax < 40; k = smooth((ax - 25) / 15)                              # at the bridge: 22 each side
+    hn = np.where(near, 22 + (hn - 22) * k, hn); hs = np.where(near, 22 + (hs - 22) * k, hs)
+    hn = np.clip(hn, 15, 25); hs = np.clip(hs, 15, 25)
+    fl = 1.5 + 1.5 * fbm1(n, (60, 20), 12); cen = 5 * fbm1(n, (80, 25), 13)
+    FL = fl[None, :]; CE = cen[None, :]
+    d = W.Z - 650 - CE * 0.3; dz = np.abs(d)
+    HW = np.where(d < 0, hn[None, :], hs[None, :])
+    wallw = 5 + 9 * vnoise2(W.G.shape, 13, 14)                             # 5..14: from a sheer face to a leaning one
+    ex = 0.3 + 0.6 * vnoise2(W.G.shape, 17, 19)                             # profile exponent: convex / straight
     t = (dz - (HW - wallw)) / wallw
-    prof = np.where(dz <= HW - wallw, 0, np.clip(t, 0, 1) ** 0.45)
-    ledge = np.floor(prof * 6 + vnoise2(W.G.shape, 5, 15) * 0.6) / 6         # rough steps in the walls
-    prof = np.clip(0.6 * prof + 0.4 * ledge, 0, 1)
+    prof = np.where(dz <= HW - wallw, 0, np.clip(t, 0, 1) ** ex)
+    nst = 4 + np.floor(4 * vnoise2(W.G.shape, 31, 20))                      # 4..7 ledges, their heights vary along the wall
+    ledge = np.floor(prof * nst + vnoise2(W.G.shape, 6, 15) * 0.8) / nst
+    prof = np.clip(0.45 * prof + 0.55 * ledge, 0, 1)
     bed = (np.abs(W.Z - 650 - CE) < 3) * 1.0
     T = FL - bed + (W.G - FL + bed) * prof
     band = (dz < HW) & (W.X >= -744)
-    # dam the natural water near the rims
     near = (dz < HW + 6) & (W.Wn != NONE) & (W.X >= -744)
     T = np.where(band, np.minimum(T, W.H), W.H)
     sel = band & (T < W.H - 0.5)
@@ -189,7 +200,51 @@ def rift(W):
     W.S[m] = np.where(prof[m] < 0.05, S_RIVER, 0)
     dam = near & ~band
     W.H[dam] = np.maximum(W.H[dam], W.Wn[dam]); W.touch[dam] = True; W.S[dam] = S_BED; W.R[dam] = R_STONE
-    return hw, fl
+    W.rift = dict(cen=cen, fl=fl, prof=prof, hn=hn, hs=hs)
+    return np.minimum(hn, hs), fl
+RIFT_N = Mix({"deepslate[axis=y]": 40, "tuff": 25, "cobbled_deepslate": 25, "andesite": 10}, 811)
+RIFT_S = {0: "red_terracotta", 1: "terracotta", 2: "red_sandstone", 3: "orange_terracotta", 4: "sandstone", 5: "brown_terracotta", 6: "red_sandstone"}
+def rift_rock(x, y, z):
+    if z < 650: return RIFT_N.at(x, y, z)
+    return RIFT_S[(y // 3) % 7]                         # horizontal strata, as tools/seedmap/Terrain.java rock style 4
+def rift_details(W, P):
+    """overhangs (cornices) on both walls at different heights and the scree of fallen blocks on the floor at the foot of the walls
+    (not in the riverbed, not under the bridge)"""
+    cen = W.rift["cen"]; nc = ns = 0
+    for x in range(-740, 740):
+        if abs(x) < 12: continue
+        xi = x - W.x0; c = 650 + int(round(cen[xi]))
+        for side in (-1, 1):
+            # cornice: every ~14 blocks a shelf 1..3 out of the wall, 4..9 long, 1..2 thick, at 25..75% of the wall height
+            if hsh(x // 14, side, 0, 821) < 0.55 and x % 14 == 0:
+                L = 4 + int(hsh(x, side, 1, 822) * 6); out = 1 + int(hsh(x, side, 2, 823) * 3); th = 1 + int(hsh(x, side, 3, 824) * 2)
+                fr = 0.25 + 0.5 * hsh(x, side, 4, 825)
+                for xx in range(x, x + L):
+                    if abs(xx) < 12 or xx >= 740: continue
+                    rim = W.at(xx, c + side * 30); flo = W.at(xx, c); yc = int(flo + (rim - flo) * fr)
+                    zz = c                                          # the wall at that height: first column outwards whose ground >= yc
+                    while abs(zz - c) < 28 and W.at(xx, zz) < yc: zz += side
+                    if abs(zz - c) >= 28: continue
+                    o = out - (1 if xx in (x, x + L - 1) else 0)
+                    for k in range(1, o + 1):
+                        q = zz - side * k
+                        if W.inplot(xx, q): continue
+                        for yy in range(yc - th + 1, yc + 1):
+                            if yy > W.at(xx, q): P.set(xx, yy, q, rift_rock(xx, yy, q)); nc += 1
+            # scree: blocks and small heaps on the floor near the foot of the wall
+            for k in range(3, 18):
+                z = c + side * k
+                if abs(z - 650 - cen[xi]) < 4: continue
+                pr = W.rift["prof"][z - W.z0, xi]
+                if pr > 0.12 or hsh(x, z, 5, 826) > 0.06 + 0.05 * (k > 8): continue
+                g = W.at(x, z); r = 1 + int(hsh(x, z, 6, 827) * 2)
+                for dx in range(-r, r + 1):
+                    for dz in range(-r, r + 1):
+                        hgt = r + 1 - max(abs(dx), abs(dz)) - (1 if hsh(x + dx, z + dz, 7, 828) < 0.3 else 0)
+                        gq = W.at(x + dx, z + dz)
+                        if abs(z + dz - 650 - cen[xi]) < 3 or abs(x + dx) < 8 or abs(gq - g) > 2 or W.inplot(x + dx, z + dz): continue
+                        for yy in range(gq + 1, gq + 1 + hgt): P.set(x + dx, yy, z + dz, rift_rock(x + dx, yy, z + dz)); ns += 1
+    return nc, ns
 def gorge(W):
     """the west pass: a gorge 9 wide (z -194..-186) through the ridge, vertical walls; the floor follows the natural ground at both
     mouths and is graded in half blocks by the trail through it."""
@@ -216,19 +271,20 @@ def ledge(W):
             zi, xi = z - W.z0, x - W.x0; W.H[zi, xi] = floor; W.S[zi, xi] = S_FOREST; W.R[zi, xi] = R_STONE; W.touch[zi, xi] = True
     return floor + 1
 def pads(W):
-    """flat 14x14 pads round the bonfires (hearth y = pad + 1), 4-block soft rim"""
+    """flat 14x14 pads round the bonfires (hearth y = pad + 1); the rim falls/rises 1 block per block (Chebyshev) to the ground, no
+    vertical step (HQ review T-022, 3). Every written column goes to W.allow (the exception of r1_check plots)."""
     out = []
     for n, bid, x, z in BONFIRES:
         sub = W.G[z - 5 - W.z0:z + 9 - W.z0, x - 6 - W.x0:x + 8 - W.x0]; ws = W.Wn[z - 5 - W.z0:z + 9 - W.z0, x - 6 - W.x0:x + 8 - W.x0]
         y = int(round(np.median(sub)))
         if (ws != NONE).any(): y = max(y, int(ws.max()) + 1)        # never under water: the pad is raised over the shore
-        for zz in range(z - 9, z + 13):
-            for xx in range(x - 10, x + 12):
+        for zz in range(z - 29, z + 33):
+            for xx in range(x - 30, x + 32):
                 d = max(x - 6 - xx, xx - (x + 7), z - 5 - zz, zz - (z + 8), 0)
-                zi, xi = zz - W.z0, xx - W.x0; cur = W.H[zi, xi]
-                if d == 0: t = y
-                else: t = cur + (y - cur) * (1 - smooth(d / 4.5))
-                if abs(t - cur) > 0.4 or d == 0: W.H[zi, xi] = t; W.S[zi, xi] = S_FOREST; W.R[zi, xi] = R_STONE; W.touch[zi, xi] = True
+                zi, xi = zz - W.z0, xx - W.x0; cur = W.at(xx, zz)
+                t = y if d == 0 else min(max(cur, y - d), y + d)
+                if t != cur or d == 0:
+                    W.H[zi, xi] = t; W.S[zi, xi] = S_FOREST; W.R[zi, xi] = R_STONE; W.touch[zi, xi] = True; W.allow[zi, xi] = True
         out.append((n, bid, x, y + 1, z))
     return out
 
@@ -266,7 +322,8 @@ def cost_field(W, box, used):
     c += np.where(W.pd[s] <= 0, 40, 0)                          # plots: only to leave/enter towards a bonfire inside
     c += np.where(W.touch[s] & (W.R[s] != R_STONE), 1e6, 0)     # ridges, rift, wall
     for (x, z) in used:
-        if x1 <= x <= x2 and z1 <= z <= z2: c[z - z1, x - x1] = min(c[z - z1, x - x1], USED)
+        if x1 <= x <= x2 and z1 <= z <= z2 and not W.inplot(x, z): c[z - z1, x - x1] = min(c[z - z1, x - x1], USED)   # not inside places:
+        # a ring trail leaves its bonfire's place by its own shortest approach instead of riding another trail's approach out
     return c
 def simplify(path, step=5):
     pts = path[::step] + [path[-1]]
@@ -280,9 +337,8 @@ class Placer:
     def __init__(self): self.v = {}
     def set(self, x, y, z, s): self.v[(x, y, z)] = s if ":" in s.split("[")[0] else "minecraft:" + s
     def get(self, x, y, z): return self.v.get((x, y, z))
-APPROACH = os.environ.get("LE_R1_APPROACH") == "1"   # question to HQ: lay the trails on into the places up to the bonfire pads (default: stop at the place edge)
 LAID = {}      # (x, z) -> surface in half blocks of the trails already laid: a later trail joins them and never rewrites them
-def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
+def lay_trail(W, P, cells, w=1, end_y=None, start_y=None, inplot=False):
     """graded path (T-008 rules): surfaces in half blocks change by at most 0.5 per step along the line and across the width;
     cut into slopes, banked over hollows (earth down to the ground), fords (gravel up to the water level) and boardwalks over deeper water."""
     def surf0(c):
@@ -319,8 +375,9 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
             elif s2 < max(n) - 1: surf[(x, z)] = max(n) - 1; changed = True
     for (x, z), s2 in surf.items():
         if (x, z) in LAID: continue
-        if best[(x, z)] > 0 and W.inplot(x, z) and math.hypot(x, z) > REFUGE_R and not APPROACH: continue
+        if best[(x, z)] > 0 and W.inplot(x, z) and math.hypot(x, z) > REFUGE_R and not inplot: continue
         LAID[(x, z)] = s2
+        if W.inplot(x, z): W.allow[z - W.z0, x - W.x0] = True
         y = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
         g = W.at(x, z); wn = W.Wn[z - W.z0, x - W.x0]; wet = wn != NONE and wn >= y - 1
         if wet and wn - W.at(x, z) > 2:                        # boardwalk
@@ -334,13 +391,14 @@ def lay_trail(W, P, cells, w=1, end_y=None, start_y=None):
             for yy in range(min(g, y - 1) - 1 if not wet else g + 1, y):
                 P.set(x, yy, z, "gravel" if wet else ("dirt" if yy >= y - 3 else "stone"))
         for yy in range(y + 1, max(y + 4, g + 1)): P.set(x, yy, z, "air")
-        if y - g > 2 and best[(x, z)] > 0:          # an embankment: earth shoulders falling 1 per block, no vertical drop at the edge
-            k = min(y - g, 14)
+        if y - g >= 1 and best[(x, z)] > 0:         # an embankment: a berm 1 wide level with the trail (HQ review T-022, 2), then
+            k = min(y - g, 14) + 1                   # earth shoulders falling 1 per block, no vertical drop at the edge
             for dx in range(-k, k + 1):
                 for dz in range(-k, k + 1):
                     q = (x + dx, z + dz); r = max(abs(dx), abs(dz))
-                    if r == 0 or q in surf or q in LAID or W.inplot(*q): continue
-                    gq = W.at(*q); top = y - r
+                    if r == 0 or q in surf or q in LAID or (W.inplot(*q) and not inplot): continue
+                    gq = W.at(*q); top = y - max(0, r - 1)
+                    if W.inplot(*q) and top > gq: W.allow[q[1] - W.z0, q[0] - W.x0] = True
                     if top <= gq: continue
                     for yy in range(gq + 1, top + 1):
                         if P.get(q[0], yy, q[1]) is None: P.set(q[0], yy, q[1], "grass_block[snowy=false]" if yy == top else "dirt")
@@ -362,14 +420,20 @@ def trails(W, P, bonf, door_y):
     B = {n: (x, z) for n, bid, x, y, z in bonf}; BY = {n: y for n, bid, x, y, z in bonf}
     used = set(); out = []; heads = {}
     for a, b, card in TRAILS:
-        if a == "R":                                   # from the hub plateau edge towards the bonfire
+        if a == "R" and b == "S": pass               # start set below
+        elif a == "R":                                 # from the hub plateau edge towards the bonfire
             gx, gz = B[b]; ang = math.atan2(gz, gx); start = (int(round(TRAILHEAD_R * math.cos(ang))), int(round(TRAILHEAD_R * math.sin(ang))))
         elif a == "W": start = (-716, (GORGE_Z[0] + GORGE_Z[1]) // 2)
         else: start = B[a]
-        goal = B[b]
+        if b == "S":
+            ang = math.radians(SOUTH_GATE); start = (int(round(TRAILHEAD_R * math.sin(ang))), int(round(-TRAILHEAD_R * math.cos(ang))))
+            goal = (0, BRIDGE_Z[0] - 106)            # the far end of the bridge's north ramp (bridge())
+        else: goal = B[b]
+        appr = (a, b) not in NO_APPROACH
         box = (min(start[0], goal[0]) - 120, min(start[1], goal[1]) - 120, max(start[0], goal[0]) + 120, max(start[1], goal[1]) + 120)
         box = (max(box[0], -760), max(box[1], -900), min(box[2], 740), min(box[3], 640))
         cost = cost_field(W, box, used)
+        if b == "S": cost[W.pd[W.sl(*box)] <= 0] = 1e6         # the South road never crosses a place (branching off the cemetery trail is fine)
         if a == "W":   # the gorge is the only way through the ridge here
             s = W.sl(-716, GORGE_Z[0], -596, GORGE_Z[1]); zz, xx = np.nonzero(np.ones((GORGE_Z[1] - GORGE_Z[0] + 1, 121)))
             for z in range(GORGE_Z[0] + 2, GORGE_Z[1] - 1):
@@ -378,21 +442,25 @@ def trails(W, P, bonf, door_y):
         # cut at the plot edges: the trail runs only outside the places of locations
         inp = [W.inplot(x, z) for x, z in path]
         i0 = 0
-        if APPROACH: inp = [math.hypot(x - goal[0], z - goal[1]) <= 8 or a not in ("R", "W") and math.hypot(x - start[0], z - start[1]) <= 8 for x, z in path]
+        if appr:   # approaches: the trail runs on through the place to the edge of the bonfire pad (inside 8 of the hearth = the pad)
+            inp = [b != "S" and max(abs(x - goal[0] - 0.5), abs(z - goal[1] - 1.5)) <= 6.5 or a not in ("R", "W") and max(abs(x - start[0] - 0.5), abs(z - start[1] - 1.5)) <= 6.5 for x, z in path]
         while i0 < len(path) - 1 and inp[i0] and a != "R" and a != "W": i0 += 1
         i1 = len(path) - 1
         while i1 > i0 and inp[i1]: i1 -= 1
         core = path[i0:i1 + 1]
         pts = simplify(core) if len(core) > 6 else core
-        cells = [c for c in cells_of(pts) if APPROACH or not W.inplot(*c) or a in ("R", "W") and math.hypot(*c) < REFUGE_R]
+        cells = [c for c in cells_of(pts) if appr or not W.inplot(*c) or a in ("R", "W") and math.hypot(*c) < REFUGE_R]
         # the ends at a plot edge meet the natural ground of the place (no step down from an embankment into it)
         ey = W.at(*cells[-1]) + 1 if cells and i1 < len(path) - 1 else None
         sy = W.at(*cells[0]) + 1 if cells and i0 > 0 else None
-        prof = lay_trail(W, P, cells, 1, end_y=ey, start_y=sy)
+        if appr:
+            ey = W.at(*cells[-1]) + 1 if cells and b != "S" else None; sy = W.at(*cells[0]) + 1 if cells and a not in ("R", "W") else None
+        prof = lay_trail(W, P, cells, 1, end_y=ey, start_y=sy, inplot=appr)
         for c in cells:
             for dx in (-1, 0, 1):
                 for dz in (-1, 0, 1): used.add((c[0] + dx, c[1] + dz))
-        out.append(dict(a=a, b=b, card=card, cells=cells, line=[[round(x, 1), round(z, 1)] for x, z in pts], prof=[[round(x, 2), round(z, 2), s] for (x, z), s in prof],
+        apc = [c for c in cells if W.inplot(*c)] if appr else []
+        out.append(dict(a=a, b=b, card=card, cells=cells, approach=[list(c) for c in apc[::6] + apc[-1:]], line=[[round(x, 1), round(z, 1)] for x, z in pts], prof=[[round(x, 2), round(z, 2), s] for (x, z), s in prof],
                         stub_a=[list(c) for c in path[:i0 + 1]] if a not in ("R", "W") else [], stub_b=[list(c) for c in path[i1:]],
                         trail_len=round(sum(math.hypot(q[0] - p[0], q[1] - p[1]) for p, q in zip(pts, pts[1:]))),
                         total_len=round(sum(math.hypot(q[0] - p[0], q[1] - p[1]) for p, q in zip(path, path[1:])))))
@@ -668,6 +736,7 @@ def build():
     origin, rc, ro = rubble(W, P, gfl)
     nf = forests(W, P, feats["west"], feats["east"], [c for t in tr for c in t["cells"]])
     scree(W, P, M)
+    ncor, nscr = rift_details(W, P); print(f"rift: cornices {ncor} blocks, scree {nscr} blocks")
     with open(os.path.join(OUT, "r1.txt"), "w") as f:
         for (x, y, z), s in sorted(P.v.items(), key=lambda kv: (kv[0][1], kv[0][0], kv[0][2])): f.write(f"{x} {y} {z} {s}\n")
     mb = write_template("south_bridge_closed", bc, None); mo = write_template("south_bridge_open", bo, None)
@@ -676,6 +745,10 @@ def build():
     meta = dict(bonfires=bonf, door=[DOOR[0], door_y, DOOR[1]], bridge=dict(deck=deck, at=list(mb)), pass_=dict(at=list(mr), floor=gfl),
                 trails=tr, signs=nsign, trees=nf, rift_hw=[float(hw.min()), float(hw.max())])
     json.dump(meta, open(os.path.join(OUT, "r1.json"), "w"))
+    np.savez_compressed(os.path.join(OUT, "allow.npz"), allow=W.allow, x0=W.x0, z0=W.z0)    # columns r1_check plots may find changed
+    name = {n: bid for n, bid, *_ in bonf}; name.update({"R": "refuge", "W": "pass", "S": "south_road"})
+    rows = [f"# approach {name[t['a']]}->{name[t['b']]}: " + " ".join(f"{x},{z}" for x, z in t["approach"]) for t in tr if t["approach"]]
+    replace_lines(os.path.join(ROOT, "tools/build/r1_plots.txt"), ["# approach "], rows)
     print(f"placements: {len(P.v)} blocks; signposts {nsign}; trees west {nf[0]} east {nf[1]}; bridge deck y {deck} template at {mb}; rubble at {mr}; door y {door_y}")
     os.makedirs(os.path.join(ROOT, "docs/reports/T-022"), exist_ok=True)
     plan(W, tr, bonf, os.path.join(ROOT, "docs/reports/T-022/r1_plan.png"))
