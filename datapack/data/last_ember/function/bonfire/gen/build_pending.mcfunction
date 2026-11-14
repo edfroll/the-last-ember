@@ -1,2 +1,11 @@
 # generated: registered but not yet built bonfires are built once their chunk is loaded (checked every second)
 execute if data storage last_ember:bonfires by.b1{built:0b} in minecraft:overworld if loaded 0 105 0 positioned 0 105 0 run function last_ember:bonfire/build_now {i:1}
+execute if data storage last_ember:bonfires by.b2{built:0b} in minecraft:overworld if loaded 118 192 448 positioned 118 192 448 run function last_ember:bonfire/build_now {i:2}
+execute if data storage last_ember:bonfires by.b3{built:0b} in minecraft:overworld if loaded -150 112 -362 positioned -150 112 -362 run function last_ember:bonfire/build_now {i:3}
+execute if data storage last_ember:bonfires by.b4{built:0b} in minecraft:overworld if loaded 238 121 -258 positioned 238 121 -258 run function last_ember:bonfire/build_now {i:4}
+execute if data storage last_ember:bonfires by.b5{built:0b} in minecraft:overworld if loaded -276 90 250 positioned -276 90 250 run function last_ember:bonfire/build_now {i:5}
+execute if data storage last_ember:bonfires by.b6{built:0b} in minecraft:overworld if loaded -392 111 -180 positioned -392 111 -180 run function last_ember:bonfire/build_now {i:6}
+execute if data storage last_ember:bonfires by.b7{built:0b} in minecraft:overworld if loaded 356 168 -40 positioned 356 168 -40 run function last_ember:bonfire/build_now {i:7}
+execute if data storage last_ember:bonfires by.b8{built:0b} in minecraft:overworld if loaded 440 163 -10 positioned 440 163 -10 run function last_ember:bonfire/build_now {i:8}
+execute if data storage last_ember:bonfires by.b9{built:0b} in minecraft:overworld if loaded 70 64 -420 positioned 70 64 -420 run function last_ember:bonfire/build_now {i:9}
+execute if data storage last_ember:bonfires by.b10{built:0b} in minecraft:overworld if loaded -404 137 72 positioned -404 137 72 run function last_ember:bonfire/build_now {i:10}

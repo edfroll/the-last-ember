@@ -5,4 +5,5 @@ scoreboard players operation #t5 le.gate = #t le.gate
 scoreboard players operation #t5 le.gate %= #5 le.gate
 execute if score #t5 le.gate matches 0 run function last_ember:gate/five
 execute as @e[type=minecraft:ender_pearl] at @s if entity @s[y=316,dy=2000] run function last_ember:gate/gen/pearl
+execute if entity @a[tag=le.chorus,limit=1] as @a[tag=le.chorus] at @s run function last_ember:gate/chorus_check
 schedule function last_ember:gate/loop 1t replace

@@ -15,6 +15,7 @@ CLIENT = os.path.join(ROOT, "server/client")
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("spec"); ap.add_argument("--out", default=os.path.join(ROOT, "docs/reports/shots"))
     ap.add_argument("--settle", type=float, default=6); ap.add_argument("--player", default="Cam")
+    ap.add_argument("--double", action="store_true", help="capture twice, keep the second: the software-GL cloud client can hand back the frame of the previous request")
     a = ap.parse_args()
     cfg = json.load(open(a.spec)); os.makedirs(a.out, exist_ok=True)
     rc.run(f"gamemode spectator {a.player}")   # only the camera; the server default stays survival for real players
@@ -26,11 +27,17 @@ def main():
         rc.run(f"tp {a.player} {s['x']} {s['y']} {s['z']} {s.get('yaw', 0)} {s.get('pitch', 0)}")
         time.sleep(s.get("settle", a.settle))  # chunks + lighting
         done = os.path.join(CLIENT, "shot-done.txt")
-        if os.path.exists(done): os.remove(done)
-        with open(os.path.join(CLIENT, "shot-request.txt"), "w") as f: f.write(f"{s['name']} {1 if s.get('hud') else 0}\n")
-        for _ in range(120):
-            if os.path.exists(done): break
-            time.sleep(0.5)
+        for nm in ([s["name"] + "__pre"] if a.double else []) + [s["name"]]:
+            if os.path.exists(done): os.remove(done)
+            with open(os.path.join(CLIENT, "shot-request.txt"), "w") as f: f.write(f"{nm} {1 if s.get('hud') else 0}\n")
+            for _ in range(120):
+                if os.path.exists(done): break
+                time.sleep(0.5)
+            if nm.endswith("__pre"):
+                pre = os.path.join(CLIENT, "screenshots", nm + ".png")
+                time.sleep(1)
+                if os.path.exists(pre): os.remove(pre)
+                time.sleep(11)          # the chat line «Saved screenshot…» fades after 10 s
         res = open(done).read().strip() if os.path.exists(done) else "timeout"
         src = os.path.join(CLIENT, "screenshots", s["name"] + ".png")
         if res.endswith("ok") and os.path.exists(src):

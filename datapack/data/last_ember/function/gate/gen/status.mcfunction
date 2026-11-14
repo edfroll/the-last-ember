@@ -13,7 +13,7 @@ execute if score #gate_ancestor_frame le.gate matches 0 run tellraw @s [{"text":
 execute if score #gate_ash_summit le.gate matches 1 run tellraw @s [{"text": " ash_summit → final: ", "color": "gray"}, {"text": "открыты", "color": "green"}]
 execute if score #gate_ash_summit le.gate matches 0 run tellraw @s [{"text": " ash_summit → final: ", "color": "gray"}, {"text": "закрыты", "color": "red"}]
 execute if score #sc_r1 le.gate matches 1 run tellraw @s [{"text": " шорткат r1: ", "color": "gray"}, {"text": "открыт", "color": "green"}]
-execute if score #sc_r1 le.gate matches 0 run tellraw @s [{"text": " шорткат r1: ", "color": "gray"}, {"text": "заперт (двери в регионе нет)", "color": "red"}]
+execute if score #sc_r1 le.gate matches 0 run tellraw @s [{"text": " шорткат r1: ", "color": "gray"}, {"text": "заперт", "color": "red"}]
 execute if score #sc_r2 le.gate matches 1 run tellraw @s [{"text": " шорткат r2: ", "color": "gray"}, {"text": "открыт", "color": "green"}]
 execute if score #sc_r2 le.gate matches 0 run tellraw @s [{"text": " шорткат r2: ", "color": "gray"}, {"text": "заперт (двери в регионе нет)", "color": "red"}]
 execute if score #sc_r3 le.gate matches 1 run tellraw @s [{"text": " шорткат r3: ", "color": "gray"}, {"text": "открыт", "color": "green"}]

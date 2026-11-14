@@ -126,11 +126,19 @@ public class Sculpt {
     static Tag[] decode(CompoundTag sec) {
         Tag[] out = new Tag[4096];
         CompoundTag bs = sec.getCompoundOrEmpty("block_states"); ListTag pal = bs.getListOrEmpty("palette");
+        if (pal.isEmpty()) { Arrays.fill(out, StringTag.valueOf("minecraft:air")); return out; }   // light-only section
         long[] data = bs.getLongArray("data").orElse(null);
         if (data == null || pal.size() == 1) { Arrays.fill(out, pal.get(0)); return out; }
         int bits = Math.max(4, 32 - Integer.numberOfLeadingZeros(pal.size() - 1)), per = 64 / bits; long mask = (1L << bits) - 1;
         for (int i = 0; i < 4096; i++) out[i] = pal.get((int) ((data[i / per] >>> ((i % per) * bits)) & mask));
         return out;
+    }
+    /** the 24 block sections Y -4..19 in order (26.x lists may hold extra light-only sections or miss empty ones) */
+    static ListTag byY(ListTag secs) {
+        CompoundTag[] o = new CompoundTag[24];
+        for (int i = 0; i < secs.size(); i++) { CompoundTag c = secs.getCompoundOrEmpty(i); int y = c.getByteOr("Y", (byte) 0); if (y >= -4 && y < 20) o[y + 4] = c; }
+        ListTag l = new ListTag(); for (int i = 0; i < 24; i++) { if (o[i] == null) { o[i] = new CompoundTag(); o[i].putByte("Y", (byte) (i - 4)); } l.add(o[i]); }
+        return l;
     }
     static CompoundTag encode(Tag[] blocks, CompoundTag oldSec, int yIndex) {
         LinkedHashMap<String, Integer> pm = new LinkedHashMap<>(); ListTag pal = new ListTag(); int[] idx = new int[4096];
@@ -142,7 +150,7 @@ public class Sculpt {
             bs.put("data", new LongArrayTag(data));
         }
         CompoundTag sec = new CompoundTag();
-        sec.put("block_states", bs); sec.put("biomes", oldSec.get("biomes")); sec.put("Y", ByteTag.valueOf((byte) (yIndex - 4)));
+        sec.put("block_states", bs); if (oldSec.get("biomes") != null) sec.put("biomes", oldSec.get("biomes")); sec.put("Y", ByteTag.valueOf((byte) (yIndex - 4)));
         return sec;
     }
 
@@ -155,7 +163,7 @@ public class Sculpt {
             for (int czk = cMinZ; czk <= cMaxZ; czk++) for (int cxk = cMinX; cxk <= cMaxX; cxk++) {
                 ChunkPos cp = new ChunkPos(cxk, czk); CompoundTag ch = st.read(cp);
                 if (ch == null) { missing++; continue; }
-                ListTag secs = ch.getListOrEmpty("sections"); Tag[][] blocks = new Tag[24][]; for (int i = 0; i < 24; i++) blocks[i] = decode(secs.getCompoundOrEmpty(i));
+                ListTag secs = byY(ch.getListOrEmpty("sections")); Tag[][] blocks = new Tag[24][]; for (int i = 0; i < 24; i++) blocks[i] = decode(secs.getCompoundOrEmpty(i));
                 boolean touched = false;
                 for (int lz = 0; lz < 16; lz++) for (int lx = 0; lx < 16; lx++) {
                     int x = cxk * 16 + lx, z = czk * 16 + lz; double d = distOutside(x, z);
@@ -192,7 +200,7 @@ public class Sculpt {
     static int groundTop(RegionFileStorage st, Map<Long, Tag[][]> cache, int x, int z) throws IOException {
         int cxk = Math.floorDiv(x, 16), czk = Math.floorDiv(z, 16); long key = (((long) cxk << 32) | (czk & 0xffffffffL));
         Tag[][] blocks = cache.get(key);
-        if (blocks == null) { CompoundTag ch = st.read(new ChunkPos(cxk, czk)); if (ch == null) return Integer.MIN_VALUE; ListTag secs = ch.getListOrEmpty("sections"); blocks = new Tag[24][]; for (int i = 0; i < 24; i++) blocks[i] = decode(secs.getCompoundOrEmpty(i)); cache.put(key, blocks); }
+        if (blocks == null) { CompoundTag ch = st.read(new ChunkPos(cxk, czk)); if (ch == null) return Integer.MIN_VALUE; ListTag secs = byY(ch.getListOrEmpty("sections")); blocks = new Tag[24][]; for (int i = 0; i < 24; i++) blocks[i] = decode(secs.getCompoundOrEmpty(i)); cache.put(key, blocks); }
         int lx = Math.floorMod(x, 16), lz = Math.floorMod(z, 16);
         for (int y = MAXY; y >= MINY; y--) { String n = nameOf(blocks[(y - MINY) >> 4][(((y - MINY) & 15) << 8) | (lz << 4) | lx]).replace("minecraft:", ""); if (GROUND.contains(n)) return y; }  // terrain only: trees, plants and water are ignored
         return MINY;
