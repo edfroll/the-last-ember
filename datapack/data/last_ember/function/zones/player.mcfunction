@@ -6,6 +6,7 @@ tag @s remove le.zf.no_fire
 tag @s remove le.zf.calm
 tag @s remove le.zf.dungeon
 tag @s remove le.zf.border
+tag @s remove le.zf.no_chorus
 function last_ember:zones/locate
 function last_ember:zones/run_p with storage last_ember:zt a
 execute if score #hit le.z matches 1 if entity @s[gamemode=survival] run function last_ember:zones/enter

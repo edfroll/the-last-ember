@@ -46,3 +46,5 @@ function last_ember:contract/setup
 function last_ember:gate/setup
 # T-023: the Circle of the Weepers (Altar I)
 function last_ember:weepers/setup
+# T-024: the Enchanted Maze
+function last_ember:maze/setup

@@ -4,8 +4,8 @@
   seam     steps > 4 between neighbouring ground columns in the low part of the sculpted relief (and how many are steeper than natural)
   plots    places of locations untouched: ground of every plot column equals the natural scan (except bonfire pads and the ledge)
   water    no water on the rift floor, no water in rewritten columns that was not there
-  places   T-023: the build step of a place (weepers) changed nothing outside it: scans weepers_pre.bin / weepers_post.bin (r1_apply.sh)
-Usage: python3 tools/build/r1_check.py [after.bin] [wall seam plots water]"""
+  places   T-023/T-024: the build step of a place changed nothing outside it: scans <id>_pre.bin / <id>_post.bin (r1_apply.sh)
+Usage: python3 tools/build/r1_check.py [after.bin] [wall seam plots water] | places [weepers maze]"""
 import csv, os, sys, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from scanio import Scan, NONE
@@ -13,17 +13,19 @@ import r1
 ROOT = r1.ROOT
 args = sys.argv[1:]; path = args[0] if args and args[0].endswith(".bin") else os.path.join(ROOT, "server/build/r1/after.bin")
 what = [a for a in args if not a.endswith(".bin")] or ["wall", "seam", "plots", "water"]
-BUILT = {"weepers"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
-if what == ["places"]:
-    W0 = r1.World(); pre = Scan(os.path.join(r1.OUT, "weepers_pre.bin")); post = Scan(os.path.join(r1.OUT, "weepers_post.bin"))
-    X, Z = np.meshgrid(np.arange(pre.x0, pre.x0 + pre.w), np.arange(pre.z0, pre.z0 + pre.h))
-    p = [q for q in W0.plots if q["id"] == "weepers"][0]
-    outside = r1.plot_dist(p, X, Z) - p["m"] > 0
-    d = outside & ((pre.ground != post.ground) | (pre.top != post.top) | (pre.water != post.water))
-    inside_changed = int((~outside & ((pre.ground != post.ground) | (pre.top != post.top))).sum())
-    print(f"places: weepers: {int(outside.sum())} columns around the place checked, {int(d.sum())} changed (inside the place {inside_changed} changed)")
-    if d.any(): zz, xx = np.nonzero(d); print("   e.g.", [(int(x + pre.x0), int(z + pre.z0)) for z, x in list(zip(zz, xx))[:8]])
-    print("OK" if not d.any() else "CHECK"); sys.exit(0 if not d.any() else 1)
+BUILT = {"weepers", "maze"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
+if what[:1] == ["places"]:
+    W0 = r1.World(); bad = False
+    for pid in what[1:] or ["weepers"]:
+        pre = Scan(os.path.join(r1.OUT, f"{pid}_pre.bin")); post = Scan(os.path.join(r1.OUT, f"{pid}_post.bin"))
+        X, Z = np.meshgrid(np.arange(pre.x0, pre.x0 + pre.w), np.arange(pre.z0, pre.z0 + pre.h))
+        p = [q for q in W0.plots if q["id"] == pid][0]
+        outside = r1.plot_dist(p, X, Z) - p["m"] > 0
+        d = outside & ((pre.ground != post.ground) | (pre.top != post.top) | (pre.water != post.water))
+        inside_changed = int((~outside & ((pre.ground != post.ground) | (pre.top != post.top))).sum())
+        print(f"places: {pid}: {int(outside.sum())} columns around the place checked, {int(d.sum())} changed (inside the place {inside_changed} changed)")
+        if d.any(): zz, xx = np.nonzero(d); print("   e.g.", [(int(x + pre.x0), int(z + pre.z0)) for z, x in list(zip(zz, xx))[:8]]); bad = True
+    print("OK" if not bad else "CHECK"); sys.exit(1 if bad else 0)
 S = Scan(path); ok = True
 def g(x, z): return int(S.ground[z - S.z0, x - S.x0])
 if "wall" in what:

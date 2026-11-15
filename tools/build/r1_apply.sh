@@ -17,7 +17,16 @@ tools/terrain.sh apply server/build/r1/weepers_terrain.bin | grep -v JAVA_TOOL
 python3 tools/build/validate.py server/build/r1/weepers.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/weepers.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $WB server/build/r1/weepers_post.bin | grep -v JAVA_TOOL
-python3 tools/build/r1_check.py places
+python3 tools/build/r1_check.py places weepers
+# T-024: the Enchanted Maze with its terrace (only inside its place; movable cells, exit and guard statues are templates of the datapack)
+MB="-236 -516 -64 -344"   # the place with its seam margin + 10 around (checked by `places`)
+tools/terrain.sh scan $MB server/build/r1/maze_pre.bin | grep -v JAVA_TOOL
+python3 tools/build/r1_maze.py && python3 tools/gen_altars.py >/dev/null && python3 tools/gen_zones.py >/dev/null && python3 tools/gen_biomes.py >/dev/null
+tools/terrain.sh apply server/build/r1/maze_terrain.bin | grep -v JAVA_TOOL
+python3 tools/build/validate.py server/build/r1/maze.txt | tail -1
+tools/blockwriter.sh apply server/build/r1/maze.txt | grep -v JAVA_TOOL | tail -1
+tools/terrain.sh scan $MB server/build/r1/maze_post.bin | grep -v JAVA_TOOL
+python3 tools/build/r1_check.py places maze
 tools/biomepaint.sh | grep -v JAVA_TOOL | head -1
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

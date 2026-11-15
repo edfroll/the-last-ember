@@ -51,7 +51,7 @@
     {"id": "castle_dream", "shape": "circle", "v": [450, 0, 100], "trans": 16},
     {"id": "crooked_fens", "shape": "rect", "v": [-492, 240, -268, 420], "trans": 24},
     {"id": "mushroom_grove", "shape": "circle", "v": [-420, 60, 45], "trans": 16},
-    {"id": "hedge_maze", "shape": "rect", "v": [-212, -492, -88, -368], "trans": 8, "y": [40, 150]},
+    {"id": "hedge_maze", "shape": "rect", "v": [-219, -499, -82, -362], "trans": 8, "y": [40, 150]},
     {"id": "minecraft:pale_garden", "shape": "rect", "v": [232, -448, 428, -252], "trans": 16},
     {"id": "early_winter", "shape": "rect", "v": [-620, -852, -500, -780], "trans": 16},
     {"id": "early_winter", "shape": "rect", "v": [-800, -848, -620, -700], "trans": 32}

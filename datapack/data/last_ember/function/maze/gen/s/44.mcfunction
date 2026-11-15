@@ -1,0 +1,3 @@
+# generated: statue 44 at -161 -483 (cell 2,0), exit N, nearest movable cell 1
+scoreboard players set #n44 le.mz 1
+execute at @s anchored eyes facing -160.5 114.5 -482.5 anchored feet positioned ^ ^ ^1 rotated as @s positioned ^ ^ ^-1 if entity @s[distance=..0.35] run function last_ember:maze/gen/s/l44
