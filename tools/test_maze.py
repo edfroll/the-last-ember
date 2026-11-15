@@ -76,7 +76,10 @@ def t_layout():
     chk("maze/reset: all cells variant 1", state() == [1] * 6, state())
     # what stands follows the state: break the state on purpose, the sync of the second puts the template back
     R("scoreboard players set #v3 le.mz 2"); R("data modify storage last_ember:maze v.c3 set value 2")
-    chk("sync each second: a state changed behind its back is placed", wait(lambda: probe_k(3) == 2, 8))
+    okk = wait(lambda: probe_k(3) == 2, 8)
+    diag = "" if okk else "pv3 %s, busy %s, items %s" % (mz("#pv3"), (R("execute in minecraft:overworld store result score #b3 le.mz run function last_ember:maze/gen/busy_3"), mz("#b3"))[1],
+                                                      R("execute as @e[type=minecraft:item,x=-188,y=109,z=-420,dx=27,dy=12,dz=27] run data get entity @s Item.id"))
+    chk("sync each second: a state changed behind its back is placed", okk, diag)
     R("function last_ember:maze/reset"); unstage()
 
 def t_shuffle():
@@ -194,8 +197,11 @@ def t_heads():
     print("[the head of a dead-end statue]"); stage(False); R("function last_ember:maze/reset"); R("function last_ember:maze/heads_reset"); time.sleep(0.4)
     s = [q for q in M["statues"] if q["var"] is None][3]
     look("Cam", s, 2); time.sleep(1.0); chk("a player passes by: the head is still straight", not head_turned(s))
+    face_rest = {"N": "east", "E": "south", "S": "west", "W": "north"}[{"N": "S", "S": "N", "E": "W", "W": "E"}[s["exit"]]]
+    face_follow = {"N": "south", "S": "north", "E": "west", "W": "east"}[s["exit"]]
+    chk("the head at rest: turned aside (in profile from the way out)", passed(f"execute if block {s['x']} {Y + 2} {s['z']} minecraft:polished_diorite_stairs[facing={face_rest}]"))
     x, z = stand_at(s, 9); R(f"tp Cam {x:.2f} {Y} {z:.2f}"); time.sleep(1.6)
-    chk("the player went away (> 6): the head turns after", head_turned(s), mz(f"#h{s['id']}"))
+    chk("the player went away (> 6): the head turns after", head_turned(s) and passed(f"execute if block {s['x']} {Y + 2} {s['z']} minecraft:tuff_stairs[facing={face_follow}]"), mz(f"#h{s['id']}"))
     R("tp Cam -149.5 112 -364.5"); R("tick sprint 1250"); time.sleep(4)
     chk("60 s with nobody within 16: straight again", wait(lambda: not head_turned(s), 6), mz(f"#h{s['id']}"))
     unstage()
@@ -270,7 +276,8 @@ def t_bypass():
         R('execute as @e[type=minecraft:ender_pearl,tag=le.mztest] run data modify entity @s Owner set from entity Cam UUID'); time.sleep(2.5); b = pos("Cam")
         n = int(math.hypot(b[0] - a[0], b[2] - a[2]) * 2) + 1           # every block on the line a -> b is a path: no hedge crossed
         line = {(math.floor(a[0] + (b[0] - a[0]) * i / n), math.floor(a[2] + (b[2] - a[2]) * i / n)) for i in range(n + 1)}
-        if b[1] > G + 7.5 or not all(walkable(x, Y, z) for x, z in line): far += 1; print("     pearl", (dx, dz), a, b)
+        hedge = [(x, z) for x, z in line if passed(f"execute if block {x} {Y + 2} {z} #minecraft:leaves")]    # a hedge crossed (a statue's shoulder is not one)
+        if b[1] > G + 7.5 or hedge: far += 1; print("     pearl", (dx, dz), a, b, hedge)
         else: print("     pearl", (dx, dz), "landed %.1f blocks away along the corridor" % math.hypot(b[0] - a[0], b[2] - a[2]))
         R("kill @e[type=minecraft:ender_pearl]")
     chk("ender pearls thrown over the hedges (4 directions): never over a hedge, never on top", far == 0, far)
@@ -287,6 +294,12 @@ def t_zones():
     R(f"tp Cam {s[0] + 0.5} {Y} {s[1] + 0.5}"); time.sleep(1.0)
     chk("in the maze: adventure (blocks cannot be broken)", passed("execute if entity @a[name=Cam,gamemode=adventure]"))
     chk("zone flags: no_blink, no_chorus", passed("execute if entity @a[name=Cam,tag=le.zf.no_blink,tag=le.zf.no_chorus]"))
+    # the terrace (zone maze_terrace): the band on top by the parapet, and the foot of the north retaining wall
+    R("tp Cam -215.5 112 -430.5"); time.sleep(1.0)
+    chk("on the band of the terrace by the parapet: adventure (the parapet cannot be broken)", passed("execute if entity @a[name=Cam,gamemode=adventure]"))
+    fy = next((y + 1 for y in range(108, 40, -1) if not passed(f"execute if block -150 {y} -501 minecraft:air") and not passed(f"execute if block -150 {y} -501 minecraft:water")), None)
+    R(f"tp Cam -149.5 {fy} -500.5"); time.sleep(1.0)
+    chk(f"at the foot of the north retaining wall (y {fy}): adventure (the wall cannot be broken)", fy and passed("execute if entity @a[name=Cam,gamemode=adventure]"), fy)
     R("difficulty normal"); R(f"tp Cam {SX + 0.5} {Y} {SZ - 10 + 0.5}"); time.sleep(1.0); R(f"summon minecraft:zombie {SX} {Y} {SZ + 6} {{Tags:[\"le.mztest\"],PersistenceRequired:1b}}"); time.sleep(2.0)
     chk("a monster in the sanctum is removed (sent down into the void)", wait(lambda: not passed("execute if entity @e[tag=le.mztest,y=100,dy=40]"), 3), R("data get entity @e[tag=le.mztest,limit=1] Pos"))
     R("kill @e[tag=le.mztest]"); R("difficulty peaceful"); R("tp Cam -149.5 140 -330.5"); time.sleep(1.5)

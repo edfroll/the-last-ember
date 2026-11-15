@@ -60,8 +60,49 @@ MOVABLE = ML.MOVABLE                      # k = index + 1: (1,1) (3,1) (1,3) (3,
 
 # ---------------------------------------------------------------- palette
 LEAF = "[distance=1,persistent=true,waterlogged=false]"
-HEDGE = Mix({"dark_oak_leaves" + LEAF: 40, "spruce_leaves" + LEAF: 20, "red_poplar_leaves" + LEAF: 12.5, "orange_poplar_leaves" + LEAF: 12.5,
-             "azalea_leaves" + LEAF: 10, "flowering_azalea_leaves" + LEAF: 5}, 2401)
+def _hq(x, y, z, s):
+    """a well-mixed lattice hash in [0, 1) (lib.h shows 2x2 squares when used as a palette over a plane)"""
+    n = (x * 0x9E3779B1 + y * 0x85EBCA77 + z * 0xC2B2AE3D + s * 0x27D4EB2F) & 0xffffffffffffffff
+    n ^= n >> 33; n = (n * 0xff51afd7ed558ccd) & 0xffffffffffffffff; n ^= n >> 33; n = (n * 0xc4ceb9fe1a85ec53) & 0xffffffffffffffff; n ^= n >> 33
+    return (n & 0xffffff) / 0x1000000
+def _vnoise(x, y, z, cell, s):
+    """value noise: blobs about `cell` blocks across (smoothstep between lattice points)"""
+    fx, fy, fz = x / cell, y / cell, z / cell
+    ix, iy, iz = math.floor(fx), math.floor(fy), math.floor(fz)
+    tx, ty, tz = [(t * t * (3 - 2 * t)) for t in (fx - ix, fy - iy, fz - iz)]
+    acc = 0.0
+    for dx in (0, 1):
+        for dy in (0, 1):
+            for dz in (0, 1):
+                w = (tx if dx else 1 - tx) * (ty if dy else 1 - ty) * (tz if dz else 1 - tz)
+                acc += w * _hq(ix + dx, iy + dy, iz + dz, s)
+    return acc
+class HedgeMix(Mix):
+    """the leaves of the hedges: patches of irregular shape 2..5 blocks (two octaves of value noise, ranks made uniform), shares of
+    the card overall (dark oak 40, spruce 20, red and orange poplar 25, azalea 15); dark conifers more often at the foot, the rusty
+    poplar more often at the top (by the height in the hedge: y G+2 .. G+7)"""
+    KINDS = [("dark_oak_leaves", "spruce_leaves"), ("red_poplar_leaves", "orange_poplar_leaves"), ("azalea_leaves", "flowering_azalea_leaves")]
+    def __init__(self):
+        self.salt = 2401
+        pts = [(int(_hq(i, 1, 2, 9) * 4000), int(_hq(i, 3, 4, 9) * 400), int(_hq(i, 5, 6, 9) * 4000)) for i in range(6000)]
+        self.cdf = {k: sorted(self.raw(x, y, z, k) for x, y, z in pts) for k in (1, 2, 3)}
+    def raw(self, x, y, z, k):
+        return 0.7 * _vnoise(x, y, z, 3.3, 2401 + k) + 0.3 * _vnoise(x + 17, y, z - 9, 1.6, 2411 + k)
+    def u(self, x, y, z, k):
+        """the noise k at a block as a rank 0..1 (uniform)"""
+        import bisect
+        c = self.cdf[k]; return bisect.bisect_left(c, self.raw(x, y, z, k)) / len(c)
+    def at(self, x, y, z):
+        t = min(max((y - (G + 2)) / 5.0, 0.0), 1.0)          # 0 at the foot of the leaves .. 1 at the top
+        pop = 0.06 + 0.38 * t                                 # poplar share: 6 % at the foot, 44 % at the top (25 % over the height)
+        if self.u(x, y, z, 1) < pop: g = 1
+        elif self.u(x, y, z, 2) < 0.15 / (1 - 0.25): g = 2   # azalea 15 % of all
+        else: g = 0
+        a, b = self.KINDS[g]
+        share = {0: 40 / 60, 1: 0.5, 2: 10 / 15}[g]
+        kind = a if self.u(x, y, z, 3) < share else b
+        return "minecraft:" + kind + LEAF
+HEDGE = HedgeMix()
 SOCLE = Mix({"mossy_cobblestone": 50, "mossy_stone_bricks": 50}, 2402)
 PATH = Mix({"coarse_dirt": 35, "gravel": 25, "moss_block": 20, "podzol[snowy=false]": 20}, 2403)
 FLOWERS = {"NE": ["poppy", "red_tulip"], "NW": ["lily_of_the_valley", "white_tulip"], "SW": ["cornflower", "blue_orchid"],
@@ -108,18 +149,37 @@ def statues_of(c, v):
         else: out.append((x1, mz, d))
     return out
 STAIR_FACE = {"N": "north", "S": "south", "E": "east", "W": "west"}
+CW = {"N": "E", "E": "S", "S": "W", "W": "N"}
+def statue_cells(c, v):
+    """{(lx, lz): (role, exit)} of the dead-end statues: 'body' (robe, chest, head) in the middle of the far row of the dead end,
+    'side' (moss at the feet, a shoulder and an arm: an upside-down stair sloping to the body) on its neighbours along that row"""
+    m = cell_mask(c, v); out = {}
+    for lx, lz, d in statues_of(c, v):
+        out[(lx, lz)] = ("body", d)
+        sx, sz = (1, 0) if d in "NS" else (0, 1)
+        for k in (-1, 1):
+            q = (lx + k * sx, lz + k * sz)
+            if 0 <= q[0] < CS and 0 <= q[1] < CS and m[q[1], q[0]]: out[q] = ("side", d, k)
+    return out
+def shoulder_state(d, k):
+    """the shoulder on side k of a statue whose front looks at the exit d: upside-down stair, its full half towards the body"""
+    sx, sz = (1, 0) if d in "NS" else (0, 1)
+    to_body = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}[(-k * sx, -k * sz)]
+    return "minecraft:polished_diorite_stairs[facing=%s,half=top,shape=straight,waterlogged=false]" % to_body
 def head_state(exit_dir, follow):
-    """the head is a stair: its low step is the broken face. rest: the face looks away from the exit (straight along the dead end,
-    at the hedge); follow: the face looks along the way out (after the player). facing = the high side = opposite of the face"""
-    face = exit_dir if follow else ML.OPP[exit_dir]
-    return "minecraft:polished_diorite_stairs[facing=%s,half=bottom,shape=straight,waterlogged=false]" % STAIR_FACE[ML.OPP[face]]
+    """the head is a stair: its low step is the broken-off face. The figure stands at the far end of the dead end, its front to the way
+    out. rest: the head turned aside (in profile from the way out, the broken face towards a side hedge); follow: the head turned
+    after the player, the broken face (dark tuff) straight along the way out. facing = the full (back) side = opposite of the face"""
+    face = exit_dir if follow else CW[exit_dir]
+    # turned after the player the head shows its broken-off face: dark tuff (the pale back of the head at rest)
+    return "minecraft:%s[facing=%s,half=bottom,shape=straight,waterlogged=false]" % ("tuff_stairs" if follow else "polished_diorite_stairs", STAIR_FACE[ML.OPP[face]])
 
 def cell_blocks(c, v, k_var=0):
     """{(lx, ly, lz): state}: ly 0 = path layer (y G) .. 8 = ceiling. Corridor cells leave the middle lane to the exit template."""
     m = cell_mask(c, v); out = {}
     ox, oz = cell_origin(c)
     corridor = c in ML.CORRIDOR
-    sts = {(sx, sz): d for sx, sz, d in statues_of(c, v)}
+    sts = statue_cells(c, v)
     for lz in range(CS):
         for lx in range(CS):
             if corridor and 10 <= lx <= 13: continue
@@ -132,17 +192,20 @@ def cell_blocks(c, v, k_var=0):
             for ly in range(1, 8): out[(lx, ly, lz)] = "minecraft:air"
             fl = PATH.at(x, G, z)
             if (lx, lz) in sts:
-                d = sts[(lx, lz)]
-                out[(lx, 0, lz)] = "minecraft:moss_block"; out[(lx, 1, lz)] = "minecraft:calcite"; out[(lx, 2, lz)] = "minecraft:polished_diorite"
-                out[(lx, 3, lz)] = head_state(d, False)
+                st = sts[(lx, lz)]
+                out[(lx, 0, lz)] = "minecraft:moss_block"
+                if st[0] == "body":
+                    out[(lx, 1, lz)] = "minecraft:calcite"; out[(lx, 2, lz)] = "minecraft:calcite"; out[(lx, 3, lz)] = head_state(st[1], False)
+                else:
+                    out[(lx, 1, lz)] = "minecraft:moss_carpet"; out[(lx, 2, lz)] = shoulder_state(st[1], st[2])
                 continue
             # flowers along the socle (low, passable): on cells next to a hedge
             near = any(0 <= lx + dx < CS and 0 <= lz + dz < CS and not m[lz + dz, lx + dx] for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)))
             r = hsh(x, 7, z, 2410)
-            if near and r < 0.24:
+            if near and r < 0.42:                 # flowers along the socle on 42 % of the path cells next to a hedge (the colour of the quarter reads)
                 q = FLOWERS[quarter(x, z)]; f = q[int(hsh(x, 8, z, 2411) * 2)]
-                if "%" in f: f = f % (("north", "east", "south", "west")[int(hsh(x, 9, z, 2412) * 4)], 1 + int(hsh(x, 10, z, 2413) * 3))
-                out[(lx, 0, lz)] = "minecraft:coarse_dirt" if r < 0.12 else "minecraft:moss_block"
+                if "%" in f: f = f % (("north", "east", "south", "west")[int(hsh(x, 9, z, 2412) * 4)], 2 + int(hsh(x, 10, z, 2413) * 3))
+                out[(lx, 0, lz)] = "minecraft:coarse_dirt" if r < 0.21 else "minecraft:moss_block"
                 out[(lx, 1, lz)] = "minecraft:" + f
                 continue
             out[(lx, 0, lz)] = "minecraft:" + fl.replace("minecraft:", "")
@@ -308,7 +371,7 @@ def walk_grid(cells, combo, exit_open=False):
     for c, vs in cells.items():
         if c == ML.SANCTUM: continue
         v = vs[combo.get(c, 0)]; ox, oz = cell_origin(c); m = cell_mask(c, v)
-        sts = {(sx, sz) for sx, sz, d in statues_of(c, v)}
+        sts = statue_cells(c, v)
         for lz in range(CS):
             for lx in range(CS):
                 if c in ML.CORRIDOR and 10 <= lx <= 13: continue
@@ -476,6 +539,7 @@ def face_block(x, y, z, foot):
     if hsh(x, y, z, 2445) < 0.012 and y > foot + 4: return "minecraft:mangrove_roots[waterlogged=false]"
     if t < 0 or hsh(x, y, z, 2446) > t: return ROCKS.at(x, y, z) if t < -0.5 else FACE_LO.at(x, y, z)
     return FACE_HI.at(x, y, z)
+ZLOW = [G]        # the lowest foot of the terrace walls and piers (the bottom of the zone maze_terrace)
 def terrace_blocks(gr, tr, b):
     X, Z, now = gr["X"], gr["Z"], gr["now"]
     def at(a, x, z): return a[z - gr["z1"], x - gr["x1"]]
@@ -498,6 +562,17 @@ def terrace_blocks(gr, tr, b):
         # parapet 2 high on the outer column (solid + wall)
         b.set(x, Y, z, "mossy_stone_bricks" if hsh(x, 1, z, 2447) < 0.6 else "stone_bricks")
         b.set(x, Y + 1, z, "mossy_stone_brick_wall" if hsh(x, 2, z, 2448) < 0.6 else "stone_brick_wall")
+        ZLOW[0] = min(ZLOW[0], foot - 2)
+        # the hedge spills over the parapet in clumps (noise along the edge, patches of 2..6): leaves on the parapet (1-2 high, the top
+        # line is not straight) and hanging over the face 1..4 blocks below the top of the parapet
+        along = x if nz else z
+        cl = _vnoise(along, 0, (x if nx else z) * 7, 2.6, 2460)
+        if cl > 0.5:
+            e = (cl - 0.5) / 0.3
+            b.set(x, Y + 2, z, HEDGE.at(x, Y + 5, z))
+            if e > 0.55: b.set(x, Y + 3, z, HEDGE.at(x, Y + 6, z))
+            for j in range(min(4, 1 + int(e * 3.2))):
+                if b.get(x + nx, Y + 1 - j, z + nz) is None: b.set(x + nx, Y + 1 - j, z + nz, HEDGE.at(x + nx, Y + 4 - j, z + nz))
         # belt courses: upside-down stairs one block out, at G-10, G-22, G-34 (where the face is high enough)
         if not deck:
             fac = {(0, -1): "south", (0, 1): "north", (-1, 0): "east", (1, 0): "west"}[(nx, nz)]
@@ -506,12 +581,20 @@ def terrace_blocks(gr, tr, b):
                     b.set(x + nx, yb, z + nz, "mossy_stone_brick_stairs[facing=%s,half=top,shape=straight,waterlogged=false]" % fac if hsh(x, yb, z, 2449) < 0.5 else
                           "stone_brick_stairs[facing=%s,half=top,shape=straight,waterlogged=false]" % fac)
                     if hsh(x, yb, z, 2450) < 0.25: b.set(x + nx, yb - 1, z + nz, "hanging_roots[waterlogged=false]")
-            # ivy from the top: vines on the air column in front of the face
-            if hsh(x, 3, z, 2451) < 0.55:
-                L = 3 + int(hsh(x, 4, z, 2452) * 18); vside = {(0, -1): "south", (0, 1): "north", (-1, 0): "east", (1, 0): "west"}[(nx, nz)]
-                for k in range(1, L + 1):
-                    y = G - k
-                    if y <= max(foot, ground_out) + 2 or b.get(x + nx, y, z + nz) is not None: break
+                    # bushes on the belt between the buttresses: azalea leaves on the ledge, now and then two high or two wide
+                    if _vnoise(along, yb, 0, 3.0, 2461) > 0.6:
+                        b.set(x + nx, yb + 1, z + nz, "flowering_azalea_leaves" + LEAF if hsh(x, yb, z, 2462) < 0.35 else "azalea_leaves" + LEAF)
+                        if hsh(x, yb + 1, z, 2463) < 0.3: b.set(x + nx, yb + 2, z + nz, "azalea_leaves" + LEAF)
+            # ivy from the top: strands 4..15 long every 3..6 blocks along the face (one or two columns), vines held by the face itself
+            # (a vine on a wall needs no vine above it), past the clumps and the belts
+            sp = 3 + int(hsh(along // 6, 3, (x if nx else z), 2451) * 4)
+            ph = (along + int(hsh(along // sp, 5, 0, 2454) * sp)) % sp
+            if ph == 0 or (ph == 1 and hsh(along, 6, 0, 2456) < 0.6) or hsh(x, 3, z, 2455) < 0.12:
+                L = 4 + int(hsh(x, 4, z, 2452) * 12); vside = {(0, -1): "south", (0, 1): "north", (-1, 0): "east", (1, 0): "west"}[(nx, nz)]
+                for k in range(0, L + 2):
+                    y = Y - k
+                    if y <= max(foot, ground_out) + 2: break
+                    if b.get(x + nx, y, z + nz) is not None: continue
                     st = {"north": "false", "south": "false", "east": "false", "west": "false"}; st[vside] = "true"
                     b.set(x + nx, y, z + nz, "vine[east=%s,north=%s,south=%s,up=false,west=%s]" % (st["east"], st["north"], st["south"], st["west"]))
     # buttresses every 14 blocks along the wall edges: 3 wide, 3 out at the foot, 2 from 40%, 1 from 75% of the height, stairs on the steps
@@ -541,7 +624,7 @@ def terrace_blocks(gr, tr, b):
             if not inmaze: b.set(x, G, z, "coarse_dirt" if hsh(x, 5, z, 2453) < 0.6 else "moss_block")
             edge = x in (TX1, TX2) or z in (TZ1, TZ2)
             if (x % 9 in (0, 1) and z % 9 in (0, 1)) or (edge and (x + z) % 7 in (0, 1)):
-                bot = int(at(gr["nat"], x, z))
+                bot = int(at(gr["nat"], x, z)); ZLOW[0] = min(ZLOW[0], bot - 1)
                 for y in range(bot, G - 3): b.set(x, y, z, FACE_LO.at(x, y, z) if y < 62 else FACE_HI.at(x, y, z))
             if edge and not inmaze:
                 b.set(x, Y, z, "mossy_stone_bricks"); b.set(x, Y + 1, z, "mossy_stone_brick_wall")
@@ -598,6 +681,8 @@ def plan_png(cells, statues, tr, gr, path):
 def data_files():
     from r1 import replace_lines
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["maze "], ["maze            overworld box  %d %d %d  %d %d %d   no_blink,no_chorus   # T-024: Enchanted Maze (ground -8 .. ceiling +4)" % (OX1, G - 8, OZ1, OX2, CEIL + 4, OZ2)])
+    replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["maze_terrace "], ["maze_terrace    overworld box  %d %d %d  %d %d %d   # T-024: the terrace of the maze (band, parapet, retaining wall, buttresses, piers), indestructible" %
+                  (TX1 - 4, ZLOW[0], TZ1 - 4, TX2 + 4, Y + 4, TZ2 + 4)])
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["maze_sanctum "], ["maze_sanctum    overworld cyl  %d %d 11  %d %d     no_spawn" % (CX, CZ, G - 2, G + 17)])
     replace_lines(os.path.join(ROOT, "altars/keys.txt"), ["thread_labyrinth "], ["thread_labyrinth 1 %d,%d,%d Нить Лабиринта" % (CX, Y + 2, CZ)])
     rp = os.path.join(ROOT, "biomes/registry.json"); s = open(rp, encoding="utf-8").read()

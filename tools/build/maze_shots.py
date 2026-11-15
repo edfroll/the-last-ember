@@ -2,9 +2,9 @@
 """T-024 frames of the Enchanted Maze (server + client Cam as the camera; Cam2 takes the key for the guard frames) -> docs/reports/T-024/*.jpg
 Usage: python3 tools/build/maze_shots.py [outside inside cells heads key]   (default: all, in this order)
   outside  the gate from bonfire 3, the terrace from below (from the lake in the north, from the bay in the east), the maze from above (from outside the biome)
-  inside   a corridor in the fog, the flowers of the south-east quarter (yellow), the sanctum with the key
+  inside   a corridor in the fog, the flowers of each quarter (m_flowers_ne|nw|sw|se), the sanctum with the key, the key close up
   cells    movable cell 1 in its three variants from above (camera 49 above the floor, lower the fog of the biome hides it; the frame is cropped to the cell)
-  heads    a dead-end statue: the head straight and following
+  heads    a dead-end statue at eye level: from the front (3 blocks), the head at rest and following from 7 blocks
   key      Cam2 takes the key: the guards waking, the secret exit open (state reset to the key on its pedestal afterwards if nobody had it)"""
 import importlib.util, json, math, os, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -19,6 +19,9 @@ def look(c, t):
     dx, dy, dz = t[0] - c[0], t[1] - c[1], t[2] - c[2]
     return round(math.degrees(math.atan2(-dx, dz)), 1), round(-math.degrees(math.atan2(dy, math.hypot(dx, dz))), 1)
 def shot(name, c, t, settle=12): yaw, pitch = look(c, t); return dict(name=name, x=c[0], y=c[1], z=c[2], yaw=yaw, pitch=pitch, settle=settle)
+def shot_eye(name, e, t, settle=12):
+    """like shot, the camera given by its eye (tp puts the feet 1.62 below)"""
+    yaw, pitch = look(e, t); return dict(name=name, x=e[0], y=round(e[1] - 1.62, 2), z=e[2], yaw=yaw, pitch=pitch, settle=settle)
 def down(name, x, y, z, settle=14): return dict(name=name, x=x, y=y, z=z, yaw=180, pitch=90, settle=settle)
 def run(shots, time_="noon", tag="", crop=None):
     spec = os.path.join(TMP, f"shots{tag}.json"); json.dump({"time": time_, "weather": "clear", "shots": shots}, open(spec, "w"))
@@ -55,11 +58,41 @@ def outside():
     print("lake", lake, "bay", bay)
     run(shots, "noon", "_terrace"); done()
 
+def _grid():
+    """the walk grid (all movable cells in variant 1) and the flowers along the socle, from the generator itself"""
+    sys.path.insert(0, os.path.join(ROOT, "tools/build")); import r1_maze as RM
+    cells = RM.plan(); W = RM.walk_grid(cells, {c: 0 for c in RM.MOVABLE}); fl = {}
+    for c, vs in cells.items():
+        if c == (2, 2): continue
+        ox, oz = RM.cell_origin(c)
+        for (lx, ly, lz), st in RM.cell_blocks(c, vs[0]).items():
+            if ly == 1 and any(f in st for f in ("poppy", "tulip", "lily_of", "cornflower", "orchid", "dandelion", "wildflowers")): fl[(ox + lx, oz + lz)] = st
+    return RM, W, fl
+DIRS = {"N": (0, -1), "S": (0, 1), "E": (1, 0), "W": (-1, 0)}
+def walk(RM, W, x, z): return RM.OX1 <= x <= RM.OX2 and RM.OZ1 <= z <= RM.OZ2 and W[z - RM.OZ1, x - RM.OX1]
+
 def inside():
+    RM, W, fl = _grid()
+    # a corridor of each quarter: the straight run of 9 blocks with the most flowers along it, away from the sanctum
+    fshots = []
+    for q, name in (("NE", "red"), ("NW", "white"), ("SW", "blue"), ("SE", "yellow")):
+        best = None
+        for (x, z) in fl:
+            if RM.quarter(x, z) != q or math.hypot(x - SX, z - SZ) < 26: continue
+            for d, (dx, dz) in DIRS.items():
+                run_ = [(x + dx * k, z + dz * k) for k in range(9)]
+                if not all(walk(RM, W, *p) for p in run_) or any(RM.quarter(*p) != q for p in run_): continue
+                n = sum((px + ox, pz + oz) in fl for px, pz in run_ for ox, oz in ((0, 0), (dz, dx), (-dz, -dx)))
+                if not best or n > best[0]: best = (n, x, z, dx, dz)
+        n, x, z, dx, dz = best; print("flowers", q, best)
+        fshots.append(shot("m_flowers_%s" % q.lower(), (x + 0.5 - dx * 0.4, Y + 0.2, z + 0.5 - dz * 0.4), (x + 0.5 + dx * 7, Y - 0.6, z + 0.5 + dz * 7)))
     prep(); R("tp Cam -130 113 -400"); time.sleep(15)
+    if "got: 1b" in R("data get storage last_ember:keys k.thread_labyrinth"):    # the key back on its pedestal for the frames (as in key())
+        R("data modify storage last_ember:keys k.thread_labyrinth merge value {got:0b,st:0}"); R("clear Cam2"); R("clear Cam")
+    R("function last_ember:maze/reset"); time.sleep(2)
     run([shot("m_corridor_fog", (-133.5, Y, -381.5), (-100, Y + 1.6, -381.5)),
-         shot("m_flowers_se", (-128.5, Y + 0.4, -381.5), (-120, Y - 0.5, -383.5)),
-         shot("m_sanctum_key", (-149.5, Y + 0.4, -420.5), (SX, Y + 2.2, SZ))], "noon", "_in"); done()
+         shot("m_sanctum_key", (-142.5, Y + 0.4, -423.5), (SX, Y + 1.8, SZ)),
+         shot_eye("m_key_close", (SX + 0.35, 114.15, SZ + 1.6), (SX, 113.95, SZ))] + fshots, "noon", "_in"); done()
 
 def cells():
     prep(); ox, oz = M["movable"][0]; cx, cz = ox + 12, oz + 12
@@ -70,11 +103,22 @@ def cells():
     R("function last_ember:maze/set {cell:1,var:1}"); done()
 
 def heads():
-    prep(); s = [q for q in M["statues"] if q["id"] == 67][0]
-    cam = (s["x"] + 0.5, Y + 4.2, s["z"] + 0.5 - 4.5); head = (s["x"] + 0.5, Y + 2.3, s["z"] + 0.5)    # above and in front: the slope of the head stair shows
-    R(f"tp Cam {cam[0]} {cam[1]} {cam[2]}"); time.sleep(15)
-    R(f"function last_ember:maze/gen/h/r{s['id']}"); run([shot("m_statue_head_straight", cam, head, 4)], "noon", "_h1")
-    R(f"function last_ember:maze/gen/h/t{s['id']}"); run([shot("m_statue_head_follow", cam, head, 4)], "noon", "_h2")
+    """a permanent dead-end statue with a straight way out of at least 8 blocks: from the front at 3 blocks (head at rest, in profile),
+    and from 7 blocks (where the leaving player stands) at rest and turned after the player; camera at eye level"""
+    RM, W, fl = _grid()
+    for s in M["statues"]:
+        if s["var"] is not None: continue
+        dx, dz = DIRS[s["exit"]]; px, pz = abs(dz), abs(dx)          # across the dead end
+        x, z = s["x"], s["z"]
+        three = all(walk(RM, W, x + dx + k * px, z + dz + k * pz) for k in (-1, 0, 1)) and not walk(RM, W, x + dx + 2 * px, z + dz + 2 * pz) and not walk(RM, W, x + dx - 2 * px, z + dz - 2 * pz)
+        if three and all(walk(RM, W, x + dx * k, z + dz * k) for k in range(1, 9)): break
+    print("statue", s)
+    head = (s["x"] + 0.5, Y + 2.4, s["z"] + 0.5)
+    def at(d): return (s["x"] + 0.5 + dx * d, Y + 1.62, s["z"] + 0.5 + dz * d)
+    prep(); R(f"tp Cam {at(5)[0]} {Y} {at(5)[2]}"); time.sleep(15)
+    R(f"function last_ember:maze/gen/h/r{s['id']}")
+    run([shot_eye("m_statue_front", at(3), head, 4), shot_eye("m_statue_head_straight", at(7), head, 4)], "noon", "_h1")
+    R(f"function last_ember:maze/gen/h/t{s['id']}"); run([shot_eye("m_statue_head_follow", at(7), head, 4)], "noon", "_h2")
     R(f"function last_ember:maze/gen/h/r{s['id']}"); done()
 
 def key():
@@ -85,7 +129,8 @@ def key():
     R("gamemode spectator Cam"); R(f"tp Cam {c[0]} {c[1]} {c[2]} {yaw} {pitch}"); time.sleep(15)
     R("gamemode survival Cam2"); R("effect give Cam2 minecraft:resistance infinite 4 true"); R(f"tp Cam2 {SX} {Y} {SZ + 3}"); time.sleep(2)
     tc.face("Cam2", SX, Y, SZ + 2.6, SX, M["key"][1] + 0.3, SZ); time.sleep(0.5); tc.act("Cam2", "!use"); time.sleep(0.35)
-    tc.act("Cam", "m_guards_waking 0"); time.sleep(2.5); tc.act("Cam", "m_guards_awake 0"); time.sleep(1.5)
+    tc.act("Cam", "m_guards_waking 0"); time.sleep(12)        # the chat line of the first screenshot fades out (~10 s); the guards stay awake
+    tc.act("Cam", "m_guards_awake 0"); time.sleep(1.5)
     for n in ("m_guards_waking", "m_guards_awake"):
         src = os.path.join(ROOT, "server/client/screenshots", n + ".png")
         if os.path.exists(src): os.replace(src, os.path.join(TMP, n + ".png")); jpg(n)

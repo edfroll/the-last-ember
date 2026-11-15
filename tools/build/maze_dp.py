@@ -90,7 +90,7 @@ def run(R, cells):
         ox, oz = R.cell_origin(c)
         for v in (1, 2, 3):
             m = masks[(k, v)]
-            sts = {(sx, sz) for sx, sz, d in R.statues_of(c, cells[c][v - 1])}
+            sts = set(R.statue_cells(c, cells[c][v - 1]))
             walk = m.copy()
             for sx, sz in sts: walk[sz, sx] = False
             others = np.zeros(m.shape, bool)

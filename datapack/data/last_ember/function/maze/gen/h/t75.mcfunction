@@ -1,5 +1,5 @@
 # generated: statue 75: the head turns after the player (the face along the way out)
-setblock -117 114 -402 minecraft:polished_diorite_stairs[facing=north,half=bottom,shape=straight,waterlogged=false]
+setblock -117 114 -402 minecraft:tuff_stairs[facing=north,half=bottom,shape=straight,waterlogged=false]
 scoreboard players set #n75 le.mz 0
 scoreboard players set #h75 le.mz 1
 scoreboard players operation #hr75 le.mz = #gt le.mz

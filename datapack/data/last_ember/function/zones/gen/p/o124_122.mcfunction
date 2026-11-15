@@ -2,3 +2,4 @@
 execute if entity @s[x=-216,y=98,z=-496,dx=131,dy=30,dz=131] run scoreboard players set #hit le.z 1
 execute if entity @s[x=-216,y=98,z=-496,dx=131,dy=30,dz=131] run tag @s add le.zf.no_blink
 execute if entity @s[x=-216,y=98,z=-496,dx=131,dy=30,dz=131] run tag @s add le.zf.no_chorus
+execute if entity @s[x=-228,y=31,z=-508,dx=155,dy=90,dz=155] run scoreboard players set #hit le.z 1
