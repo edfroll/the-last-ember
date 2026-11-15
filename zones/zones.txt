@@ -12,3 +12,6 @@ refuge       overworld box  -200 50 -200  200 320 200   no_spawn,calm
 refuge_well  overworld cyl  40 -44 12  20 109           no_spawn,calm
 weepers         overworld cyl  -420 -180 32  85 149                  # T-023: Circle of the Weepers, Altar I (bottom of the ravine .. the crown + 10)
 weepers_circle  overworld cyl  -420 -180 14  106 149     no_spawn
+maze            overworld box  -211 103 -491  -90 123 -370   no_blink,no_chorus   # T-024: Enchanted Maze (ground -8 .. ceiling +4)
+maze_sanctum    overworld cyl  -150 -430 11  109 128     no_spawn
+maze_terrace    overworld box  -223 36 -503  -78 116 -358   # T-024: the terrace of the maze (band, parapet, retaining wall, buttresses, piers), indestructible

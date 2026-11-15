@@ -6,6 +6,10 @@ scoreboard objectives add le.chz dummy
 scoreboard objectives add le.cht dummy
 scoreboard objectives add le.cnx dummy
 scoreboard objectives add le.cnz dummy
+scoreboard objectives add le.cny dummy
+scoreboard objectives add le.cpx dummy
+scoreboard objectives add le.cpy dummy
+scoreboard objectives add le.cpz dummy
 scoreboard players set #5 le.gate 5
 scoreboard players set #4 le.gate 4
 schedule function last_ember:gate/loop 1t replace
