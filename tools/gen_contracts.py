@@ -144,7 +144,7 @@ for b in boards.values():
              dim + "run kill @e[type=minecraft:interaction,tag=le.cb_%s]" % bi]
     for k, (x, y, z) in enumerate(b["signs"], 1):
         if b.get("build") == "1":
-            build.append(dim + "run setblock %d %d %d minecraft:dark_oak_wall_sign[facing=%s]" % (x, y, z, fn))
+            build.append(dim + "run setblock %d %d %d minecraft:dark_oak_wall_sign[facing=%s]{is_waxed:1b}" % (x, y, z, fn))
         # the click box covers the sign plate (it lies against the wall, on the far side of its block)
         ix, iz = x + 0.5 - fx * 0.3, z + 0.5 - fz * 0.3
         build.append(dim + "run summon minecraft:interaction %.2f %.2f %.2f {Tags:[\"le.cboard\",\"le.cb_%s\"],width:0.9f,height:0.75f,response:1b}" % (ix, y + 0.05, iz, bi))

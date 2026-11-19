@@ -1,0 +1,2 @@
+# recipe clairvoyance
+data modify storage last_ember:pt it set value {id:"minecraft:potion",count:1,components:{"minecraft:custom_data":{le_clairv:1b,le_boost:1b},"minecraft:custom_name":{text:"Отвар Ясновидения",italic:false,color:"dark_aqua"},"minecraft:potion_contents":{custom_color:5096009},"minecraft:lore":[{text:"90 секунд видно, кто смотрит из воды.",color:"gray",italic:false},{text:"Сварено знахарем",color:"gray",italic:false}]}}

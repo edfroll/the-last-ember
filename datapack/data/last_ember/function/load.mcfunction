@@ -50,3 +50,4 @@ function last_ember:weepers/setup
 function last_ember:maze/setup
 # T-025: the Garden of Silence, the Creaking armour
 function last_ember:garden/setup
+function last_ember:fens/setup

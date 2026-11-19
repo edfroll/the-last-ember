@@ -10,6 +10,7 @@ execute if score @s le.cmask matches 12289 run scoreboard players set @s le.crec
 execute if score @s le.cmask matches 18561 run scoreboard players set @s le.crec 8
 execute if score @s le.cmask matches 33025 run scoreboard players set @s le.crec 9
 execute if score @s le.cmask matches 65553 run scoreboard players set @s le.crec 10
+execute if score @s le.cmask matches 557312 run scoreboard players set @s le.crec 11
 execute if score @s le.cmask matches 1050624 run scoreboard players set @s le.crec 101
 execute if score @s le.cmask matches 1048580 run scoreboard players set @s le.crec 101
 execute if score @s le.cmask matches 1179648 run scoreboard players set @s le.crec 102

@@ -1,0 +1,38 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:stick",
+     "modifier": [
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_data": {
+         "le_keep": 1,
+         "le_citem": "fens_skull"
+        },
+        "minecraft:item_name": {
+         "text": "Череп Хозяина Гати",
+         "color": "gold",
+         "italic": false
+        },
+        "minecraft:max_stack_size": 1,
+        "minecraft:lore": [
+         {
+          "text": "Целый.",
+          "color": "gray",
+          "italic": false
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

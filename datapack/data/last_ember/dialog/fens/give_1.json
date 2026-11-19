@@ -1,0 +1,54 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Мать Ряска",
+  "color": "dark_green",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Склянка сама не всплывёт.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  },
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Венец у нас один на троих. Отдаст та, кому поможете.",
+    "color": "gold",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Отдать",
+    "color": "green",
+    "italic": false
+   },
+   "width": 150,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.fgive set 1"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

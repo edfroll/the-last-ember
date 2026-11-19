@@ -9,3 +9,4 @@
 #   cursed_chest   chest=x,y,z mob=<mob>          (the box is the area of the hints round the chest)
 #   false_treasure pos=x,y,z link=<trap id>       (the box is the area of the hints)
 # The regions' tasks add their traps here, then: python3 tools/gen_traps.py
+fens_ambush cursed_chest overworld -482 134 363 -474 138 371 chest=-478,135,367 mob=minecraft:drowned mob2=minecraft:bogged   # T-026: the house of the ambush in the ruins of the fens

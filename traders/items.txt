@@ -1,2 +1,11 @@
 # T-017: item presets for the deals: <name> <item id> <components as SNBT>   (used as @name in traders.txt)
 blade_prytu minecraft:iron_sword {"minecraft:custom_name":'{"text":"Клинок Приюта","color":"gold","italic":false}',"minecraft:enchantments":{"minecraft:sharpness":1},"minecraft:lore":['{"text":"Выкован Хальвардом из того, что сняли с чудищ.","color":"gray","italic":false}']}
+potion_healing2 minecraft:potion {"minecraft:potion_contents":{potion:"minecraft:strong_healing"}}
+potion_strength minecraft:potion {"minecraft:potion_contents":{potion:"minecraft:strength"}}
+antidote minecraft:potion {"minecraft:custom_data":{le_antidote:1b},"minecraft:custom_name":{text:"Противоядие",italic:false,color:"green"},"minecraft:potion_contents":{custom_color:11141120},"minecraft:lore":[{text:"Снимает отравление и иссушение.",color:"gray",italic:false},{text:"60 секунд невосприимчивости к ним.",color:"gray",italic:false}]}
+stew_night_vision minecraft:suspicious_stew {"minecraft:suspicious_stew_effects":[{id:"minecraft:night_vision",duration:100}]}
+book_protection1 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:protection":1}}
+book_sharpness2 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:sharpness":2}}
+arrows_poison minecraft:tipped_arrow {"minecraft:potion_contents":{potion:"minecraft:poison"}}
+book_bane2 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:bane_of_arthropods":2}}
+book_unbreaking1 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:unbreaking":1}}

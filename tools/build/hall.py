@@ -114,7 +114,7 @@ def niche(b, ang, kind):
     stamp(b, fig, ang, r0=HR - 0.5)
     # plate on the pedestal front + two candles
     sx, sz = wpos(ang, HR + 0.5, 0)
-    b.set(sx, HF + max(1, p - 1), sz, f'dark_oak_wall_sign[facing={face_rot("in", ang)}]{{front_text:{{messages:["",{{"text":"{NAMES[kind]}"}},"",""]}}}}')
+    b.set(sx, HF + max(1, p - 1), sz, f'dark_oak_wall_sign[facing={face_rot("in", ang)}]{{is_waxed:1b,front_text:{{messages:["",{{"text":"{NAMES[kind]}"}},"",""]}}}}')
     for vv in (-hw + 1, hw - 1):
         cx_, cz_ = wpos(ang, HR + 0.5 + 1, vv); b.set(cx_, HF + p + 1, cz_, candle(2, True))
     # light from below: ochre froglight under iron bars just in front of the niche; selection pad 3x3

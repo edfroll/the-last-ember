@@ -59,6 +59,7 @@ ING = {  # bit -> (label, [item ids], returned bucket/bottle)
  7: ("glow berries", ["glow_berries"], None), 8: ("spider eye", ["spider_eye"], None), 9: ("rotten flesh", ["rotten_flesh"], None), 10: ("lava", ["lava_bucket"], "bucket"),
  11: ("honey", ["honey_bottle"], "glass_bottle"), 12: ("raw fish", ["cod", "salmon", "tropical_fish", "pufferfish"], None), 13: ("kelp", ["kelp"], None), 14: ("milk", ["milk_bucket"], "bucket"),
  15: ("slime", ["slime_ball"], None), 16: ("charcoal", ["charcoal"], None), 17: ("bone meal", ["bone_meal"], None), 18: ("cobweb", ["cobweb"], None),
+ 19: ("lily pad", ["lily_pad"], None),        # T-026: the Clairvoyance (the Mother of the fens tells a healer the recipe)
 }
 POT = 20
 RECIPES = {  # name -> (ingredient bits, output)   output: ("potion", potion id, item type) | ("item", template)
@@ -66,7 +67,9 @@ RECIPES = {  # name -> (ingredient bits, output)   output: ("potion", potion id,
  "night_vision": ([0, 6, 7], ("potion", "night_vision", "potion")), "poison": ([0, 8, 9], ("potion", "poison", "splash_potion")),
  "fire_resistance": ([0, 10, 11], ("potion", "fire_resistance", "potion")), "water_breathing": ([0, 12, 13], ("potion", "water_breathing", "potion")),
  "antidote": ([0, 11, 7, 14], ("item", "antidote")), "oil_poison": ([0, 8, 15], ("item", "oil_poison")), "oil_fire": ([0, 16, 4], ("item", "oil_fire")),
+ "clairvoyance": ([19, 8, 15], ("item", "clairvoyance")),
 }
+NOBASE = {"clairvoyance"}   # T-026: brewed without the mushroom base (the Mother names only lily pad, spider eye, slime; with the base it would be the oil of poison)
 MODS = {"longer": ([11, 2], "дольше"), "stronger": ([17], "сильнее"), "splash": ([4], "взрывное"), "lingering": ([18], "туманное")}   # modifier -> (alternative bits, label)
 def mask(bits): return sum(1 << b for b in bits)
 # item templates (storage form of an item stack) for the ground output
@@ -74,6 +77,7 @@ def comp_lore(*ls): return "[" + ",".join('{text:"%s",color:"gray",italic:false}
 TEMPLATES = {
  "antidote": '{id:"minecraft:potion",count:1,components:{"minecraft:custom_data":{le_antidote:1b},"minecraft:custom_name":{text:"Противоядие",italic:false,color:"green"},"minecraft:potion_contents":{custom_color:11141120},"minecraft:lore":%s}}' % comp_lore("Снимает отравление и иссушение.", "60 секунд невосприимчивости к ним.", "Усилено знахарем"),
  "oil_poison": '{id:"minecraft:potion",count:1,components:{"minecraft:custom_data":{le_oilitem:1b,le_oiltype:"poison",le_boost:1b},"minecraft:custom_name":{text:"Масло яда",italic:false,color:"green"},"minecraft:potion_contents":{custom_color:8890211},"minecraft:consumable":{consume_seconds:1.0f,animation:"drink",has_consume_particles:false},"minecraft:lore":%s}}' % comp_lore("Возьми клинок в основную руку, масло в левую, ПКМ."),
+ "clairvoyance": '{id:"minecraft:potion",count:1,components:{"minecraft:custom_data":{le_clairv:1b,le_boost:1b},"minecraft:custom_name":{text:"Отвар Ясновидения",italic:false,color:"dark_aqua"},"minecraft:potion_contents":{custom_color:5096009},"minecraft:lore":%s}}' % comp_lore("90 секунд видно, кто смотрит из воды.", "Сварено знахарем"),
  "oil_fire": '{id:"minecraft:potion",count:1,components:{"minecraft:custom_data":{le_oilitem:1b,le_oiltype:"fire",le_boost:1b},"minecraft:custom_name":{text:"Масло огня",italic:false,color:"gold"},"minecraft:potion_contents":{custom_color:16737792},"minecraft:consumable":{consume_seconds:1.0f,animation:"drink",has_consume_particles:false},"minecraft:lore":%s}}' % comp_lore("Возьми клинок в основную руку, масло в левую, ПКМ."),
 }
 CF = os.path.join(DP, "function/potion")
@@ -109,6 +113,7 @@ for i, name in enumerate(names, 1):
                        f'data modify storage last_ember:pt pid set value "{pid}"', f'data modify storage last_ember:pt ty set value "{ty}"', "function last_ember:potion/boost_it"], CF)
     else:
         w(f"res_{i}", [f"# recipe {name}", f"data modify storage last_ember:pt it set value {TEMPLATES[out[1]]}"], CF)
+w("nobase", ["# as the cauldron: 1 when the recipe le.crec needs no mushroom base (T-026)"] + [f"execute if score @s le.crec matches {i} run return 1" for i, n in enumerate(names, 1) if n in NOBASE] + ["return 0"], CF)
 w("result", ["# as the cauldron: storage last_ember:pt it = one result item of recipe le.crec"] + [f"execute if score @s le.crec matches {i} run function last_ember:potion/res_{i}" for i in range(1, len(names) + 1)], CF)
 rets = ["# as the cauldron: returned empty buckets / bottles for the used ingredients"]
 for b, (lab, items, ret) in ING.items():

@@ -2,7 +2,8 @@
 """Walk bot (T-008): the dev client player really walks a route (vanilla physics, survival/adventure), driven by the shot agent
 (!fwd_on / !fwd_off) and RCON (yaw via tp, position polling). Reports where it gets stuck or falls, with a screenshot.
 Usage: walkbot.py route.json [--player Cam] [--out DIR]
-route.json: {"start": [x, y, z], "points": [[x, z, expected_y], ...]}   (block-centre coordinates are used as given)"""
+route.json: {"start": [x, y, z], "points": [[x, z, expected_y], ...]}   (block-centre coordinates are used as given)
+  a point [x, z, expected_y, 1] is jumped to (T-026: a gap of the boardwalk): the jump is pressed as soon as the bot heads for it"""
 import argparse, json, math, os, sys, time, importlib.util
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sp = importlib.util.spec_from_file_location("rcon", os.path.join(ROOT, "tools/rcon.py")); rc = importlib.util.module_from_spec(sp); sp.loader.exec_module(rc)
@@ -46,11 +47,13 @@ def main():
         rc.run(f"tp {P} {sx} {sy} {sz}"); time.sleep(0.5)
     problems = []; jumps = [0]; i = 0; top = -999; pts = route["points"]; held = False; jst = 0; jt = 0     # jst: a jump in flight (1 pressed, 2 released, answer due), kept across points
     while i < len(pts):
-        tx, tz, ey = pts[i]; prev_ey = pts[i - 1][2] if i else ey; x, y, z = pos(P)
+        tx, tz, ey = pts[i][:3]; prev_ey = pts[i - 1][2] if i else ey; x, y, z = pos(P)
+        want_jump = len(pts[i]) > 3 and pts[i][3] == 1
         yaw = math.degrees(math.atan2(-(tx - x), tz - z))
         rc.run(f"rotate {P} {yaw:.1f} 20"); cur = yaw
         if not held: agent("!fwd_on"); held = True          # forward stays held from point to point (a slow agent: a release and a new press run the bot on past the turn)
         used = False; side = False; last_jump = 0; pj = 0; t0 = time.time(); best = math.hypot(tx - x, tz - z); last_improve = t0
+        if want_jump and jst == 0: send("!jump_on"); jt = time.time(); jst = 1; jumps[0] += 1; pj += 1
         while True:
             time.sleep(0.12); x, y, z = pos(P); d = math.hypot(tx - x, tz - z)
             if a.clear: rc.run(f"execute at {P} run tp @e[distance=..6,{NOT}] ~ -200 ~")

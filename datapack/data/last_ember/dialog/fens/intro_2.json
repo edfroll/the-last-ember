@@ -1,0 +1,38 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Дева Осока",
+  "color": "dark_green",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Тише. Слышишь? Они опять смотрят из воды. Пять голов, пять заводей. Возьми осоку и брось каждой в воду, когда она поднимется. Только не смотри ей в глаза дольше вдоха.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  },
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Венец у нас один на троих. Отдаст та, кому поможете.",
+    "color": "gold",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

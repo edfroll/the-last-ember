@@ -1,0 +1,29 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Старуха Кость",
+  "color": "dark_green",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Целый. Хорош. Вот тебе Венец. Сёстрам не говори, сами узнают.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

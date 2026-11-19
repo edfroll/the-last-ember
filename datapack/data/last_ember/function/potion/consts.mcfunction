@@ -18,5 +18,6 @@ scoreboard players set #32768 le.e 32768
 scoreboard players set #65536 le.e 65536
 scoreboard players set #131072 le.e 131072
 scoreboard players set #262144 le.e 262144
+scoreboard players set #524288 le.e 524288
 scoreboard players set #1048576 le.e 1048576
 scoreboard players set #2 le.e 2

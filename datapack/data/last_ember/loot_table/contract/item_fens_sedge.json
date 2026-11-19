@@ -1,0 +1,38 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:stick",
+     "modifier": [
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_data": {
+         "le_keep": 1,
+         "le_citem": "fens_sedge"
+        },
+        "minecraft:item_name": {
+         "text": "Пучок осоки",
+         "color": "gold",
+         "italic": false
+        },
+        "minecraft:max_stack_size": 1,
+        "minecraft:lore": [
+         {
+          "text": "Бросить в заводь, когда голова поднимется.",
+          "color": "gray",
+          "italic": false
+         }
+        ]
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -9,3 +9,4 @@ execute if score @s le.crec matches 7 run function last_ember:potion/res_7
 execute if score @s le.crec matches 8 run function last_ember:potion/res_8
 execute if score @s le.crec matches 9 run function last_ember:potion/res_9
 execute if score @s le.crec matches 10 run function last_ember:potion/res_10
+execute if score @s le.crec matches 11 run function last_ember:potion/res_11

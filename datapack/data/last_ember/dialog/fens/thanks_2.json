@@ -1,0 +1,29 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Дева Осока",
+  "color": "dark_green",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Тихо стало. Впервые за… неважно. Возьми Венец. Сёстры обидятся, а я нет.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

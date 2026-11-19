@@ -1,0 +1,210 @@
+{
+ "textures": {
+  "skull": "last_ember:item/fens/skull",
+  "face": "last_ember:item/fens/eyes_closed",
+  "particle": "last_ember:item/fens/skull"
+ },
+ "elements": [
+  {
+   "from": [
+    3,
+    0,
+    3
+   ],
+   "to": [
+    13,
+    9,
+    13
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "up": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    }
+   }
+  },
+  {
+   "from": [
+    4,
+    -4,
+    4
+   ],
+   "to": [
+    12,
+    0,
+    12
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      10,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "south": {
+     "uv": [
+      0,
+      10,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "east": {
+     "uv": [
+      0,
+      10,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "west": {
+     "uv": [
+      0,
+      10,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    },
+    "down": {
+     "uv": [
+      0,
+      10,
+      16,
+      16
+     ],
+     "texture": "#skull"
+    }
+   }
+  },
+  {
+   "from": [
+    3,
+    0,
+    2.95
+   ],
+   "to": [
+    13,
+    9,
+    2.95
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#face"
+    }
+   },
+   "light_emission": 0
+  },
+  {
+   "from": [
+    3,
+    0,
+    13.05
+   ],
+   "to": [
+    13,
+    9,
+    13.05
+   ],
+   "faces": {
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#face"
+    }
+   },
+   "light_emission": 0
+  }
+ ],
+ "display": {
+  "head": {
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    0,
+    0
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  },
+  "fixed": {
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  }
+ }
+}

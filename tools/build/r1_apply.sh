@@ -36,6 +36,16 @@ python3 tools/build/validate.py server/build/r1/garden.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/garden.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $GB server/build/r1/garden_post.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_check.py places garden
+# T-026: the Crooked Fens and the Hut of the Three Witches (only inside its place: the bog in the bowl of the plateau, channels, the
+# boardwalk, the climb from bonfire 5, the ruins, the hut; witches, heads, the Master of the Causeway and the boats are the datapack's)
+FB="-522 208 -238 452"   # the place with its seam margin + 16 around (checked by `places`)
+tools/terrain.sh scan $FB server/build/r1/fens_pre.bin | grep -v JAVA_TOOL
+python3 tools/build/r1_fens.py && python3 tools/gen_altars.py >/dev/null && python3 tools/gen_zones.py >/dev/null && python3 tools/gen_traps.py >/dev/null && python3 tools/gen_contracts.py >/dev/null
+tools/terrain.sh apply server/build/r1/fens_terrain.bin | grep -v JAVA_TOOL
+python3 tools/build/validate.py server/build/r1/fens.txt | tail -1
+tools/blockwriter.sh apply server/build/r1/fens.txt | grep -v JAVA_TOOL | tail -1
+tools/terrain.sh scan $FB server/build/r1/fens_post.bin | grep -v JAVA_TOOL
+python3 tools/build/r1_check.py places fens
 tools/biomepaint.sh | grep -v JAVA_TOOL | head -1
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync
