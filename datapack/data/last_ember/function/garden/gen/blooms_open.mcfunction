@@ -85,6 +85,7 @@ execute if block 316 112 -410 minecraft:closed_eyeblossom run setblock 316 112 -
 execute if block 317 93 -340 minecraft:closed_eyeblossom run setblock 317 93 -340 minecraft:open_eyeblossom
 execute if block 317 112 -434 minecraft:closed_eyeblossom run setblock 317 112 -434 minecraft:open_eyeblossom
 execute if block 318 113 -418 minecraft:closed_eyeblossom run setblock 318 113 -418 minecraft:open_eyeblossom
+execute if block 320 93 -297 minecraft:closed_eyeblossom run setblock 320 93 -297 minecraft:open_eyeblossom
 execute if block 320 94 -299 minecraft:closed_eyeblossom run setblock 320 94 -299 minecraft:open_eyeblossom
 execute if block 321 80 -357 minecraft:closed_eyeblossom run setblock 321 80 -357 minecraft:open_eyeblossom
 execute if block 321 112 -437 minecraft:closed_eyeblossom run setblock 321 112 -437 minecraft:open_eyeblossom
@@ -110,7 +111,6 @@ execute if block 344 88 -287 minecraft:closed_eyeblossom run setblock 344 88 -28
 execute if block 344 110 -427 minecraft:closed_eyeblossom run setblock 344 110 -427 minecraft:open_eyeblossom
 execute if block 345 66 -364 minecraft:closed_eyeblossom run setblock 345 66 -364 minecraft:open_eyeblossom
 execute if block 345 88 -278 minecraft:closed_eyeblossom run setblock 345 88 -278 minecraft:open_eyeblossom
-execute if block 349 81 -349 minecraft:closed_eyeblossom run setblock 349 81 -349 minecraft:open_eyeblossom
 execute if block 349 85 -345 minecraft:closed_eyeblossom run setblock 349 85 -345 minecraft:open_eyeblossom
 execute if block 352 78 -395 minecraft:closed_eyeblossom run setblock 352 78 -395 minecraft:open_eyeblossom
 execute if block 353 87 -343 minecraft:closed_eyeblossom run setblock 353 87 -343 minecraft:open_eyeblossom

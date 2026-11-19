@@ -173,6 +173,8 @@ execute if block 317 112 -434 minecraft:open_eyeblossom run scoreboard players a
 execute if block 317 112 -434 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
 execute if block 318 113 -418 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
 execute if block 318 113 -418 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
+execute if block 320 93 -297 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
+execute if block 320 93 -297 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
 execute if block 320 94 -299 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
 execute if block 320 94 -299 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
 execute if block 321 80 -357 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
@@ -223,8 +225,6 @@ execute if block 345 66 -364 minecraft:open_eyeblossom run scoreboard players ad
 execute if block 345 66 -364 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
 execute if block 345 88 -278 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
 execute if block 345 88 -278 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
-execute if block 349 81 -349 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
-execute if block 349 81 -349 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
 execute if block 349 85 -345 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1
 execute if block 349 85 -345 minecraft:closed_eyeblossom run scoreboard players add #bc le.gd 1
 execute if block 352 78 -395 minecraft:open_eyeblossom run scoreboard players add #bo le.gd 1

@@ -5,7 +5,6 @@ execute if block 326 69 -364 minecraft:open_eyeblossom run setblock 326 69 -364 
 execute if block 337 64 -366 minecraft:open_eyeblossom run setblock 337 64 -366 minecraft:closed_eyeblossom
 execute if block 337 92 -341 minecraft:open_eyeblossom run setblock 337 92 -341 minecraft:closed_eyeblossom
 execute if block 345 66 -364 minecraft:open_eyeblossom run setblock 345 66 -364 minecraft:closed_eyeblossom
-execute if block 349 81 -349 minecraft:open_eyeblossom run setblock 349 81 -349 minecraft:closed_eyeblossom
 execute if block 349 85 -345 minecraft:open_eyeblossom run setblock 349 85 -345 minecraft:closed_eyeblossom
 execute if block 353 87 -343 minecraft:open_eyeblossom run setblock 353 87 -343 minecraft:closed_eyeblossom
 execute if block 360 79 -351 minecraft:open_eyeblossom run setblock 360 79 -351 minecraft:closed_eyeblossom
