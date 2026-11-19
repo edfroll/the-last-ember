@@ -48,3 +48,5 @@ function last_ember:gate/setup
 function last_ember:weepers/setup
 # T-024: the Enchanted Maze
 function last_ember:maze/setup
+# T-025: the Garden of Silence, the Creaking armour
+function last_ember:garden/setup

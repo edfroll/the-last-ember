@@ -27,6 +27,15 @@ python3 tools/build/validate.py server/build/r1/maze.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/maze.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $MB server/build/r1/maze_post.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_check.py places maze
+# T-025: the Garden of Silence (only inside its place: relief, pale oaks, faces, hearts, the orangery, the house, the path, the sensors)
+GB="204 -476 456 -224"   # the place with its seam margin + 10 around (checked by `places`)
+tools/terrain.sh scan $GB server/build/r1/garden_pre.bin | grep -v JAVA_TOOL
+python3 tools/build/r1_garden.py && python3 tools/gen_altars.py >/dev/null && python3 tools/gen_zones.py >/dev/null
+tools/terrain.sh apply server/build/r1/garden_terrain.bin | grep -v JAVA_TOOL
+python3 tools/build/validate.py server/build/r1/garden.txt | tail -1
+tools/blockwriter.sh apply server/build/r1/garden.txt | grep -v JAVA_TOOL | tail -1
+tools/terrain.sh scan $GB server/build/r1/garden_post.bin | grep -v JAVA_TOOL
+python3 tools/build/r1_check.py places garden
 tools/biomepaint.sh | grep -v JAVA_TOOL | head -1
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

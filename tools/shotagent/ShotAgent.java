@@ -58,6 +58,8 @@ public class ShotAgent {
                                     case "use_off" -> KeyMapping.set(mc.options.keyUse.getDefaultKey(), false);
                                     case "jump_on" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), true);  // jump uses the held state
                                     case "jump_off" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), false);
+                                    case "attack_on" -> KeyMapping.set(mc.options.keyAttack.getDefaultKey(), true);   // hold left mouse: break a block (T-025)
+                                    case "attack_off" -> KeyMapping.set(mc.options.keyAttack.getDefaultKey(), false);
                                     default -> {}
                                 }
                             });

@@ -15,3 +15,5 @@ weepers_circle  overworld cyl  -420 -180 14  106 149     no_spawn
 maze            overworld box  -211 103 -491  -90 123 -370   no_blink,no_chorus   # T-024: Enchanted Maze (ground -8 .. ceiling +4)
 maze_sanctum    overworld cyl  -150 -430 11  109 128     no_spawn
 maze_terrace    overworld box  -223 36 -503  -78 116 -358   # T-024: the terrace of the maze (band, parapet, retaining wall, buttresses, piers), indestructible
+garden_glass    overworld box  318 87 -335  357 126 -308   # T-025: the orangery of the Garden of Silence (floor -4 .. crown)
+garden_house    overworld box  236 117 -277  248 132 -267   no_spawn   # T-025: the gardener's house (+2)
