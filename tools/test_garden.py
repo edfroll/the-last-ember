@@ -18,7 +18,7 @@
   zones    the orangery and the house cannot be broken (adventure), no monsters in the house
   restart  hearts, sleep, key survive a restart (stops and starts the server; the clients log in again by themselves? no: relaunch)
   perf     the garden loop with 2 players walking in it and 2 wearers of the armour
-Usage: python3 tools/test_garden.py [build hearts faces silence key armor still zones perf]"""
+Usage: python3 tools/test_garden.py [build hearts faces door silence key armor still zones perf]"""
 import importlib.util, json, math, os, re, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def load(n):
@@ -321,6 +321,33 @@ def t_key():
     R("forceload remove -420 -190 -400 -170")
     R("clear Cam"); R("function last_ember:garden/reset"); unstage()
 
+def t_door():
+    """review T-025: a player who runs into the shut door of the house and right-clicks it every 2 ticks for 3 s does not get in"""
+    print("[door]"); stage(False)
+    R("function last_ember:garden/reset"); R("clear Cam"); time.sleep(1.2)
+    dx, dy, dz = M["door"]
+    for run in (1, 2):
+        R(f"tp Cam {dx + 0.5} {dy} {dz + 2.6} 180 0"); look_at("Cam", dx + 0.5, dy + 1.0, dz + 0.5); time.sleep(0.6)
+        tc.act("Cam", "!fwd_on"); tc.act("Cam", "!use_rapid 3000 100")
+        t0 = time.time(); zmin = 99.0; seen_open = 0
+        while time.time() - t0 < 3.4:
+            p = pos("Cam"); zmin = min(zmin, p[2] - dz) if p else zmin
+            if blk(dx, dy, dz, "minecraft:pale_oak_door[open=true]"): seen_open += 1
+            look_at("Cam", dx + 0.5, dy + 1.0, dz + 0.5)
+        tc.act("Cam", "!fwd_off"); time.sleep(1.5)
+        p = pos("Cam")
+        chk(f"run {run}: rapid right clicks on the shut door: the player stays outside", zmin > 0.25 and p and p[2] > dz + 0.25,
+            f"closest {zmin:.2f} from the door block, end z {p and p[2]}")
+        print(f"        (the door seen open by the server in {seen_open} polls of ~{int(3.4 / 0.12)})")
+        chk(f"run {run}: ... the door is shut afterwards", blk(dx, dy, dz, "minecraft:pale_oak_door[open=false]"))
+    # control: the same clicks reach the door (asleep, one click opens it)
+    R("function last_ember:garden/sleep_now"); time.sleep(1.2)
+    R(f"tp Cam {dx + 0.5} {dy} {dz + 2.0} 180 0"); look_at("Cam", dx + 0.5, dy + 1.0, dz + 0.5); time.sleep(0.6)
+    tc.act("Cam", "!use"); time.sleep(1.5)
+    chk("control: asleep, one right click from the same place opens the door", blk(dx, dy, dz, "minecraft:pale_oak_door[open=true]"))
+    R(f"setblock {dx} {dy} {dz} minecraft:pale_oak_door[facing=north,half=lower,hinge=left,open=false]"); R(f"setblock {dx} {dy+1} {dz} minecraft:pale_oak_door[facing=north,half=upper,hinge=left,open=false]")
+    R("function last_ember:garden/reset"); unstage()
+
 def attr(p, a): return tc.num(R(f"attribute {p} minecraft:{a} get"), r"is (-?[\d.]+)")
 def t_armor():
     print("[armor]"); stage(True)
@@ -370,8 +397,9 @@ def t_armor():
     R("clear Cam"); R("clear Cam2"); R("function last_ember:garden/reset"); unstage()
 
 def arena():
-    R("fill 1700 199 1700 1740 199 1740 minecraft:stone"); R("fill 1700 200 1700 1740 206 1740 minecraft:air")
-    R("forceload add 1700 1700 1740 1740")
+    R("forceload add 1700 1700 1740 1740")               # loaded first: on a fresh world the fill would hit unloaded chunks
+    wait(lambda: passed("execute if loaded 1700 200 1700") and passed("execute if loaded 1740 200 1740"), 40); time.sleep(1)
+    R("fill 1700 199 1700 1740 199 1740 minecraft:stone"); R("fill 1700 200 1700 1740 210 1740 minecraft:air")
 def wear(p):
     R(f"clear {p}")
     for sl, pc in (("head", "helmet"), ("chest", "chestplate"), ("legs", "leggings"), ("feet", "boots")):
@@ -509,7 +537,7 @@ def t_restart():
     chk("scores lost (reset *) -> taken back from the storage", gd("#asleep") == 1 and gd("#key") == 2 and gd("#left") == 5, (gd("#asleep"), gd("#key"), gd("#left")))
     R("clear Cam"); R("tag Cam remove le.creak_got"); R("function last_ember:garden/reset"); unstage()
 
-T = dict(build=t_build, hearts=t_hearts, faces=t_faces, silence=t_silence, key=t_key, armor=t_armor, still=t_still, zones=t_zones, perf=t_perf, restart=t_restart)
+T = dict(build=t_build, hearts=t_hearts, faces=t_faces, door=t_door, silence=t_silence, key=t_key, armor=t_armor, still=t_still, zones=t_zones, perf=t_perf, restart=t_restart)
 if __name__ == "__main__":
     for n in (sys.argv[1:] or [k for k in T if k != "restart"]): T[n]()
     print(f"\n{ok} ok, {bad} failed")

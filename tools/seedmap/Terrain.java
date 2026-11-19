@@ -15,6 +15,7 @@ import net.minecraft.world.level.chunk.storage.RegionStorageInfo;
 /**
  * T-022 terrain backend for big areas (server STOPPED), chunk by chunk.
  *   Terrain scan  <world> <x1> <z1> <x2> <z2> <out.bin>   per column: ground (trees, plants, water ignored), top (first non-air), water top, flags
+ *   (flowing water counts as air: it spreads while chunks tick, differently on every build from scratch)
  *   Terrain apply <world> <grid.bin>                      rewrites the columns of the grid that have a height (others untouched)
  * scan file: "LETS" + int x0 z0 w h, then int16 ground[w*h], int16 top[w*h], int16 water[w*h], uint8 flags[w*h]
  *   (index (z-z0)*w + (x-x0); -32768 = none / chunk missing; flags 1 log above ground, 2 leaves, 4 water, 8 lava, 16 chunk missing)
@@ -37,6 +38,13 @@ public class Terrain {
         CompoundTag c = (CompoundTag) t; return c.getString("id").orElseGet(() -> c.getStringOr("", "minecraft:air")).replace("minecraft:", "");
     }
     static final Tag AIR = StringTag.valueOf("minecraft:air");
+    /** flowing water (level 1..15): it spreads while the pregenerated chunks tick, so two builds from scratch see it differently
+     *  (review T-025, point 6); the scan counts it as air */
+    static boolean flowing(Tag t) {
+        if (!(t instanceof CompoundTag c)) return false;
+        String lv = c.getCompound("properties").map(p -> p.getStringOr("level", "0")).orElse("0");
+        return !lv.equals("0");
+    }
 
     static Tag[] decode(CompoundTag sec) {
         Tag[] out = new Tag[4096]; CompoundTag bs = sec.getCompoundOrEmpty("block_states"); ListTag pal = bs.getListOrEmpty("palette");
@@ -62,7 +70,7 @@ public class Terrain {
         "tall_dry_grass", "pumpkin", "moss_carpet", "pale_moss_carpet", "pale_hanging_moss", "bamboo", "cactus", "cocoa", "lily_pad", "glow_lichen", "hanging_roots", "red_bush",
         "big_dripleaf", "big_dripleaf_stem", "small_dripleaf", "brown_mushroom_block", "red_mushroom_block", "mushroom_stem", "bee_nest", "creaking_heart", "resin_clump", "pointed_dripstone"));
     static int kind(String n) { // 0 ground, 1 skip (plant/air), 2 log, 3 leaves, 4 water, 5 lava
-        if (n.equals("water") || n.equals("bubble_column")) return 4;
+        if (n.equals("water") || n.equals("bubble_column") || n.equals("ice")) return 4;   // ice: water that froze while the chunks ticked (review T-025, 6)
         if (n.equals("lava")) return 5;
         if (n.endsWith("leaves")) return 3;
         if (n.endsWith("_log") || n.endsWith("_wood") || n.endsWith("_stem") || n.endsWith("_hyphae") || n.contains("mangrove_roots")) return 2;
@@ -108,7 +116,8 @@ public class Terrain {
                     if (b == null) { fl[i] = 16; continue; }
                     int f = 0;
                     for (int y = MAXY; y >= MINY; y--) {
-                        int k = kind(nameOf(at(b, lx, y, lz)));
+                        Tag bt = at(b, lx, y, lz); int k = kind(nameOf(bt));
+                        if (k == 4 && flowing(bt)) k = 1;
                         if (k != 1 && top[i] == NONE) top[i] = (short) y;
                         if (k == 4) { if (wat[i] == NONE) wat[i] = (short) y; f |= 4; }
                         else if (k == 5) f |= 8;
@@ -237,7 +246,10 @@ public class Terrain {
                 ListTag secs = ch.getListOrEmpty("sections");
                 for (int s = 0; s < 24; s++) {
                     Integer i = yToIdx.get(s - 4); CompoundTag sec;
-                    if (i == null) { sec = new CompoundTag(); sec.putByte("Y", (byte) (s - 4)); secs.add(sec); yToIdx.put(s - 4, secs.size() - 1); } else sec = secs.getCompoundOrEmpty(i);
+                    if (i == null) { sec = new CompoundTag(); sec.putByte("Y", (byte) (s - 4)); secs.add(sec); yToIdx.put(s - 4, secs.size() - 1);
+                        for (int q = s - 1; q >= 0; q--) { Integer j = yToIdx.get(q - 4); if (j == null) continue;   // a new section takes the biomes of the one below
+                            CompoundTag bio = secs.getCompoundOrEmpty(j).getCompoundOrEmpty("biomes"); if (!bio.getListOrEmpty("palette").isEmpty()) { sec.put("biomes", bio.copy()); break; } }
+                    } else sec = secs.getCompoundOrEmpty(i);
                     encode(sec, b[s]);
                 }
                 ListTag keep = new ListTag();

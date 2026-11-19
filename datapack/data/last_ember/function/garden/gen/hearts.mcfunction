@@ -3,5 +3,5 @@ execute if score #h1 le.gd matches 1 if loaded 318 80 -367 unless block 318 80 -
 execute if score #h2 le.gd matches 1 if loaded 380 91 -327 unless block 380 91 -327 minecraft:creaking_heart run function last_ember:garden/gen/lost_2
 execute if score #h3 le.gd matches 1 if loaded 314 112 -447 unless block 314 112 -447 minecraft:creaking_heart run function last_ember:garden/gen/lost_3
 execute if score #h4 le.gd matches 1 if loaded 389 100 -251 unless block 389 100 -251 minecraft:creaking_heart run function last_ember:garden/gen/lost_4
-execute if score #h5 le.gd matches 1 if loaded 344 70 -384 unless block 344 70 -384 minecraft:creaking_heart run function last_ember:garden/gen/lost_5
+execute if score #h5 le.gd matches 1 if loaded 349 85 -347 unless block 349 85 -347 minecraft:creaking_heart run function last_ember:garden/gen/lost_5
 execute if score #h6 le.gd matches 1 if loaded 416 68 -408 unless block 416 68 -408 minecraft:creaking_heart run function last_ember:garden/gen/lost_6

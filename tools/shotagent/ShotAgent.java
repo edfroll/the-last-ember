@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.ChatVisiblity;
  */
 public class ShotAgent {
     static volatile boolean ATTACK = false;
+    static volatile long RAPID_END = 0; static volatile int RAPID_MS = 100;   // !use_rapid <ms> [every_ms]: right clicks in a row (T-025 review: the door)
     public static void premain(String args, Instrumentation inst) {
         Thread t = new Thread(() -> {
             Path dir = Paths.get(args), req = dir.resolve("shot-request.txt"), done = dir.resolve("shot-done.txt");
@@ -60,6 +61,7 @@ public class ShotAgent {
                                     case "jump_on" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), true);  // jump uses the held state
                                     case "jump_off" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), false);
                                     case "attack_on" -> { KeyMapping.set(mc.options.keyAttack.getDefaultKey(), true); ATTACK = true; }   // hold left mouse: break a block (T-025); vanilla mines on a held key only with the mouse grabbed (a focused window), so the agent drives the destroy itself (below)
+                                    case "use_rapid" -> { RAPID_MS = Math.max(20, Integer.parseInt(p.length > 2 ? p[2] : "100")); RAPID_END = System.currentTimeMillis() + Integer.parseInt(p.length > 1 ? p[1] : "3000"); }
                                     case "menu_qmove" -> { if (mc.player != null && mc.player.containerMenu != null && mc.player.containerMenu.containerId != 0) mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, Integer.parseInt(p.length > 1 ? p[1] : "0"), 0, net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player); }   // T-025: shift-click slot N of the open menu (anvil)
                                     case "attack_off" -> { KeyMapping.set(mc.options.keyAttack.getDefaultKey(), false); ATTACK = false; if (mc.gameMode != null) mc.gameMode.stopDestroyBlock(); }
                                     default -> {}
@@ -70,13 +72,16 @@ public class ShotAgent {
                             continue;
                         }
                         boolean hud = p.length > 1 && p[1].equals("1");
+                        java.util.Set<String> fl = new java.util.HashSet<>(java.util.Arrays.asList(p).subList(Math.min(2, p.length), p.length));
+                        boolean keep = fl.contains("keep");     // "<name> 1 keep": the open screen (a book, the inventory) stays in the frame
+                        boolean clean = fl.contains("clean");   // "<name> 1 clean": the chat is cleared before the frame (a "Saved screenshot" line of the frame before may still come later: wait 10 s)
                         Object lock = new Object();
                         boolean[] ok = {false};
                         Path shots = Paths.get(mc.gameDirectory.getPath(), "screenshots");
                         Files.createDirectories(shots);
                         mc.execute(() -> {
-                            if (mc.gui.screen() != null) mc.gui.setScreen(null);  // close pause menu etc.
-                            if (!hud) { mc.options.chatVisibility().set(ChatVisiblity.HIDDEN); mc.gui.hud.getChat().clearMessages(false); }  // no chat / "Saved screenshot"
+                            if (mc.gui.screen() != null && !keep) mc.gui.setScreen(null);  // close pause menu etc.
+                            if (!hud || clean) { mc.options.chatVisibility().set(ChatVisiblity.HIDDEN); mc.gui.hud.getChat().clearMessages(false); }  // no chat / "Saved screenshot"
                             boolean wasHidden = mc.gui.hud.isHidden();
                             if (wasHidden == hud) mc.gui.hud.toggle();
                             // capture on a later frame so the HUD state has been rendered
@@ -126,5 +131,17 @@ public class ShotAgent {
         }, "shot-agent-attack");
         a.setDaemon(true);
         a.start();
+        Thread u = new Thread(() -> {     // rapid right clicks: one click per RAPID_MS until RAPID_END (vanilla uses every queued click of a frame)
+            while (true) {
+                try {
+                    Thread.sleep(RAPID_MS);
+                    if (System.currentTimeMillis() >= RAPID_END) continue;
+                    Minecraft mc = Minecraft.getInstance();
+                    if (mc != null) mc.execute(() -> KeyMapping.click(mc.options.keyUse.getDefaultKey()));
+                } catch (Throwable e) { }
+            }
+        }, "shot-agent-use");
+        u.setDaemon(true);
+        u.start();
     }
 }

@@ -19,6 +19,9 @@ start_server() {
 }
 stop_server() { tools/server.sh stop >/dev/null; for i in $(seq 1 60); do pgrep -f server-26.3.jar >/dev/null || return 0; sleep 1; done; }
 say "generating chunks"; start_server
+# frozen while the chunks are generated (review T-025, 6): no datapack functions (it would build bonfires, gates, traders at the
+# positions of the previous build into the "natural" ground the scans read), no flowing water, no freezing, no falling blocks
+tools/server.sh rcon "tick freeze" >/dev/null
 python3 tools/build/pregen.py -736 -1024 751 751  -1232 -400 -737 239  -1504 -1024 -737 -592 | tail -1
 stop_server
 say "natural ground"; tools/terrain.sh scan -1504 -1024 751 751 server/build/r1/nat.bin | grep -v JAVA_TOOL
@@ -31,7 +34,7 @@ say "Ring Mountain (T-003)"; tools/sculpt.sh apply tools/sculpt_specs/ring_mount
 tools/terrain.sh scan -1504 -1024 751 751 server/build/r1/base.bin | grep -v JAVA_TOOL
 say "R1 frame (T-022)"; tools/build/r1_apply.sh
 say "start"; start_server
-for c in "data remove storage last_ember:bonfires by" "data remove storage last_ember:ash urns" "data remove storage last_ember:ash t" "data remove storage last_ember:ember carrier" "reload" "defaultgamemode survival" "time set 1000" "weather clear" "forceload add -16 -16 15 15"; do tools/server.sh rcon "$c" >/dev/null; done
+for c in "tick unfreeze" "data remove storage last_ember:bonfires by" "data remove storage last_ember:ash urns" "data remove storage last_ember:ash t" "data remove storage last_ember:ember carrier" "reload" "defaultgamemode survival" "time set 1000" "weather clear" "forceload add -16 -16 15 15"; do tools/server.sh rcon "$c" >/dev/null; done
 sleep 5; tools/server.sh rcon "forceload remove all" >/dev/null
 say "world ready"
 [ "${1:-}" = "--no-client" ] && exit 0
