@@ -226,7 +226,7 @@ def t_silence():
         lx, lz = -math.sin(math.radians(ry)), math.cos(math.radians(ry))
         okd = okb = okt = True
         for i in range(2):
-            p = pos(f"@e[type=minecraft:creaking,tag=le.garden_cr,limit=1,sort=nearest,x={x},y={y},z={z}]") if i == 0 else pos(f"@e[type=minecraft:creaking,tag=le.garden_cr,limit=1,sort=furthest,x={x},y={y},z={z}]")
+            p = [float(v) for v in re.findall(r"(-?[\d.]+)d", R(f"data get storage last_ember:garden last[{i}]"))]
             d = math.dist(p, (x + 0.5, y + 0.5, z + 0.5)); okd &= 10 <= d <= 16
             vx, vz = p[0] - cp[0], p[2] - cp[2]; ang = math.degrees(math.acos(max(-1, min(1, (vx * lx + vz * lz) / max(1e-6, math.hypot(vx, vz))))))
             okb &= ang > 120
@@ -234,6 +234,18 @@ def t_silence():
         chk("they stand 10..16 from the sensor", okd)
         chk("they stand behind Cam (> 120 deg from his look)", okb)
         chk("invulnerable and persistent", nb.count("1b") == 2, nb)
+        # under the look they stand still (vanilla); looked away they come: one of ours in the open (round the sensor the orangery's glass
+        # can stand between, and glass blocks the look)
+        R("tp Cam 300.5 120 -300.5"); R("spreadplayers 300 -300 0 1 false Cam"); R("kill @e[type=minecraft:creaking]")
+        R('summon minecraft:creaking 300 130 -292 {Tags:["le.garden_cr","le.tcr"],Invulnerable:1b,PersistenceRequired:1b}'); R("spreadplayers 300 -292 0 1 false @e[tag=le.tcr]")
+        R("execute store result score #now le.gd run time query gametime"); R("scoreboard players add #now le.gd 1200"); R("scoreboard players operation @e[tag=le.tcr] le.gdt = #now le.gd")
+        sel = "@e[tag=le.tcr,limit=1]"
+        R(f"execute as Cam at @s anchored eyes facing entity {sel} eyes run tp @s ~ ~ ~ ~ ~"); time.sleep(1.5); a0 = pos(sel); time.sleep(2.5); a1 = pos(sel)
+        chk("looked at, the creaking stands still", a0 and a1 and math.dist(a0, a1) < 0.2, (a0, a1))
+        R("execute as Cam at @s run tp @s ~ ~ ~ ~180 0"); time.sleep(3); a2 = pos(sel)
+        chk("looked away, it comes", a2 and math.dist(a1, a2) > 0.8, (a1, a2))
+        R("damage @e[type=minecraft:creaking,tag=le.garden_cr,limit=1,sort=nearest] 20 minecraft:player_attack by Cam"); time.sleep(0.3)
+        chk("a sword does not hurt them (vanilla: only a heart lets a creaking die)", count("@e[type=minecraft:creaking,tag=le.garden_cr]") >= 1)
     # cooldowns: the same sensor again (60 s), another sensor at once (garden 20 s)
     R("kill @e[type=minecraft:creaking]"); time.sleep(1.5)
     walk_over(s, t=1.6); time.sleep(2)
@@ -330,6 +342,21 @@ def t_armor():
     du = [tc.num(R(f"data get entity Cam equipment.{s}.components.\"minecraft:max_damage\""), r"(\d+)$") for s in ("head", "chest", "legs", "feet")]
     chk("durability 165 / 240 / 225 / 195", du == [165, 240, 225, 195], du)
     chk("not in #metal_gear", "creaking" not in open(os.path.join(ROOT, "datapack/data/last_ember/tags/item/metal_gear.json")).read())
+    # the anvil: a half worn chestplate + pale oak logs (real clicks in the anvil window)
+    R("clear Cam"); R("loot replace entity Cam hotbar.0 loot last_ember:item/creaking_chestplate")
+    R('item modify entity Cam hotbar.0 {type:"minecraft:set_damage",damage:0.5}'); R("item replace entity Cam hotbar.1 with minecraft:pale_oak_log 4")
+    R("xp set Cam 30 levels"); arena(); time.sleep(1); R("setblock 1720 200 1724 minecraft:anvil"); R("tp Cam 1720.5 200 1721.5 0 30")
+    look_at("Cam", 1720.5, 200.6, 1724.5); time.sleep(0.5)
+    d0 = tc.num(R('data get entity Cam Inventory[{Slot:0b}].components."minecraft:damage"'), r"(\d+)$")
+    tc.act("Cam", "!use"); time.sleep(0.8); tc.act("Cam", "!menu_qmove 30"); time.sleep(0.4); tc.act("Cam", "!menu_qmove 31"); time.sleep(0.6)
+    tc.act("Cam", "!menu_qmove 2"); time.sleep(0.6); tc.act("Cam", "!sneak_off"); time.sleep(0.4)
+    rep = inv("Cam")
+    d1 = re.findall(r'"minecraft:damage": (\d+)', rep)
+    chk("anvil: pale oak logs repair the chestplate (damage %s -> %s)" % (d0, d1), d0 == 120 and "le_creak" in rep and (not d1 or int(d1[0]) < 120), rep[:300])
+    R("fill 1720 200 1724 1720 200 1724 minecraft:air"); R("forceload remove 1700 1700 1740 1740"); stage(True)
+    R("clear Cam"); R("loot give Cam loot last_ember:item/creaking_armor")
+    for sl, pc in (("head", "helmet"), ("chest", "chestplate"), ("legs", "leggings"), ("feet", "boots")):
+        R(f"loot replace entity Cam armor.{sl} loot last_ember:item/creaking_{pc}")
     R("kill Cam"); time.sleep(3)
     chk("death keeps the worn armour", "".join(R(f"data get entity Cam equipment.{s}.components.\"minecraft:custom_data\"") for s in ("head", "chest", "legs", "feet")).count("le_creak") == 4)
     R("clear Cam"); R("clear Cam2"); R("function last_ember:garden/reset"); unstage()

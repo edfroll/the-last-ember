@@ -1,4 +1,4 @@
-# T-025: one creaking behind the player (see wake), retried until a place fits (16 tries in all)
+# T-025: one creaking behind the player (see wake), retried until a place fits (16 tries per creaking)
 scoreboard players add #wt le.gd 1
 execute if score #wt le.gd matches 17.. run return 0
 summon minecraft:marker ~ ~ ~ {Tags:["le.gcand"]}

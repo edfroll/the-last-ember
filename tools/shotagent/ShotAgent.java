@@ -43,7 +43,7 @@ public class ShotAgent {
                         if (p[0].startsWith("!")) { // input actions for tests: !use (right click), !drop (Q), !sneak_on / !sneak_off
                             String act = p[0].substring(1);
                             mc.execute(() -> {
-                                if (mc.gui.screen() != null && !act.startsWith("trade")) { if (mc.player != null && mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen) mc.player.closeContainer(); else mc.gui.setScreen(null); }   // a container is closed properly (the server gets the packet: the items of a trade window come back)
+                                if (mc.gui.screen() != null && !act.startsWith("trade") && !act.startsWith("menu")) { if (mc.player != null && mc.gui.screen() instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen) mc.player.closeContainer(); else mc.gui.setScreen(null); }   // a container is closed properly (the server gets the packet: the items of a trade window come back)
                                 switch (act) {
                                     case "use" -> KeyMapping.click(mc.options.keyUse.getDefaultKey());
                                     case "drop" -> KeyMapping.click(mc.options.keyDrop.getDefaultKey());
@@ -59,6 +59,7 @@ public class ShotAgent {
                                     case "jump_on" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), true);  // jump uses the held state
                                     case "jump_off" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), false);
                                     case "attack_on" -> KeyMapping.set(mc.options.keyAttack.getDefaultKey(), true);   // hold left mouse: break a block (T-025)
+                                    case "menu_qmove" -> { if (mc.player != null && mc.player.containerMenu != null && mc.player.containerMenu.containerId != 0) mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, Integer.parseInt(p.length > 1 ? p[1] : "0"), 0, net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player); }   // T-025: shift-click slot N of the open menu (anvil)
                                     case "attack_off" -> KeyMapping.set(mc.options.keyAttack.getDefaultKey(), false);
                                     default -> {}
                                 }
