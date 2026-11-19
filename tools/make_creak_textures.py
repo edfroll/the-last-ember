@@ -14,27 +14,50 @@ def png(path, px):
 def hsh(x, y, s=0):
     n = (x * 73856093) ^ (y * 19349663) ^ (s * 83492791); n &= 0xffffffff; n = ((n ^ (n >> 13)) * 1274126177) & 0xffffffff; n ^= n >> 16
     return (n & 0xffff) / 0x10000
-PALE = [(214, 208, 196), (200, 194, 182), (188, 181, 168), (226, 221, 210)]
-VEIN = [(74, 68, 62), (92, 86, 78), (58, 54, 50)]
-def bark(x, y, s=0):
-    """pale bark: vertical grain, dark veins that wander (column offset by a slow sine)"""
-    v = (x + int(2 * math.sin(y * 0.55 + x * 0.3 + s))) % 5
-    if v == 0 and hsh(x, y // 3, s + 7) < 0.75: return VEIN[int(hsh(x, y, s + 3) * 3)] + (255,)
-    return PALE[int(hsh(x, y, s + 1) * 4)] + (255,)
+# tones of the vanilla bark (review T-025, point 5): the base is stripped pale oak greyed to a grey-beige (3 shades), the veins are the bark of the
+# pale oak log, the rims of the plates one step darker than the base, the eye slits dark with a dull ember of the creaking's orange
+BASE = [(200, 190, 181), (189, 179, 170), (209, 200, 191)]
+RIM = (165, 154, 146)
+VEIN = [(78, 67, 64), (94, 83, 80), (67, 59, 57)]
+SLIT, EMBER = (40, 34, 31), (168, 90, 32)
+def base(x, y, s=0):
+    n = hsh(x, y, s + 1); g = hsh(x // 2, y // 3, s + 2)        # soft grain: patches 2x3 of one shade, a little speckle
+    return BASE[0 if g < 0.5 else 1 if g < 0.8 else 2] if n > 0.15 else BASE[int(n * 20) % 3]
+def veins(px, x1, y1, x2, y2, s):
+    """dark vertical veins 3..8 long that wander by one pixel and fork; about one start per 26 pixels of the region, no spots"""
+    w, h = x2 - x1, y2 - y1; n = max(1, (w * h) // 26)
+    for k in range(n):
+        x = x1 + int(hsh(k, 1, s) * w); y = y1 + int(hsh(k, 2, s) * h); L = 3 + int(hsh(k, 3, s) * 6)
+        stack = [(x, y, L, 0)]
+        while stack:
+            x, y, L, depth = stack.pop()
+            for i in range(L):
+                if not (x1 <= x < x2 and y1 <= y < y2): break
+                px[y][x] = VEIN[int(hsh(x, y, s + 9) * 3)] + (255,)
+                if depth == 0 and i == L // 2 and hsh(k, 4, s) < 0.6:
+                    stack.append((x + (1 if hsh(k, 5, s) < 0.5 else -1), y + 1, 2 + int(hsh(k, 6, s) * 3), 1))
+                y += 1
+                if hsh(x, y, s + 11) < 0.3: x += 1 if hsh(x, y, s + 12) < 0.5 else -1
 # ---- worn layers (64x32 humanoid layout): head 0..32 x 0..16, body 16..40 x 16..32, arms 40..56 x 16..32, legs 0..16 x 16..32
-def layer(regions, eyes=False):
+def layer(regions, rims, eyes=False):
     px = [[(0, 0, 0, 0)] * 64 for _ in range(32)]
-    for (x1, y1, x2, y2) in regions:
+    for r, (x1, y1, x2, y2) in enumerate(regions):
         for y in range(y1, y2):
-            for x in range(x1, x2): px[y][x] = bark(x, y)
-    if eyes:      # the helmet's front face is (8,8)-(16,16): two narrow dark slits and a dark brow line
-        for x in (9, 10, 13, 14): px[11][x] = (24, 20, 18, 255)
-        for x in (9, 14): px[12][x] = (40, 34, 30, 255)
-        for x in range(8, 16): px[9][x] = VEIN[0] + (255,)
+            for x in range(x1, x2): px[y][x] = base(x, y) + (255,)
+        veins(px, x1, y1, x2, y2, 100 + r)
+    for (x1, y1, x2, y2) in rims:                  # the rims of the plates: shoulders, belt, the bottom of the leggings / boots
+        for y in range(y1, y2):
+            for x in range(x1, x2):
+                if px[y][x][3]: px[y][x] = RIM + (255,)
+    if eyes:      # the helmet's front face is (8,8)-(16,16): two slits 3x1, each with a dull orange pixel in the middle
+        for x0 in (8, 13):
+            for i in range(3): px[11][x0 + i] = (EMBER if i == 1 else SLIT) + (255,)
+            for i in range(3): px[10][x0 + i] = base(x0 + i, 10) + (255,)     # no vein over the eye
     return px
+HEAD, BODY, ARM, LEG = (0, 0, 32, 16), (16, 16, 40, 32), (40, 16, 56, 32), (0, 16, 16, 32)
 png(os.path.join(OUT, "textures/entity/equipment/humanoid/creaking.png"),
-    layer([(0, 0, 32, 16), (16, 16, 40, 32), (40, 16, 56, 32), (0, 16, 16, 32)], eyes=True))
-png(os.path.join(OUT, "textures/entity/equipment/humanoid_leggings/creaking.png"), layer([(0, 16, 16, 32), (16, 16, 40, 32)]))
+    layer([HEAD, BODY, ARM, LEG], [(44, 16, 52, 20), (40, 20, 56, 21), (16, 31, 40, 32), (0, 31, 16, 32)], eyes=True))
+png(os.path.join(OUT, "textures/entity/equipment/humanoid_leggings/creaking.png"), layer([LEG, BODY], [(16, 20, 40, 21), (0, 31, 16, 32)]))
 json.dump({"layers": {"humanoid": [{"texture": "last_ember:creaking"}], "humanoid_leggings": [{"texture": "last_ember:creaking"}]}},
           open(os.path.join(OUT, "equipment/creaking.json"), "w"), indent=1)
 # ---- item icons: masks ('#' bark, 'o' dark outline, 'e' eye slit)
@@ -53,8 +76,12 @@ for name, rows in ICONS.items():
     for y, row in enumerate(rows):
         line = []
         for x, c in enumerate(row):
-            line.append(bark(x * 3, y * 2, 5) if c == "#" else (52, 46, 42, 255) if c == "o" else (20, 16, 14, 255) if c == "e" else (0, 0, 0, 0))
+            line.append(base(x, y, 5) + (255,) if c == "#" else VEIN[1] + (255,) if c == "o" else (EMBER if x in (5, 11) else SLIT) + (255,) if c == "e" else (0, 0, 0, 0))
         px.append(line)
+    for y, row in enumerate(rows):                 # veins inside the '#' area
+        for x, c in enumerate(row):
+            if c == "#" and (x + int(1.5 * math.sin(y * 0.7 + x))) % 4 == 0 and hsh(x, y // 3, 8) < 0.55 and row[x - 1] == "#" and row[x + 1] == "#":
+                px[y][x] = VEIN[int(hsh(x, y, 9) * 3)] + (255,)
     png(os.path.join(OUT, "textures/item/creaking_%s.png" % name), px)
     json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": "last_ember:item/creaking_%s" % name}},
               open(os.path.join(OUT, "models/item/creaking_%s.json" % name), "w"), indent=1)

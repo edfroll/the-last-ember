@@ -378,26 +378,34 @@ def face_cells(x, z, base, d, size=3):
     if dz: zz = z if dz < 0 else z + size - 1; side = [(x + i, zz) for i in range(size)]
     else: xx = x if dx < 0 else x + size - 1; side = [(xx, z + i) for i in range(size)]
     return side, [(cx + dx, cz + dz) for cx, cz in side]
+OPP = {"north": "south", "south": "north", "west": "east", "east": "west"}
 def face_blocks(x, z, base, d, state):
-    """{(x,y,z): block} of the face on side d (3 cells wide): a pale mask 3x3 of stripped pale oak (brow, cheeks, nose)
-    with the eyes (open: dark sockets of pale oak wood; closed: pale lids of stripped log laid across), under it the mouth (a dark hole
-    behind a pale oak trapdoor: teeth) in the bark"""
+    """{(x,y,z): block} of the face on side d (3 cells wide, review T-025 point 3). All trunk cells upright (axis y: no end rings on the
+    sides of the trunk). Rows from base+4 down: brows (pale corners, dark between, overhung by upturned pale oak stairs), eyes (open: dark
+    sockets of pale oak wood; closed: a pale lid over the socket, a top slab in front of it;
+    picked on a test stand from 4 and 8 blocks by day and by night), the nose (pale bridge and cheeks, a button tip),
+    the mouth (a dark hole behind a pale oak trapdoor: teeth)"""
     side, front = face_cells(x, z, base, d); out = {}
-    hax = "x" if d[1] else "z"
+    fc = TRAP_FACING[d]
     for i, (cx, cz) in enumerate(side):
-        mid = i == 1
+        mid = i == 1; fx, fz = front[i]
         out[(cx, base + 1, cz)] = WOOD if mid else LOG % "y"
         out[(cx, base + 2, cz)] = STRIP % "y"
-        out[(cx, base + 3, cz)] = STRIP % "y" if mid else (WOOD if state == "open" else STRIP % hax)
-        out[(cx, base + 4, cz)] = STRIP % hax
-        fx, fz = front[i]
-        if mid: out[(fx, base + 1, fz)] = "minecraft:pale_oak_trapdoor[facing=%s,half=bottom,open=true,powered=false,waterlogged=false]" % TRAP_FACING[d]
+        out[(cx, base + 3, cz)] = STRIP % "y" if mid else WOOD
+        out[(cx, base + 4, cz)] = LOG % "y" if mid else STRIP % "y"
+        if mid:
+            out[(fx, base + 1, fz)] = "minecraft:pale_oak_trapdoor[facing=%s,half=bottom,open=true,powered=false,waterlogged=false]" % fc
+            out[(fx, base + 2, fz)] = "minecraft:pale_oak_button[face=wall,facing=%s,powered=false]" % fc
+        else:
+            out[(fx, base + 4, fz)] = "minecraft:pale_oak_stairs[facing=%s,half=top,shape=straight,waterlogged=false]" % OPP[fc]
+            if state != "open": out[(fx, base + 3, fz)] = "minecraft:pale_oak_slab[type=top,waterlogged=false]"   # the lid
     return out
 def bark_blocks(x, z, base, d):
     side, front = face_cells(x, z, base, d); out = {}
     for (cx, cz) in side:
         for y in range(base + 1, base + 5): out[(cx, y, cz)] = LOG % "y"
-    out[(front[1][0], base + 1, front[1][1])] = "minecraft:air"
+    for (fx, fz) in front:                           # the trapdoor, the nose, the lids and the brows of a face on this side go
+        for y in range(base + 1, base + 5): out[(fx, y, fz)] = "minecraft:air"
     return out
 
 # ---------------------------------------------------------------- ground
@@ -480,7 +488,7 @@ def orangery(b, T, gr):
             for yy in ys:
                 if yy < FY + WALL_H: continue
                 if math.hypot(x + 0.5 - (TRUNK[0] + 2), z + 0.5 - (TRUNK[1] + 2)) < 5.5: b.set(x, yy, z, "minecraft:air"); continue
-                if rib: b.set(x, yy, z, STRIP % "x")
+                if rib: b.set(x, yy, z, STRIP % ("y" if len(ys) > 1 else "z"))     # the rib runs along z: one pale arch (steep parts upright)
                 elif (z - OZ1) % 4 == 0: b.set(x, yy, z, "minecraft:iron_bars")
                 else: b.set(x, yy, z, "minecraft:air" if hole(x, yy + 7, z) else "minecraft:glass_pane")
     # chains hanging from the ribs, empty tubs
@@ -493,15 +501,22 @@ def orangery(b, T, gr):
     for k, (x, z) in enumerate(tubs):
         b.set(x, FY + 1, z, "minecraft:decorated_pot[cracked=%s,facing=north,waterlogged=false]" % ("true" if k % 2 else "false") if k < 6 else "minecraft:cauldron")
     great_tree(b)
+HOLLOW = [(TRUNK[0], y, z) for y in (FY + 4, FY + 5) for z in (-322, -321)]   # the dark hollow in the west face (2x2, 1 deep)
+BIG_BRANCHES = [  # (angle in degrees: 0 = +x (east), 90 = +z (south)), start above the floor, rise per step under the roof
+    (128, 12, 0.30), (262, 12, 0.32), (12, 14, 0.40)]
+def in_orangery(x, z): return OX1 <= x <= OX2 and OZ1 <= z <= OZ2
 def great_tree(b):
-    """the great pale oak from the basin: trunk 4x4 with a root flare, 30 high from the floor, branches through the roof, a crown above it"""
-    x1, z1, x2, z2 = TRUNK; top = FY + 30
+    """the great pale oak from the basin: trunk 4x4 with a root flare, 34 high from the floor, a hollow at 4..5; three thick branches
+    (2x2 at the trunk) under the vault breaking through it in three places; a crown over the roof 31 wide with hanging moss"""
+    x1, z1, x2, z2 = TRUNK; top = FY + 34
     for x in range(x1 - 1, x2 + 2):
         for z in range(z1 - 1, z2 + 2):
             inner = x1 <= x <= x2 and z1 <= z <= z2
             corner = x in (x1 - 1, x2 + 1) and z in (z1 - 1, z2 + 1)
             h = top if inner else (FY + 3 if not corner else -1)
             for y in range(FY - 1, h + 1): b.set(x, y, z, LOG % "y" if inner or y > FY else "minecraft:pale_oak_wood[axis=y]")
+    for k in HOLLOW: b.set(*k, "minecraft:air")
+    for z in (-322, -321): b.set(TRUNK[0] - 1, FY + 3, z, "minecraft:pale_oak_wood[axis=y]")     # the sill of the hollow
     # roots on the floor: 8 runs of pale oak wood breaking the tiles (some into the basin rim and beyond)
     for i, (dx, dz) in enumerate(((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (-1, 1), (1, -1), (-1, -1))):
         L = 6 + int(hsh(i, 0, 0, 4601) * 8); cx, cz = (x1 + x2 + 1) / 2, (z1 + z2 + 1) / 2
@@ -511,30 +526,73 @@ def great_tree(b):
             y = FY if not (BASIN[0] < x < BASIN[2] and BASIN[1] < z < BASIN[3]) else FY - 1
             b.set(x, y, z, "minecraft:pale_oak_wood[axis=%s]" % ("x" if abs(dx) >= abs(dz) else "z"))
             if k < 5: b.set(x, y + 1, z, "minecraft:pale_oak_wood[axis=y]")
-    # branches through the roof and the crown
     cx, cz = (x1 + x2 + 1) / 2, (z1 + z2 + 1) / 2
-    blobs = [(cx, top + 1, cz, 6.5, 3.0)]
+    blobs = [(cx, top + 2, cz, 15.5, 5.0, 3)]
+    # the thick branches under the vault: 2x2 for the first 7 steps, then 1x1; through the roof (the glass round it broken), 4 more steps
+    # outside rising, a crown blob at the end
+    pierce = []
+    for (deg, s0, rise) in BIG_BRANCHES:
+        a = math.radians(deg); ux, uz = math.cos(a), math.sin(a); vx, vz = -uz, ux
+        ax = "x" if abs(ux) >= abs(uz) else "z"
+        px, pz, py = cx + ux * 2.0, cz + uz * 2.0, float(FY + s0); out = 0; k = 0
+        while out < 5 and k < 40:
+            px += ux; pz += uz; k += 1
+            x, z = int(math.floor(px)), int(math.floor(pz))
+            if in_orangery(x, z) and py + 1 < roof_y(z) - 1: py += rise
+            else: py += 0.8; out += 1
+            y = int(round(py)); thick = k <= 7
+            for o in ((0, 0), (1, 0), (0, 1), (1, 1)) if thick else ((0, 0),):
+                bx, bz = int(math.floor(px + vx * o[0] * 0.999)), int(math.floor(pz + vz * o[0] * 0.999))
+                b.set(bx, y + o[1], bz, LOG % ax); pierce.append((bx, y + o[1], bz))
+        blobs.append((px, py + 1, pz, 5.5, 2.6, 1))
+    for (x, y, z) in pierce:                         # the glass where a branch goes through the vault
+        for dx in (-1, 0, 1):
+            for dz in (-1, 0, 1):
+                xx, zz = x + dx, z + dz
+                if not in_orangery(xx, zz) or abs(y - roof_y(zz)) > 2: continue
+                for yy in range(roof_y(zz) - 2, roof_y(zz) + 1):
+                    if b.get(xx, yy, zz) in ("minecraft:glass_pane", "minecraft:iron_bars"): b.set(xx, yy, zz, "minecraft:air")
+    # the upper branches from the trunk above the roof into the crown, and a ring of blobs round the main one
     for i in range(9):
-        a = math.radians(i * 40 + 15); y0 = FY + 19 + int(hsh(i, 1, 0, 4604) * 9); L = 6 + int(hsh(i, 2, 0, 4605) * 5)
+        a = math.radians(i * 40 + 15); y0 = FY + 21 + int(hsh(i, 1, 0, 4604) * 10); L = 7 + int(hsh(i, 2, 0, 4605) * 6)
         px, pz, py = cx, cz, float(y0)
         for k in range(L):
-            px += math.cos(a); pz += math.sin(a); py += 0.55
+            px += math.cos(a); pz += math.sin(a); py += 0.5
             x, y, z = int(math.floor(px)), int(round(py)), int(math.floor(pz))
             b.set(x, y, z, LOG % ("x" if abs(math.cos(a)) > abs(math.sin(a)) else "z"))
-        blobs.append((px, py + 1, pz, 4.2, 2.2))
-    for (bx, by, bz, rx, ry) in blobs:
+        blobs.append((px, py + 1, pz, 4.6, 2.4, 2))
+    for i in range(7):
+        a = math.radians(i * 360 / 7 + 10); r = 10.5 + hsh(i, 3, 0, 4608) * 2
+        blobs.append((cx + math.cos(a) * r, top - 1 + int(hsh(i, 4, 0, 4609) * 3), cz + math.sin(a) * r, 6.5, 3.4, 3))
+    leaves = []
+    for (bx, by, bz, rx, ry, down) in blobs:
         ri = int(math.ceil(rx))
         for dx in range(-ri, ri + 1):
             for dz in range(-ri, ri + 1):
-                for dy in range(-2, int(ry) + 1):
+                for dy in range(-down, int(ry) + 1):
                     x, y, z = int(math.floor(bx)) + dx, int(by) + dy, int(math.floor(bz)) + dz
-                    e = (dx * dx + dz * dz) / (rx * rx) + dy * dy / (ry * ry)
-                    if e > 1 or (e > 0.7 and hsh(x, y, z, 4606) < 0.4) or y <= roof_y(z) + 1 and OX1 <= x <= OX2 and OZ1 <= z <= OZ2: continue
-                    if b.get(x, y, z) in (None, "minecraft:air"): b.set(x, y, z, LEAF)
-                    if hsh(x, y, z, 4607) < 0.1 and b.get(x, y - 1, z) in (None, "minecraft:air") and not (OX1 <= x <= OX2 and OZ1 <= z <= OZ2 and y - 2 <= roof_y(z)):
-                        b.set(x, y - 1, z, "minecraft:pale_hanging_moss[tip=true]")
+                    e = (dx * dx + dz * dz) / (rx * rx) + dy * dy / ((ry if dy > 0 else down + 0.5) ** 2)
+                    if e > 1 or (e > 0.72 and hsh(x, y, z, 4606) < 0.4) or y <= roof_y(z) + 1 and in_orangery(x, z): continue
+                    if b.get(x, y, z) in (None, "minecraft:air"): b.set(x, y, z, LEAF); leaves.append((x, y, z))
+    for (x, y, z) in leaves:                         # hanging moss, long under the crown
+        if b.get(x, y - 1, z) not in (None, "minecraft:air") or hsh(x, y, z, 4607) > 0.2: continue
+        n = 1 + int(hsh(x, y, z, 4610) * 5); cells = []
+        for k in range(1, n + 1):
+            yy = y - k
+            if b.get(x, yy, z) not in (None, "minecraft:air") or (in_orangery(x, z) and yy - 1 <= roof_y(z)) or yy < FY + 12: break
+            cells.append(yy)
+        for i, yy in enumerate(cells): b.set(x, yy, z, "minecraft:pale_hanging_moss[tip=%s]" % ("true" if i == len(cells) - 1 else "false"))
     return top
 
+# the gardener's notes on the lectern (text from the review of T-025: one page each; each fits a page of the book, checked in the game)
+NOTES = [
+    "Король велел, чтобы в саду было тихо. Ни птиц, ни ветра, ни шагов. Я сажал дубы по шнуру, ряд к ряду. Ровные деревья не шепчутся.",
+    "Тишина пришла сама. Сначала замолчали птицы. Потом кора стала тёплой. Ночью я слышал, как дубы поворачиваются, медленно, со скрипом, как старая дверь.",
+    "У шести деревьев проступили лица. Я их не вырезал. В их сердцевине что-то бьётся. Пока бьётся, они ходят, когда на них никто не смотрит. Смотри на них. Не отводи глаз.",
+    "Король уснул, а великий дуб в оранжерее заплакал. Одна слеза за всю его жизнь. Она так и лежит в чаше у корней. Сад не мешает тому, кто берёт тихо.",
+    "Я сшил себе доспех из коры, что опала сама. Кора помнит, как стоять неподвижно, и учит этому других. Только сад не отпускает своё, пока не спит.",
+    "Если сердца остановятся, сад наконец уснёт, и дверь отворится сама. Я не смог. Я их слишком любил.\\n\\n— Садовник",
+]
 # ---------------------------------------------------------------- the gardener's house
 def house(b):
     y0 = FH
@@ -570,7 +628,7 @@ def house(b):
     b.set(244, y0 + 1, -274, "minecraft:pale_oak_fence"); b.set(244, y0 + 2, -274, "minecraft:pale_oak_pressure_plate[powered=false]")
     b.set(243, y0 + 1, -274, "minecraft:pale_oak_stairs[facing=east,half=bottom,shape=straight,waterlogged=false]")
     book = ('{Book:{id:"minecraft:written_book",count:1,components:{"minecraft:written_book_content":{title:{raw:"Записки садовника"},author:"садовник",'
-            'pages:[{raw:"…"}]}}},Page:0}')
+            'pages:[%s]}}},Page:0}') % ",".join('{raw:"%s"}' % t for t in NOTES)
     b.set(LECTERN[0], y0 + 1, LECTERN[1], "minecraft:lectern[facing=east,has_book=true,powered=false]" + book)
     b.set(239, y0 + 1, -274, "minecraft:barrel[facing=up,open=false]")
     b.set(245, y0 + 1, -274, "minecraft:flower_pot")
@@ -710,10 +768,12 @@ def surface(b, gr, rl):
             # steep: bare rock
             nb = [T[i + a, j + c] for a, c in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= i + a < T.shape[0] and 0 <= j + c < T.shape[1]]
             steep = max(abs(v - y) for v in nb) >= 3
+            drop = int(max(y - v for v in nb))           # open side faces of the column (a lower neighbour): pale moss, not dirt (review 4)
             if b.get(x, y, z) is None:
-                b.set(x, y, z, ROCK.at(x, y, z) if steep else (ground_block(x, z) if core else MARGIN_TOP.at(x, y, z)))
+                side = core and not steep and drop >= 1
+                b.set(x, y, z, ROCK.at(x, y, z) if steep else ("minecraft:pale_moss_block" if side else ground_block(x, z) if core else MARGIN_TOP.at(x, y, z)))
                 for k in (1, 2):
-                    if b.get(x, y - k, z) is None and not steep: b.set(x, y - k, z, "minecraft:dirt")
+                    if b.get(x, y - k, z) is None and not steep: b.set(x, y - k, z, "minecraft:pale_moss_block" if side and k <= drop else "minecraft:dirt")
             if core and not steep and b.get(x, y + 1, z) is None and str(b.get(x, y, z)).split("[")[0] in ("minecraft:pale_moss_block", "minecraft:grass_block") \
                     and hsh(x, 5, z, 4950) < 0.25:
                 b.set(x, y + 1, z, CARPET)
@@ -809,7 +869,7 @@ def plan_png(gr, rl, b, meta, path):
 def data_files(meta):
     from r1 import replace_lines
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["garden_glass "], ["garden_glass    overworld box  %d %d %d  %d %d %d   # T-025: the orangery of the Garden of Silence (floor -4 .. crown)" %
-                  (OX1, FY - 4, OZ1, OX2, meta["crown_top"], OZ2)])
+                  (meta["crown_box"][0], FY - 4, meta["crown_box"][1], meta["crown_box"][2], meta["crown_top"], meta["crown_box"][3])])
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["garden_house "], ["garden_house    overworld box  %d %d %d  %d %d %d   no_spawn   # T-025: the gardener's house (+2)" %
                   (HX1 - 2, FH - 3, HZ1 - 2, HX2 + 2, FH + 12, HZ2 + 2)])
     k = meta["key"]
@@ -831,11 +891,13 @@ def main():
     if pad: raise SystemExit("blocks on the pad / approach of bonfire 4: %s" % pad[:5])
     ncol = write_terrain(gr, rl, b)
     n = b.write_placements(os.path.join(OUT, "garden.txt"))
-    crown = max(y for (x, y, z), s in b.v.items() if "leaves" in s and abs(x - OCX) < 14 and abs(z - OCZ) < 14)
+    cl = [(x, y, z) for (x, y, z), s in b.v.items() if "leaves" in s and math.hypot(x + 0.5 - OCX, z + 0.5 - OCZ) < 26 and y > FY + ROOF_H]
+    crown = max(c[1] for c in cl)
+    crown_box = [min(OX1, min(c[0] for c in cl)), min(OZ1, min(c[2] for c in cl)), max(OX2, max(c[0] for c in cl)), max(OZ2, max(c[2] for c in cl))]
     meta = dict(base=int(round(rl["base"])), floor=FY, house_floor=FH, orangery=[OX1, OZ1, OX2, OZ2], trunk=list(TRUNK), key=[PED[0], FY + 1, PED[1]],
                 pedestal=[PED[0], FY, PED[1]], house=[HX1, HZ1, HX2, HZ2], door=[HDOOR[0], FH + 1, HDOOR[1]], stand=[STAND[0], FH + 1, STAND[1]],
                 lectern=[LECTERN[0], FH + 1, LECTERN[1]], hearth=list(HEARTH4), path=[[c[0], c[1], rl["surf"].get(tuple(c), s2) / 2] for c, s2 in zip(rl["cells"], rl["prof"])],
-                hearts=heart_pts, faces=face_pts, sensors=sens, blooms=blooms, crown_top=crown + 2, terrain_columns=ncol, blocks=n, air=nair,
+                hearts=heart_pts, faces=face_pts, sensors=sens, blooms=blooms, crown_top=crown + 2, crown_box=crown_box, terrain_columns=ncol, blocks=n, air=nair,
                 trees=len(sites), entry=list(rl["entry"]))
     import garden_dp
     garden_dp.run(sys.modules[__name__], meta)

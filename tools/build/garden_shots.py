@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 """T-025 frames of the Garden of Silence (server + client Cam as the camera, Cam2 as the model in the Creaking armour) -> docs/reports/T-025/*.jpg
-Usage: python3 tools/build/garden_shots.py [garden orangery hearts faces sensor house armour asleep]   (default: all, in this order)
+Usage: python3 tools/build/garden_shots.py [garden orangery hearts faces sensor slope house armour asleep hud book]   (default: all, in this order)
   garden    the garden from the path at the house, by day and by night; the main alley to the orangery
-  orangery  the orangery from outside (the great oak over the roof) and inside (the pedestal with the candles)
-  hearts    a living heart by day and by night (awake)
-  faces     a carved face by day (outward, eyes shut) and by night (turned, eyes open)
+  orangery  the orangery from outside (the great oak over the roof), from the path, inside (the pedestal) and up to the vault
+  hearts    a living heart by day and by night (awake, 4 blocks)
+  faces     a carved face by day from 4 and 8 (outward, eyes shut), by night from 8 (turned, eyes open), a trunk side from the alley
   sensor    a sensor with its bones and sign
   house     the gardener's house from outside (the armour in the window) and the stand inside
   armour    Cam2 in the full Creaking armour, front and back
-  asleep    the garden asleep at night (eyeblossoms shut; the state is put back to awake afterwards)"""
+  slope     the slope from the orangery up to the house (pale moss on the open sides)
+  asleep    one point of the alley at night: the garden awake and asleep (eyeblossoms, faces; put back to awake afterwards)
+  hud       the action bar: "hearts left" and "the garden fell asleep" (Cam in survival with the HUD)
+  book      the gardener's notes open on the lectern, all 6 pages"""
 import importlib.util, json, math, os, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 def load(n):
@@ -29,6 +32,13 @@ def run(shots, time_="noon", tag=""):
     for s in shots: jpg(s["name"])
 def jpg(name):
     subprocess.run(["convert", os.path.join(TMP, name + ".png"), "-resize", "1600x", "-quality", "82", os.path.join(OUT, name + ".jpg")], check=True)
+def direct(name, hud=True, keep=False):
+    """a frame of what Cam sees now (survival: the hotbar, an open book), through the agent directly"""
+    tc.act("Cam", "%s %d%s" % (name, 1 if hud else 0, " keep" if keep else ""))
+    for _ in range(100):
+        if os.path.exists(os.path.join(ROOT, "server/client/screenshots", name + ".png")): break
+        time.sleep(0.2)
+    time.sleep(0.5); import shutil; shutil.copy(os.path.join(ROOT, "server/client/screenshots", name + ".png"), os.path.join(TMP, name + ".png")); jpg(name)
 def prep():
     R("gamerule advance_time false"); R("gamerule locator_bar false"); R("difficulty peaceful"); R("gamemode spectator Cam2"); R("tp Cam2 330 200 -350")
 def heart_eye(h, d=5.0, up=0.6):
@@ -66,28 +76,42 @@ def orangery():
     prep(); R(f"tp Cam {OCX} 150 {OCZ}"); time.sleep(15)
     run([shot_eye("g_orangery_out", (OCX + 52, FY + 34, OCZ + 40), (OCX, FY + 12, OCZ)),
          shot_eye("g_orangery_in", (M["orangery"][0] + 4.5, FY + 3.2, OCZ + 3), (M["pedestal"][0] + 0.5, FY + 1, M["pedestal"][2] + 0.5))], "noon", "_or")
+    mid = (M["orangery"][0] + 8.5, FY + 1.62, OCZ + 4.0)
+    run([shot_eye("g_orangery_up", mid, (OCX - 2, FY + 18, OCZ - 1)),
+         shot_eye("g_orangery_vault", (M["orangery"][0] + 2.5, FY + 4.0, OCZ), (M["orangery"][2], FY + 15, OCZ))], "noon", "_ou")
+    P = M["path"]; i = min(range(len(P)), key=lambda k: abs(math.hypot(P[k][0] - OCX, P[k][1] - OCZ) - 45))
+    run([shot_eye("g_tree_path", (P[i][0] + 0.5, P[i][2] + 1.62, P[i][1] + 0.5), (OCX, FY + 26, OCZ))], "noon", "_tp")
     run([shot_eye("g_orangery_in_night", (M["orangery"][0] + 4.5, FY + 3.2, OCZ + 3), (M["pedestal"][0] + 0.5, FY + 1, M["pedestal"][2] + 0.5))], "midnight", "_orn")
 def hearts():
     prep(); h = M["hearts"][1]; R(f"tp Cam {h['x']} {h['y'] + 30} {h['z']}"); time.sleep(12)
-    e = heart_eye(h); t = (h["x"] + 0.5, h["y"] + 0.5, h["z"] + 0.5)
+    e = heart_eye(h, 4.0, 0.4); t = (h["x"] + 0.5, h["y"] + 0.5, h["z"] + 0.5)
     run([shot_eye("g_heart_day", e, t, 6)], "noon", "_hd")
     run([shot_eye("g_heart_night", e, t, 8)], "midnight", "_hn")
 def faces():
     prep(); f = M["faces"][6]; c = face_info(f); ox, oz = f["out"]          # face 7 (by the orangery): open ground on both sides
     R(f"tp Cam {c[0]} {c[1] + 30} {c[2]}"); time.sleep(12)
-    e = free_eye(c, [(ox, oz), (ox + oz, oz - ox), (ox - oz, oz + ox)], 8, 6, 1.0)
+    out = [(ox, oz), (ox + oz * 0.4, oz - ox * 0.4), (ox - oz * 0.4, oz + ox * 0.4)]
     R("time set noon"); time.sleep(3)
-    run([shot_eye("g_face_day", e, c, 4)], "noon", "_fd")
+    run([shot_eye("g_face_day4", free_eye(c, out, 4, 4, 0.0), c, 4), shot_eye("g_face_day8", free_eye(c, out, 8, 7, 0.0), c, 4)], "noon", "_fd")
     # turn it in for the night shot while the camera is away (a watched face does not turn)
     R(f"tp Cam {c[0]} {c[1] + 60} {c[2]}"); R("time set midnight"); time.sleep(3)
-    e2 = free_eye(c, [(-ox, -oz), (-ox + oz, -oz - ox), (-ox - oz, -oz + ox)], 8, 6, 1.0)     # the night face looks the other way: towards the orangery
+    e2 = free_eye(c, [(-x, -z) for x, z in out], 8, 7, 0.0)     # the night face looks the other way: towards the orangery
     run([shot_eye("g_face_night", e2, c, 4)], "midnight", "_fn")
+    R(f"tp Cam {c[0]} {c[1] + 60} {c[2]}"); R("time set noon"); time.sleep(3)
+    # a face from the alley at its side: the trunk sides show bark only (no end rings)
+    fa = [q for q in M["faces"] if q["kind"] == "alley"][0]; ca = face_info(fa); ax, az = fa["out"]
+    side = [(az + ax * 0.5, -ax + az * 0.5), (-az + ax * 0.5, ax + az * 0.5)] + ROUND
+    run([shot_eye("g_face_side", free_eye(ca, side, 7, 5, 0.3), ca, 6)], "noon", "_fs")
 def sensor():
     prep(); s = [q for q in M["sensors"] if q["sign"]][1]
     R(f"tp Cam {s['x']} {s['y'] + 20} {s['z']}"); time.sleep(10)
     t = (s["x"] + 0.5, s["y"] + 1.0, s["z"] + 0.5); sx, sz = s["sign"][0], s["sign"][2]
     e = free_eye(t, [(s["x"] - sx + 0.6, s["z"] - sz + 0.6)] + ROUND, 7, 4, 2.6)
     run([shot_eye("g_sensor", e, (t[0] + (sx - s["x"]) * 0.4, t[1] + 0.6, t[2] + (sz - s["z"]) * 0.4), 6)], "noon", "_s")
+def slope():
+    prep(); R(f"tp Cam {OCX} 150 {OCZ}"); time.sleep(12)
+    e = (M["orangery"][0] - 6.5, FY + 4.5, OCZ - 8); t = (M["house"][0] + 4, M["house_floor"] - 6, M["house"][3])
+    run([shot_eye("g_slope", e, t, 8)], "noon", "_sl")
 def house():
     prep(); R("tp Cam 242 140 -262"); time.sleep(12)
     wx, wy, wz = M["stand"]
@@ -103,12 +127,22 @@ def armour():
     run([shot_eye("g_armour_front", (x, y + 1.4, z + 3.2), (x, y + 1.0, z), 4)], "noon", "_af")
     R(f"tp Cam2 {x} {y} {z}"); R("rotate Cam2 180 0"); time.sleep(2)
     run([shot_eye("g_armour_back", (x, y + 1.4, z + 3.2), (x, y + 1.0, z), 4)], "noon", "_ab")
+    # the icons in the hotbar of Cam (survival) looking at Cam2
+    R("gamemode survival Cam"); R("clear Cam"); R(f"tp Cam {x} {y} {z + 3.2} 180 10")
+    for k, pc in enumerate(("helmet", "chestplate", "leggings", "boots")): R(f"loot replace entity Cam hotbar.{k} loot last_ember:item/creaking_{pc}")
+    R("item replace entity Cam hotbar.4 with minecraft:pale_oak_log"); R("item replace entity Cam hotbar.5 with minecraft:stripped_pale_oak_log")
+    R("item replace entity Cam hotbar.6 with minecraft:leather_chestplate"); time.sleep(3)
+    direct("g_armour_icons"); R("clear Cam"); R("gamemode spectator Cam")
     R("clear Cam2"); R("gamemode spectator Cam2")
+def alley_eye():
+    P = M["path"]; i = min(range(len(P)), key=lambda k: abs(math.hypot(P[k][0] - OCX, P[k][1] - OCZ) - 40))
+    return (P[i][0] + 0.5, P[i][2] + 1.62 + 0.6, P[i][1] + 0.5)
 def asleep():
-    prep(); R("function last_ember:garden/sleep_now"); R("tp Cam2 300 120 -330"); R("time set midnight"); time.sleep(8)
-    R("tp Cam 242 140 -262"); time.sleep(10)
-    e = (242.5, 121 + 1.62 + 1.5, -263.5); t = (OCX, FY + 8, OCZ)
-    run([shot_eye("g_asleep_night", e, t)], "midnight", "_as")
+    prep(); e = alley_eye(); t = (OCX, FY + 6, OCZ)
+    R(f"tp Cam {e[0]} {e[1] + 20} {e[2]}"); R("function last_ember:garden/reset"); R("time set midnight"); R("function last_ember:garden/gen/blooms_open"); time.sleep(12)
+    run([shot_eye("g_alley_night_awake", e, t, 4)], "midnight", "_aw")
+    R("function last_ember:garden/sleep_now"); R(f"tp Cam {e[0]} {e[1] + 40} {e[2]}"); time.sleep(8)     # away: the faces turn unwatched
+    run([shot_eye("g_alley_night_asleep", e, t, 6)], "midnight", "_as")
     # a bunch of shut eyeblossoms in the open next to the path
     P = M["path"]
     def score(b):
@@ -119,5 +153,26 @@ def asleep():
     e = free_eye(t, ROUND, 5, 3, 2.4)
     run([shot_eye("g_asleep_blooms", e, t, 6)], "midnight", "_asb")
     R("function last_ember:garden/reset"); R("gamemode spectator Cam2")
-T = dict(garden=garden, orangery=orangery, hearts=hearts, faces=faces, sensor=sensor, house=house, armour=armour, asleep=asleep)
+def hud():
+    """the action bar after a heart is broken and after the last one (Cam in survival next to a heart)"""
+    prep(); R("function last_ember:garden/reset"); R("time set noon")
+    h = M["hearts"][0]; e = heart_eye(h, 4.0, 0.0)
+    R("gamemode survival Cam"); R("effect give Cam minecraft:resistance infinite 4 true"); R(f"tp Cam {e[0]} {e[1] - 1.62 + 20} {e[2]}"); time.sleep(10)
+    R(f"spreadplayers {e[0]} {e[2]} 0 1 false Cam"); R(f"execute as Cam at @s anchored eyes run tp @s ~ ~ ~ facing {h['x'] + 0.5} {h['y'] + 0.5} {h['z'] + 0.5}"); time.sleep(3)
+    R(f"setblock {h['x']} {h['y']} {h['z']} minecraft:air destroy"); time.sleep(1.3)
+    direct("g_hud_hearts_left")
+    for q in M["hearts"][1:]: R(f"forceload add {q['x']} {q['z']}"); R(f"setblock {q['x']} {q['y']} {q['z']} minecraft:air")
+    time.sleep(1.6); direct("g_hud_asleep")
+    for q in M["hearts"][1:]: R(f"forceload remove {q['x']} {q['z']}")
+    R("function last_ember:garden/reset"); R("gamemode spectator Cam")
+def book():
+    prep(); lx, ly, lz = M["lectern"]
+    R("gamemode survival Cam"); R(f"tp Cam {lx + 2.5} {ly} {lz + 0.5} 90 30"); time.sleep(8)
+    R(f"execute as Cam at @s anchored eyes run tp @s ~ ~ ~ facing {lx + 0.5} {ly + 0.8} {lz + 0.5}"); time.sleep(1)
+    for k in range(6):
+        R(f"data modify block {lx} {ly} {lz} Page set value {k}")
+        tc.act("Cam", "!use"); time.sleep(1.5)
+        direct("g_book_p%d" % (k + 1), True, True)
+    tc.act("Cam", "!fwd_off"); R("gamemode spectator Cam")
+T = dict(garden=garden, orangery=orangery, hearts=hearts, faces=faces, sensor=sensor, slope=slope, house=house, armour=armour, asleep=asleep, hud=hud, book=book)
 for n in (sys.argv[1:] or list(T)): T[n]()

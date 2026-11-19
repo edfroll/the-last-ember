@@ -69,6 +69,7 @@ public class BiomePaint {
                 for (int si = 0; si < secs.size(); si++) {
                     CompoundTag sec = secs.getCompoundOrEmpty(si); int sy = sec.getByteOr("Y", (byte) 0);
                     CompoundTag bio = sec.getCompoundOrEmpty("biomes"); ListTag pal = bio.getListOrEmpty("palette"); long[] data = bio.getLongArray("data").orElse(null);
+                    if (pal.isEmpty()) { System.out.println("section without biomes: chunk " + cx + " " + cz + " y " + sy); out.add(sec); continue; }
                     String[] cell = new String[64];
                     int bits = Math.max(1, 32 - Integer.numberOfLeadingZeros(Math.max(1, pal.size() - 1))), per = 64 / bits; long mask = (1L << bits) - 1;
                     for (int i = 0; i < 64; i++) cell[i] = (data == null || pal.size() == 1) ? ((StringTag) pal.get(0)).value() : ((StringTag) pal.get((int) ((data[i / per] >>> ((i % per) * bits)) & mask))).value();

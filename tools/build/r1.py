@@ -278,7 +278,9 @@ def pads(W):
     for n, bid, x, z in BONFIRES:
         sub = W.G[z - 5 - W.z0:z + 9 - W.z0, x - 6 - W.x0:x + 8 - W.x0]; ws = W.Wn[z - 5 - W.z0:z + 9 - W.z0, x - 6 - W.x0:x + 8 - W.x0]
         y = int(round(np.median(sub)))
-        if (ws != NONE).any(): y = max(y, int(ws.max()) + 1)        # never under water: the pad is raised over the shore
+        # never under water: the pad is raised over a lake or a shore (a tenth of the pad or more); single springs in a slope do not count
+        # (the bridge: two spring blocks 10 over the median would lift the pad 11 high; review T-025, 6)
+        if (ws != NONE).sum() >= ws.size // 10: y = max(y, int(ws.max()) + 1)
         for zz in range(z - 29, z + 33):
             for xx in range(x - 30, x + 32):
                 d = max(x - 6 - xx, xx - (x + 7), z - 5 - zz, zz - (z + 8), 0)
@@ -316,8 +318,9 @@ def astar(W, start, goal, cost, box):
 def cost_field(W, box, used):
     x1, z1, x2, z2 = box; s = W.sl(x1, z1, x2, z2)
     c = np.ones((z2 - z1 + 1, x2 - x1 + 1)) * 1.6
-    fl = W.base.flags[s]; wn = W.Wn[s]; g = W.G[s]
-    c += np.where((fl & 1) > 0, 14, 0)                         # tree trunks
+    wn = W.Wn[s]; g = W.G[s]
+    # no cost for the vanilla tree trunks (review T-025, point 6): trees at chunk edges depend on the order the chunks were generated in,
+    # so two builds from scratch would route the trails differently; the trail columns are rewritten to the build limit anyway
     depth = np.where(wn != NONE, wn - g, 0)
     c += np.where(depth > 0, np.where(depth <= 2, 2, 4), 0)     # fords / boardwalks
     c += np.where(W.pd[s] <= 0, 40, 0)                          # plots: only to leave/enter towards a bonfire inside

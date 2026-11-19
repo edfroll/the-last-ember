@@ -3,7 +3,7 @@ setblock 318 80 -367 minecraft:creaking_heart[axis=y,creaking_heart_state=dorman
 setblock 380 91 -327 minecraft:creaking_heart[axis=y,creaking_heart_state=dormant,natural=true]
 setblock 314 112 -447 minecraft:creaking_heart[axis=y,creaking_heart_state=dormant,natural=true]
 setblock 389 100 -251 minecraft:creaking_heart[axis=y,creaking_heart_state=dormant,natural=true]
-setblock 344 70 -384 minecraft:creaking_heart[axis=y,creaking_heart_state=dormant,natural=true]
+setblock 349 85 -347 minecraft:creaking_heart[axis=y,creaking_heart_state=dormant,natural=true]
 setblock 416 68 -408 minecraft:creaking_heart[axis=y,creaking_heart_state=dormant,natural=true]
 function last_ember:garden/gen/fresh
 data modify storage last_ember:garden key set from storage last_ember:garden key
