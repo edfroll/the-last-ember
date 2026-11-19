@@ -93,6 +93,23 @@ NUM = {v[0]: k for k, v in MAIN_ITEMS.items()}
 STAFFS = [1, 2, 3, 4, 5]
 for k, (mid, name, it) in MAIN_ITEMS.items():
     if it: dump(os.path.join(ITEM, mid + ".json"), table([pool([it])], "minecraft:generic"))
+# T-025: the Creaking armour (biome reward of R1, the Garden of Silence): iron level, knockback resistance on every piece, the set
+# property "Stillness" (function/creak/*: all 4 pieces with custom_data le_creak). Base items are leather (not metal: not in
+# #last_ember:metal_gear); every look and number comes from the components. item/creaking_armor = the whole set, item/creaking_<piece> one piece.
+CREAK = [("helmet", "head", "шлем", 2, 165), ("chestplate", "chest", "нагрудник", 6, 240), ("leggings", "legs", "поножи", 5, 225), ("boots", "feet", "ботинки", 2, 195)]
+def creak_piece(piece, slot, ru, armor, dur):
+    return item("leather_" + piece, mods=[comps({
+        "minecraft:custom_data": KEEP(",le_creak:1b"), "minecraft:custom_name": tx("Скрипучая броня: " + ru, "gold"), "minecraft:rarity": "epic",
+        "minecraft:lore": [tx("Кора, что помнит, как стоять неподвижно."), tx("Весь комплект: монстр под твоим взглядом цепенеет.", "dark_gray")],
+        "minecraft:max_damage": dur, "minecraft:damage": 0, "minecraft:enchantable": {"value": 12}, "minecraft:repairable": {"items": "#minecraft:pale_oak_logs"},
+        "minecraft:item_model": "last_ember:creaking_" + piece,
+        "minecraft:equippable": {"slot": slot, "asset_id": "last_ember:creaking", "equip_sound": "minecraft:item.armor.equip_leather"},
+        "minecraft:attribute_modifiers": [
+            {"type": "minecraft:armor", "id": "last_ember:creak_armor_" + slot, "amount": armor, "operation": "add_value", "slot": slot},
+            {"type": "minecraft:armor_toughness", "id": "last_ember:creak_tough_" + slot, "amount": 0, "operation": "add_value", "slot": slot},
+            {"type": "minecraft:knockback_resistance", "id": "last_ember:creak_kb_" + slot, "amount": 0.025, "operation": "add_value", "slot": slot}]})])
+for c in CREAK: dump(os.path.join(ITEM, "creaking_" + c[0] + ".json"), table([pool([creak_piece(*c)])], "minecraft:generic"))
+dump(os.path.join(ITEM, "creaking_armor.json"), table([pool([ref("item/creaking_" + c[0])]) for c in CREAK], "minecraft:generic"))
 # ---------------------------------------------------------------- the rules of the layout (economy.md): main -> regions
 SINGLE = [(13, ["r6"], False), (6, ["r5", "r6"], True)]       # (main, regions, prefer the danger vaults)
 PAIRS = [((7, 8), ("r2", "r4")), ((11, 12), ("r2", "r4")), ((9, 10), ("r3", "r5"))]

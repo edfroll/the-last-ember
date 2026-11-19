@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "last_ember:creaking"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "last_ember:creaking"
+   }
+  ]
+ }
+}

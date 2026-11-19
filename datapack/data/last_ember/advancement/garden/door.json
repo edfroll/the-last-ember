@@ -1,0 +1,31 @@
+{
+ "criteria": {
+  "door": {
+   "trigger": "minecraft:default_block_use",
+   "conditions": {
+    "location": {
+     "type": "minecraft:location_check",
+     "predicate": {
+      "position": {
+       "x": {
+        "min": 242,
+        "max": 242.999
+       },
+       "y": {
+        "min": 121,
+        "max": 122.999
+       },
+       "z": {
+        "min": -269,
+        "max": -268.001
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:garden/door_use"
+ }
+}
