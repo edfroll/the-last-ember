@@ -577,8 +577,16 @@ def house(b):
 
 # ---------------------------------------------------------------- the path, sensors, bones, signs, eyeblossoms
 PATHM = Mix({"mossy_cobblestone": 70, "cobblestone": 10, "mossy_stone_bricks": 20}, 4701)
+RIM_STEP = set()
 def path_blocks(b, gr, rl):
     surf = rl["surf"]
+    # the rim of the pad of bonfire 4 at the doorstep falls 1 block (T-022: 1:1): a half step there (3 wide, a bottom slab on the rim's
+    # ground) so that the way from the bonfire to the house and the path needs no jump; the only blocks of the garden on the pad's area
+    for dx in (-1, 0, 1):
+        x, z = PATH_START[0] + dx, PATH_START[1] + 1
+        g, gp = int(gr["before"][ix(gr, x, z)]), int(gr["before"][ix(gr, x, z + 1)])
+        if gr["allow"][ix(gr, x, z)] and gp - g == 1:
+            b.set(x, g + 1, z, slab("stone_brick_slab")); RIM_STEP.add((x, g + 1, z))
     for (x, z), s2 in surf.items():
         if gr["allow"][ix(gr, x, z)]: continue
         if s2 % 2:
@@ -629,7 +637,7 @@ def sensor_blocks(b, gr, T, sens, pathm):
             sy = int(T[ix(gr, sx, sz)])
             rotv = int(round((math.degrees(math.atan2(-(x + 0.5 - (sx + 0.5)), (z + 0.5 - (sz + 0.5)))) % 360) / 22.5)) % 16
             b.set(sx, sy + 1, sz, "minecraft:pale_oak_fence")
-            b.set(sx, sy + 2, sz, 'minecraft:pale_oak_sign[rotation=%d,waterlogged=false]{front_text:{messages:["",{"text":"Здесь ходят тихо."},"",""]},back_text:{messages:["",{"text":"Здесь ходят тихо."},"",""]}}' % ((rotv + 8) % 16))
+            b.set(sx, sy + 2, sz, 'minecraft:pale_oak_sign[rotation=%d,waterlogged=false]{is_waxed:1b,front_text:{messages:["",{"text":"Здесь ходят тихо."},"",""]},back_text:{messages:["",{"text":"Здесь ходят тихо."},"",""]}}' % ((rotv + 8) % 16))
             b.set(sx, sy + 3, sz, "minecraft:air")
             sign = [sx, sy + 2, sz]
         pts.append(dict(id=k + 1, x=x, y=y, z=z, sign=sign))
@@ -691,8 +699,13 @@ def surface(b, gr, rl):
     T = rl["T"]; X = gr["X"]; n = 0
     for i in range(T.shape[0]):
         for j in range(T.shape[1]):
-            if not gr["place"][i, j] or gr["allow"][i, j] or gr["water"][i, j] != NONE: continue
+            if not gr["place"][i, j] or gr["allow"][i, j]: continue
             x, z = j + gr["x1"], i + gr["z1"]; y = int(T[i, j])
+            if gr["water"][i, j] != NONE:                   # the river stays; the old trees' leaves over it go (air from the water up)
+                w = int(gr["water"][i, j])
+                for yy in range(w + 1, min(int(gr["top"][i, j]), w + 48) + 1):
+                    if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air"); n += 1
+                continue
             core = gr["core"][i, j]
             # steep: bare rock
             nb = [T[i + a, j + c] for a, c in ((1, 0), (-1, 0), (0, 1), (0, -1)) if 0 <= i + a < T.shape[0] and 0 <= j + c < T.shape[1]]
@@ -809,19 +822,19 @@ def main():
     connect(b)
     bad = [k for k in b.v if not in_place(k[0], k[2])]
     if bad: raise SystemExit("blocks outside the place: %s" % bad[:5])
-    for k in [k for k, v in b.v.items() if gr["allow"][ix(gr, k[0], k[2])] and ("leaves" in v or "pale_oak_log" in v or "hanging_moss" in v)]: del b.v[k]
+    for k in [k for k, v in b.v.items() if gr["allow"][ix(gr, k[0], k[2])] and k not in RIM_STEP and ("leaves" in v or "pale_oak_log" in v or "hanging_moss" in v)]: del b.v[k]
     # tree parts that reach into the wanted ground (low branches and leaves on a slope, the trunk over the higher side of a slope): the
     # ground stays (else the apply writes the ground, the blocks replace its top and a re-run sees a lower ground there)
     T0 = rl["T"]
     for k in [k for k, v in b.v.items() if ("leaves" in v or "pale_oak_log" in v or "hanging_moss" in v) and not in_built(k[0], k[2]) and k[1] <= T0[ix(gr, k[0], k[2])]]: del b.v[k]
-    pad = [k for k in b.v if gr["allow"][ix(gr, k[0], k[2])]]
+    pad = [k for k in b.v if gr["allow"][ix(gr, k[0], k[2])] and k not in RIM_STEP]
     if pad: raise SystemExit("blocks on the pad / approach of bonfire 4: %s" % pad[:5])
     ncol = write_terrain(gr, rl, b)
     n = b.write_placements(os.path.join(OUT, "garden.txt"))
     crown = max(y for (x, y, z), s in b.v.items() if "leaves" in s and abs(x - OCX) < 14 and abs(z - OCZ) < 14)
     meta = dict(base=int(round(rl["base"])), floor=FY, house_floor=FH, orangery=[OX1, OZ1, OX2, OZ2], trunk=list(TRUNK), key=[PED[0], FY + 1, PED[1]],
                 pedestal=[PED[0], FY, PED[1]], house=[HX1, HZ1, HX2, HZ2], door=[HDOOR[0], FH + 1, HDOOR[1]], stand=[STAND[0], FH + 1, STAND[1]],
-                lectern=[LECTERN[0], FH + 1, LECTERN[1]], hearth=list(HEARTH4), path=[[c[0], c[1], s2 / 2] for c, s2 in zip(rl["cells"], rl["prof"])],
+                lectern=[LECTERN[0], FH + 1, LECTERN[1]], hearth=list(HEARTH4), path=[[c[0], c[1], rl["surf"].get(tuple(c), s2) / 2] for c, s2 in zip(rl["cells"], rl["prof"])],
                 hearts=heart_pts, faces=face_pts, sensors=sens, blooms=blooms, crown_top=crown + 2, terrain_columns=ncol, blocks=n, air=nair,
                 trees=len(sites), entry=list(rl["entry"]))
     import garden_dp

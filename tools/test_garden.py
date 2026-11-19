@@ -445,7 +445,21 @@ def t_perf():
     print(f"     profiler: garden/loop {g:.3f} ms per tick (all of it: 2 wearers of the full set, 6 husks near, sensors, faces, hearts), tick {p0.get('tick', 0):.1f} ms")
     for k, v in sorted(p0.items(), key=lambda kv: -kv[1])[:8]: print(f"       {k} {v:.3f}")
     chk("garden/loop (with the Stillness of 2 wearers) under 0.2 ms per tick", 0 < g < 0.2, p0)
-    R("kill @e[type=minecraft:husk,tag=le.gperf]"); R("clear Cam"); R("clear Cam2"); unstage()
+    R("kill @e[type=minecraft:husk,tag=le.gperf]")
+    # night: 6 creakings in the garden (the hearts' own ones are let out by vanilla too), 2 players, a sensor goes off
+    R("time set midnight"); R("kill @e[type=minecraft:creaking]")
+    for i in range(6): R(f"summon minecraft:creaking {296 + 2 * i} 130 -296 {{Tags:[\"le.garden_cr\",\"le.gperf\"],Invulnerable:1b,PersistenceRequired:1b}}")
+    R("spreadplayers 300 -296 0 6 false @e[type=minecraft:creaking,tag=le.gperf]")
+    R("execute store result score #now le.gd run time query gametime"); R("scoreboard players add #now le.gd 6000")
+    R("scoreboard players operation @e[type=minecraft:creaking,tag=le.gperf] le.gdt = #now le.gd")
+    R("tp Cam2 320.5 120 -330.5"); R("spreadplayers 320 -340 0 1 false Cam2"); time.sleep(3)
+    def night():
+        R("scoreboard players set #gcd le.gd 0"); R(f"scoreboard players set #sc{SENS[6]['id']} le.gd 0"); walk_over(SENS[6], t=1.6)
+    p1 = m.prof(10, night); ms = [m.mspt() for _ in range(3)]
+    g1 = sum(v for k, v in p1.items() if k.startswith("last_ember:garden/")); n = count("@e[type=minecraft:creaking]")
+    print(f"     night: garden/* {g1:.3f} ms per tick, server tick {p1.get('tick', 0):.1f} ms, tick query {ms} ms, creakings {n}")
+    chk("night, 6 creakings, a sensor goes off: garden/* under 0.2 ms per tick, the limit holds", 0 < g1 < 0.2 and n <= 6, (g1, n))
+    R("kill @e[type=minecraft:creaking]"); R("time set noon"); R("clear Cam"); R("clear Cam2"); unstage()
 
 def t_restart():
     print("[restart]"); stage(False)
