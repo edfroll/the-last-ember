@@ -2,12 +2,12 @@
 """T-025 frames of the Garden of Silence (server + client Cam as the camera, Cam2 as the model in the Creaking armour) -> docs/reports/T-025/*.jpg
 Usage: python3 tools/build/garden_shots.py [garden orangery hearts faces sensor slope house armour asleep hud book]   (default: all, in this order)
   garden    the garden from the path at the house, by day and by night; the main alley to the orangery
-  orangery  the orangery from outside (the great oak over the roof), from the path, inside (the pedestal) and up to the vault
+  orangery  the orangery from outside (the great oak over the roof), from the path, inside (the pedestal), up to the vault, the hollow
   hearts    a living heart by day and by night (awake, 4 blocks)
   faces     a carved face by day from 4 and 8 (outward, eyes shut), by night from 8 (turned, eyes open), a trunk side from the alley
   sensor    a sensor with its bones and sign
   house     the gardener's house from outside (the armour in the window) and the stand inside
-  armour    Cam2 in the full Creaking armour, front and back
+  armour    Cam2 in the full Creaking armour, front and back; the icons in the hotbar (enlarged)
   slope     the slope from the orangery up to the house (pale moss on the open sides)
   asleep    one point of the alley at night: the garden awake and asleep (eyeblossoms, faces; put back to awake afterwards)
   hud       the action bar: "hearts left" and "the garden fell asleep" (Cam in survival with the HUD)
@@ -30,15 +30,19 @@ def run(shots, time_="noon", tag=""):
     spec = os.path.join(TMP, f"shots{tag}.json"); json.dump({"time": time_, "weather": "clear", "shots": shots}, open(spec, "w"))
     subprocess.run([sys.executable, os.path.join(ROOT, "tools/screenshot.py"), spec, "--out", TMP, "--double"], check=True)
     for s in shots: jpg(s["name"])
-def jpg(name):
-    subprocess.run(["convert", os.path.join(TMP, name + ".png"), "-resize", "1600x", "-quality", "82", os.path.join(OUT, name + ".jpg")], check=True)
-def direct(name, hud=True, keep=False):
-    """a frame of what Cam sees now (survival: the hotbar, an open book), through the agent directly"""
-    tc.act("Cam", "%s %d%s" % (name, 1 if hud else 0, " keep" if keep else ""))
+def jpg(name, crop=None):
+    pre = []
+    if crop:      # (x, y, w, h) as fractions of the frame (the client window size may differ)
+        W, H = (int(v) for v in subprocess.run(["identify", "-format", "%w %h", os.path.join(TMP, name + ".png")], capture_output=True, text=True).stdout.split())
+        pre = ["-crop", "%dx%d+%d+%d" % (crop[2] * W, crop[3] * H, crop[0] * W, crop[1] * H), "+repage", "-filter", "point"]
+    subprocess.run(["convert", os.path.join(TMP, name + ".png")] + pre + ["-resize", "1600x", "-quality", "82", os.path.join(OUT, name + ".jpg")], check=True)
+def direct(name, hud=True, keep=False, clean=True, crop=None):
+    """a frame of what Cam sees now (survival: the hotbar, an open book), through the agent directly; clean = without the chat lines"""
+    tc.act("Cam", "%s %d%s%s" % (name, 1 if hud else 0, " keep" if keep else "", " clean" if clean else ""))
     for _ in range(100):
         if os.path.exists(os.path.join(ROOT, "server/client/screenshots", name + ".png")): break
         time.sleep(0.2)
-    time.sleep(0.5); import shutil; shutil.copy(os.path.join(ROOT, "server/client/screenshots", name + ".png"), os.path.join(TMP, name + ".png")); jpg(name)
+    time.sleep(0.5); import shutil; shutil.copy(os.path.join(ROOT, "server/client/screenshots", name + ".png"), os.path.join(TMP, name + ".png")); jpg(name, crop)
 def prep():
     R("gamerule advance_time false"); R("gamerule locator_bar false"); R("difficulty peaceful"); R("gamemode spectator Cam2"); R("tp Cam2 330 200 -350")
 def heart_eye(h, d=5.0, up=0.6):
@@ -79,6 +83,8 @@ def orangery():
     mid = (M["orangery"][0] + 8.5, FY + 1.62, OCZ + 4.0)
     run([shot_eye("g_orangery_up", mid, (OCX - 2, FY + 18, OCZ - 1)),
          shot_eye("g_orangery_vault", (M["orangery"][0] + 2.5, FY + 4.0, OCZ), (M["orangery"][2], FY + 15, OCZ))], "noon", "_ou")
+    tx = M["trunk"][0]       # the hollow: 2x2 in the west face of the trunk, 4..5 over the floor
+    run([shot_eye("g_tree_hollow", (tx - 4.0, FY + 5.2, -318.5), (tx, FY + 4.9, -321.0), 6)], "noon", "_th")
     P = M["path"]; i = min(range(len(P)), key=lambda k: abs(math.hypot(P[k][0] - OCX, P[k][1] - OCZ) - 45))
     run([shot_eye("g_tree_path", (P[i][0] + 0.5, P[i][2] + 1.62, P[i][1] + 0.5), (OCX, FY + 26, OCZ))], "noon", "_tp")
     run([shot_eye("g_orangery_in_night", (M["orangery"][0] + 4.5, FY + 3.2, OCZ + 3), (M["pedestal"][0] + 0.5, FY + 1, M["pedestal"][2] + 0.5))], "midnight", "_orn")
@@ -110,7 +116,9 @@ def sensor():
     run([shot_eye("g_sensor", e, (t[0] + (sx - s["x"]) * 0.4, t[1] + 0.6, t[2] + (sz - s["z"]) * 0.4), 6)], "noon", "_s")
 def slope():
     prep(); R(f"tp Cam {OCX} 150 {OCZ}"); time.sleep(12)
-    e = (M["orangery"][0] - 6.5, FY + 4.5, OCZ - 8); t = (M["house"][0] + 4, M["house_floor"] - 6, M["house"][3])
+    P = M["path"]; i = min(range(len(P)), key=lambda k: abs(math.hypot(P[k][0] - OCX, P[k][1] - OCZ) - 28))    # the path at the orangery's west side
+    j = min(range(len(P)), key=lambda k: abs(math.hypot(P[k][0] - OCX, P[k][1] - OCZ) - 90))                  # up the slope, at the house
+    e = (P[i][0] + 0.5, P[i][2] + 1.62 + 2.0, P[i][1] + 0.5); t = (P[j][0] + 0.5, P[j][2] + 1.0, P[j][1] + 0.5)
     run([shot_eye("g_slope", e, t, 8)], "noon", "_sl")
 def house():
     prep(); R("tp Cam 242 140 -262"); time.sleep(12)
@@ -128,11 +136,11 @@ def armour():
     R(f"tp Cam2 {x} {y} {z}"); R("rotate Cam2 180 0"); time.sleep(2)
     run([shot_eye("g_armour_back", (x, y + 1.4, z + 3.2), (x, y + 1.0, z), 4)], "noon", "_ab")
     # the icons in the hotbar of Cam (survival) looking at Cam2
-    R("gamemode survival Cam"); R("clear Cam"); R(f"tp Cam {x} {y} {z + 3.2} 180 10")
+    R("recipe give Cam *"); R("gamemode survival Cam"); R("clear Cam"); R(f"tp Cam {x} {y} {z + 3.2} 180 10")
     for k, pc in enumerate(("helmet", "chestplate", "leggings", "boots")): R(f"loot replace entity Cam hotbar.{k} loot last_ember:item/creaking_{pc}")
     R("item replace entity Cam hotbar.4 with minecraft:pale_oak_log"); R("item replace entity Cam hotbar.5 with minecraft:stripped_pale_oak_log")
-    R("item replace entity Cam hotbar.6 with minecraft:leather_chestplate"); time.sleep(3)
-    direct("g_armour_icons"); R("clear Cam"); R("gamemode spectator Cam")
+    R("item replace entity Cam hotbar.6 with minecraft:leather_chestplate"); time.sleep(8)    # the recipe toast goes away
+    direct("g_armour_icons", crop=(0.35, 0.925, 0.30, 0.075)); R("clear Cam"); R("gamemode spectator Cam")      # the hotbar only, enlarged
     R("clear Cam2"); R("gamemode spectator Cam2")
 def alley_eye():
     P = M["path"]; i = min(range(len(P)), key=lambda k: abs(math.hypot(P[k][0] - OCX, P[k][1] - OCZ) - 40))
@@ -158,11 +166,11 @@ def hud():
     prep(); R("function last_ember:garden/reset"); R("time set noon")
     h = M["hearts"][0]; e = heart_eye(h, 4.0, 0.0)
     R("gamemode survival Cam"); R("effect give Cam minecraft:resistance infinite 4 true"); R(f"tp Cam {e[0]} {e[1] - 1.62 + 20} {e[2]}"); time.sleep(10)
-    R(f"spreadplayers {e[0]} {e[2]} 0 1 false Cam"); R(f"execute as Cam at @s anchored eyes run tp @s ~ ~ ~ facing {h['x'] + 0.5} {h['y'] + 0.5} {h['z'] + 0.5}"); time.sleep(3)
+    R(f"tp Cam {e[0]} {h['y']} {e[2]}"); R(f"execute as Cam at @s anchored eyes run tp @s ~ ~ ~ facing {h['x'] + 0.5} {h['y'] + 0.5} {h['z'] + 0.5}"); time.sleep(3)
     R(f"setblock {h['x']} {h['y']} {h['z']} minecraft:air destroy"); time.sleep(1.3)
-    direct("g_hud_hearts_left")
+    direct("g_hud_hearts_left"); time.sleep(12)        # the chat line "Saved screenshot" of this frame fades (10 s) before the next one
     for q in M["hearts"][1:]: R(f"forceload add {q['x']} {q['z']}"); R(f"setblock {q['x']} {q['y']} {q['z']} minecraft:air")
-    time.sleep(1.6); direct("g_hud_asleep")
+    time.sleep(2.0); direct("g_hud_asleep")
     for q in M["hearts"][1:]: R(f"forceload remove {q['x']} {q['z']}")
     R("function last_ember:garden/reset"); R("gamemode spectator Cam")
 def book():

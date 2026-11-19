@@ -72,14 +72,16 @@ public class ShotAgent {
                             continue;
                         }
                         boolean hud = p.length > 1 && p[1].equals("1");
-                        boolean keep = p.length > 2 && p[2].equals("keep");     // "<name> 1 keep": the open screen (a book, the inventory) stays in the frame
+                        java.util.Set<String> fl = new java.util.HashSet<>(java.util.Arrays.asList(p).subList(Math.min(2, p.length), p.length));
+                        boolean keep = fl.contains("keep");     // "<name> 1 keep": the open screen (a book, the inventory) stays in the frame
+                        boolean clean = fl.contains("clean");   // "<name> 1 clean": the chat is cleared before the frame (a "Saved screenshot" line of the frame before may still come later: wait 10 s)
                         Object lock = new Object();
                         boolean[] ok = {false};
                         Path shots = Paths.get(mc.gameDirectory.getPath(), "screenshots");
                         Files.createDirectories(shots);
                         mc.execute(() -> {
                             if (mc.gui.screen() != null && !keep) mc.gui.setScreen(null);  // close pause menu etc.
-                            if (!hud) { mc.options.chatVisibility().set(ChatVisiblity.HIDDEN); mc.gui.hud.getChat().clearMessages(false); }  // no chat / "Saved screenshot"
+                            if (!hud || clean) { mc.options.chatVisibility().set(ChatVisiblity.HIDDEN); mc.gui.hud.getChat().clearMessages(false); }  // no chat / "Saved screenshot"
                             boolean wasHidden = mc.gui.hud.isHidden();
                             if (wasHidden == hud) mc.gui.hud.toggle();
                             // capture on a later frame so the HUD state has been rendered

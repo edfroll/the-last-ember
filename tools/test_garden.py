@@ -340,7 +340,13 @@ def t_door():
             f"closest {zmin:.2f} from the door block, end z {p and p[2]}")
         print(f"        (the door seen open by the server in {seen_open} polls of ~{int(3.4 / 0.12)})")
         chk(f"run {run}: ... the door is shut afterwards", blk(dx, dy, dz, "minecraft:pale_oak_door[open=false]"))
-    unstage()
+    # control: the same clicks reach the door (asleep, one click opens it)
+    R("function last_ember:garden/sleep_now"); time.sleep(1.2)
+    R(f"tp Cam {dx + 0.5} {dy} {dz + 2.0} 180 0"); look_at("Cam", dx + 0.5, dy + 1.0, dz + 0.5); time.sleep(0.6)
+    tc.act("Cam", "!use"); time.sleep(1.5)
+    chk("control: asleep, one right click from the same place opens the door", blk(dx, dy, dz, "minecraft:pale_oak_door[open=true]"))
+    R(f"setblock {dx} {dy} {dz} minecraft:pale_oak_door[facing=north,half=lower,hinge=left,open=false]"); R(f"setblock {dx} {dy+1} {dz} minecraft:pale_oak_door[facing=north,half=upper,hinge=left,open=false]")
+    R("function last_ember:garden/reset"); unstage()
 
 def attr(p, a): return tc.num(R(f"attribute {p} minecraft:{a} get"), r"is (-?[\d.]+)")
 def t_armor():
@@ -391,8 +397,9 @@ def t_armor():
     R("clear Cam"); R("clear Cam2"); R("function last_ember:garden/reset"); unstage()
 
 def arena():
-    R("fill 1700 199 1700 1740 199 1740 minecraft:stone"); R("fill 1700 200 1700 1740 206 1740 minecraft:air")
-    R("forceload add 1700 1700 1740 1740")
+    R("forceload add 1700 1700 1740 1740")               # loaded first: on a fresh world the fill would hit unloaded chunks
+    wait(lambda: passed("execute if loaded 1700 200 1700") and passed("execute if loaded 1740 200 1740"), 40); time.sleep(1)
+    R("fill 1700 199 1700 1740 199 1740 minecraft:stone"); R("fill 1700 200 1700 1740 210 1740 minecraft:air")
 def wear(p):
     R(f"clear {p}")
     for sl, pc in (("head", "helmet"), ("chest", "chestplate"), ("legs", "leggings"), ("feet", "boots")):

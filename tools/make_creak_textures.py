@@ -24,20 +24,28 @@ def base(x, y, s=0):
     n = hsh(x, y, s + 1); g = hsh(x // 2, y // 3, s + 2)        # soft grain: patches 2x3 of one shade, a little speckle
     return BASE[0 if g < 0.5 else 1 if g < 0.8 else 2] if n > 0.15 else BASE[int(n * 20) % 3]
 def veins(px, x1, y1, x2, y2, s):
-    """dark vertical veins 3..8 long that wander by one pixel and fork; about one start per 26 pixels of the region, no spots"""
-    w, h = x2 - x1, y2 - y1; n = max(1, (w * h) // 26)
+    """dark vertical veins 3..8 long, one pixel wide, that wander by one pixel and fork away; about one start per 40 pixels of the region.
+    No two veins touch side by side (that read as dark spots on the worn armour): a vein stops before it would sit next to another one."""
+    w, h = x2 - x1, y2 - y1; n = max(1, (w * h) // 40); occ = set()
+    def free(x, y, own):
+        return all((x + dx, y + dy) not in occ or (x + dx, y + dy) in own for dx in (-1, 0, 1) for dy in (-1, 0, 1))
     for k in range(n):
         x = x1 + int(hsh(k, 1, s) * w); y = y1 + int(hsh(k, 2, s) * h); L = 3 + int(hsh(k, 3, s) * 6)
-        stack = [(x, y, L, 0)]
+        stack = [(x, y, L, 0, 0)]
         while stack:
-            x, y, L, depth = stack.pop()
+            x, y, L, depth, side = stack.pop(); own = set()
             for i in range(L):
-                if not (x1 <= x < x2 and y1 <= y < y2): break
-                px[y][x] = VEIN[int(hsh(x, y, s + 9) * 3)] + (255,)
-                if depth == 0 and i == L // 2 and hsh(k, 4, s) < 0.6:
-                    stack.append((x + (1 if hsh(k, 5, s) < 0.5 else -1), y + 1, 2 + int(hsh(k, 6, s) * 3), 1))
+                if not (x1 <= x < x2 and y1 <= y < y2) or not free(x, y, own | {(x, y - 1), (x - 1, y - 1), (x + 1, y - 1)}): break
+                own.add((x, y)); px[y][x] = VEIN[int(hsh(x, y, s + 9) * 3)] + (255,)
+                if depth == 0 and i == L // 2 and hsh(k, 4, s) < 0.5:
+                    sd = 1 if hsh(k, 5, s) < 0.5 else -1          # the fork leaves sideways: 2 pixels out, then down
+                    stack.append((x + 2 * sd, y + 2, 2 + int(hsh(k, 6, s) * 3), 1, sd))
                 y += 1
-                if hsh(x, y, s + 11) < 0.3: x += 1 if hsh(x, y, s + 12) < 0.5 else -1
+                if depth == 0 and hsh(x, y, s + 11) < 0.3: x += 1 if hsh(x, y, s + 12) < 0.5 else -1
+            if len(own) < (3 if depth == 0 else 2):             # cut short by a neighbour: no stray dots
+                for (qx, qy) in own: px[qy][qx] = base(qx, qy) + (255,)
+                continue
+            occ |= own
 # ---- worn layers (64x32 humanoid layout): head 0..32 x 0..16, body 16..40 x 16..32, arms 40..56 x 16..32, legs 0..16 x 16..32
 def layer(regions, rims, eyes=False):
     px = [[(0, 0, 0, 0)] * 64 for _ in range(32)]
