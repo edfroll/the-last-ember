@@ -1,6 +1,7 @@
 # T-025: every 5 ticks: the Stillness of the Creaking armour (all its wearers), the sculk sensors of the garden (while somebody is near and
-# the garden is awake); every second the rest (hearts, faces, the sensor creakings, the door, the key, the stand) and, once asleep, the eyeblossoms (the task
-# says every 5 s; vanilla reopens ~3 of the 193 a second at night and each wakes its neighbours, so every 5 s left ~25 open at any time)
+# the garden is awake); every second the rest (hearts, faces, the sensor creakings, the door, the key, the stand) ; once asleep, every 10 ticks the eyeblossoms
+# (the task says every 5 s; vanilla reopens ~3 of the 192 a second at night and each wakes its neighbours: every 5 s left ~25 open, every
+# second up to ~9 within 40 blocks of the players at a moment)
 schedule function last_ember:garden/loop 5t replace
 execute store result score #gt le.gd run time query gametime
 scoreboard players add #t le.gd 5
@@ -10,4 +11,6 @@ execute if score #near le.gd matches 1.. if score #asleep le.gd matches 0 in min
 scoreboard players operation #t20 le.gd = #t le.gd
 scoreboard players operation #t20 le.gd %= #20 le.gd
 execute if score #t20 le.gd matches 0 in minecraft:overworld run function last_ember:garden/second
-execute if score #t20 le.gd matches 0 if score #asleep le.gd matches 1 if score #near le.gd matches 1.. in minecraft:overworld run function last_ember:garden/gen/blooms
+scoreboard players operation #t10 le.gd = #t le.gd
+scoreboard players operation #t10 le.gd %= #10 le.gd
+execute if score #t10 le.gd matches 0 if score #asleep le.gd matches 1 if score #near le.gd matches 1.. in minecraft:overworld run function last_ember:garden/gen/blooms

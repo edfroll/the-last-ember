@@ -4,6 +4,7 @@
 scoreboard objectives add le.gd dummy
 scoreboard objectives add le.gdt dummy
 scoreboard players set #20 le.gd 20
+scoreboard players set #10 le.gd 10
 scoreboard players set #100 le.gd 100
 function last_ember:garden/gen/init
 function last_ember:garden/gen/markers

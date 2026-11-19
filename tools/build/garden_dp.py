@@ -115,7 +115,7 @@ def run(R, meta):
     # ---- eyeblossoms (after the sleep): by squares of 64, only loaded and with a player near
     groups = {}
     for (x, y, z) in blooms: groups.setdefault((x // 64, z // 64), []).append((x, y, z))
-    L = [hdr + "every second after the garden fell asleep: the open eyeblossoms of the garden close again (%d points in %d squares)" % (len(blooms), len(groups))]
+    L = [hdr + "every 10 ticks after the garden fell asleep: the open eyeblossoms of the garden close again (%d points in %d squares)" % (len(blooms), len(groups))]
     for (gx, gz), pts in sorted(groups.items()):
         xs = [p[0] for p in pts]; zs = [p[2] for p in pts]
         L.append("execute if loaded %d 0 %d if loaded %d 0 %d if entity @a[x=%d,y=-64,z=%d,dx=%d,dy=384,dz=%d] run function last_ember:garden/gen/b/%d_%d" %

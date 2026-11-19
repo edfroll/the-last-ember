@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.ChatVisiblity;
  * Needs no OS permissions (no key injection, no screen recording). Launch via tools/client_launch.py.
  */
 public class ShotAgent {
+    static volatile boolean ATTACK = false;
     public static void premain(String args, Instrumentation inst) {
         Thread t = new Thread(() -> {
             Path dir = Paths.get(args), req = dir.resolve("shot-request.txt"), done = dir.resolve("shot-done.txt");
@@ -58,9 +59,9 @@ public class ShotAgent {
                                     case "use_off" -> KeyMapping.set(mc.options.keyUse.getDefaultKey(), false);
                                     case "jump_on" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), true);  // jump uses the held state
                                     case "jump_off" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), false);
-                                    case "attack_on" -> KeyMapping.set(mc.options.keyAttack.getDefaultKey(), true);   // hold left mouse: break a block (T-025)
+                                    case "attack_on" -> { KeyMapping.set(mc.options.keyAttack.getDefaultKey(), true); ATTACK = true; }   // hold left mouse: break a block (T-025); vanilla mines on a held key only with the mouse grabbed (a focused window), so the agent drives the destroy itself (below)
                                     case "menu_qmove" -> { if (mc.player != null && mc.player.containerMenu != null && mc.player.containerMenu.containerId != 0) mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, Integer.parseInt(p.length > 1 ? p[1] : "0"), 0, net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player); }   // T-025: shift-click slot N of the open menu (anvil)
-                                    case "attack_off" -> KeyMapping.set(mc.options.keyAttack.getDefaultKey(), false);
+                                    case "attack_off" -> { KeyMapping.set(mc.options.keyAttack.getDefaultKey(), false); ATTACK = false; if (mc.gameMode != null) mc.gameMode.stopDestroyBlock(); }
                                     default -> {}
                                 }
                             });
@@ -106,5 +107,24 @@ public class ShotAgent {
         }, "shot-agent");
         t.setDaemon(true);
         t.start();
+        Thread a = new Thread(() -> {     // the held attack: every 50 ms the block under the crosshair is mined like a held left mouse button
+            while (true) {
+                try {
+                    Thread.sleep(50);
+                    if (!ATTACK) continue;
+                    Minecraft mc = Minecraft.getInstance();
+                    if (mc == null) continue;
+                    mc.execute(() -> {
+                        if (!ATTACK || mc.player == null || mc.gameMode == null) return;
+                        if (mc.hitResult instanceof net.minecraft.world.phys.BlockHitResult bh && bh.getType() == net.minecraft.world.phys.HitResult.Type.BLOCK) {
+                            if (!mc.gameMode.isDestroying()) mc.gameMode.startDestroyBlock(bh.getBlockPos(), bh.getDirection());
+                            else mc.gameMode.continueDestroyBlock(bh.getBlockPos(), bh.getDirection());
+                        }
+                    });
+                } catch (Throwable e) { }
+            }
+        }, "shot-agent-attack");
+        a.setDaemon(true);
+        a.start();
     }
 }
