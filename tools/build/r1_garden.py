@@ -27,6 +27,9 @@ DP = os.path.join(ROOT, "datapack/data/last_ember")
 PCX, PCZ, PW, PD, MARGIN = 330, -350, 200, 200, 16
 CORE = (230, -450, 430, -250)                         # the place's core x1 z1 x2 z2
 PLACE = (CORE[0] - MARGIN, CORE[1] - MARGIN, CORE[2] + MARGIN, CORE[3] + MARGIN)
+def in_built(x, z):
+    """the orangery and the house with their pads: their blocks are laid on purpose"""
+    return (OX1 - 3 <= x <= OX2 + 3 and OZ1 - 3 <= z <= OZ2 + 3) or (HX1 - 2 <= x <= HX2 + 2 and HZ1 - 2 <= z <= HZ2 + 2)
 def in_place(x, z):
     return np.hypot(np.maximum(np.abs(x - PCX) - PW / 2, 0), np.maximum(np.abs(z - PCZ) - PD / 2, 0)) <= MARGIN
 def in_core(x, z): return (x >= CORE[0]) & (x <= CORE[2]) & (z >= CORE[1]) & (z <= CORE[3])
@@ -705,11 +708,19 @@ def surface(b, gr, rl):
             for yy in range(y + 1, min(top, y + 48) + 1):
                 if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air"); n += 1
     return n
-KIND_SKIP = ("air", "barrier", "water", "lava", "snow", "vine", "moss_carpet", "pale_moss_carpet", "pale_hanging_moss", "creaking_heart", "chain",
-             "candle", "eyeblossom", "lantern")
+KIND_SKIP = {"air", "cave_air", "void_air", "barrier", "water", "lava", "short_grass", "tall_grass", "fern", "large_fern", "snow", "vine", "dead_bush",
+             "bush", "leaf_litter", "wildflowers", "sugar_cane", "seagrass", "tall_seagrass", "kelp", "kelp_plant", "sweet_berry_bush", "firefly_bush",
+             "short_dry_grass", "tall_dry_grass", "pumpkin", "moss_carpet", "pale_moss_carpet", "pale_hanging_moss", "bamboo", "cactus", "cocoa", "lily_pad",
+             "glow_lichen", "hanging_roots", "red_bush", "big_dripleaf", "big_dripleaf_stem", "small_dripleaf", "brown_mushroom_block", "red_mushroom_block",
+             "mushroom_stem", "bee_nest", "creaking_heart", "resin_clump", "pointed_dripstone"}
 def scan_ground_kind(s):
+    """True when tools/terrain.sh scan counts the block as ground (a port of Terrain.kind: everything but plants, air, logs, leaves, water)"""
     n = s.split("[")[0].split("{")[0].replace("minecraft:", "")
-    if n.endswith("leaves") or n.endswith("_log") or n.endswith("_wood") or any(k in n for k in KIND_SKIP) or n.endswith("_sign"): return False
+    if n in ("water", "bubble_column", "lava") or n.endswith("leaves"): return False
+    if n.endswith("_log") or n.endswith("_wood") or n.endswith("_stem") or n.endswith("_hyphae") or "mangrove_roots" in n: return False
+    if n in KIND_SKIP or n.endswith("sapling") or n in ("poppy", "dandelion", "lilac", "peony") or \
+       any(k in n for k in ("flower", "tulip", "mushroom", "orchid", "allium", "bluet", "daisy", "lily", "rose", "cornflower", "dripleaf", "eyeblossom", "petals", "bush", "carpet")):
+        return False
     return True
 def write_terrain(gr, rl, b):
     """only the columns whose ground is not yet what it should be (a re-run on the built garden rewrites nothing). Our own blocks over the
@@ -723,6 +734,17 @@ def write_terrain(gr, rl, b):
     own = (now <= np.maximum(top, T)) & (now >= T)
     cand = gr["place"] & ~gr["allow"] & (gr["water"] == NONE)
     touch = cand & (now != T) & ~own
+    # the rest: what the scan sees after terrain + blocks (our blocks replace the top of the ground: the basin, the roots in the floor)
+    cols = {}
+    for (x, y, z), s in b.v.items(): cols.setdefault((x, z), {})[y] = s
+    for i, j in zip(*np.nonzero(touch)):
+        x, z = j + gr["x1"], i + gr["z1"]; c = cols.get((x, z))
+        if not c: continue
+        for y in range(max(max(c), int(T[i, j])), int(T[i, j]) - 12, -1):
+            s = c.get(y)
+            if (scan_ground_kind(s) if s is not None else y <= T[i, j]):
+                if y == now[i, j]: touch[i, j] = False
+                break
     H = np.where(touch, T, NONE).astype(np.int32)
     lo = T.copy()
     for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): lo = np.minimum(lo, np.roll(np.roll(lo, dz, 0), dx, 1))
@@ -788,6 +810,10 @@ def main():
     bad = [k for k in b.v if not in_place(k[0], k[2])]
     if bad: raise SystemExit("blocks outside the place: %s" % bad[:5])
     for k in [k for k, v in b.v.items() if gr["allow"][ix(gr, k[0], k[2])] and ("leaves" in v or "pale_oak_log" in v or "hanging_moss" in v)]: del b.v[k]
+    # tree parts that reach into the wanted ground (low branches and leaves on a slope, the trunk over the higher side of a slope): the
+    # ground stays (else the apply writes the ground, the blocks replace its top and a re-run sees a lower ground there)
+    T0 = rl["T"]
+    for k in [k for k, v in b.v.items() if ("leaves" in v or "pale_oak_log" in v or "hanging_moss" in v) and not in_built(k[0], k[2]) and k[1] <= T0[ix(gr, k[0], k[2])]]: del b.v[k]
     pad = [k for k in b.v if gr["allow"][ix(gr, k[0], k[2])]]
     if pad: raise SystemExit("blocks on the pad / approach of bonfire 4: %s" % pad[:5])
     ncol = write_terrain(gr, rl, b)

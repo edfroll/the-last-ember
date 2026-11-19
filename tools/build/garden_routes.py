@@ -40,11 +40,11 @@ def height(b):
     return 1.0
 STAND = {}
 def stands(x, z):
-    """the feet heights in column x z: every support with 2 free blocks above it, from 6 above the ground to 10 below (roofs, floors)"""
+    """the feet heights in column x z: every support with 2 free blocks above it, from 6 above the ground to 30 below (under roofs)"""
     if (x, z) in STAND: return STAND[(x, z)]
     g = ground(x, z); r = []
     if g is not None:
-        for y in range(g + 6, g - 10, -1):
+        for y in range(g + 6, g - 30, -1):
             h = height(block(x, y, z))
             if h is None or h > 1: continue
             if all(passable(block(x, yy, z)) for yy in (y + 1, y + 2)): r.append(y + h)
