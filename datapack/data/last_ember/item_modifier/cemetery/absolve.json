@@ -1,0 +1,20 @@
+{
+ "type": "minecraft:sequence",
+ "functions": [
+  {
+   "type": "minecraft:set_custom_data",
+   "tag": "{le_cursed:0b,le_curse:\"\",le_sung:1b}"
+  },
+  {
+   "type": "minecraft:set_lore",
+   "lore": [
+    {
+     "text": "Отпето.",
+     "color": "gray",
+     "italic": false
+    }
+   ],
+   "mode": "replace_all"
+  }
+ ]
+}

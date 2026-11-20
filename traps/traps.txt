@@ -10,3 +10,10 @@
 #   false_treasure pos=x,y,z link=<trap id>       (the box is the area of the hints)
 # The regions' tasks add their traps here, then: python3 tools/gen_traps.py
 fens_ambush cursed_chest overworld -482 134 363 -474 138 371 chest=-478,135,367 mob=minecraft:drowned mob2=minecraft:bogged   # T-026: the house of the ambush in the ruins of the fens
+cem_pit_15 collapse overworld 263 93 464 263 95 465 floor=minecraft:soul_soil   # T-027: the sunken grave 15
+cem_pit_16 collapse overworld 273 96 489 273 98 490 floor=minecraft:soul_soil   # T-027: the sunken grave 16
+cem_arrows arrows overworld 239 88 431 241 91 445 pts=239,90,443;241,90,443;239,90,440;241,90,440;239,90,437;241,90,437;239,90,434;241,90,434   # T-027: the trap corridor of the crypt
+cem_plate_1 plate overworld 239 89 443 239 90 443 link=cem_arrows   # T-027: plate 1 of the crypt corridor
+cem_plate_2 plate overworld 241 89 440 241 90 440 link=cem_arrows   # T-027: plate 2 of the crypt corridor
+cem_plate_3 plate overworld 240 89 437 240 90 437 link=cem_arrows   # T-027: plate 3 of the crypt corridor
+cem_plate_4 plate overworld 239 89 434 239 90 434 link=cem_arrows   # T-027: plate 4 of the crypt corridor

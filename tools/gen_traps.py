@@ -126,7 +126,8 @@ for t in traps:
                "execute if score %s matches 1250.. if score %s matches 3 %sunless entity @a[%s] run function last_ember:trap/gen/restore_%s" % (tt, st, IN, boxsel(t["x1"] - 1, t["y1"] - 1, t["z1"] - 1, t["x2"] + 1, t["y2"] + 2, t["z2"] + 1), i)]
         d = ["# the floor of %s falls" % i, "%splaysound minecraft:block.gravel.break block @a[x=%d,y=%d,z=%d,distance=..20] ~ ~ ~ 1.5 0.5" % (IN, t["cx"], t["cy"], t["cz"]) if False else "%spositioned %s run playsound minecraft:entity.generic.explode block @a[distance=..20] ~ ~ ~ 0.8 0.6" % (IN, cxyz)]
         for x in range(t["x1"], t["x2"] + 1):
-            for z in range(t["z1"], t["z2"] + 1): d.append("%ssummon minecraft:falling_block %d.5 %d.5 %d.5 {BlockState:{Name:\"%s\"},Time:1,DropItem:0b,HurtEntities:0b,Tags:[\"le.trap_fb\"]}" % (IN, x, t["y1"], z, fl))
+            # 26.3: BlockState is a state string (a compound {Name} gave falling sand); CancelDrop: it does not land as a block (T-027)
+            for z in range(t["z1"], t["z2"] + 1): d.append("%ssummon minecraft:falling_block %d.5 %d.5 %d.5 {BlockState:\"%s\",Time:1,DropItem:0b,CancelDrop:1b,HurtEntities:0b,Tags:[\"le.trap_fb\"]}" % (IN, x, t["y1"], z, fl))
         d.append("%sfill %d %d %d %d %d %d minecraft:air replace %s" % ((IN,) + A + (fl,)))
         w("drop_" + i, d)
         w("restore_" + i, ["%sfill %d %d %d %d %d %d %s replace minecraft:air" % ((IN,) + A + (fl,)), "scoreboard players set %s 0" % st, "scoreboard players set %s 0" % tt, "%spositioned %s run playsound minecraft:block.stone.place block @a[distance=..16] ~ ~ ~ 1 0.8" % (IN, cxyz)])

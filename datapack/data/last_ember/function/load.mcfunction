@@ -51,3 +51,5 @@ function last_ember:maze/setup
 # T-025: the Garden of Silence, the Creaking armour
 function last_ember:garden/setup
 function last_ember:fens/setup
+# T-027: the Cemetery of the Fallen Knights and the Keeper's Lodge
+function last_ember:cemetery/setup

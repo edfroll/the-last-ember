@@ -4,4 +4,41 @@ execute unless score #fens_ambush_t le.tr matches -2147483648..2147483647 run sc
 execute unless score #fens_ambush_cd le.tr matches -2147483648..2147483647 run scoreboard players set #fens_ambush_cd le.tr 0
 execute unless score #fens_ambush_bl le.tr matches -2147483648..2147483647 run scoreboard players set #fens_ambush_bl le.tr 0
 execute unless score #fens_ambush_ow le.tr matches -2147483648..2147483647 run scoreboard players set #fens_ambush_ow le.tr 0
+execute unless score #cem_pit_15_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_15_st le.tr 0
+execute unless score #cem_pit_15_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_15_t le.tr 0
+execute unless score #cem_pit_15_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_15_cd le.tr 0
+execute unless score #cem_pit_15_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_15_bl le.tr 0
+execute unless score #cem_pit_15_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_15_ow le.tr 0
+execute unless score #cem_pit_16_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_16_st le.tr 0
+execute unless score #cem_pit_16_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_16_t le.tr 0
+execute unless score #cem_pit_16_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_16_cd le.tr 0
+execute unless score #cem_pit_16_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_16_bl le.tr 0
+execute unless score #cem_pit_16_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_pit_16_ow le.tr 0
+execute unless score #cem_arrows_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_arrows_st le.tr 0
+execute unless score #cem_arrows_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_arrows_t le.tr 0
+execute unless score #cem_arrows_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_arrows_cd le.tr 0
+execute unless score #cem_arrows_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_arrows_bl le.tr 0
+execute unless score #cem_arrows_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_arrows_ow le.tr 0
+execute unless score #cem_plate_1_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_1_st le.tr 0
+execute unless score #cem_plate_1_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_1_t le.tr 0
+execute unless score #cem_plate_1_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_1_cd le.tr 0
+execute unless score #cem_plate_1_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_1_bl le.tr 0
+execute unless score #cem_plate_1_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_1_ow le.tr 0
+execute unless score #cem_plate_2_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_2_st le.tr 0
+execute unless score #cem_plate_2_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_2_t le.tr 0
+execute unless score #cem_plate_2_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_2_cd le.tr 0
+execute unless score #cem_plate_2_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_2_bl le.tr 0
+execute unless score #cem_plate_2_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_2_ow le.tr 0
+execute unless score #cem_plate_3_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_3_st le.tr 0
+execute unless score #cem_plate_3_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_3_t le.tr 0
+execute unless score #cem_plate_3_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_3_cd le.tr 0
+execute unless score #cem_plate_3_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_3_bl le.tr 0
+execute unless score #cem_plate_3_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_3_ow le.tr 0
+execute unless score #cem_plate_4_st le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_4_st le.tr 0
+execute unless score #cem_plate_4_t le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_4_t le.tr 0
+execute unless score #cem_plate_4_cd le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_4_cd le.tr 0
+execute unless score #cem_plate_4_bl le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_4_bl le.tr 0
+execute unless score #cem_plate_4_ow le.tr matches -2147483648..2147483647 run scoreboard players set #cem_plate_4_ow le.tr 0
 data modify storage last_ember:traps cells.o120_133 set value 1b
+data modify storage last_ember:traps cells.o132_135 set value 1b
+data modify storage last_ember:traps cells.o131_134 set value 1b

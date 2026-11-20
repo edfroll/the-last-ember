@@ -1,0 +1,50 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_helmet",
+     "modifier": [
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_name": {
+         "text": "Шлем Брата Геста",
+         "color": "gold",
+         "italic": false
+        },
+        "minecraft:lore": [
+         {
+          "text": "Проклятие: Тьма",
+          "color": "dark_purple",
+          "italic": false
+         },
+         {
+          "text": "Снято с мёртвого. Держит, пока держишь.",
+          "color": "dark_gray",
+          "italic": true
+         }
+        ],
+        "minecraft:custom_data": "{le_cursed:1b,le_curse:\"dark\",le_grave:3}"
+       }
+      },
+      {
+       "type": "minecraft:set_enchantments",
+       "enchantments": {
+        "minecraft:protection": 1,
+        "minecraft:thorns": 1
+       }
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": 0.25
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

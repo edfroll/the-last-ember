@@ -1,0 +1,29 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Смотритель",
+  "color": "gray",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Мечи в земле — могилы тех, кто нёс огонь до вас. Три — на холме у меня под окном. Один — у воды под лестницей замка. Один — в черепе каменного змея, на севере, за Вереском. И маленький — у дороги к Плачущим, где тополь пророс сквозь гарду.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}
