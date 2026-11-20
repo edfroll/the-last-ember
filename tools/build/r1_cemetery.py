@@ -78,6 +78,13 @@ def relief(gr, W, paths):
         if nat >= top + 1: ring[q] = ("wall", top)
         else:
             T[i, j] = top; ring[q] = ("parapet", top) if nat < top - 1 or any(v < top for v in ys) else ("edge", top)
+    # the way out of the closing landing of the descent and of the hill stair: no parapet there (the trail starts on it)
+    for cc in (paths["desc"][-1], paths["hill"][-1]):
+        dx, dz = DIRS[cc[3]]
+        for k in (-1, 0, 1):
+            q = (cc[0] + 2 * dx - dz * k, cc[1] + 2 * dz + dx * k)
+            if q in walk: continue
+            T[ix(gr, *q)] = cc[2]; ring[q] = ("edge", cc[2])
     emb = np.full(T.shape, -999)
     for (x, z), (kind, y) in ring.items():
         if kind != "wall": emb[ix(gr, x, z)] = y
@@ -103,10 +110,10 @@ def barrow_relief(gr, rl, W):
             elif 3 <= lx <= 5: m = E
             elif lx in (2, 6): m = E + 5 - (lz - 9)
             else: m = E + 4 - (lz - 9)
-            if lx == 1 and 4 <= lz <= 8: m = E                 # the shaft of the stair to the top (open)
+            if lx in (1, 2) and 2 <= lz <= 8: m = E            # the shaft of the stair to the top (open)
             top[(x, z)] = m
         for (x, z), m in top.items():
-            i, j = ix(gr, x, z); T[i, j] = m if (m <= E or cells[(x, z)][1] > 8 or (cells[(x, z)][0] == 1 and 4 <= cells[(x, z)][1] <= 8)) else max(int(T[i, j]), m)
+            i, j = ix(gr, x, z); T[i, j] = m if (m <= E or cells[(x, z)][1] > 8 or (cells[(x, z)][0] in (1, 2) and 2 <= cells[(x, z)][1] <= 8)) else max(int(T[i, j]), m)
         # 1:1 round the mound (fill only)
         emb = np.full(T.shape, -999)
         for (x, z), m in top.items(): emb[ix(gr, x, z)] = T[ix(gr, x, z)] if m > E else -999
@@ -123,7 +130,7 @@ def barrow_relief(gr, rl, W):
             for a in (-2, -1, 0, 1, 2):
                 q = (fx + dx * (k - 1) - dz * a, fz + dz * (k - 1) + dx * a)
                 sel[ix(gr, *q)] = False
-                if T[ix(gr, *q)] > E: T[ix(gr, *q)] = E
+                if T[ix(gr, *q)] > E or (k <= 3 and abs(a) <= 1): T[ix(gr, *q)] = E          # the trench in front: level with the dromos
         T[sel] = emb[sel]
         out.append(dict(id=b[0], E=E, facing=f, front=[fx, fz], cells=cells))
     return out
@@ -221,9 +228,9 @@ def trails(gr, rl, brs, paths, W):
     for k in range(-1, 2):                                  # the skulls stand in front of the facade
         box(P.CRYPT_X - 6, P.CRYPT_FRONT + 1, P.CRYPT_X - 2, P.CRYPT_FRONT + 5); box(P.CRYPT_X + 2, P.CRYPT_FRONT + 1, P.CRYPT_X + 6, P.CRYPT_FRONT + 5)
     d = paths["desc"][-1]; dx, dz = DIRS[d[3]]
-    a0 = (d[0] + dx, d[1] + dz); ya = d[2]                 # the cell after the closing landing of the descent, its level
+    a0 = (d[0] + 2 * dx, d[1] + 2 * dz); ya = d[2]         # the way out of the closing landing of the descent (no parapet), its level
     h = paths["hill"][-1]; hx, hz = DIRS[h[3]]
-    b0 = (h[0] + hx, h[1] + hz); yb = h[2]
+    b0 = (h[0] + 2 * hx, h[1] + 2 * hz); yb = h[2]
     cf = (P.CRYPT_X, P.CRYPT_FRONT + 6); yc = W
     out = {}; lines = []
     for (s, ys), (e, ye) in (((a0, ya), (cf, yc)), ((cf, yc), (b0, yb))):
@@ -232,6 +239,14 @@ def trails(gr, rl, brs, paths, W):
                 for b_ in (-1, 0, 1): block[ix(gr, c[0] + a_, c[1] + b_)] = False
         path = astar(T.astype(float), s, e, block, gr["x1"], gr["z1"])
         cells = cells_of(smooth_line(path, 4))
+        if any(block[ix(gr, *c)] for c in cells[1:-1]):                      # the smoothed line cut a corner into something: the raw path, 4-connected
+            cells = [path[0]]
+            for c in path[1:]:
+                p_ = cells[-1]
+                if abs(c[0] - p_[0]) + abs(c[1] - p_[1]) == 2:
+                    m1, m2 = (c[0], p_[1]), (p_[0], c[1])
+                    cells.append(m1 if not block[ix(gr, *m1)] else m2)
+                cells.append(c)
         if cells[0] != s: cells = [s] + cells
         if cells[-1] != e: cells.append(e)
         t = [2 * (int(T[ix(gr, x, z)]) + 1) for x, z in cells]
@@ -248,7 +263,7 @@ def trails(gr, rl, brs, paths, W):
             for a_ in (-1, 0, 1):
                 for b_ in (-1, 0, 1):
                     q = (c[0] + a_, c[1] + b_)
-                    if q in rl["walk"] or q in rl["ring"]: continue
+                    if q in rl["walk"] or (q in rl["ring"] and rl["ring"][q][0] != "edge"): continue     # the trail runs over the open way out
                     dd = a_ * a_ + b_ * b_
                     if q not in out or dd < out[q][1]: out[q] = (s2, dd)
     surf = {q: v[0] for q, v in out.items()}

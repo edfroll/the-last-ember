@@ -61,8 +61,9 @@ for br in M["barrows"]:
     out_side = [L2G[(0, 8)][0] - (dz * 3 if f in ("S", "N") else 0) * (1 if f == "S" else -1) + 0.5, L2G[(0, 8)][1] + 0.5]
     lx0 = L2G[(0, 8)]; side = (lx0[0] - L2G[(1, 8)][0], lx0[1] - L2G[(1, 8)][1])      # the direction to the left wall, outward
     off = [lx0[0] + side[0] * 4 + 0.5, lx0[1] + side[1] * 4 + 0.5]
-    routes["c_barrow_%d" % br["id"]] = [[fx + dx * 2 + 0.5, fz + dz * 2 + 0.5, Eb + 1.0], g(4, 11) + [Eb + 1.0], g(4, 8) + [Eb + 1.0], g(4, 4) + [Eb + 1.0],
-                                        g(2, 1) + [Eb + 1.0], g(1, 1) + [Eb + 1.0], g(1, 7) + [Eb + 7.0], g(1, 8) + [Eb + 7.0], g(0, 8) + [Eb + 7.0], off + [Eb + 3.0]]
+    routes["c_barrow_%d" % br["id"]] = [[fx + dx * 2 + 0.5, fz + dz * 2 + 0.5, Eb + 1.0], g(4, 11) + [Eb + 1.0], g(4, 8) + [Eb + 1.0], g(3, 7) + [Eb + 1.0],
+                                        g(3, 1) + [Eb + 1.0], g(2, 1) + [Eb + 1.0], g(2, 7) + [Eb + 7.0], g(2, 8) + [Eb + 7.0], g(0, 8) + [Eb + 7.0], g(0, 11) + [Eb + 3.0],
+                                        [fx + dx * 2 + 0.5, fz + dz * 2 + 0.5, Eb + 1.0]]
 for n, pts in routes.items():
     s = pts[0]
     json.dump(dict(start=[s[0], s[2], s[1]], points=[[p[0], p[1], p[2]] for p in pts[1:]]), open(os.path.join(OUT, n + ".json"), "w"))

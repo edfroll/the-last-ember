@@ -46,6 +46,9 @@ python3 tools/build/validate.py server/build/r1/fens.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/fens.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $FB server/build/r1/fens_post.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_check.py places fens
+# T-027: the Cemetery of the Fallen Knights and the Keeper's Lodge (only inside their places: the floor, the descent from bonfire 2, the
+# hill with the three swords, the graves, the barrows, the crypt, the chapel, the trails; the lodge on its terrace with the stream)
+tools/build/cemetery_step.sh
 tools/biomepaint.sh | grep -v JAVA_TOOL | head -1
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

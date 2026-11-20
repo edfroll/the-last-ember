@@ -247,32 +247,34 @@ def barrow(b, c, br, n_loot):
             for y in range(E, top + 1): x, z = G(lx, lz); S(lx, y, lz, CRYPT.at(x, y, z))
         if lz == 11:
             for lx in (2, 6): S(lx, top + 1, lz, "minecraft:skeleton_skull[rotation=%d]" % {"S": 0, "W": 4, "N": 8, "E": 12}[f])
-    # the stair up along lx 1 (lz 2..7, E+1..E+6), the landing on the front wall (lz 8, E+6), the shaft open to the sky over lz 3..8
-    for k, lz in enumerate(range(2, 8)):
-        y = E + 1 + k
-        S(1, y, lz, stairs("cobbled_deepslate_stairs", F))
-        for yy in range(E + 1, y): S(1, yy, lz, "minecraft:cobbled_deepslate")
-        for yy in range(y + 1, E + 9): 
-            if lz >= 3 or yy <= E + 3: S(1, yy, lz, "minecraft:air")
-    for yy in range(E + 1, E + 7): S(1, yy, 8, "minecraft:polished_deepslate" if yy == E + 6 else CRYPT.at(*G(1, 8)[:1], yy, G(1, 8)[1]))
-    for yy in range(E + 7, E + 9): S(1, yy, 8, "minecraft:air")
-    for lz in range(3, 9):                                  # the rim of the slot: the vault stays round it
-        for lx in (0, 2):
+    # the stair up along the left wall, 2 wide (lx 1..2, lz 2..7, E+1..E+6), the landing on the front wall (lz 8, E+6), the shaft open to
+    # the sky over lz 3..8
+    for lx in (1, 2):
+        for k, lz in enumerate(range(2, 8)):
+            y = E + 1 + k
+            S(lx, y, lz, stairs("cobbled_deepslate_stairs", F))
+            for yy in range(E + 1, y): S(lx, yy, lz, "minecraft:cobbled_deepslate")
+            for yy in range(y + 1, E + 9): S(lx, yy, lz, "minecraft:air")          # open over the whole stair (the step up needs the head room)
+        for yy in range(E + 1, E + 7): S(lx, yy, 8, "minecraft:polished_deepslate" if yy == E + 6 else CRYPT.at(*G(lx, 8)[:1], yy, G(lx, 8)[1]))
+        for yy in range(E + 7, E + 9): S(lx, yy, 8, "minecraft:air")
+        S(lx, E + 5, 9, "minecraft:mossy_cobblestone"); S(lx, E + 6, 9, "minecraft:mossy_cobblestone_wall")   # the rail at the front of the landing: out is to the left
+    for lz in range(2, 9):                                  # the rim of the slot: the vault stays round it
+        for lx in (0, 3):
             for yy in range(E + 4, E + 7): x, z = G(lx, lz); S(lx, yy, lz, CRYPT.at(x, yy, z) if yy <= E + 5 else "minecraft:mossy_cobblestone")
     # the inside: variant 0 niches with pots both sides, 1 a stone coffin in the middle and barrels at the back, 2 a fallen corner
     spots = []
     if var == 0:
         for lz in (2, 4, 6):
             spots.append((7, lz)); S(7, E + 3, lz, "minecraft:cobweb" if lz == 4 else "minecraft:air")
-        spots += [(5, 1), (3, 1)]
+        spots += [(5, 1), (6, 1)]
     elif var == 1:
         for lz in (3, 4, 5):
             for lx in (4, 5): S(lx, E + 1, lz, "minecraft:polished_deepslate" if lz != 4 else "minecraft:chiseled_deepslate")
-        spots += [(3, 1), (5, 1), (7, 1), (7, 6)]
+        spots += [(5, 1), (6, 1), (7, 1), (7, 6)]
     else:
         for (lx, lz, hh) in ((7, 1, 3), (6, 1, 2), (7, 2, 2), (6, 2, 1), (5, 1, 1)):
             for y in range(E + 1, E + 1 + hh): S(lx, y, lz, "minecraft:cobbled_deepslate" if y < E + hh else "minecraft:gravel")
-        spots += [(7, 5), (7, 3), (3, 1), (4, 1)]
+        spots += [(7, 5), (7, 3), (4, 1), (7, 6)]
     out = []
     for k, (lx, lz) in enumerate(spots):
         x, z = G(lx, lz); loot = k < n_loot
@@ -282,11 +284,11 @@ def barrow(b, c, br, n_loot):
             s = st("decorated_pot", cracked="true" if hsh(x, 0, z, 7051) < 0.5 else "false", facing=F, waterlogged="false") + (LOOT if loot else "")
         b.set(x, E + 1, z, s); out.append(dict(x=x, y=E + 1, z=z, loot=loot))
     # bones, cobwebs, chains, unlit candles (dark inside)
-    for (lx, lz, s) in ((2, 6, "minecraft:bone_block[axis=x]"), (6, 2, candle("black", 2, False)), (2, 2, candle("white", 1, False)), (4, 6, "minecraft:cobweb")):
+    for (lx, lz, s) in ((6, 6, "minecraft:bone_block[axis=x]"), (6, 2, candle("black", 2, False)), (6, 4, candle("white", 1, False)), (4, 6, "minecraft:cobweb")):
         x, z = G(lx, lz)
         if b.get(x, E + 1, z) == "minecraft:air": b.set(x, E + 1, z, s)
     x, z = G(4, 4); b.set(x, E + 3, z, chain())
-    return dict(id=br["id"], E=E, facing=f, front=br["front"], door=list(G(4, 8)), top=list(G(1, 8)) + [E + 6], containers=out,
+    return dict(id=br["id"], E=E, facing=f, front=br["front"], door=list(G(4, 8)), top=list(G(2, 8)) + [E + 6], containers=out,
                 inside=list(G(4, 4)), box=[min(k[0] for k in br["cells"]), E - 1, min(k[1] for k in br["cells"]), max(k[0] for k in br["cells"]), E + 7, max(k[1] for k in br["cells"])])
 
 # ---------------------------------------------------------------- the crypt of the Magister
