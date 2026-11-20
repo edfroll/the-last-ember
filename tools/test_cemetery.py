@@ -63,7 +63,7 @@ def stage(night=False, p2=True, mode="survival"):
     R("weather clear 100000"); R("time set " + ("midnight" if night else "noon")); R("gamerule advance_time false"); R("difficulty easy")
     for p in ("Cam", "Cam2"):
         R(f"gamemode {mode} {p}"); R(f"effect give {p} minecraft:resistance infinite 4 true"); R(f"effect give {p} minecraft:saturation infinite 1 true")
-        R(f"effect give {p} minecraft:regeneration infinite 2 true")
+        R(f"effect give {p} minecraft:regeneration infinite 2 true"); R(f"execute as {p} run function last_ember:sleep/set_awake {{ticks:0}}")   # no insomnia (its slowness / weakness)
     for c in FLA: R(c)
     R("tp Cam 240.5 95 465.5 0 0"); R("tp Cam2 242.5 95 465.5 0 0")
     if not p2: R("gamemode spectator Cam2"); R("tp Cam2 240 200 300")
@@ -88,7 +88,7 @@ def talk(p):
             R(f"tp {p} {x} {k[1]} {z}"); look_at(p, k[0], k[1] + 1.2, k[2]); time.sleep(0.4); tc.act(p, "!use"); time.sleep(1.0); return True
     return False
 def trig(p, n): R(f"scoreboard players enable {p} le.ctrig"); R(f"execute as {p} run trigger le.ctrig set {n}"); time.sleep(0.6)
-def give_shovel(p="Cam"): R(f"execute as {p} run function last_ember:cemetery/gen/give_cem_shovel with storage last_ember:cemetery gen")
+def give_shovel(p="Cam"): R(f"execute as {p} run function last_ember:cemetery/give {{key:\"cem_shovel\"}}")
 def open_lid(n, p="Cam", real=True):
     g = G[n]; lx, ly, lz = g["lid"]
     if real:
@@ -212,7 +212,7 @@ def t_quest():
     chk("at the cemetery Cam is in adventure", passed("execute if entity @a[name=Cam,gamemode=adventure]"))
     chk("an ordinary iron shovel does not dig the grave", not dig("Cam", g["x"], g["y"] + 1, g["z"], 4))
     R("clear Cam"); give_shovel("Cam"); R("item replace entity Cam weapon.mainhand from entity Cam container.0") if False else None
-    R("clear Cam"); R("execute as Cam run function last_ember:cemetery/gen/give_cem_shovel with storage last_ember:cemetery gen")
+    R("clear Cam"); give_shovel("Cam")
     chk("the keeper's shovel digs the soul soil (real digging)", dig("Cam", g["x"], g["y"] + 1, g["z"], 10) and dig("Cam", g["x"], g["y"], g["z"], 10))
     ws = f"{g['x'] - 1} {g['y']} {g['z']}"
     R(f"tp Cam {g['x'] - 1.5} {g['y'] + 1} {g['z'] + 3.5}"); look_at("Cam", g["x"] - 0.5, g["y"] + 0.5, g["z"] + 0.5); time.sleep(0.4)
@@ -265,16 +265,18 @@ def spirit_ok(g):
 def t_unrest():
     print("[unrest]"); stage(); reset_all()
     R("scoreboard players set #dist le.cem 7"); R("execute store result score #dlast le.cem run time query gametime"); R("function last_ember:cemetery/save")
-    R("tick sprint 3700"); time.sleep(2)
-    wait(lambda: "Sprint completed" in R("tick query") or True, 1)
-    time.sleep(8)
+    time.sleep(3)
+    chk("no fall within the 3 minutes", cm("#dist") == 7, cm("#dist"))
+    R("scoreboard players remove #dlast le.cem 3590"); time.sleep(2.5)
     chk("3 minutes without an opening: the unrest 7 -> 6", cm("#dist") == 6, cm("#dist"))
+    time.sleep(2.5)
+    chk("then it waits 3 minutes again", cm("#dist") == 6, cm("#dist"))
     # the bell: Cam rings it (real right click)
-    R("scoreboard players set #dist le.cem 6"); R("function last_ember:cemetery/save")
+    R("scoreboard players set #dist le.cem 6"); R("execute store result score #dlast le.cem run time query gametime"); R("function last_ember:cemetery/save")
     R("execute positioned 200 96 470 run function last_ember:cemetery/spirit_knight"); R("execute positioned 205 96 470 run function last_ember:cemetery/spirit_knight"); time.sleep(0.5)
     n0 = spirits()
     bx, by, bz = LO["bell"]
-    R(f"tp Cam {bx + 0.5} {by} {bz - 1.6}"); look_at("Cam", bx + 0.5, by + 0.4, bz + 0.5); time.sleep(0.5); tc.act("Cam", "!use"); time.sleep(2.2)
+    R(f"tp Cam {bx + 0.5} {by - 1} {bz - 1.6}"); time.sleep(1); look_at("Cam", bx + 0.5, by + 0.3, bz + 0.5); time.sleep(0.5); tc.act("Cam", "!use"); time.sleep(2.2)
     chk("the bell (real click): the unrest 6 -> 2, the %d spirits gone" % n0, cm("#dist") == 2 and spirits() == 0 and n0 == 2, (cm("#dist"), spirits(), n0))
     R("execute positioned 200 96 470 run function last_ember:cemetery/spirit_knight"); time.sleep(0.3)
     tc.act("Cam", "!use"); time.sleep(2.2)
@@ -295,10 +297,11 @@ def t_pit():
     tc.act("Cam", "!key_on w") if False else None
     out = climb("Cam", (x, y, z))
     chk("Cam climbs out by the ladder holding forward (no jump)", out, pos("@a[name=Cam,limit=1]"))
-    R(f"function last_ember:trap/reset {{id:\"cem_pit_15\"}}"); time.sleep(0.5)
-    tc.setc(4, 1, 0, "Cam"); R("gamemode survival Cam")
+    R("tp Cam 240.5 95 470.5"); tc.setc(4, 1, 0, "Cam"); R("gamemode survival Cam"); R("tp Cam 240.5 95 470.5")
+    R(f"function last_ember:trap/reset {{id:\"cem_pit_15\"}}"); time.sleep(1.0)
     R(f"tp Cam {x + 0.5} {y + 2} {z + 0.5}"); time.sleep(3)
-    chk("a halfling walks over it: it does not fall", blk(x, y + 1, z, "minecraft:soul_soil") and pos("@a[name=Cam,limit=1]")[1] >= y + 1.9)
+    pp = pos("@a[name=Cam,limit=1]")
+    chk("a halfling walks over it: it does not fall", blk(x, y + 1, z, "minecraft:soul_soil") and pp and pp[1] >= y + 1.9, (pp, blk(x, y + 1, z, "minecraft:soul_soil"), R("tag Cam list")))
     tc.setc(1, 1, 0, "Cam"); R("gamemode survival Cam")
     reset_all(); unstage()
 def climb(p, g):
@@ -339,7 +342,7 @@ def t_crypt():
     R("tp Cam %d.5 %d %d.5" % (CR["hall"][0] + 1, CR["HF"] + 1, CR["hall"][2] + 1)); R("tp Cam2 %d.5 %d %d.5" % (CR["hall"][0] + 1, CR["HF"] + 1, CR["hall"][2] + 2)); time.sleep(1.2)
     R(f"tp {m} {CR['hall'][3] - 1}.5 {CR['HF'] + 1} {CR['hall'][5] - 1}.5"); time.sleep(1.2)
     chk("everybody further than 7: a bow", "bow" in R(f"data get entity {m} equipment.mainhand"))
-    R(f"damage {m} 52 minecraft:player_attack by Cam"); time.sleep(2.2)
+    R(f"damage {m} 1 minecraft:player_attack by Cam"); R(f"data modify entity {m} Health set value 45.0f"); time.sleep(2.2)
     spd = R(f"attribute {m} minecraft:movement_speed modifier value get last_ember:cem_mag_half")
     chk("at half health: 2 knight spirits from the niches, the speed x1.2", spirits("le.cknight") == 2 and "0.2" in spd, (spirits("le.cknight"), spd))
     # the leash: everybody out of the hall
@@ -354,7 +357,7 @@ def t_crypt():
     c2 = CR["chest2"]
     chk("the lid aside, the seal in the sarcophagus, chest 2 unlocked, the exit open", count("@e[type=minecraft:item_display,tag=le.csealdisp]") == 1 and blk(c2[0], c2[1] + 1, c2[2], "#minecraft:air") and blk(*CR["bars"][0], "#minecraft:air") and blk(*CR["lid"][len(CR["lid"]) // 2], "#minecraft:air"))
     R("effect clear Cam minecraft:strength")
-    h = CR["hollow"]; R(f"tp Cam {h[0] + 0.5} {h[1] + 1} {h[2] - 1.6}"); look_at("Cam", h[0] + 0.5, h[1] + 0.4, h[2] + 0.5); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(1.5)
+    h = CR["hollow"]; R(f"tp Cam {h[0] + 0.5} {h[1]} {h[2] - 2.2}"); time.sleep(1); look_at("Cam", h[0] + 0.5, h[1] + 1.15, h[2] + 0.5); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(1.5)
     chk("the seal taken (real click): at Cam, its lore", has("Cam", "seal") and "Колоссы помнят эту руку." in inv("Cam"))
     R("time set midnight"); time.sleep(3)
     chk("he never comes back (a night, players in the hall)", count("@e[type=minecraft:skeleton,tag=le.cmag]") == 0)
@@ -413,7 +416,7 @@ def eff(p, e): return f"minecraft:{e}" in R(f"data get entity {p} active_effects
 def t_curses():
     print("[curses]"); stage(); reset_all()
     R("tp Cam 118 193 450"); R("clear Cam")
-    for n in (2, 3, 4, 5): R(f"loot give Cam loot last_ember:cemetery/grave_{n}")
+    for k, n in enumerate((2, 3, 4, 5)): R(f"loot replace entity Cam inventory.{k} loot last_ember:cemetery/grave_{n}")
     R("effect clear Cam"); time.sleep(2.5)
     chk("the cursed things in the bag: no effect", not any(eff("Cam", e) for e in ("slowness", "hunger", "weakness")))
     for sl, n in (("armor.chest", 2), ("armor.legs", 4), ("armor.feet", 5)):
@@ -423,16 +426,18 @@ def t_curses():
     R("item replace entity Cam armor.chest with minecraft:air"); R("item replace entity Cam armor.legs with minecraft:air"); R("item replace entity Cam armor.feet with minecraft:air")
     time.sleep(4.5)
     chk("taken off: the effects end (3 s)", not any(eff("Cam", e) for e in ("slowness", "hunger", "weakness")))
-    R("effect clear Cam minecraft:regeneration"); R("effect clear Cam minecraft:resistance")
-    R("loot replace entity Cam weapon.offhand loot last_ember:cemetery/grave_1"); R("scoreboard players set #sec le.cem 18"); time.sleep(3.5)
-    h = tc.hp("Cam")
+    R("effect clear Cam minecraft:regeneration"); R("effect clear Cam minecraft:resistance"); R("effect clear Cam minecraft:saturation"); R("effect give Cam minecraft:instant_health 1 3 true"); time.sleep(0.5)
+    R("loot replace entity Cam weapon.offhand loot last_ember:cemetery/grave_1"); R("scoreboard players set #sec le.cem 18")
+    hs = []
+    for _ in range(20): hs.append(tc.hp("Cam") or 99); time.sleep(0.15)
+    h = min(hs)
     chk("the Blood in the off hand: 1 damage every 20 s", h is not None and 18.5 <= h <= 19.5, h)
     R("effect give Cam minecraft:instant_damage 1 0 true"); R("effect give Cam minecraft:instant_damage 1 0 true"); time.sleep(0.5)
     R("data merge entity Cam {}") if False else None
     R("damage Cam 7 minecraft:generic"); time.sleep(0.3); R("scoreboard players set #sec le.cem 18"); time.sleep(3.5)
     h2 = tc.hp("Cam")
     chk("never under 6 health", h2 is not None and h2 >= 6 - 0.01, h2)
-    R("item replace entity Cam weapon.offhand with minecraft:air"); R("effect give Cam minecraft:regeneration infinite 2 true"); R("effect give Cam minecraft:resistance infinite 4 true")
+    R("item replace entity Cam weapon.offhand with minecraft:air"); R("effect give Cam minecraft:regeneration infinite 2 true"); R("effect give Cam minecraft:resistance infinite 4 true"); R("effect give Cam minecraft:saturation infinite 1 true")
     # the knight's blessing does not mend a cursed thing; the absolution
     tc.setc(1, 1, 0, "Cam"); R("gamemode survival Cam")
     R("loot replace entity Cam weapon.mainhand loot last_ember:cemetery/grave_1")

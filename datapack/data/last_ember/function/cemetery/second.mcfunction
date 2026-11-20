@@ -9,6 +9,7 @@ execute if score #fv le.cem matches 1 run scoreboard players set #kp le.cem 2
 execute if score #near le.cem matches 1.. run function last_ember:cemetery/gen/npcs
 execute if score #near le.cem matches 1.. run function last_ember:cemetery/gen/boxes
 execute if score #near le.cem matches 1.. run function last_ember:cemetery/gen/graves
+execute if score #near le.cem matches 1.. run function last_ember:cemetery/gen/pits_clean
 function last_ember:cemetery/gen/key
 function last_ember:cemetery/items
 execute as @a[scores={le.cbell=1..}] at @s run function last_ember:cemetery/bell

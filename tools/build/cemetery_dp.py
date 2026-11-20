@@ -92,6 +92,8 @@ def run(R, meta, out):
         O.append("function last_ember:cemetery/wave {x:%d,y:%d,z:%d}" % (g["x"], g["y"] + 1, g["z"]))
         w("open_%d" % n, O)
     w("graves", L)
+    w("pits_clean", [hdr + "every second: the soul soil the collapse of a sunken grave dropped onto its bottom goes (the pit stays 4 deep, soul soil only in the graves)"] +
+      ["fill %d %d %d %d %d %d minecraft:air replace minecraft:soul_soil" % (g["x"], g["y"] - 3, g["z"], g["x"], g["y"] - 1, g["z"] + 1) for g in gv if g["kind"] == "pit"])
     th = next(g for g in gv if g["kind"] == "thane")
     tx_, ty_, tz_ = th["coffin"]; lx, ly, lz = th["lid"]
     w("key", [hdr + "every second: the crypt key of Thane's coffin (0 in the coffin: it is put there when the lid is open; 1 carried; 2 in the door)",
@@ -99,7 +101,9 @@ def run(R, meta, out):
               "execute if score #ks le.cem matches 0 if block %d %d %d minecraft:dark_oak_trapdoor[open=true] positioned %d.5 %d.3 %d.5 unless entity @e[type=minecraft:item,distance=..2] run function last_ember:cemetery/key_put" % (lx, ly, lz, tx_, ty_, tz_),
               "execute if score #ks le.cem matches 0 if block %d %d %d minecraft:dark_oak_trapdoor[open=true] positioned %d.5 %d.3 %d.5 unless entity @e[type=minecraft:item,distance=..2] run function last_ember:cemetery/key_put" % (lx, ly, lz + 1, tx_, ty_, tz_),
               "execute if score #ks le.cem matches 1 run function last_ember:cemetery/key_carried"])
-    w("key_at", [hdr + "the key into Thane's coffin", "execute positioned %d.5 %d.3 %d.5 run function last_ember:cemetery/gen/item_crypt_key with storage last_ember:cemetery gen" % (tx_, ty_, tz_)])
+    w("key_at", [hdr + "the key into Thane's coffin (the current generation)", "data modify storage last_ember:cemetery tmp set value {gen:1}",
+                 "data modify storage last_ember:cemetery tmp.gen set from storage last_ember:cemetery gen.crypt_key",
+                 "execute positioned %d.5 %d.3 %d.5 run function last_ember:cemetery/gen/item_crypt_key with storage last_ember:cemetery tmp" % (tx_, ty_, tz_)])
     w("lid_close", [hdr + "Thane's coffin closed again (the key went back into it)"] +
       ["setblock %d %d %d minecraft:dark_oak_trapdoor[facing=north,half=top,open=false,powered=false,waterlogged=false]" % (lx, ly, lz + d) for d in (0, 1)])
     w("key_near_coffin", [hdr + "#c = items lying in Thane's coffin", "execute store result score #c le.cem positioned %d.5 %d.3 %d.5 if entity @e[type=minecraft:item,distance=..2.5]" % (tx_, ty_, tz_)])
@@ -188,7 +192,7 @@ def run(R, meta, out):
     w("mag_seal", [hdr + "the seal in the hollow of the sarcophagus: a display and a click box",
                    "kill @e[type=minecraft:item_display,tag=le.csealdisp]", "kill @e[type=minecraft:interaction,tag=le.cseal]",
                    'summon minecraft:item_display %d.5 %d.35 %d.5 {Tags:["le.csealdisp"],brightness:{sky:8,block:12},item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:cemetery/seal"}},transformation:{left_rotation:[0.7071f,0f,0f,0.7071f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.6f,0.6f,0.6f]}}' % tuple(hol),
-                   'summon minecraft:interaction %d.5 %d %d.5 {Tags:["le.cseal"],width:1.0f,height:0.8f,response:1b}' % tuple(hol)])
+                   'summon minecraft:interaction %d.5 %d %d.5 {Tags:["le.cseal"],width:1.0f,height:1.3f,response:1b}' % tuple(hol)])
     w("mag_xp", [hdr + "50 points of experience at the sarcophagus", "summon minecraft:experience_orb %d.5 %d.5 %d.5 {Value:50s}" % (sx, sy + 2, sz)])
     w("rest_fx", [hdr + "the Magister laid to rest: the sound and the light over the sarcophagus",
                   "particle minecraft:soul %d.5 %d.5 %d.5 1.5 1.5 1.5 0.03 80 force" % (sx, sy + 2, sz),
@@ -205,6 +209,7 @@ def run(R, meta, out):
                 G.append("setblock %d %d %d minecraft:dark_oak_trapdoor[facing=north,half=top,open=false,powered=false,waterlogged=false]" % (x, y - 1, z + d))
         cx, cy, cz = g["candle"]
         G.append("setblock %d %d %d minecraft:candle[candles=1,lit=%s,waterlogged=false]" % (cx, cy, cz, "false" if g["kind"] == "pit" else "true"))
+    G += ["function last_ember:trap/gen/reset_cem_pit_%d" % g["n"] for g in gv if g["kind"] == "pit"]
     w("graves_reset", G)
     w("tp_hall", [hdr + "test: @s into the hall by the entrance", "tp @s %d.5 %d %d.5 180 0" % (sx, hy1 + 1, hz2 - 1)])
     # ------------------------------------------------------------------ the fading of R1 and back (setblocks + the sword templates)

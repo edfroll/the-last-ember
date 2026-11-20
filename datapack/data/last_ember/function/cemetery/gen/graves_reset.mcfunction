@@ -103,3 +103,5 @@ setblock 263 95 463 minecraft:candle[candles=1,lit=false,waterlogged=false]
 setblock 273 96 489 minecraft:soul_soil
 setblock 273 96 490 minecraft:soul_soil
 setblock 273 98 488 minecraft:candle[candles=1,lit=false,waterlogged=false]
+function last_ember:trap/gen/reset_cem_pit_15
+function last_ember:trap/gen/reset_cem_pit_16
