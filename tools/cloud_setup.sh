@@ -2,6 +2,8 @@
 # The Last Ember: setup script облачного окружения last-ember-mc26 (копия поля Setup script).
 # Java 25, сервер 26.3, данные генератора, EULA (согласие Edward дано). Повторный запуск ничего не перекачивает.
 set -eu
+# репозиторий не подключён к сессии (нет GitHub-коннектора) — клонируем сами (репо публичный)
+ls -d /home/user/*/datapack >/dev/null 2>&1 || git clone -q https://github.com/edfroll/the-last-ember /home/user/the-last-ember
 R=$(dirname "$(ls -d /home/user/*/datapack | head -1)")
 cd "$R" && mkdir -p server/jdk25
 # rsync — для tools/server.sh setup/sync; vorbis-tools — oggenc; xvfb + libegl — клиенты Cam/Cam2
