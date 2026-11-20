@@ -37,7 +37,7 @@ stair = [pt(P.PIER[0] + 1, za, W + 2), pt(F - 1, za, W + 2),
          pt(F + 11, za, 152 + 1), pt(F + 13, za, 152 + 1), pt(F + 13, zb, 152 + 1), pt(F + 11, zb, 153 + 1),
          pt(F + 1, zb, P.PRED_Y + 1), pt(F + 1, Bl[1] + 2, P.PRED_Y + 1)]
 h8 = P.HEARTH8; bx = (P.BRIDGE_X[0] + P.BRIDGE_X[1]) // 2
-head = [pt(F + 1, P.PAD8[3] + 4, P.PRED_Y + 1), pt(bx, P.PAD8[3] + 4, P.PRED_Y + 1),
+head = [pt(bx, Bl[1] + 2, P.PRED_Y + 1),
         pt(bx, P.RIFT[3], P.PRED_Y + 1), pt(bx, P.RIFT[3] + 1, P.PRED_Y + 1)]
 down = desc + cause + stair + head
 up = down[::-1]

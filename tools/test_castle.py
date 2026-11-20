@@ -15,11 +15,12 @@ game (survival; the dev agent clicks the gate).
   ambush   one player on the rest platform: a skeleton out of each niche; two players: 2 each; ready again after 10 minutes without players
            within 32 (tick sprint)
   gate     a real click on the gate: the line (counter), the gate stays shut
+  night    midnight, normal: the drowned come up in the lake; no monster on the lit pier, stair, bridgehead, bridge
   fade     region/gen/fade_r1 and unfade_r1: the swamp (water W-1..W, mud under), the broken arm, the empty sockets, no strike without
            the seal; back: the lake, the arm, the eyes asleep, the strike again
   restart  a restart in the middle of the warning and after the passage: nothing hangs, the pass and the state survive
   perf     two players at the pier (one waking the colossi in turns, one with the pass): castle/* by the profiler
-Usage: python3 tools/test_castle.py [build alone both armour boat leave seal bypass ambush gate fade restart perf]"""
+Usage: python3 tools/test_castle.py [build alone both armour boat leave seal bypass ambush gate night fade restart perf]"""
 import importlib.util, json, math, os, re, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def load(n):
@@ -234,7 +235,10 @@ def t_gate():
     g = M["barbican"]["gate"]; R("tag Cam add le.cpass")
     R("tp Cam %.1f %d %.1f 0 0" % (g[0], g[1], g[2] - 3)); time.sleep(1.5)
     R("execute as Cam at @s anchored eyes run tp @s ~ ~ ~ facing %.1f %.1f %.1f" % (g[0], g[1] + 1.5, g[2] + 0.6)); time.sleep(0.6)
-    n0 = sc("#gates") or 0; tc.act("Cam", "!use"); time.sleep(1.0)
+    n0 = sc("#gates") or 0
+    for _ in range(3):
+        time.sleep(1.0); tc.act("Cam", "!use")
+        if wait(lambda: (sc("#gates") or 0) > n0, 2): break
     chk("a real click: the line (counter +1)", (sc("#gates") or 0) == n0 + 1, (n0, sc("#gates")))
     chk("the gate stays shut", passed("execute if block 451 165 31 minecraft:iron_bars"))
     R("tag Cam remove le.cpass"); R("tp Cam 400.5 %d -52.5" % (W + 2)); unstage()
@@ -334,8 +338,26 @@ def t_perf():
     chk("a throw costs under 60 ms in all (mostly the teleports of the player)", f1 * 200 / (10 / 3.2) < 60, f1)
     R("function last_ember:cemetery/reset"); R("tag Cam2 remove le.cpass"); R("tp Cam 400.5 %d -52.5" % (W + 2)); R("tp Cam2 400.5 %d -50.5" % (W + 2)); unstage()
 
+def t_night():
+    print("[night: the drowned at the causeway, nothing on the lit pier / stair / bridgehead / bridge]"); stage(p2=False)
+    R("difficulty normal"); R("time set 18000"); R("kill @e[type=#last_ember:monsters,x=330,y=60,z=-130,dx=250,dy=200,dz=260]")
+    R("tag Cam add le.cpass"); R("effect give Cam minecraft:resistance infinite 255 true"); R("effect give Cam minecraft:invisibility infinite 0 true")
+    R("tp Cam 396.5 %d -52.5" % (W + 2)); time.sleep(2); R("tick rate 100"); time.sleep(70); R("tick rate 20")
+    lit = {"the pier": (P.PIER[0], W, P.PIER[1], P.PIER[2], W + 5, P.PIER[3]),
+           "the stair and the rest platform": (P.REST[0] - 1, W + 1, P.LANE_A[0] - 1, P.FACE_X + 15, P.PRED_Y + 3, P.LANE_B[1] + 1),
+           "the bridgehead": (P.PRED[0], P.PRED_Y + 1, P.PRED[1], P.PRED[2], P.PRED_Y + 6, P.PRED[3]),
+           "the bridge": (P.BRIDGE_X[0], P.PRED_Y + 1, P.RIFT[1], P.BRIDGE_X[1], P.PRED_Y + 6, P.RIFT[3])}
+    dr = count("@e[type=minecraft:drowned,x=370,y=100,z=-58,dx=62,dy=20,dz=64]")
+    print("     monsters around:", R("execute if entity @e[type=#last_ember:monsters,x=330,y=60,z=-130,dx=250,dy=200,dz=260]"), " drowned in the lake:", dr)
+    chk("the drowned come up in the lake at night", dr >= 1, dr)
+    for name, (x1, y1, z1, x2, y2, z2) in lit.items():
+        n = count("@e[type=#last_ember:monsters,x=%d,y=%d,z=%d,dx=%d,dy=%d,dz=%d]" % (x1, y1, z1, x2 - x1, y2 - y1, z2 - z1))
+        chk(f"no monsters on {name} (lit)", n == 0, n)
+    R("kill @e[type=#last_ember:monsters,x=330,y=60,z=-130,dx=250,dy=200,dz=260]"); R("effect clear Cam"); R("tag Cam remove le.cpass")
+    R("time set noon"); R("difficulty easy"); unstage()
+
 SUITES = dict(build=t_build, alone=t_alone, both=t_both, armour=t_armour, boat=t_boat, leave=t_leave, seal=t_seal, bypass=t_bypass,
-              ambush=t_ambush, gate=t_gate, fade=t_fade, restart=t_restart, perf=t_perf)
+              ambush=t_ambush, gate=t_gate, night=t_night, fade=t_fade, restart=t_restart, perf=t_perf)
 if __name__ == "__main__":
     for a in sys.argv[1:] or list(SUITES):
         SUITES[a]()

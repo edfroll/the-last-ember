@@ -189,7 +189,36 @@ def run(gr, rl, meta):
          "scoreboard players operation #arm le.cas = #faded le.cas", "scoreboard players set #eyesv le.cas -1"])
     w("fade_sync", [hdr + ": every second: the world shows the faded / living lake where its chunks are loaded"] + ts
       + ["execute unless score #arm le.cas = #faded le.cas run function last_ember:castle/gen/arm_sync"])
-    meta["dp"] = dict(eyes=eyes, niches=nis, rest=rc, fly_ticks=FLY_TICKS)
+    # the drowned of the causeway (the card: «ночью утопленники из воды»): vanilla spawns them in the castle_dream biome only now and
+    # then (the tag more_frequent_drowned_spawns is set, but the spawn picks a random height of the column: 5 blocks of water in 180
+    # and the monster cap is taken by the caves), so at night, while somebody is at the lake, the lake keeps up to 3 of them: one every
+    # 30 s at a deep point 12..40 from the players
+    import random
+    rnd = random.Random(2880); deep = []
+    T = rl["T"]; Wt = rl["Wt"]
+    cand = [(int(gr["X"][i, j]), int(gr["Z"][i, j])) for i, j in zip(*np.nonzero((Wt != P.NONE) & (T <= P.W - 4) & ~rl["knock"]))]
+    cand = [c for c in cand if not P.rect(P.CHANNEL, c[0], c[1]) and c[0] < P.FACE_X - 3 and all(abs(c[0] - d[0]) + abs(c[1] - d[1]) > 10 for d in [])]
+    rnd.shuffle(cand)
+    for c in cand:
+        if all(abs(c[0] - d[0]) + abs(c[1] - d[1]) >= 12 for d in deep): deep.append(c)
+        if len(deep) == 12: break
+    for k, (x, z) in enumerate(deep):
+        w("dr_%d" % k, [hdr + ": a drowned comes up at deep point %d of the lake (no player within 12, one within 40)" % k,
+                        "execute positioned %d.5 %d %d.5 if entity @a[distance=..12] run return 0" % (x, P.W - 2, z),
+                        "execute positioned %d.5 %d %d.5 unless entity @a[distance=..40,gamemode=!spectator,gamemode=!creative] run return 0" % (x, P.W - 2, z),
+                        "summon minecraft:drowned %d.5 %d %d.5 {Tags:[\"le.cdrw\"]}" % (x, P.W - 2, z),
+                        "particle minecraft:bubble_column_up %d.5 %d %d.5 0.4 0.6 0.4 0.1 30 force @a[distance=..48]" % (x, P.W, z),
+                        "playsound minecraft:entity.drowned.ambient_water hostile @a[distance=..32] %d.5 %d %d.5 1 0.8" % (x, P.W, z)])
+    w("drowned", [hdr + ": every second: at night, in the dark, a player at the lake: up to 3 drowned in it, a new one at most every 30 s",
+                  "execute unless predicate last_ember:night run return 0",
+                  "execute unless entity @a[%s,gamemode=!spectator,gamemode=!creative] run return 0" % boxsel((P.LAKE[1][0] - 4, P.W - 6, P.LAKE[0][1] - 4, P.FACE_X, P.W + 20, P.LAKE[1][3] + 4)),
+                  "execute if score #drt le.cas > #gt le.cas run return 0",
+                  "execute store result score #drc le.cas if entity @e[type=minecraft:drowned,%s]" % boxsel((P.LAKE[1][0] - 2, P.W - 10, P.LAKE[0][1] - 2, P.FACE_X, P.W + 10, P.LAKE[1][3] + 2)),
+                  "execute if score #drc le.cas matches 3.. run return 0",
+                  "scoreboard players operation #drt le.cas = #gt le.cas", "scoreboard players add #drt le.cas 600",
+                  "execute store result score #r le.cas run random value 0..%d" % (len(deep) - 1)]
+      + ["execute if score #r le.cas matches %d run function last_ember:castle/gen/dr_%d" % (k, k) for k in range(len(deep))])
+    meta["dp"] = dict(eyes=eyes, niches=nis, rest=rc, fly_ticks=FLY_TICKS, drowned=deep)
     # the flight arc (x100): 4 * ARC * t * (N - t) / N^2 for every tick t
     w("arc", [hdr + ": #arc = the height of the arc over the straight line at flight tick @s le.cf (x100)"]
       + ["execute if score @s le.cf matches %d run scoreboard players set #arc le.cas %d" % (t, round(4 * ARC * t * (FLY_TICKS - t) / FLY_TICKS ** 2)) for t in range(0, FLY_TICKS + 1)])

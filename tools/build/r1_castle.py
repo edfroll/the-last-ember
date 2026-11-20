@@ -24,13 +24,28 @@ R_CASTLE = 9                               # Terrain.java rock style 9 (the card
 S_FOREST, S_PLATFORM, S_BARE, S_TOP, S_BED = 2, 7, 10, 11, 12
 
 def lights_bridgehead(b, gr, rl, taken):
-    """lanterns on posts over the bridgehead (lit: no spawning), away from the pad, the slots and the path"""
-    out = []
-    for (x, z) in ((437, -46), (450, -46), (461, -40), (462, -26), (453, -24), (437, -21), (462, -11), (455, -4), (439, 1), (466, 2)):
-        if (x, z) in taken: continue
-        if not rl["pred"][P.ix(gr, x, z)]: continue
+    """lanterns on posts (2 walls + a lantern at the rock top + 3) over the bridgehead, placed greedily until every cell of it has block
+    light >= 1 at the feet (no monster spawns at block light 0): |dx| + |dz| + 2 <= 14 from a lantern; never on the pad, the slots, the
+    walked line (x 433 and z 2 to the bridge) or next to them"""
+    X, Z = gr["X"], gr["Z"]
+    cells = [(int(X[i, j]), int(Z[i, j])) for i, j in zip(*np.nonzero(rl["pred"] & ~gr["pad"]))]
+    occ = set(taken)
+    def bad(x, z):
+        if (x, z) in occ or gr["pad"][P.ix(gr, x, z)] or not rl["pred"][P.ix(gr, x, z)]: return True
+        if any((x + a, z + c) in occ for a in (-1, 0, 1) for c in (-1, 0, 1)): return True
+        bx = (P.BRIDGE_X[0] + P.BRIDGE_X[1]) // 2           # the walked line: from the top of the stair east along z -28, then south to the bridge
+        if abs(z - (P.LANE_B[1] + 2)) <= 1 and x <= bx + 2 or abs(x - bx) <= 3 and z >= P.LANE_B[1]: return True
+        return x <= P.FACE_X
+    cand = [c for c in cells if not bad(*c)]
+    left = set(cells); out = []
+    while left:
+        best = max(cand, key=lambda c: (sum(1 for q in left if abs(q[0] - c[0]) + abs(q[1] - c[1]) <= 12), -c[0], -c[1]))
+        cov = {q for q in left if abs(q[0] - best[0]) + abs(q[1] - best[1]) <= 12}
+        if not cov: break
+        left -= cov; x, z = best; cand = [c for c in cand if abs(c[0] - x) + abs(c[1] - z) > 6]
         b.set(x, P.PRED_Y + 1, z, "minecraft:stone_brick_wall"); b.set(x, P.PRED_Y + 2, z, "minecraft:stone_brick_wall"); b.set(x, P.PRED_Y + 3, z, CB.lantern())
         out.append((x, P.PRED_Y + 3, z))
+    if left: raise SystemExit("the bridgehead: no lantern can light %s" % sorted(left)[:6])
     return out
 
 def build(gr, rl):
