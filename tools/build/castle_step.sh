@@ -12,3 +12,4 @@ python3 tools/build/validate.py server/build/r1/castle.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/castle.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $KB server/build/r1/castle_post.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_check.py places castle
+python3 tools/build/castle_check.py

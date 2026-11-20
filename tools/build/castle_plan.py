@@ -197,6 +197,10 @@ def relief(gr):
             if x > 455: v = min(max(v, W - 7 + (x - 455) // 2), int(bf[i, j]))
             if x < FACE_X: v = max(v, W + 2 - max(0, z - 8) // 2)
         T[i, j] = min(int(T[i, j]), v)
+    # the sill: no rift cell next to the lake lower than W+2 (the wobbly edge of the bridgehead brings the deep rift to the water)
+    nl = np.zeros(X.shape, bool)
+    for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): nl |= np.roll(np.roll(lake, dz, 0), dx, 1)
+    T[rift & nl] = np.maximum(T[rift & nl], W + 2)
     # gorge walls round the lake (and the rift's west mouth): steep, rough, from W+1 at the shore up to the ground
     wet = lake.copy()
     dist = np.full(X.shape, 999); cur = wet.copy(); dist[wet] = 0
