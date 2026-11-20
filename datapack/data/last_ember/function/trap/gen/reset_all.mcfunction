@@ -1,2 +1,9 @@
 # generated
 function last_ember:trap/gen/reset_fens_ambush
+function last_ember:trap/gen/reset_cem_pit_15
+function last_ember:trap/gen/reset_cem_pit_16
+function last_ember:trap/gen/reset_cem_arrows
+function last_ember:trap/gen/reset_cem_plate_1
+function last_ember:trap/gen/reset_cem_plate_2
+function last_ember:trap/gen/reset_cem_plate_3
+function last_ember:trap/gen/reset_cem_plate_4

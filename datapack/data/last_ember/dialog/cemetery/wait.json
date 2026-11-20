@@ -1,0 +1,45 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Смотритель",
+  "color": "gray",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Тейн лежит с честью, как все, кто не отступил. Читайте камни. Книга учёта наверху. И копайте с умом: не тех будить — себе дороже.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Расскажи о мечах",
+    "color": "yellow",
+    "italic": false
+   },
+   "width": 220,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.ctrig set 9"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:chests/r1/common"
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:protection": 1
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:sharpness": 1
+      }
+     }
+    },
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:book",
+     "modifier": {
+      "type": "minecraft:set_enchantments",
+      "enchantments": {
+       "minecraft:unbreaking": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

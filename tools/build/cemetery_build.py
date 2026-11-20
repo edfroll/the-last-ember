@@ -210,7 +210,7 @@ def grave(b, c, gv, lit=True):
             b.set(x, yy, z, "minecraft:ladder[facing=south,waterlogged=false]")
     else:
         b.set(x, y - 2, z - 1, "minecraft:dark_oak_planks"); b.set(x, y - 2, z + 2, "minecraft:dark_oak_planks")
-    return dict(n=gv["n"], kind=gv["kind"], x=x, y=y, z=z, lid=[x, y - 1, z], coffin=[x, y - 2, z], candle=[x, y + 3, z - 1], sign=[x, y + 2, z])
+    return dict(n=gv["n"], kind=gv["kind"], ep=gv["ep"], x=x, y=y, z=z, lid=[x, y - 1, z], coffin=[x, y - 2, z], candle=[x, y + 3, z - 1], sign=[x, y + 2, z])
 
 # ---------------------------------------------------------------- the barrows (one template, 3 variants)
 LOOT = '{LootTable:"last_ember:chests/r1/common"}'

@@ -5,6 +5,7 @@ execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=-4
 execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=-161,y=109,z=-441,dx=22,dy=19,dz=22] at @s positioned -149.5 ~ -429.5 if entity @s[distance=..11] run function last_ember:zones/remove_mob
 execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=236,y=117,z=-277,dx=12,dy=15,dz=10] run function last_ember:zones/remove_mob
 execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=-414,y=127,z=316,dx=48,dy=45,dz=48] at @s positioned -389.5 ~ 340.5 if entity @s[distance=..24] run function last_ember:zones/remove_mob
+execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=89,y=177,z=428,dx=32,dy=50,dz=32] at @s positioned 105.5 ~ 444.5 if entity @s[distance=..16] run function last_ember:zones/remove_mob
 execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=42,y=93,z=11,dx=32,dy=16,dz=32] at @s positioned 58.5 ~ 27.5 if entity @s[distance=..16] run function last_ember:zones/remove_mob
 execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=-417,y=131,z=323,dx=32,dy=16,dz=32] at @s positioned -400.5 ~ 339.5 if entity @s[distance=..16] run function last_ember:zones/remove_mob
 execute in minecraft:overworld as @e[type=#last_ember:monsters,tag=!le.keep,x=-396,y=131,z=315,dx=32,dy=16,dz=32] at @s positioned -379.5 ~ 331.5 if entity @s[distance=..16] run function last_ember:zones/remove_mob

@@ -1,0 +1,49 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:chainmail_chestplate",
+     "modifier": [
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_name": {
+         "text": "Кольчуга Ворот",
+         "color": "gold",
+         "italic": false
+        },
+        "minecraft:lore": [
+         {
+          "text": "Проклятие: Тяжесть",
+          "color": "dark_purple",
+          "italic": false
+         },
+         {
+          "text": "Снято с мёртвого. Держит, пока держишь.",
+          "color": "dark_gray",
+          "italic": true
+         }
+        ],
+        "minecraft:custom_data": "{le_cursed:1b,le_curse:\"weight\",le_grave:2}"
+       }
+      },
+      {
+       "type": "minecraft:set_enchantments",
+       "enchantments": {
+        "minecraft:protection": 2
+       }
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": 0.3
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

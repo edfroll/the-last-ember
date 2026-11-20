@@ -1,0 +1,57 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Смотритель",
+  "color": "gray",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Опять живые. Ночью туда не ходите. Хотя всё равно пойдёте. Я сорок лет хороню рыцарей у Брода. Все лежат. Кроме одного. Магистр Ордена Ясеня встаёт каждую ночь и ходит по своему склепу. Ключ от склепа он велел зарыть с оруженосцем, чтобы никто не тревожил. Вот и не тревожат. Возьмите лопату. Найдите Тейна. Упокойте старика.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Взять лопату",
+    "color": "green",
+    "italic": false
+   },
+   "width": 220,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.ctrig set 1"
+   }
+  },
+  {
+   "label": {
+    "text": "Расскажи о мечах",
+    "color": "yellow",
+    "italic": false
+   },
+   "width": 220,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.ctrig set 9"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

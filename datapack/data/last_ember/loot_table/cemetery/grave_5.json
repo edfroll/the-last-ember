@@ -1,0 +1,50 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_boots",
+     "modifier": [
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_name": {
+         "text": "Сапоги Сиры Лейн",
+         "color": "gold",
+         "italic": false
+        },
+        "minecraft:lore": [
+         {
+          "text": "Проклятие: Слабость",
+          "color": "dark_purple",
+          "italic": false
+         },
+         {
+          "text": "Снято с мёртвого. Держит, пока держишь.",
+          "color": "dark_gray",
+          "italic": true
+         }
+        ],
+        "minecraft:custom_data": "{le_cursed:1b,le_curse:\"weak\",le_grave:5}"
+       }
+      },
+      {
+       "type": "minecraft:set_enchantments",
+       "enchantments": {
+        "minecraft:feather_falling": 1,
+        "minecraft:protection": 1
+       }
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": 0.35
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
