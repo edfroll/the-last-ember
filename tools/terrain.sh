@@ -11,5 +11,9 @@ CP="$INNER:$(find "$SRV/libraries" -name '*.jar' | tr '\n' ':')"
 if [ ! -f "$B/Terrain.class" ] || [ "$ROOT/tools/seedmap/Terrain.java" -nt "$B/Terrain.class" ]; then
   "$JAVA_HOME/bin/javac" -cp "$CP" -d "$B" "$ROOT/tools/seedmap/Terrain.java"
 fi
+# world cache (tools/world_cache.py): the scan before a place's step also keeps that place's chunks as they are now
+if [ "${1:-}" = scan ] && [ -n "${LE_SNAPDIR:-}" ] && [[ "${6:-}" == *_pre.bin ]]; then
+  python3 "$ROOT/tools/world_cache.py" snap "$WORLD" "$2" "$3" "$4" "$5" "$LE_SNAPDIR/$(basename "$6" _pre.bin)"
+fi
 cd "$ROOT"; MODE=$1; shift
 exec "$JAVA_HOME/bin/java" -Xmx6G -cp "$B:$CP" Terrain "$MODE" "$WORLD" "$@" 2>&1 | grep -v "WARN\|JAVA_TOOL_OPTIONS" | sed "s/^\[[^]]*\] \[[^]]*\]: \[STD[A-Z]*\]: //"
