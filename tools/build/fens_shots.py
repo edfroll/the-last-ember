@@ -18,7 +18,7 @@ def yawpitch(f, t):
     return math.degrees(math.atan2(-dx, dz)), -math.degrees(math.atan2(dy, math.hypot(dx, dz)))
 def shot(name, f, t, hud=False, settle=6, keep=False, spectator=True):
     if spectator: R("gamemode spectator Cam")
-    yw, pt = yawpitch(f, t)
+    yw, pt = yawpitch((f[0], f[1] + 1.62, f[2]), t)            # the pitch from the eyes (tp places the feet)
     R(f"tp Cam {f[0]} {f[1]} {f[2]} {yw:.1f} {pt:.1f}"); time.sleep(settle)
     for nm in (name + "__pre", name):            # twice, the second kept (the software GL may hand back the previous frame)
         d = os.path.join(CL, "shot-done.txt")
@@ -27,7 +27,7 @@ def shot(name, f, t, hud=False, settle=6, keep=False, spectator=True):
         for _ in range(120):
             if os.path.exists(d): break
             time.sleep(0.5)
-        time.sleep(1.0)
+        time.sleep(1.0 if nm == name else 11.0)    # the chat line «Saved screenshot» of the first one fades after 10 s
     src = os.path.join(CL, "screenshots", name + ".png")
     for _ in range(20):
         if os.path.exists(src): break
@@ -41,7 +41,8 @@ def day(): R("time set noon"); R("weather clear 100000")
 def night(): R("time set midnight"); R("weather clear 100000")
 def stage():
     R("gamerule advance_time false"); R("difficulty easy"); R("forceload add -500 250 -300 420"); time.sleep(4)
-    R("gamemode spectator Cam2"); R("tp Cam2 -390 200 330")
+    # Cam2 in the game in the hall (the fens' loop puts up the witches, the boats... while a player who is not a spectator is near)
+    R("gamemode adventure Cam2"); R("tp Cam2 -387.5 139 344.5"); time.sleep(4)
 
 def s_climb():
     day(); cp = M["cpath"]; hx, hy, hz = M["hearth"]
@@ -73,7 +74,7 @@ def s_witches():
     day()
     for k, n in ((1, "mother"), (2, "maiden"), (3, "crone")):
         x, y, z, yaw = tf.WITCH[k]; r = math.radians(yaw); dx, dz = -math.sin(r), math.cos(r)
-        shot("witch_" + n, (x + 0.5 + dx * 1.8, y + 1.7, z + 0.5 + dz * 1.8), (x + 0.5, y + 1.6, z + 0.5), settle=4)
+        shot("witch_" + n, (x + 0.5 + dx * 2.3, y - 0.2, z + 0.5 + dz * 2.3), (x + 0.5, y + 1.5, z + 0.5), settle=4)
 def s_heads():
     night(); p = tf.pool(2); c = (p["x"] + 0.5, W + 1.2, p["z"] + 0.5)
     R("function last_ember:fens/gen/heads_kill"); R(f"forceload add {p['x'] - 8} {p['z'] - 8} {p['x'] + 8} {p['z'] + 8}"); time.sleep(1)
@@ -110,7 +111,7 @@ def s_enchant():
     """the enchanting table with its 7 shelves: a sword and lapis put in (shift-clicks of the open window), the three offers"""
     day(); ex, ey, ez = HUT["enchant"]
     R("clear Cam"); R("gamemode survival Cam"); R("item replace entity Cam hotbar.0 with minecraft:iron_sword"); R("item replace entity Cam hotbar.1 with minecraft:lapis_lazuli 64")
-    R("experience add Cam 50 levels"); R(f"tp Cam {ex + 0.5} {ey} {ez - 1.5}"); tf.look_at("Cam", ex + 0.5, ey + 0.7, ez + 0.5); time.sleep(0.6)
+    R("experience add Cam 50 levels"); R(f"tp Cam {ex + 1.5} {ey} {ez + 0.5}"); tf.look_at("Cam", ex + 0.5, ey + 0.7, ez + 0.5); time.sleep(0.6)
     tc.act("Cam", "!use"); time.sleep(1.5); tc.act("Cam", "!menu_qmove 29"); time.sleep(0.6); tc.act("Cam", "!menu_qmove 30"); time.sleep(1.2)
     shot("enchant_table", tuple(tf.pos("Cam")), (ex + 0.5, ey + 0.7, ez + 0.5), hud=True, keep=True, settle=1, spectator=False)
     tc.act("Cam", "!sneak_off"); time.sleep(0.6); R("clear Cam"); R("experience set Cam 0 levels")
