@@ -23,3 +23,6 @@
 # The contracts of the regions come with the region tasks (their points with the location cards). Р0: the board of the tavern of the Refuge (T-008).
 
 board r0 overworld facing=n signs=-60,103,22;-58,103,22;-56,103,22;-60,102,22;-58,102,22;-56,102,22 heads=-60,106,22;-59,106,22;-58,106,22;-57,106,22;-56,106,22;-55,106,22
+item fens_vial minecraft:potion "Склянка Матери" "Чёрное стекло, пробка из кости."
+item fens_sedge minecraft:stick "Пучок осоки" "Бросить в заводь, когда голова поднимется."
+item fens_skull minecraft:stick "Череп Хозяина Гати" "Целый."

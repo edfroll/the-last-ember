@@ -529,7 +529,7 @@ def signposts(W, P, tr):
             P.set(px, y + 3, pz, "spruce_fence[east=true]" if dx >= 0 else "spruce_fence[west=true]")
             ax = px + (1 if dx >= 0 else -1)
             P.set(ax, y + 3, pz, "spruce_fence[west=true]" if dx >= 0 else "spruce_fence[east=true]")
-            P.set(ax, y + 2, pz, "spruce_hanging_sign[rotation=%d]" % (4 if dx >= 0 else 12)); n += 1
+            P.set(ax, y + 2, pz, "spruce_hanging_sign[rotation=%d]{is_waxed:1b}" % (4 if dx >= 0 else 12)); n += 1
             break
     return n
 

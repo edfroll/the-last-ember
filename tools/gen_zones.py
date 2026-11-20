@@ -46,7 +46,7 @@ def test(z, m):
         x1, y1, z1, x2, y2, z2 = z["v"]
         return f"if entity @s[x={x1 - m},y={y1 - m},z={z1 - m},dx={x2 - x1 + 2 * m},dy={y2 - y1 + 2 * m},dz={z2 - z1 + 2 * m}]"
     cx, cz, r, y1, y2 = z["v"]
-    return f"if entity @s[y={y1 - m},dy={y2 - y1 + 2 * m}] positioned {cx}.5 ~ {cz}.5 if entity @s[distance=..{r + m}]"
+    return f"if entity @s[y={y1 - m},dy={y2 - y1 + 2 * m}] positioned {cx + 0.5} ~ {cz + 0.5} if entity @s[distance=..{r + m}]"
 
 def main():
     zones = parse(os.path.join(ROOT, "zones/zones.txt"))
@@ -91,7 +91,7 @@ def main():
                 f.write(f"execute in minecraft:{dimname[z['dim']]} as @e[{sel},x={x1},y={y1},z={z1},dx={x2 - x1},dy={y2 - y1},dz={z2 - z1}] run function last_ember:zones/remove_mob\n")
             else:
                 cx, cz, r, y1, y2 = z["v"]
-                f.write(f"execute in minecraft:{dimname[z['dim']]} as @e[{sel},x={cx - r},y={y1},z={cz - r},dx={2 * r},dy={y2 - y1},dz={2 * r}] at @s positioned {cx}.5 ~ {cz}.5 if entity @s[distance=..{r}] run function last_ember:zones/remove_mob\n")
+                f.write(f"execute in minecraft:{dimname[z['dim']]} as @e[{sel},x={cx - r},y={y1},z={cz - r},dx={2 * r},dy={y2 - y1},dz={2 * r}] at @s positioned {cx + 0.5} ~ {cz + 0.5} if entity @s[distance=..{r}] run function last_ember:zones/remove_mob\n")
     print(f"{len(zones)} zones, {len(cells)} index cells, {len(ns)} no_spawn zones")
 
 if __name__ == "__main__":

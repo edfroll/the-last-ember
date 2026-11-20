@@ -29,6 +29,7 @@ execute if items entity @s contents minecraft:slime_ball run scoreboard players 
 execute if items entity @s contents minecraft:charcoal run scoreboard players set #bit le.e 65536
 execute if items entity @s contents minecraft:bone_meal run scoreboard players set #bit le.e 131072
 execute if items entity @s contents minecraft:cobweb run scoreboard players set #bit le.e 262144
+execute if items entity @s contents minecraft:lily_pad run scoreboard players set #bit le.e 524288
 execute if items entity @s contents minecraft:potion run scoreboard players set #bit le.e 1048576
 execute if items entity @s contents minecraft:splash_potion run scoreboard players set #bit le.e 1048576
 execute if items entity @s contents minecraft:lingering_potion run scoreboard players set #bit le.e 1048576

@@ -89,7 +89,7 @@ def tavern():
     k = 0
     for row in (fy + 3, fy + 2):
         for x in range(bx1 + 1, bx1 + 6, 2):
-            b.set(x, row, z1 - 1, 'dark_oak_wall_sign[facing=north]{front_text:{messages:["",{"text":"","color":"dark_gray"},"",""]}}'); b.marker(f"order_sign_{k}", x, row, z1 - 1); k += 1
+            b.set(x, row, z1 - 1, 'dark_oak_wall_sign[facing=north]{is_waxed:1b,front_text:{messages:["",{"text":"","color":"dark_gray"},"",""]}}'); b.marker(f"order_sign_{k}", x, row, z1 - 1); k += 1
     for i, x in enumerate(range(bx1, bx1 + 7)): b.set(x, fy + 5, z1 - 1, slab("dark_oak_slab", "top"))
     for i in range(6): b.marker(f"trophy_head_{i}", bx1 + 1 + i, fy + 6, z1 - 1)
     for x in range(bx1 - 1, bx1 + 12):

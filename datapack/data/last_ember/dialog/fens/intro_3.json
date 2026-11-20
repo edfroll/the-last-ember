@@ -1,0 +1,38 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Старуха Кость",
+  "color": "dark_green",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Кости, кости… Под гатью живёт Хозяин. Он сожрал моего ворона и троих до вас. Принеси мне его череп. Целым.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  },
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Венец у нас один на троих. Отдаст та, кому поможете.",
+    "color": "gold",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

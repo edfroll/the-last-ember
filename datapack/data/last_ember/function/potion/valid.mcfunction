@@ -57,6 +57,10 @@ execute if score @s le.cmask matches 65536 run scoreboard players set #ok le.e 1
 execute if score @s le.cmask matches 65537 run scoreboard players set #ok le.e 1
 execute if score @s le.cmask matches 65552 run scoreboard players set #ok le.e 1
 execute if score @s le.cmask matches 65553 run scoreboard players set #ok le.e 1
+execute if score @s le.cmask matches 524288 run scoreboard players set #ok le.e 1
+execute if score @s le.cmask matches 524544 run scoreboard players set #ok le.e 1
+execute if score @s le.cmask matches 557056 run scoreboard players set #ok le.e 1
+execute if score @s le.cmask matches 557312 run scoreboard players set #ok le.e 1
 execute if score @s le.cmask matches 1048576 run scoreboard players set #ok le.e 1
 execute if score @s le.cmask matches 1048580 run scoreboard players set #ok le.e 1
 execute if score @s le.cmask matches 1048592 run scoreboard players set #ok le.e 1

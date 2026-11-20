@@ -1,0 +1,47 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Мать Ряска",
+  "color": "dark_green",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "А, гости. Котлы не трогайте, они помнят руки. Мне нужна моя склянка: чёрное стекло, пробка из кости. Она утонула вместе с деревней на сваях, в доме, где до сих пор кто-то сидит.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  },
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Знахарь? Брось в свой котёл кувшинку, паучий глаз и комок слизи. Выпьешь — увидишь, кто на вас смотрит.",
+    "color": "green",
+    "italic": false
+   },
+   "width": 300
+  },
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Венец у нас один на троих. Отдаст та, кому поможете.",
+    "color": "gold",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Уйти",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

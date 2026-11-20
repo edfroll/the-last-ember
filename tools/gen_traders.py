@@ -6,7 +6,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DP = os.path.join(ROOT, "datapack/data/last_ember"); GEN = os.path.join(DP, "function/trader/gen")
 shutil.rmtree(GEN, ignore_errors=True); os.makedirs(GEN, exist_ok=True)
 def w(name, lines): open(os.path.join(GEN, name + ".mcfunction"), "w", encoding="utf-8").write("\n".join(lines) + "\n")
-srcs = [os.path.join(ROOT, "traders/traders.txt")] + sys.argv[1:]
+import glob
+# traders/*.gen.txt: traders written by other generators (T-026: the witches of the fens, tools/build/r1_fens.py)
+srcs = [os.path.join(ROOT, "traders/traders.txt")] + sorted(glob.glob(os.path.join(ROOT, "traders/*.gen.txt"))) + sys.argv[1:]
 presets = {}
 for path in [os.path.join(ROOT, "traders/items.txt")] + ([os.path.join(ROOT, "traders/test_items.txt")] if len(sys.argv) > 1 else []):
     for l in open(path, encoding="utf-8"):
@@ -49,22 +51,28 @@ for t in traders:
     for d in t["deals"]:
         r = "{buy:%s,%ssell:%s,maxUses:%d,uses:0,xp:%s,priceMultiplier:0.0f,demand:0,specialPrice:0,rewardExp:1b}" % (item(*d["buys"][0]), ("buyB:%s," % item(*d["buys"][1])) if len(d["buys"]) > 1 else "", item(*d["sell"]), d["uses"], P.get("xp", "3"))
         recipes.append(r)
-    nbt = ['Silent:%db' % int(P.get("silent", "1")), 'NoAI:1b', 'Invulnerable:1b', 'PersistenceRequired:1b', 'Rotation:[%.1ff,0.0f]' % t["yaw"], 'CustomName:\'{"text":"%s","color":"gold"}\'' % J(name), 'CustomNameVisible:1b',
+    nbt = ['Silent:%db' % int(P.get("silent", "1")), 'NoAI:1b', 'Invulnerable:1b', 'PersistenceRequired:1b', 'Rotation:[%.1ff,0.0f]' % t["yaw"], 'CustomName:{"text":"%s","color":"gold"}' % J(name), 'CustomNameVisible:1b',
            'Tags:["le.npc","le.trader","le.noelite","le.tr_%s"]' % i, 'Offers:{Recipes:[%s]}' % ",".join(recipes), 'Gossips:[]', 'CanPickUpLoot:0b']
     if typ == "villager": nbt.append('VillagerData:{type:"minecraft:%s",profession:"minecraft:%s",level:5}' % (P.get("vtype", "plains"), P.get("prof", "none"))); nbt.append("Xp:0")
     else: nbt.append("DespawnDelay:0")
     if "scale" in P: nbt.append('attributes:[{id:"minecraft:scale",base:%s}]' % P["scale"])
+    if P.get("invisible") == "1":      # T-026: the trade window of a figure standing in it (the witches): invisible; the only name over her is the trader's (dark green), also in the window
+        nbt.append('active_effects:[{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b,show_icon:0b,ambient:1b}]')
+        nbt[nbt.index('CustomName:{"text":"%s","color":"gold"}' % J(name))] = 'CustomName:{"text":"%s","color":"dark_green"}' % J(name)     # the one name over the witch (the witch herself has none)
+        nbt[nbt.index('Tags:["le.npc","le.trader","le.noelite","le.tr_%s"]' % i)] = 'Tags:["le.npc","le.trader","le.noelite","le.keep","le.tr_%s"]' % i
     pos = "%d %d %d" % (t["x"], t["y"], t["z"])
     w("build_" + i, ["# generated: the trader %s" % i, "scoreboard players set #trader_%s_bl le.tr 1" % i,
-                     "execute %sunless entity @e[tag=le.tr_%s] run summon minecraft:%s %d.5 %d %d.5 {%s}" % (IN, i, typ, t["x"], t["y"], t["z"], ",".join(nbt)),
+                     "execute %sunless entity @e[tag=le.tr_%s] run summon minecraft:%s %.1f %d %.1f {%s}" % (IN, i, typ, t["x"] + 0.5, t["y"], t["z"] + 0.5, ",".join(nbt)),
                      "execute %sas @e[tag=le.tr_%s,limit=1] run scoreboard players set @s le.tid %d" % (IN, i, 1000 + t["n"]),
                      "execute %spositioned %s if block ~ ~-1 ~ #last_ember:trader_nofloor run say TRADER WARNING: %s has no solid block under it" % (IN, pos, i)])
     w("reset_" + i, ["# generated: a new trader %s with the deals from the file (the old one is removed)" % i, "execute %sas @e[tag=le.tr_%s] run kill @s" % (IN, i), "scoreboard players set #trader_%s_bl le.tr 0" % i])
     build_p.append("execute if score #trader_%s_bl le.tr matches 0 %sif loaded %s run function last_ember:trader/gen/build_%s" % (i, IN, pos, i))
-    hold.append("execute %spositioned %d.5 %d %d.5 as @e[tag=le.tr_%s] run function last_ember:trader/hold {x:%d.5,y:%d,z:%d.5,yaw:%.1f}" % (IN, t["x"], t["y"], t["z"], i, t["x"], t["y"], t["z"], t["yaw"]))
+    hold.append("execute %spositioned %.1f %d %.1f as @e[tag=le.tr_%s] run function last_ember:trader/hold {x:%.1f,y:%d,z:%.1f,yaw:%.1f}" % (IN, t["x"] + 0.5, t["y"], t["z"] + 0.5, i, t["x"] + 0.5, t["y"], t["z"] + 0.5, t["yaw"]))
     zones.append("trader_%s %s cyl %d %d 16 %d %d no_spawn" % (i, t["dim"], t["x"], t["z"], t["y"] - 8, t["y"] + 8))
     hello.append("execute if score @s le.tid matches %d run function last_ember:trader/gen/hello_%s" % (1000 + t["n"], i))
-    w("hello_" + i, ["execute if entity @a[tag=le.clicker,tag=le.hi_%s] run return 0" % i, 'tellraw @a[tag=le.clicker] [{"text":"<%s> ","color":"gold"},{"text":"%s"}]' % (J(name), J(P.get("hello", "")))] + ["tag @a[tag=le.clicker] add le.hi_%s" % i])
+    if P.get("hello", ""):
+        w("hello_" + i, ["execute if entity @a[tag=le.clicker,tag=le.hi_%s] run return 0" % i, 'tellraw @a[tag=le.clicker] [{"text":"<%s> ","color":"gold"},{"text":"%s"}]' % (J(name), J(P.get("hello", "")))] + ["tag @a[tag=le.clicker] add le.hi_%s" % i])
+    else: w("hello_" + i, ["# no greeting (T-026: the witches talk through their own windows)"])
     stock.append("execute if score #arg le.tr matches %d %sas @e[tag=le.tr_%s,limit=1] run function last_ember:trader/show" % (1000 + t["n"], IN, i))
 w("build_pending", build_p); w("hold", hold); w("hello", hello)
 w("init", ["# generated: the built flag of every trader (kept over reloads)"] + ["execute unless score #trader_%s_bl le.tr matches -2147483648..2147483647 run scoreboard players set #trader_%s_bl le.tr 0" % (t["id"], t["id"]) for t in traders])

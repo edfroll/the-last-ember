@@ -60,6 +60,7 @@ public class ShotAgent {
                                     case "use_off" -> KeyMapping.set(mc.options.keyUse.getDefaultKey(), false);
                                     case "jump_on" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), true);  // jump uses the held state
                                     case "jump_off" -> KeyMapping.set(mc.options.keyJump.getDefaultKey(), false);
+                                    case "hop" -> { KeyMapping.set(mc.options.keyShift.getDefaultKey(), false); KeyMapping.set(mc.options.keyJump.getDefaultKey(), true); }   // T-026: stand up and jump in the same tick (from a sneak at an edge)
                                     case "attack_on" -> { KeyMapping.set(mc.options.keyAttack.getDefaultKey(), true); ATTACK = true; }   // hold left mouse: break a block (T-025); vanilla mines on a held key only with the mouse grabbed (a focused window), so the agent drives the destroy itself (below)
                                     case "use_rapid" -> { RAPID_MS = Math.max(20, Integer.parseInt(p.length > 2 ? p[2] : "100")); RAPID_END = System.currentTimeMillis() + Integer.parseInt(p.length > 1 ? p[1] : "3000"); }
                                     case "menu_qmove" -> { if (mc.player != null && mc.player.containerMenu != null && mc.player.containerMenu.containerId != 0) mc.gameMode.handleContainerInput(mc.player.containerMenu.containerId, Integer.parseInt(p.length > 1 ? p[1] : "0"), 0, net.minecraft.world.inventory.ContainerInput.QUICK_MOVE, mc.player); }   // T-025: shift-click slot N of the open menu (anvil)

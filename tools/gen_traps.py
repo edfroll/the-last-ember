@@ -160,13 +160,13 @@ for t in traps:
         reset += clear
         hint += ["%sparticle minecraft:smoke %d %d %d 1 0.2 1 0.01 1 normal" % (IN, c[0], c[1] + 1, c[2]) for c in CH]
     elif T == "cursed_chest":
-        kx, ky, kz = C(P["chest"]); mob = P.get("mob", "minecraft:zombie")
+        kx, ky, kz = C(P["chest"]); mob = P.get("mob", "minecraft:zombie"); mob2 = P.get("mob2", mob)   # T-026: mob2 = every second mob
         build += ["%sexecute unless entity @e[type=minecraft:marker,tag=le.cc,scores={le.tid=%d}] run summon minecraft:marker %d.5 %d.5 %d.5 {Tags:[\"le.cc\"]}" % (IN, n, kx, ky, kz),
                   "%sscoreboard players set @e[type=minecraft:marker,tag=le.cc,distance=..0.1,x=%d,y=%d,z=%d,limit=1] le.tid %d" % (IN, kx, ky, kz, n) if False else
                   "%sexecute positioned %d %d %d as @e[type=minecraft:marker,tag=le.cc,distance=..2,limit=1] unless score @s le.tid matches 1.. run scoreboard players set @s le.tid %d" % (IN, kx, ky, kz, n)]
         w("open_" + i, ["# the first opening of the cursed chest: mobs 2 + 1 per player within 16", "execute unless score %s matches 0 run return 0" % st, "scoreboard players set %s 2" % st,
                         "%sexecute positioned %d %d %d store result score #cnt le.tr if entity @a[distance=..16]" % (IN, kx, ky, kz), "scoreboard players add #cnt le.tr 2",
-                        "%sexecute positioned %d %d %d run function last_ember:trap/spawn_ring {mob:\"%s\"}" % (IN, kx, ky, kz, mob),
+                        "%sexecute positioned %d %d %d run function last_ember:trap/spawn_ring {mob:\"%s\",mob2:\"%s\"}" % (IN, kx, ky, kz, mob, mob2),
                         "%spositioned %d %d %d run playsound minecraft:entity.wither.ambient block @a[distance=..20] ~ ~ ~ 0.8 0.6" % (IN, kx, ky, kz),
                         "%spositioned %d %d %d run particle minecraft:soul ~ ~1 ~ 1 0.5 1 0.05 30 force" % (IN, kx, ky, kz)])
         fire += ["function last_ember:trap/gen/open_%s" % i]

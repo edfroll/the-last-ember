@@ -1,0 +1,5 @@
+{
+  "criteria": { "drink": { "trigger": "minecraft:consume_item",
+    "conditions": { "item": { "items": "minecraft:potion", "predicates": { "minecraft:custom_data": "{le_clairv:1b}" } } } } },
+  "rewards": { "function": "last_ember:fens/clairv" }
+}

@@ -2,6 +2,6 @@
 execute if entity @s[x=-216,y=98,z=-496,dx=131,dy=30,dz=131] run scoreboard players set #hit le.z 1
 execute if entity @s[x=-216,y=98,z=-496,dx=131,dy=30,dz=131] run tag @s add le.zf.no_blink
 execute if entity @s[x=-216,y=98,z=-496,dx=131,dy=30,dz=131] run tag @s add le.zf.no_chorus
-execute if entity @s[y=104,dy=29] positioned -150.5 ~ -430.5 if entity @s[distance=..16] run scoreboard players set #hit le.z 1
-execute if entity @s[y=104,dy=29] positioned -150.5 ~ -430.5 if entity @s[distance=..16] run tag @s add le.zf.no_spawn
+execute if entity @s[y=104,dy=29] positioned -149.5 ~ -429.5 if entity @s[distance=..16] run scoreboard players set #hit le.z 1
+execute if entity @s[y=104,dy=29] positioned -149.5 ~ -429.5 if entity @s[distance=..16] run tag @s add le.zf.no_spawn
 execute if entity @s[x=-228,y=31,z=-508,dx=155,dy=90,dz=155] run scoreboard players set #hit le.z 1

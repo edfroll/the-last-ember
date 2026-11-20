@@ -17,3 +17,4 @@ maze_sanctum    overworld cyl  -150 -430 11  109 128     no_spawn
 maze_terrace    overworld box  -223 36 -503  -78 116 -358   # T-024: the terrace of the maze (band, parapet, retaining wall, buttresses, piers), indestructible
 garden_glass    overworld box  318 87 -340  357 133 -304   # T-025: the orangery of the Garden of Silence (floor -4 .. crown)
 garden_house    overworld box  236 117 -277  248 132 -267   no_spawn   # T-025: the gardener's house (+2)
+fens_hut        overworld cyl -390 340 24 127 172   no_spawn   # T-026: the Hut of the Three Witches with its pier (r 24, W-7..W+38)
