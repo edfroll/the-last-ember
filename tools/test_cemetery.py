@@ -88,7 +88,10 @@ def talk(p):
             R(f"tp {p} {x} {k[1]} {z}"); look_at(p, k[0], k[1] + 1.2, k[2]); time.sleep(0.4); tc.act(p, "!use"); time.sleep(1.0); return True
     return False
 def trig(p, n): R(f"scoreboard players enable {p} le.ctrig"); R(f"execute as {p} run trigger le.ctrig set {n}"); time.sleep(0.6)
-def give_shovel(p="Cam"): R(f"execute as {p} run function last_ember:cemetery/give {{key:\"cem_shovel\"}}")
+def give_shovel(p="Cam"):
+    R(f"execute as {p} run function last_ember:cemetery/give {{key:\"cem_shovel\"}}")
+    sl = slot_of(p, "cem_shovel")                                  # into the main hand (the selected slot may be any)
+    if sl: R(f"item replace entity {p} weapon.mainhand from entity {p} {sl}"); R(f"item replace entity {p} {sl} with minecraft:air") if False else None
 def open_lid(n, p="Cam", real=True):
     g = G[n]; lx, ly, lz = g["lid"]
     if real:
@@ -194,9 +197,14 @@ def t_keeper():
     R("difficulty easy"); R("time set noon"); unstage()
 
 # ---------------------------------------------------------------- quest: the window, the shovel, digging
-def dig(p, x, y, z, t=10):
-    R(f"tp {p} {x + 0.5} {y + 1} {z + 2.4}"); look_at(p, x + 0.5, y + 0.5, z + 0.5); time.sleep(0.5)
+def dig(p, x, y, z, t=10, feet=None):
+    """hold the attack key on the block (x, y, z) from 2 south of it, standing on the ground (feet given or the block's own level)"""
+    # haste X: the shovel mines soul soil at once (the dev agent's held mining does not go on in adventure mode; its instant mining
+    # goes through the same vanilla check of can_break - a held dig by a live player is in the report)
+    R(f"effect give {p} minecraft:haste 30 9 true")
+    R(f"tp {p} {x + 0.5} {feet if feet is not None else y} {z + 2.4}"); time.sleep(0.8); look_at(p, x + 0.5, y + 0.5, z + 0.5); time.sleep(0.5)
     tc.act(p, "!attack_on"); r = wait(lambda: not blk(x, y, z, "minecraft:soul_soil"), t); tc.act(p, "!attack_off"); time.sleep(0.3)
+    R(f"effect clear {p} minecraft:haste")
     return r
 def t_quest():
     print("[quest]"); stage(); reset_all()
@@ -210,13 +218,14 @@ def t_quest():
     R("clear Cam"); R("give Cam minecraft:iron_shovel"); R("item replace entity Cam weapon.mainhand with minecraft:iron_shovel")
     R(f"tp Cam {g['x'] + 0.5} {g['y'] + 2} {g['z'] + 2.4}"); time.sleep(1.5)
     chk("at the cemetery Cam is in adventure", passed("execute if entity @a[name=Cam,gamemode=adventure]"))
-    chk("an ordinary iron shovel does not dig the grave", not dig("Cam", g["x"], g["y"] + 1, g["z"], 4))
+    chk("an ordinary iron shovel does not dig the grave", not dig("Cam", g["x"], g["y"] + 1, g["z"] + 1, 4, g["y"] + 1))
     R("clear Cam"); give_shovel("Cam"); R("item replace entity Cam weapon.mainhand from entity Cam container.0") if False else None
     R("clear Cam"); give_shovel("Cam")
-    chk("the keeper's shovel digs the soul soil (real digging)", dig("Cam", g["x"], g["y"] + 1, g["z"], 10) and dig("Cam", g["x"], g["y"], g["z"], 10))
+    d1 = dig("Cam", g["x"], g["y"] + 1, g["z"] + 1, 10, g["y"] + 1); d2 = dig("Cam", g["x"], g["y"] + 1, g["z"], 10, g["y"] + 1)
+    chk("the keeper's shovel digs the soul soil of the mound (real digging, the near cell, then the far one)", d1 and d2, (d1, d2))
     ws = f"{g['x'] - 1} {g['y']} {g['z']}"
     R(f"tp Cam {g['x'] - 1.5} {g['y'] + 1} {g['z'] + 3.5}"); look_at("Cam", g["x"] - 0.5, g["y"] + 0.5, g["z"] + 0.5); time.sleep(0.4)
-    tc.act("Cam", "!attack_on"); time.sleep(4); tc.act("Cam", "!attack_off")
+    R("effect give Cam minecraft:haste 30 9 true"); tc.act("Cam", "!attack_on"); time.sleep(4); tc.act("Cam", "!attack_off"); R("effect clear Cam minecraft:haste")
     chk("the shovel breaks nothing else (the ground next to the grave stays)", not blk(g["x"] - 1, g["y"], g["z"], "#minecraft:air"))
     R("clear Cam"); reset_all(); unstage()
 
@@ -504,7 +513,7 @@ def t_zones():
     chk("at the cemetery: adventure", passed("execute if entity @a[name=Cam,gamemode=adventure]"))
     s = M["swords"][0]; x, z = s[0], s[1]
     y = next(yy for yy in range(130, 60, -1) if blk(x, yy, z, "#minecraft:walls") or blk(x, yy, z, "minecraft:polished_deepslate_wall") or blk(x, yy, z, "minecraft:tuff_wall"))
-    R(f"tp Cam {x + 0.5} {y - 1} {z + 2.5}"); look_at("Cam", x + 0.5, y - 0.5, z + 0.5); time.sleep(0.4); tc.act("Cam", "!attack_on"); time.sleep(3); tc.act("Cam", "!attack_off")
+    R("effect give Cam minecraft:haste 30 9 true"); R(f"tp Cam {x + 0.5} {y - 1} {z + 2.5}"); look_at("Cam", x + 0.5, y - 0.5, z + 0.5); time.sleep(0.4); tc.act("Cam", "!attack_on"); time.sleep(3); tc.act("Cam", "!attack_off"); R("effect clear Cam minecraft:haste")
     chk("a small sword cannot be broken", not blk(x, y - 1, z, "#minecraft:air"))
     lx, ly, lz = LO["centre"]
     R("difficulty hard"); R("time set midnight"); R(f"tp Cam {lx} {ly + 30} {lz}"); time.sleep(1)
