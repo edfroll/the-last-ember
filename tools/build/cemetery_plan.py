@@ -19,7 +19,7 @@ LODGE = (84, 431, 116, 459)                # the core of the place `lodge` (rect
 MARGIN = 16
 BOX = (58, 348, 302, 552)                  # the grids (both places with their seam + 10)
 HEARTH2 = (118, 192, 448)
-PAD = (111, 442, 125, 456)                 # the pad of bonfire 2 (T-022): never written
+PAD = (111, 443, 125, 456)                 # the flat pad of bonfire 2 (T-022, 14 x 14 at y 191): never written (its rims are)
 PAD_Y = 191
 FLOOR_BOX = (160, 452, 276, 500)           # HQ T-027, 1: W = 30th percentile of the natural ground here
 PATHS = os.path.join(ROOT, "tools/build/cemetery_paths.json")

@@ -166,8 +166,9 @@ def lodge_relief(gr, rl):
         w = 196 if z <= 431 else (195 if z <= 434 else (193 if z <= 437 else 191))
         for x in STREAM: stream[(x, z)] = w; T[ix(gr, x, z)] = w - 1
     # the road: from the approach of T-022 at (108, 425) round to x 114 and down to the pad at z 442; levels in half blocks
-    pts = [(108, 425), (109, 426), (110, 427), (111, 427), (112, 427), (113, 427), (114, 428), (115, 429)] + [(115, z) for z in range(430, 442)]
-    y0 = int(gr["live"][ix(gr, 108, 425)]) if "live" in gr else int(gr["before"][ix(gr, 108, 425)]); y_end = P.PAD_Y   # the trail as it is in the world
+    pts = [(108, 425), (109, 426), (110, 427), (111, 427), (112, 427), (113, 427), (114, 428), (115, 429)] + [(115, z) for z in range(430, 443)]
+    y0 = int(gr["live"][ix(gr, 108, 425)]) if "live" in gr else int(gr["before"][ix(gr, 108, 425)])   # the trail as it is in the world
+    y_end = P.PAD_Y                                         # the road runs over the pad's north rim (z 442) down to the pad itself
     n = len(pts); s0 = 2 * y0 + 2; s1 = 2 * y_end + 2          # feet levels x2
     # the bridge at z 434..435 must be level with the terrace (feet 197 -> s 394)
     kb = pts.index((115, BRIDGE_Z[0]))
@@ -190,7 +191,77 @@ def lodge_relief(gr, rl):
             road[q] = s2
             if lower: up[q] = f
             T[ix(gr, *q)] = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
+    # the curb between the stream and the road (x 113): the road's level (no natural bank left over it), the bridge's deck at the bridge
+    for z in range(429, 442):
+        q = (113, z)
+        if q in road: continue
+        r = road.get((114, z))
+        T[ix(gr, *q)] = TER_Y if BRIDGE_Z[0] <= z <= BRIDGE_Z[1] else (((r - 1) // 2 if r % 2 else r // 2 - 1) if r else stream[(112, z)])
     return dict(stream=stream, road_list=list(road.items()), roadset=set(road), road_up=up)
+
+# ---------------------------------------------------------------- the trails over the floor (gravel, half blocks: the walk without jumps)
+def trails(gr, rl, brs, paths, W):
+    """graded trails (3 wide, at most half a block per step) over the natural floor: the foot of the descent -> the crypt's door; the
+    crypt -> the foot of the hill stair. A* on the ground (steepness cost), round the graves, the barrows, the chapel, the hill"""
+    from r1_garden import astar, smooth_line, cells_of
+    T = rl["T"]; X, Z = gr["X"], gr["Z"]
+    block = ~(rl["floor"] | rl["holes"]) | ~gr["cem"]
+    def box(x1, z1, x2, z2):
+        nonlocal block
+        block = block | ((X >= x1) & (X <= x2) & (Z >= z1) & (Z <= z2))
+    for (n, x, z, kind, ep) in P.GRAVES: box(x - 2, z - 3, x + 2, z + 4)
+    for br in brs:
+        xs = [c[0] for c in br["cells"]]; zs = [c[1] for c in br["cells"]]; box(min(xs) - 1, min(zs) - 1, max(xs) + 1, max(zs) + 1)
+        (fx, fz), f = br["front"], br["facing"]; dx, dz = DIRS[f]
+        box(min(fx, fx + dx * 4) - 2, min(fz, fz + dz * 4) - 2, max(fx, fx + dx * 4) + 2, max(fz, fz + dz * 4) + 2)
+    x1, z1, x2, z2 = P.CHAPEL; box(x1 - 2, z1 - 2, x2 + 2, z2 + 2)
+    box(P.HILL[0] - 2, P.HILL[1] - 2, P.HILL[2] + 2, P.HILL[3] + 2)
+    for (x, z) in list(rl["walk"]) + list(rl["ring"]): block[ix(gr, x, z)] = True
+    box(P.CRYPT_X - 8, P.CRYPT_FRONT - 20, P.CRYPT_X + 8, P.CRYPT_FRONT)
+    for k in range(-1, 2):                                  # the skulls stand in front of the facade
+        box(P.CRYPT_X - 6, P.CRYPT_FRONT + 1, P.CRYPT_X - 2, P.CRYPT_FRONT + 5); box(P.CRYPT_X + 2, P.CRYPT_FRONT + 1, P.CRYPT_X + 6, P.CRYPT_FRONT + 5)
+    d = paths["desc"][-1]; dx, dz = DIRS[d[3]]
+    a0 = (d[0] + dx, d[1] + dz); ya = d[2]                 # the cell after the closing landing of the descent, its level
+    h = paths["hill"][-1]; hx, hz = DIRS[h[3]]
+    b0 = (h[0] + hx, h[1] + hz); yb = h[2]
+    cf = (P.CRYPT_X, P.CRYPT_FRONT + 6); yc = W
+    out = {}; lines = []
+    for (s, ys), (e, ye) in (((a0, ya), (cf, yc)), ((cf, yc), (b0, yb))):
+        for c in (s, e):
+            for a_ in (-1, 0, 1):
+                for b_ in (-1, 0, 1): block[ix(gr, c[0] + a_, c[1] + b_)] = False
+        path = astar(T.astype(float), s, e, block, gr["x1"], gr["z1"])
+        cells = cells_of(smooth_line(path, 4))
+        if cells[0] != s: cells = [s] + cells
+        if cells[-1] != e: cells.append(e)
+        t = [2 * (int(T[ix(gr, x, z)]) + 1) for x, z in cells]
+        t[0] = 2 * (ys + 1); t[-1] = 2 * (ye + 1); fixed = {0, len(t) - 1}
+        for _ in range(12):
+            for i in range(1, len(t)):
+                if i not in fixed: t[i] = max(min(t[i], t[i - 1] + 1), t[i - 1] - 1)
+            for i in range(len(t) - 2, -1, -1):
+                if i not in fixed: t[i] = max(min(t[i], t[i + 1] + 1), t[i + 1] - 1)
+        bad = [cells[i] for i in range(1, len(t)) if abs(t[i] - t[i - 1]) > 1]
+        if bad: raise SystemExit("cemetery trail cannot be graded at %s" % bad[:4])
+        lines.append([[c[0], c[1], s2] for c, s2 in zip(cells, t)])
+        for c, s2 in zip(cells, t):
+            for a_ in (-1, 0, 1):
+                for b_ in (-1, 0, 1):
+                    q = (c[0] + a_, c[1] + b_)
+                    if q in rl["walk"] or q in rl["ring"]: continue
+                    dd = a_ * a_ + b_ * b_
+                    if q not in out or dd < out[q][1]: out[q] = (s2, dd)
+    surf = {q: v[0] for q, v in out.items()}
+    for _ in range(60):                                      # across the width at most half a block
+        ch = False
+        for (x, z), s2 in list(surf.items()):
+            n = [surf[q] for q in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)) if q in surf]
+            if s2 > min(n) + 1: surf[(x, z)] = min(n) + 1; ch = True
+            elif s2 < max(n) - 1: surf[(x, z)] = max(n) - 1; ch = True
+        if not ch: break
+    for (x, z), s2 in surf.items():
+        T[ix(gr, x, z)] = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
+    return dict(surf=surf, lines=lines)
 
 # ---------------------------------------------------------------- trees (our own repeatable models instead of the spruces)
 def dark_oak(b, c, x, z, salt):
@@ -226,10 +297,18 @@ def build(gr, W, paths):
     E = crypt_relief(gr, rl, W)
     chy = chapel_relief(gr, rl)
     gvs = grave_relief(gr, rl)
+    tr = trails(gr, rl, brs, paths, W)
     lr = lodge_relief(gr, rl)
     c = CB.Ctx(gr, rl, W); b = B("cemetery")
     meta = dict(W=W)
     CB.walks(b, c)
+    for (x, z), s2 in tr["surf"].items():
+        if s2 % 2:
+            y = (s2 - 1) // 2; b.set(x, y - 1, z, "minecraft:dirt"); b.set(x, y, z, CB.slab("tuff_slab" if hsh(x, 0, z, 7130) < 0.5 else "andesite_slab"))
+        else:
+            y = s2 // 2 - 1; b.set(x, y, z, CB.PATHG.at(x, y, z)); b.set(x, y - 1, z, "minecraft:dirt")
+        CB.clear(b, x, y + 1, z, y + 4)
+    meta["trails"] = tr["lines"]
     meta["gate"] = CB.gate(b, c)
     meta["lights"] = CB.lights(b, c, paths["desc"])
     L = paths["hill_level"]
@@ -254,7 +333,7 @@ def build(gr, W, paths):
     # the lodge
     meta["lodge"] = CL.build(b, c, sys.modules[__name__], lr)
     # what must stay free of the swords, the old graves and the fence
-    taken = set(rl["walk"]) | set(rl["ring"])
+    taken = set(rl["walk"]) | set(rl["ring"]) | {(x + a, z + d) for (x, z) in tr["surf"] for a in (-1, 0, 1) for d in (-1, 0, 1)}
     for gv in meta["graves"]:
         for a in (-2, -1, 0, 1, 2):
             for d in range(-3, 5): taken.add((gv["x"] + a, gv["z"] + d))
@@ -417,6 +496,7 @@ def plan_png(gr, rl, b, meta, path, box, S, title):
                 if "spruce" in s or "planks" in s or "door" in s: col = (170, 120, 70)
                 if "cobblestone" in s and "wall" not in s: col = (140, 140, 140)
                 if "lantern" in s: col = (255, 200, 60)
+                if s in ("minecraft:gravel", "minecraft:tuff_slab", "minecraft:andesite_slab"): col = (225, 205, 150)
             if not gr["place"][i, j]: col = tuple(v // 3 for v in col)
             d.rectangle([(x - x1) * S, (z - z1) * S, (x - x1) * S + S - 1, (z - z1) * S + S - 1], fill=col)
     def lab(x, z, t, c=(255, 255, 255)): d.text(((x - x1) * S + 3, (z - z1) * S - 5), t, fill=c)
@@ -484,7 +564,7 @@ def main(plan_only=False):
     os.makedirs(os.path.join(ROOT, "docs/reports/T-027"), exist_ok=True)
     t1 = ["T-027 Cemetery of the Fallen Knights: plan (1 block = 3 px, north up). Red = place core, orange = the lodge; W = %d (floor), hill platform y %d" % (W, paths["hill_level"]),
           "descent: %d cells from the gate (bonfire 2, y %d) to the floor; green rings = right graves, blue = Thane, red = wrong, magenta = pits; B1..B5 barrows," % (len(paths["desc"]), P.PAD_Y),
-          "blue boxes = crypt corridor (y %d) and hall (y %d), dots = its exit; white squares = small swords; brown = soul soil; grey = the fence" % (meta["crypt"]["C"], meta["crypt"]["HF"]),
+          "blue boxes = crypt corridor (y %d) and hall (y %d), dots = its exit; white squares = small swords; brown = soul soil; grey = the fence; sand = the trails" % (meta["crypt"]["C"], meta["crypt"]["HF"]),
           "the floor: light green; changed relief shown by height (darker = lower)"]
     plan_png(gr, rl, b, meta, os.path.join(ROOT, "docs/reports/T-027/cemetery_plan.png"), (P.CEM[0] - 20, P.CEM[1] - 20, P.CEM[2] + 16, P.CEM[3] + 16), 3, t1)
     t2 = ["T-027 Keeper's Lodge: plan (1 block = 8 px, north up). Orange = the place core; terrace y %d (bonfire 192 + 4), retaining walls <= 10;" % TER_Y,

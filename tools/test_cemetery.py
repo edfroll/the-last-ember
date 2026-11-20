@@ -514,7 +514,46 @@ def t_zones():
     R("kill @e[tag=le.ctest]"); R("difficulty easy"); R("time set noon"); R("clear Cam"); unstage()
 
 # ---------------------------------------------------------------- restart
-def tmz(): return load("test_maze")
+# the restart and the profiler (copied from tools/test_maze.py: importing it runs its suites)
+def restart():
+    subprocess.run([os.path.join(ROOT, "tools/server.sh"), "stop"], capture_output=True); time.sleep(8)
+    subprocess.Popen(f"cd {ROOT} && tools/server.sh start > server/console.out 2>&1", shell=True)
+    for _ in range(90):
+        time.sleep(2)
+        try:
+            if "players online" in R("list"): break
+        except Exception: pass
+    subprocess.run("pkill -f net.minecraft.client.main.Main", shell=True); time.sleep(3)
+    subprocess.Popen(f"cd {ROOT} && python3 -I tools/client_launch.py > server/client.out 2>&1", shell=True)
+    subprocess.Popen(f"cd {ROOT} && python3 -I tools/client_launch.py --name Cam2 --dir server/client2 --mem 1500M --size 640x360 > server/client2.out 2>&1", shell=True)
+    for _ in range(90):
+        time.sleep(2)
+        try:
+            l = R("list")
+            if "Cam2" in l and re.search(r"\bCam(?!2)\b", l): break
+        except Exception: pass
+    time.sleep(6)
+def mspt():
+    m = re.search(r"([0-9.]+)\s*ms", R("tick query")); return float(m.group(1)) if m else None
+def prof(sec=10, during=None):
+    """the profiler for sec seconds: ms per tick of the last_ember functions run from the schedule (as test_contracts.prof)"""
+    import glob, zipfile, threading
+    before = set(glob.glob(os.path.join(ROOT, "server/debug/profiling/*.zip"))); R("perf start")
+    if during: during()
+    time.sleep(sec + 1); R("perf stop"); new = []
+    for _ in range(40):
+        new = sorted(set(glob.glob(os.path.join(ROOT, "server/debug/profiling/*.zip"))) - before)
+        if new: break
+        time.sleep(0.5)
+    if not new: return {}
+    time.sleep(1.0); t = zipfile.ZipFile(new[-1]).read("server/profiling.txt").decode()
+    span = float(re.search(r"Time span: (\d+) ms", t).group(1)); ticks = float(re.search(r"Tick span: (\d+) ticks", t).group(1))
+    out = {"tick": span / ticks}
+    for m in re.finditer(r"\[05\][ |]*function (last_ember:[a-z_/]+)\(\d+/\d+\) - [0-9.]+%/([0-9.]+)%", t): out[m.group(1)] = span * float(m.group(2)) / 100 / ticks
+    return out
+class _TM: pass
+def tmz():
+    m = _TM(); m.restart = restart; m.prof = prof; m.mspt = mspt; return m
 def t_restart():
     print("[restart]"); stage(); reset_all()
     open_lid(1); open_lid(7); time.sleep(2.5); clear_spirits()
