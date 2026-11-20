@@ -18,7 +18,8 @@ game (survival; the dev agent clicks the gate).
   night    midnight, normal: the drowned come up in the lake; no monster on the lit pier, stair, bridgehead, bridge
   fade     region/gen/fade_r1 and unfade_r1: the swamp (water W-1..W, mud under), the broken arm, the empty sockets, no strike without
            the seal; back: the lake, the arm, the eyes asleep, the strike again
-  restart  a restart in the middle of the warning and after the passage: nothing hangs, the pass and the state survive
+  restart  the world frozen in the middle of the warning, the server restarted: the warning goes on (struck, thrown), nothing hangs; the
+           pass of a player on the rock survives
   perf     two players at the pier (one waking the colossi in turns, one with the pass): castle/* by the profiler
 Usage: python3 tools/test_castle.py [build alone both armour boat leave seal bypass ambush gate night fade restart perf]"""
 import importlib.util, json, math, os, re, subprocess, sys, time
@@ -265,16 +266,16 @@ def t_fade():
     R("tp Cam 400.5 %d -52.5" % (W + 2)); unstage()
 
 def t_restart():
-    print("[restart]"); stage()
+    print("[restart in the middle of the warning (the world frozen first) and after the passage]"); stage()
     R("tag Cam2 add le.cpass"); R("tp Cam2 455.5 163 -30.5")
-    full("Cam"); R("tp Cam %s %s %s 90 0" % PIER); wait(lambda: "le.cwake" in tags("Cam"), 1.5)
-    restart(); stage_light()
-    time.sleep(3)
-    chk("after the restart in the middle of the warning: no hanging warning / flight, the eyes asleep", "le.cwake" not in tags("Cam") and "le.cfly" not in tags("Cam")
-        and wait(lambda: passed("execute if block %d %d %d minecraft:polished_blackstone" % tuple(M["dp"]["eyes"][0])), 6))
+    full("Cam"); R("tp Cam %s %s %s 90 0" % PIER); wait(lambda: "le.cwake" in tags("Cam"), 1.5); time.sleep(0.3); R("tick freeze")
+    cw = sc("Cam", "le.cw"); print("     frozen with", cw, "ticks of the warning left")
+    chk("frozen in the middle of the warning", "le.cwake" in tags("Cam") and cw is not None and 0 < cw < 20, cw)
+    restart(); stage_light(); R("gamemode survival Cam"); R("gamemode survival Cam2")
+    chk("after the restart the warning goes on: struck, thrown, nothing hangs", wait(lambda: "le.cwake" not in tags("Cam") and "le.cfly" not in tags("Cam"), 15)
+        and in_knock("Cam") and wait(lambda: passed("execute if block %d %d %d minecraft:polished_blackstone" % tuple(M["dp"]["eyes"][0])), 8), (tags("Cam"), pos("Cam")))
     chk("the pass of Cam2 on the rock survived", "le.cpass" in tags("Cam2") and "le.cfly" not in tags("Cam2"))
-    R("gamemode survival Cam"); R("gamemode survival Cam2"); full("Cam"); R("tp Cam 400.5 %d -52.5" % (W + 2)); time.sleep(4)
-    print("     Cam:", R("data get entity Cam playerGameType"), tags("Cam"), sc("Cam", "le.cg"), sc("#gt"))
+    full("Cam"); R("tp Cam 400.5 %d -52.5" % (W + 2)); time.sleep(4)
     R("tp Cam %s %s %s 90 0" % PIER)
     strike_ok("Cam", "after the restart the colossi work")
     R("tag Cam2 remove le.cpass"); R("tp Cam 400.5 %d -52.5" % (W + 2)); R("tp Cam2 400.5 %d -50.5" % (W + 2)); unstage()
