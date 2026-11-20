@@ -749,6 +749,7 @@ def write_terrain(gr, rl, b, W):
     write_grid(os.path.join(OUT, "fens_terrain.bin"), gr["x1"], gr["z1"], H, F, Wg, S, np.full(T.shape, R_STONE, np.uint8), np.zeros(T.shape, np.uint8))
     return int(touch.sum())
 
+def c_W(rl): return int(rl["Wt"][rl["Wt"] != NONE].max())
 def unsnow(b, gr, rl):
     """HQ T-026, 1: no snow in the place - also the snow blocks and the powder snow of the snowy slopes under the ground (read from the
     world: tools/build/fens_scan.py): dirt within 3 of the ground, stone deeper; snow layers, spruces and cherries: air"""
@@ -757,7 +758,9 @@ def unsnow(b, gr, rl):
     for (x, y, z, nm) in fens_scan.scan(os.path.join(ROOT, "server/world"), inside=lambda x, z: bool(in_place(x, z)) and not gr["allow"][ix(gr, x, z)]):
         if b.get(x, y, z) is not None: continue
         g = int(T[ix(gr, x, z)])
+        wet = rl["Wt"][ix(gr, x, z)] != NONE
         if nm in ("minecraft:snow_block", "minecraft:powder_snow") and y <= g: b.set(x, y, z, "minecraft:dirt" if y >= g - 3 else "minecraft:stone")
+        elif wet and y <= c_W(rl): b.set(x, y, z, "minecraft:water")          # under the new water level: water, not air
         else: b.set(x, y, z, "minecraft:air")
         n += 1
     return n

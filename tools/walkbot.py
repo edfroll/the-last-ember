@@ -46,7 +46,7 @@ def main():
         x, y, z = pos(P)
         if math.hypot(x - sx, z - sz) < 1.5 and abs(y - sy) < 2: break
         rc.run(f"tp {P} {sx} {sy} {sz}"); time.sleep(0.5)
-    problems = []; jumps = [0]; i = 0; top = -999; pts = route["points"]; held = False; jst = 0; jt = 0     # jst: a jump in flight (1 pressed, 2 released, answer due), kept across points
+    problems = []; jumps = [0]; marked = False; i = 0; top = -999; pts = route["points"]; held = False; jst = 0; jt = 0     # jst: a jump in flight (1 pressed, 2 released, answer due), kept across points
     while i < len(pts):
         tx, tz, ey = pts[i][:3]; prev_ey = pts[i - 1][2] if i else ey; x, y, z = pos(P)
         want_jump = len(pts[i]) > 3 and pts[i][3] == 1
@@ -60,7 +60,7 @@ def main():
         while True:
             time.sleep(0.12); x, y, z = pos(P); d = math.hypot(tx - x, tz - z)
             if edge and time.time() - last_improve > 0.45 and time.time() - edge_t > 0.6:      # at the edge: stand up and jump
-                agent("!hop")                                  # at the edge, forward held: stand up and jump in one tick (the agent's !hop)
+                marked = True; agent("!hop")                   # at the edge, forward held: stand up and jump in one tick (the agent's !hop)
                 jt = time.time(); jst = 1; jumps[0] += 1; pj += 1; edge = False; last_improve = time.time(); continue
             if a.clear: rc.run(f"execute at {P} run tp @e[distance=..6,{NOT}] ~ -200 ~")
             if d < 0.6: break
@@ -70,6 +70,7 @@ def main():
             if jst == 1 and ready() and time.time() - jt > 0.4: send("!jump_off"); jst = 2
             if jst == 2 and ready():
                 jst = 0; last_jump = time.time()
+                if marked: agent("!fwd_off"); time.sleep(0.35); agent("!fwd_on"); marked = False     # landed on a small target: stop the run-on
                 if pj <= 3: best = d; last_improve = time.time()        # the jump may carry the bot past the point: let it walk back
             if edge: continue
             if a.jump and jst == 0 and time.time() - last_improve > 0.5 and time.time() - last_jump > 0.8:
