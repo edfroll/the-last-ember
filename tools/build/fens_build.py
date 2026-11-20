@@ -331,8 +331,19 @@ def hut(b, c, R):
     the pier on the west with stairs, the porch on the east with the stairs from the boardwalk, the raft garden in the south"""
     W = c.W; FL = W + 4; X1, X2, Z1, Z2 = R.HX1, R.HX2, R.HZ1, R.HZ2
     pts = {}
-    WALL = Mix({"mangrove_planks": 50, "spruce_planks": 38, "mud_bricks": 12}, 5601)
     FRAME = "minecraft:stripped_dark_oak_log[axis=y]"
+    def hq(a, b2, c2, salt):                            # a hash without the 2x2 squares of lib.h (splitmix over the three numbers)
+        v = (a * 0x9E3779B1 + b2 * 0x85EBCA77 + c2 * 0xC2B2AE3D + salt * 0x27D4EB2F + 0x165667B1) & 0xFFFFFFFF
+        v = ((v ^ (v >> 15)) * 0x2C1B3C6D) & 0xFFFFFFFF; v = ((v ^ (v >> 12)) * 0x297A2D39) & 0xFFFFFFFF; v ^= v >> 15
+        return (v & 0xFFFFFF) / 0x1000000
+    class Wall:
+        """the planks between the frame: vertical strips (a column = one wood: mangrove 57 / spruce 43), now and then a patch; mud bricks in the lowest rows"""
+        def at(self, x, y, z):
+            if y == FL + 1: return "minecraft:mud_bricks"
+            if y == FL + 2 and hq(x, 0, z, 5604) < 0.5: return "minecraft:mud_bricks"
+            if hq(x, y, z, 5603) < 0.04: return "minecraft:dark_oak_planks" if hq(x, y, z, 5605) < 0.5 else "minecraft:mud_bricks"
+            return "minecraft:mangrove_planks" if hq(x, 0, z, 5601) < 0.57 else "minecraft:spruce_planks"
+    WALL = Wall()
     # the platform and its beams and piles
     for x in range(X1, X2 + 1):
         for z in range(Z1, Z2 + 1):
@@ -357,8 +368,11 @@ def hut(b, c, R):
                 edge = x in (x1, x2) or z in (z1, z2)
                 for y in range(FL + 1, FL + hgt + 1):
                     if not edge: b.set(x, y, z, "minecraft:air"); continue
+                    alongx = z in (z1, z2)               # a wall along x (else along z)
+                    a = (x - x1) if alongx else (z - z1)
                     if x in (x1, x2) and z in (z1, z2): b.set(x, y, z, FRAME)
-                    elif y <= FL + 2 and hsh(x, y, z, salt) < 0.6: b.set(x, y, z, "minecraft:mud_bricks")
+                    elif y == FL + hgt: b.set(x, y, z, "minecraft:stripped_dark_oak_log[axis=%s]" % ("x" if alongx else "z"))     # the belt under the roof
+                    elif a % 4 == 0: b.set(x, y, z, FRAME)                                                                          # a post every 4
                     else: b.set(x, y, z, WALL.at(x, y, z))
                 b.set(x, FL + hgt + 1, z, "minecraft:dark_oak_planks" if edge else "minecraft:spruce_planks")     # ceiling
     for r, s in ((HALL, 5610), (MOTHER, 5611), (MAIDEN, 5612), (CRONE, 5613)): room(r, s)
@@ -375,6 +389,8 @@ def hut(b, c, R):
     opening(-398, 339, "z", 1)
     opening(-380, 334, "x", 1)                         # the Maiden's door in her south wall (to the porch)
     opening(-380, 345, "x", 1)                         # the Crone's door in her north wall (to the porch) - the hall's south-east corner is x -384
+    for (px, pz) in ((-384, 338), (-384, 341), (-396, 338), (-396, 340), (-398, 338), (-398, 340), (-381, 334), (-379, 334), (-381, 345), (-379, 345)):
+        for y in range(FL + 1, FL + 6): b.set(px, y, pz, FRAME)                       # door posts
     # windows (glass panes) in the towers and the hall
     for (x, y, z) in ((-404, FL + 3, 339), (-401, FL + 3, 336), (-401, FL + 3, 342), (-380, FL + 3, 328), (-377, FL + 3, 331), (-377, FL + 3, 348),
                       (-380, FL + 3, 351), (-390, FL + 4, 334), (-393, FL + 4, 345), (-387, FL + 4, 345)):

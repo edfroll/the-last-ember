@@ -54,7 +54,7 @@ PRESETS = [
     'potion_healing2 minecraft:potion {"minecraft:potion_contents":{potion:"minecraft:strong_healing"}}',
     'potion_strength minecraft:potion {"minecraft:potion_contents":{potion:"minecraft:strength"}}',
     'antidote minecraft:potion {"minecraft:custom_data":{le_antidote:1b},"minecraft:custom_name":{text:"Противоядие",italic:false,color:"green"},"minecraft:potion_contents":{custom_color:11141120},"minecraft:lore":[{text:"Снимает отравление и иссушение.",color:"gray",italic:false},{text:"60 секунд невосприимчивости к ним.",color:"gray",italic:false}]}',
-    'stew_night_vision minecraft:suspicious_stew {"minecraft:suspicious_stew_effects":[{id:"minecraft:night_vision",duration:100}]}',
+    'stew_night_vision minecraft:suspicious_stew {"minecraft:suspicious_stew_effects":[{id:"minecraft:night_vision",duration:2400}]}',
     'book_protection1 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:protection":1}}',
     'book_sharpness2 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:sharpness":2}}',
     'arrows_poison minecraft:tipped_arrow {"minecraft:potion_contents":{potion:"minecraft:poison"}}',
@@ -86,9 +86,9 @@ def run(R, meta):
     L = [hdr + "every second: the witches and the talk boxes stand (built when their chunk is loaded, rebuilt when missing)"]
     for k in (1, 2, 3):
         x, y, z, yaw = witch[k]
-        nbt = ('{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,CustomNameVisible:1b,CustomName:{"text":"%s","color":"dark_green"},'
+        nbt = ('{NoAI:1b,Invulnerable:1b,PersistenceRequired:1b,Silent:1b,'
                'Rotation:[%.1ff,0f],Tags:["le.npc","le.keep","le.noelite","le.fw","le.fw%d"],CanPickUpLoot:0b,'
-               'active_effects:[{id:"minecraft:water_breathing",amplifier:0b,duration:-1,show_particles:0b,show_icon:0b},{id:"minecraft:fire_resistance",amplifier:0b,duration:-1,show_particles:0b,show_icon:0b}]}') % (NAMES[k], yaw, k)
+               'active_effects:[{id:"minecraft:water_breathing",amplifier:0b,duration:-1,show_particles:0b,show_icon:0b},{id:"minecraft:fire_resistance",amplifier:0b,duration:-1,show_particles:0b,show_icon:0b}]}') % (yaw, k)
         w("witch_%d" % k, [hdr + "the witch %d (%s)" % (k, NAMES[k]), "kill @e[type=minecraft:witch,tag=le.fw%d]" % k,
                            "summon minecraft:witch %.1f %d %.1f %s" % (x + 0.5, y, z + 0.5, nbt)])
         L.append("execute if loaded %d %d %d unless entity @e[type=minecraft:witch,tag=le.fw%d,x=%.1f,y=%d,z=%.1f,distance=..3] run function last_ember:fens/gen/witch_%d" % (x, y, z, k, x + 0.5, y, z + 0.5, k))

@@ -152,6 +152,10 @@ def t_witches():
     chk("a witch gone (killed by a command) stands again within a second", count("@e[type=minecraft:witch,tag=le.fw2]") == 1)
     R("tp @e[type=minecraft:witch,tag=le.fw3] ~3 ~ ~"); time.sleep(2.5)
     chk("a witch moved goes back to her place", pos("@e[type=minecraft:witch,tag=le.fw3,limit=1]") == p0[3], pos("@e[type=minecraft:witch,tag=le.fw3,limit=1]"))
+    nm = {k: R(f"data get entity @e[type=minecraft:witch,tag=le.fw{k},limit=1] CustomName") for k in (1, 2, 3)}
+    tn = {k: R(f"data get entity @e[type=minecraft:villager,tag=le.tr_witch_{KEY[k]},limit=1] CustomName") for k in (1, 2, 3)}
+    chk("one name over each witch: the witch has none, her (invisible) trader has it, dark green, always visible", all("no entity" not in tn[k] and "dark_green" in tn[k] for k in (1, 2, 3))
+        and all("dark_green" not in nm[k] and "Found no elements" in nm[k] or "No elements" in nm[k] for k in (1, 2, 3)) and all("1b" in R(f"data get entity @e[type=minecraft:villager,tag=le.tr_witch_{KEY[k]},limit=1] CustomNameVisible") for k in (1, 2, 3)), (nm, tn))
     unstage()
 
 # ------------------------------------------------------------------------------------------------ trade
@@ -172,6 +176,7 @@ def t_trade():
             if n2: R(f"give Cam minecraft:{ING[k]} {n2}")
             okb = buy("Cam", k, i)
             chk(f"{KEY[k]} deal {i + 1}: bought ({goods[k][i]})", okb and goods[k][i] in inv("Cam") and "nautilus_shell" not in inv("Cam"), (okb, inv("Cam")[:160]))
+    chk("the stew of the Maiden: night vision for 2 minutes (2400 ticks)", "duration: 2400" in R(f"data get entity {T(2)} Offers.Recipes[1].sell") and "night_vision" in R(f"data get entity {T(2)} Offers.Recipes[1].sell"))
     R("clear Cam"); tc.setc(1, 1, 0, "Cam"); R("gamemode survival Cam"); trophy("Cam", 4); R("give Cam minecraft:feather 8")
     for _ in range(3):                               # a click may come before the window can open: again
         face_witch("Cam", 2); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(1.5)

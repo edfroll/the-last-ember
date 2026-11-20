@@ -56,9 +56,9 @@ for t in traders:
     if typ == "villager": nbt.append('VillagerData:{type:"minecraft:%s",profession:"minecraft:%s",level:5}' % (P.get("vtype", "plains"), P.get("prof", "none"))); nbt.append("Xp:0")
     else: nbt.append("DespawnDelay:0")
     if "scale" in P: nbt.append('attributes:[{id:"minecraft:scale",base:%s}]' % P["scale"])
-    if P.get("invisible") == "1":      # T-026: the trade window of a figure standing in it (the witches): invisible, the name only in the window
+    if P.get("invisible") == "1":      # T-026: the trade window of a figure standing in it (the witches): invisible; the only name over her is the trader's (dark green), also in the window
         nbt.append('active_effects:[{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b,show_icon:0b,ambient:1b}]')
-        nbt[nbt.index('CustomNameVisible:1b')] = 'CustomNameVisible:0b'
+        nbt[nbt.index('CustomName:{"text":"%s","color":"gold"}' % J(name))] = 'CustomName:{"text":"%s","color":"dark_green"}' % J(name)     # the one name over the witch (the witch herself has none)
         nbt[nbt.index('Tags:["le.npc","le.trader","le.noelite","le.tr_%s"]' % i)] = 'Tags:["le.npc","le.trader","le.noelite","le.keep","le.tr_%s"]' % i
     pos = "%d %d %d" % (t["x"], t["y"], t["z"])
     w("build_" + i, ["# generated: the trader %s" % i, "scoreboard players set #trader_%s_bl le.tr 1" % i,
