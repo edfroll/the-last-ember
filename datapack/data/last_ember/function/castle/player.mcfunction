@@ -5,9 +5,6 @@ execute if score @s le.sb matches 8 if function last_ember:castle/gen/near_heart
 scoreboard players set #in le.cas 0
 execute if function last_ember:castle/gen/in_trigger run scoreboard players set #in le.cas 1
 execute if score #in le.cas matches 0 if function last_ember:castle/gen/in_rock run scoreboard players set #in le.cas 2
-execute if score #in le.cas matches 0 if entity @s[tag=le.cpass] run scoreboard players add @s le.co 1
-execute if score #in le.cas matches 1.. run scoreboard players set @s le.co 0
-execute if score @s le.co matches 20.. run tag @s remove le.cpass
 execute if score #in le.cas matches 0 run return 0
 execute if entity @s[tag=le.cpass] run return 0
 execute if score #in le.cas matches 1 if score #prot le.cas matches 1 run return run function last_ember:castle/recognize

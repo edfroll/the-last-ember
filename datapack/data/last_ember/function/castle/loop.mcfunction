@@ -6,9 +6,8 @@ scoreboard players add #t le.cas 5
 tag @a remove le.sealh
 execute as @a[gamemode=!spectator,gamemode=!creative] if items entity @s container.* *[minecraft:custom_data~{le_citem:"seal"}] run tag @s add le.sealh
 execute as @a[gamemode=!spectator,gamemode=!creative,tag=!le.sealh] if items entity @s weapon.offhand *[minecraft:custom_data~{le_citem:"seal"}] run tag @s add le.sealh
-# the pass is lost after 5 s outside the rock and the trigger (also far from the castle, offline time does not count)
-execute in minecraft:overworld as @a[tag=le.cpass] unless entity @s[x=330,y=40,z=-130,dx=250,dy=280,dz=260] run scoreboard players add @s le.co 1
-execute as @a[tag=le.cpass,scores={le.co=20..}] run tag @s remove le.cpass
+# the pass is lost after 5 s outside the rock and the trigger (in any game mode, also far from the castle; offline time does not count)
+execute in minecraft:overworld as @a[tag=le.cpass] at @s run function last_ember:castle/pass_tick
 execute if score #faded le.cas matches 0 in minecraft:overworld as @a[x=330,y=40,z=-130,dx=250,dy=280,dz=260,gamemode=!spectator,gamemode=!creative,tag=!le.cwake,tag=!le.cfly] at @s run function last_ember:castle/player
 execute if entity @a[tag=le.cwake] run schedule function last_ember:castle/tick 1t replace
 execute if entity @a[tag=le.cfly] run schedule function last_ember:castle/tick 1t replace
