@@ -35,10 +35,10 @@ TRIGGER = [(412, W - 6, -39, 431, W + 7, -28), (432, 116, -38, 446, 133, -30)]  
 KNOCK = (393, -41, 408, -28)               # 16 x 14 clean water, floor <= W-5
 KNOCK_PTS = [(397.5, -36.5), (404.5, -32.5), (400.5, -38.5)]   # landing points (two players: different ones)
 SWORD_ISLET = (414, -48, 419, -43)
-SAND = (397, -50, 405, -42)                # the ramp of sand and sandstone slabs from the knock zone up to the causeway (+0.5 per cell)
+SAND = (394, -50, 405, -42)                # the ramp of sand and sandstone slabs from the knock zone up to the causeway (+0.5 per cell, turning west at its top)
 CAUSEWAY = [(381, -53, 413, -51), (411, -50, 413, -41), (411, -40, 419, -38)]   # W-E along the north shore, south, east to the pier
 # the descent from bonfire 7: lanes W-E, U-turns 4 to the north; landing W x 364..366, flight x 367..376, landing E x 377..379
-DESC_FLIGHTS = [10, 10, 10, 10, 11]        # 167 -> 116
+DESC_FLIGHTS = [11, 10, 10, 10, 10]        # 167 -> 116 (each flight n lower; the first one eats a cell of the top landing)
 DESC_X = (364, 366, 367, 376, 377, 379)
 DESC_Z0 = -36                              # centre of the first lane; lane k centre DESC_Z0 - 4k
 # the stair in the rock (a cleft east of the pier): lane A z -37..-35 (F1 tunnel, F3 open), lane B z -33..-31 (F2 tunnel, F4 open)
@@ -112,14 +112,16 @@ def descent():
     for x in range(xw1, xw2 + 1): put(x, zc, y, "L", None); order.append((x, zc, y))
     for k, n in enumerate(DESC_FLIGHTS):
         east = k % 2 == 0
-        xs = list(range(xf1, xf1 + n)) if east else list(range(xf2, xf2 - n, -1))
+        xs = list(range(xf2 - n + 1, xf2 + 1)) if east else list(range(xf2, xf2 - n, -1))
         if not east and n > xf2 - xf1 + 1: raise SystemExit("descent flight too long")
-        for x in xs:
-            y -= 1; put(x, zc, y, "S", "west" if east else "east"); order.append((x, zc, y))
+        for x in xs:                         # the first stair at the landing's level (its high side flush with the landing), then 1 lower each;
+            put(x, zc, y, "S", "west" if east else "east"); order.append((x, zc, y)); y -= 1     # the next landing 1 under the last stair
         # the turn landing (3 x 7: this lane, the wall, the next lane) or the end landing
         lx = range(xe1, xe2 + 1) if east else range(xw1, xw2 + 1)
         if east and xs[-1] < xf2:                   # a short flight: flat to the landing
             for x in range(xs[-1] + 1, xf2 + 1): put(x, zc, y, "L", None)
+        if not east and xs[-1] > xw2 + 1:
+            for x in range(xw2 + 1, xs[-1]): put(x, zc, y, "L", None)
         last = k == len(DESC_FLIGHTS) - 1
         for x in lx:
             for dz in ((-1, 0, 1) if last else (-5, -4, -3, -2, -1, 0, 1)): cells[(x, zc + dz)] = (y, "L", None)
@@ -187,7 +189,8 @@ def relief(gr):
     halves = {}
     for i, j in zip(*np.nonzero(sand)):
         x, z = j + gr["x1"], i + gr["z1"]
-        halves[(x, z)] = 2 * (W - 4) + 3 + (-42 - z)    # surface in half blocks: 112.5 at z -42 ... 116.5 at z -50 (the causeway: 117)
+        halves[(x, z)] = min(2 * (W + 2), 2 * (W - 4) + 1 + (-42 - z) + max(0, 397 - x))   # surface in half blocks: 111.5 at z -42
+        # (the floor of the knock zone is 111) .. 115.5 at z -50, then west 116 .. 117 (x 394): the causeway (117) by +0.5 steps
     # the rift: a dry sill W+2 along the lake, down half a block per cell to W-7, the east end up to the ground
     for i, j in zip(*np.nonzero(rift)):
         x, z = j + gr["x1"], i + gr["z1"]
