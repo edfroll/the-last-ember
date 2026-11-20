@@ -18,3 +18,11 @@ maze_terrace    overworld box  -223 36 -503  -78 116 -358   # T-024: the terrace
 garden_glass    overworld box  318 87 -340  357 133 -304   # T-025: the orangery of the Garden of Silence (floor -4 .. crown)
 garden_house    overworld box  236 117 -277  248 132 -267   no_spawn   # T-025: the gardener's house (+2)
 fens_hut        overworld cyl -390 340 24 127 172   no_spawn   # T-026: the Hut of the Three Witches with its pier (r 24, W-7..W+38)
+cemetery        overworld box  124 64 374  276 143 526   # T-027: the Cemetery of the Fallen Knights (W-30 .. the swords +4; adventure: only the graves by the shovel)
+cemetery_crypt  overworld box  224 72 392  251 103 463   dungeon   # T-027: the crypt of the Magister
+cemetery_barrow_1 overworld box  215 95 448  223 103 459   dungeon   # T-027: barrow 1
+cemetery_barrow_2 overworld box  252 92 448  260 100 459   dungeon   # T-027: barrow 2
+cemetery_barrow_3 overworld box  206 98 480  217 106 488   dungeon   # T-027: barrow 3
+cemetery_barrow_4 overworld box  257 94 494  268 102 502   dungeon   # T-027: barrow 4
+cemetery_barrow_5 overworld box  140 93 509  148 101 520   dungeon   # T-027: barrow 5
+lodge           overworld cyl 105 444 16 177 227   no_spawn   # T-027: the Keeper's Lodge (r 16 round the house)
