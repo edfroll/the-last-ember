@@ -309,7 +309,7 @@ def status():
     mode, places, changed = plan(m)
     print("changed world inputs since the cache: %s" % (", ".join(changed) if changed else "none"))
     print("mode: %s%s" % (mode, (" " + " ".join(places)) if places else ""))
-    print({"final": "  -> python3 tools/world_cache.py restore final, then start (nothing to rebuild)",
+    print({"final": "  -> python3 tools/world_cache.py restore final && tools/build/rebuild.sh --start-only   (nothing to rebuild)",
            "redo": "  -> python3 tools/world_cache.py redo " + " ".join(places),
            "gen": "  -> tools/build/rebuild.sh --cache   (everything after the generation of chunks)",
            "scratch": "  -> tools/build/rebuild.sh            (from scratch)"}[mode])
@@ -331,7 +331,7 @@ def redo(places):
         else: print("  %s: new since the cache, its box is untouched in the archive" % p)
         print("  %s: step" % p); run_lines(secs[p], log)
     print("  tail (biomes, borders, sync)"); run_lines(secs["tail"], log)
-    print("redo done in %d s (log %s); now start the server as rebuild.sh does: tools/build/rebuild.sh --start-only" % (time.time() - t0, log))
+    print("redo done in %d s (log %s); now: tools/build/rebuild.sh --start-only" % (time.time() - t0, log))
 
 
 def main():
