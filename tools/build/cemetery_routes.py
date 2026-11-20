@@ -7,7 +7,7 @@ server/build/r1/cemetery.json:
   c_up        the top of the hill -> the hill stair -> the trails -> the descent -> the gate -> the pad
   c_crypt     the crypt (door open, the Magister laid to rest): the vestibule -> the stair -> the trap corridor -> the stair -> the hall ->
               the exit (bars open) -> its passage up -> out at the foot of the slope
-  c_barrow_N  barrow N: in front -> the dromos -> the chamber -> the stair up -> out over the top of the mound -> down beside it
+  c_barrow_N  barrow N: in front -> the dromos -> the chamber -> the stair up -> out over the top of the mound -> down its side by the dromos
 Points: centres of the cells of the ways the generator laid, with the feet level, reduced to the turns."""
 import json, math, os, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -62,8 +62,7 @@ for br in M["barrows"]:
     lx0 = L2G[(0, 8)]; side = (lx0[0] - L2G[(1, 8)][0], lx0[1] - L2G[(1, 8)][1])      # the direction to the left wall, outward
     off = [lx0[0] + side[0] * 4 + 0.5, lx0[1] + side[1] * 4 + 0.5]
     routes["c_barrow_%d" % br["id"]] = [[fx + dx * 2 + 0.5, fz + dz * 2 + 0.5, Eb + 1.0], g(4, 11) + [Eb + 1.0], g(4, 8) + [Eb + 1.0], g(3, 7) + [Eb + 1.0],
-                                        g(3, 1) + [Eb + 1.0], g(2, 1) + [Eb + 1.0], g(2, 7) + [Eb + 7.0], g(2, 8) + [Eb + 7.0], g(0, 8) + [Eb + 7.0], g(0, 11) + [Eb + 3.0],
-                                        [fx + dx * 2 + 0.5, fz + dz * 2 + 0.5, Eb + 1.0]]
+                                        g(3, 1) + [Eb + 1.0], g(2, 1) + [Eb + 1.0], g(2, 7) + [Eb + 7.0], g(2, 8) + [Eb + 7.0], g(0, 8) + [Eb + 7.0], g(0, 11) + [Eb + 3.0]]
 for n, pts in routes.items():
     s = pts[0]
     json.dump(dict(start=[s[0], s[2], s[1]], points=[[p[0], p[1], p[2]] for p in pts[1:]]), open(os.path.join(OUT, n + ".json"), "w"))
