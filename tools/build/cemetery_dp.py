@@ -150,7 +150,8 @@ def run(R, meta, out):
     for g in gv:
         if g["kind"] not in ("right", "thane"): continue
         for dy in (1.5, 2.5, 3.5, 4.5):
-            L.append("execute if score #g%d le.cem matches 0 run particle minecraft:soul_fire_flame %d.5 %.1f %d.5 0.08 0.3 0.08 0.0 2 force @s" % (g["n"], g["x"], g["y"] + dy, g["z"]))
+            L.append("execute if score #g%d le.cem matches 0 run particle minecraft:soul_fire_flame %d.5 %.1f %d.5 0.08 0.3 0.08 0.0 5 force @s" % (g["n"], g["x"], g["y"] + dy, g["z"]))
+        L.append("execute if score #g%d le.cem matches 0 run particle minecraft:end_rod %d.5 %.1f %d.5 0.05 0.9 0.05 0.0 2 force @s" % (g["n"], g["x"], g["y"] + 3.0, g["z"]))
     w("spy", L)
     # ------------------------------------------------------------------ the crypt: the door, the Magister, the seal, the chest, the exit
     d0 = "minecraft:iron_door[facing=north,half=%s,hinge=left,open=%s,powered=false]"

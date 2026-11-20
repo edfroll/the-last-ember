@@ -65,7 +65,7 @@ def grave():
     shot("grave_candles", (p["x"] + 4.5, p["y"] + 3, p["z"] + 6.5), (p["x"], p["y"] + 2, p["z"] - 1)); day()
 def barrow():
     b = M["barrows"][0]; fx, fz = b["front"]; dx, dz = P.DIRS[b["facing"]]
-    shot("barrow_out", (fx + dx * 9 + 3, b["E"] + 5, fz + dz * 9 + 3), (fx, b["E"] + 3, fz - dz * 4))
+    shot("barrow_out", (fx + dx * 10, b["E"] + 12, fz + dz * 10), (fx, b["E"] + 3, fz - dz * 5))
     ix, iz = b["inside"]
     R(f"execute positioned {ix} {b['E'] + 2} {iz} run summon minecraft:marker ~ ~ ~ {{Tags:[\"le.shotlight\"]}}")
     R(f"setblock {ix} {b['E'] + 3} {iz} minecraft:light[level=12]")
@@ -82,19 +82,23 @@ def crypt():
     hx1, hy, hz1, hx2, _, hz2 = CR["hall"]
     shot("crypt_hall", (d[0] + 0.5, hy + 4, hz2 - 0.5), CR["sarc"])
 def mobs():
-    R("difficulty easy"); night()
-    hx1, hy, hz1, hx2, _, hz2 = CR["hall"]; s = CR["sarc"]
-    R("scoreboard players set #q le.cem 3"); R("scoreboard players set #door le.cem 1"); R("function last_ember:cemetery/save")
-    R("gamemode survival Cam"); R(f"tp Cam {s[0] + 0.5} {hy + 1} {hz2 - 2.5}"); time.sleep(6)
+    R("difficulty easy"); day()
+    hx1, hy, hz1, hx2, _, hz2 = CR["hall"]; sx, sy, sz = CR["sarc"]
+    R("function last_ember:cemetery/gen/mag_summon"); time.sleep(1)
     R("execute as @e[type=minecraft:skeleton,tag=le.cmag] run data merge entity @s {NoAI:1b}")
-    shot("magister", (s[0] + 0.5, hy + 1, s[2] + 7.5), (s[0] + 0.5, hy + 2.5, s[2] + 0.5))
-    R("function last_ember:cemetery/mag_leash"); R("scoreboard players set #q le.cem 0"); R("scoreboard players set #door le.cem 0"); R("function last_ember:cemetery/save")
-    g = G[7]
-    R(f"execute positioned {g['x'] + 4} {g['y'] + 1} {g['z']} run function last_ember:cemetery/spirit_knight")
-    R(f"execute positioned {g['x'] - 3} {g['y'] + 1} {g['z'] + 2} run function last_ember:cemetery/spirit_vex")
-    R("execute as @e[tag=le.cspirit] run data merge entity @s {NoAI:1b}")
-    shot("spirits", (g["x"] + 0.5, g["y"] + 2, g["z"] + 9), (g["x"] + 0.5, g["y"] + 2, g["z"]))
-    R("execute as @e[tag=le.cspirit] at @s run function last_ember:cemetery/spirit_gone"); R("difficulty peaceful"); day()
+    R(f"tp @e[type=minecraft:skeleton,tag=le.cmag] {sx + 0.5} {sy + 1} {sz + 4.5} 0 0")
+    R(f"setblock {sx} {sy + 5} {sz + 6} minecraft:light[level=12]")
+    shot("magister", (sx + 0.5, sy, sz + 9.5), (sx + 0.5, sy + 2.2, sz + 4.5))
+    R(f"setblock {sx} {sy + 5} {sz + 6} minecraft:air"); R("function last_ember:cemetery/mag_leash")
+    g = G[2]; x, y, z = g["x"], g["y"] + 1, g["z"]
+    R("gamemode survival Cam2"); R(f"tp Cam2 {x + 6.5} {y} {z + 1.5}")              # a living player near: spirits leave when only spectators are
+    R(f"execute positioned {x + 2.5} 0 {z + 4.5} positioned over motion_blocking_no_leaves run function last_ember:cemetery/spirit_knight")
+    R(f"execute positioned {x - 1.5} 0 {z + 4.5} positioned over motion_blocking_no_leaves run function last_ember:cemetery/spirit_vex")
+    R("execute as @e[tag=le.cspirit] run data merge entity @s {NoAI:1b}"); R("effect give @e[tag=le.cspirit] minecraft:fire_resistance infinite 0 true")
+    R("execute as @e[tag=le.cspirit] at @s run tp @s ~ ~ ~ 180 0")
+    shot("spirits", (x + 0.5, y + 3, z + 11.5), (x + 0.5, y + 1.5, z + 4.5), settle=8)
+    R("gamemode spectator Cam2"); R("tp Cam2 240 250 300")
+    R("execute as @e[tag=le.cspirit] at @s run function last_ember:cemetery/spirit_gone"); R("difficulty peaceful")
 def lodge():
     hx, hy, hz = LO["centre"]
     shot("lodge_out", (122, 201, 432), (104, 199, 444))
@@ -105,9 +109,9 @@ def lodge():
     h = LO["holder"]; shot("lodge_shed", (h[0] - 3.5, h[1] - 1, h[2] + 0.5), (h[0] + 1, h[1], h[2] + 0.5))
 def spyglass():
     night(); R("scoreboard players set #q le.cem 0")
-    sp = LO["spyglass"]; R("gamemode survival Cam"); R(f"tp Cam {sp[0] - 0.5} {sp[1] - 1} {sp[2] + 0.5} -90 10"); time.sleep(2)
-    R("execute store result score Cam le.cspy run time query gametime"); R("scoreboard players add Cam le.cspy 600")
-    shot("spyglass_night", (sp[0] - 0.5, sp[1] - 1, sp[2] + 0.5), (200, 100, 470), spectator=False, settle=4)
+    R("execute store result score Cam le.cspy run time query gametime"); R("scoreboard players add Cam le.cspy 1200")
+    shot("spyglass_gate", (127.5, 193, 448.5), (205, 96, 470), settle=5)      # from the gate: from the lodge the hollow is hidden by the shoulder
+    shot("spyglass_night", (210.5, 99, 474.5), (204.5, 96, 468.5), settle=5)          # over the floor: the columns over the right graves (1, 5) and Thane's
     R("scoreboard players reset Cam le.cspy"); day()
 def faded():
     R("function last_ember:region/gen/fade_r1"); time.sleep(6)
@@ -116,10 +120,9 @@ def faded():
     d = CR["door"]; shot("faded_keeper", (d[0] + 0.5, d[1] + 1, d[2] + 9), (d[0] + 0.5, d[1] + 1, d[2] + 2))
     R("function last_ember:region/gen/unfade_r1"); time.sleep(5)
 def window():
-    R("function last_ember:cemetery/reset"); R("gamemode survival Cam")
-    k = M["dp"]["keeper_day"]; R(f"tp Cam {k[0] - 1.6} {k[1]} {k[2]}"); time.sleep(2)
-    R(f"execute as Cam at @s anchored eyes run tp @s ~ ~ ~ facing {k[0]} {k[1] + 1.2} {k[2]}"); time.sleep(0.5)
-    tc.act("Cam", "!use"); time.sleep(2.0)
+    R("function last_ember:cemetery/reset"); R("gamemode survival Cam"); R("tp Cam 105.5 197 436.5"); time.sleep(4)
+    tt = load("tt", "tools/test_cemetery.py")
+    tt.talk("Cam"); time.sleep(1.5)
     nm = "window_intro"
     d = os.path.join(CL, "shot-done.txt")
     if os.path.exists(d): os.remove(d)
