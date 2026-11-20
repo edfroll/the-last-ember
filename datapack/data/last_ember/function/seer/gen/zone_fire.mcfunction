@@ -9,6 +9,7 @@ execute if entity @s[x=-166,y=104,z=-446,dx=32,dy=29,dz=32] run scoreboard playe
 execute if entity @s[x=-228,y=31,z=-508,dx=155,dy=90,dz=155] run scoreboard players set #inz le.e 1
 execute if entity @s[x=313,y=82,z=-345,dx=49,dy=56,dz=46] run scoreboard players set #inz le.e 1
 execute if entity @s[x=231,y=112,z=-282,dx=22,dy=25,dz=20] run scoreboard players set #inz le.e 1
+execute if entity @s[x=-419,y=122,z=311,dx=58,dy=55,dz=58] run scoreboard players set #inz le.e 1
 execute if entity @s[x=-11,y=97,z=-11,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
 execute if entity @s[x=107,y=184,z=437,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1
 execute if entity @s[x=-161,y=104,z=-373,dx=22,dy=19,dz=22] run scoreboard players set #inz le.e 1

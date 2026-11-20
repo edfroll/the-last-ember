@@ -277,18 +277,55 @@ def features(gr, W, bw, holes):
     # boardwalk: on the bowl, 3 off the main channel, 2 off the side channels
     nearch = (cheb_dist(mainm, 4) <= 1) | (cheb_dist(sidem, 3) <= 1)
     bc = np.where(bw & (inner >= 1) & ~nearch & ~hut, 1.0 + np.abs(bf - W) * 0.2 + (cheb_dist(mainm, 6) <= 3) * 3.0, np.inf)
-    board = route(gr, bc, BOARD_WP, 4)
-    # its width: the line and the cell on its left (a 2-wide deck); gaps: 5 gaps of 3 cells along it, every ~1/6, the 4th one dark
-    deck = []
-    for k, (x, z) in enumerate(board):
-        a = board[max(0, k - 2)]; b_ = board[min(len(board) - 1, k + 2)]
-        tx, tz = b_[0] - a[0], b_[1] - a[1]
-        nx, nz = (0, -1 if tx > 0 else 1) if abs(tx) >= abs(tz) else (1 if tz > 0 else -1, 0)    # left of the way
-        deck.append(((x, z), (x + nx, z + nz), (nx, nz)))
-    n = len(board); gaps = []
-    for g in range(5):
-        k = int(n * (g + 1) / 6.5) + 3
-        gaps.append(dict(k=k, dark=(g == 3)))
+    board0 = route(gr, bc, BOARD_WP, 4)
+    # a boardwalk runs in straight spans: the found way is redrawn as runs along x and z (an L between anchors 24 apart), so the deck is
+    # 2 wide everywhere and a corner is a full 2x2 (a diagonal staircase of cells would leave notches to fall through)
+    def lpath(a, b_, first):
+        out = [a]; x, z = a
+        for ax in (first, "z" if first == "x" else "x"):
+            if ax == "x":
+                while x != b_[0]: x += 1 if b_[0] > x else -1; out.append((x, z))
+            else:
+                while z != b_[1]: z += 1 if b_[1] > z else -1; out.append((x, z))
+        return out
+    anchors = board0[::24] + ([board0[-1]] if (len(board0) - 1) % 24 else [])
+    line = [anchors[0]]
+    for a, b_ in zip(anchors, anchors[1:]):
+        seg = None
+        for first in ("x", "z"):
+            s_ = lpath(a, b_, first)
+            if all(np.isfinite(bc[ix(gr, *q)]) for q in s_): seg = s_; break
+        if seg is None: seg = cells_of([(q[0] + 0.5, q[1] + 0.5) for q in astar(bc, a, b_, gr["x1"], gr["z1"])])
+        line += seg[1:]
+    x0, z0 = line[0]
+    line = [(x0, z) for z in range(PIER_OUT[1] + 2, z0)] + line        # from the outer pier's south edge
+    deck = []; extra = []
+    def dirn(k):
+        a = line[k]; b_ = line[min(k + 1, len(line) - 1)] if k + 1 < len(line) else None
+        if b_ is None: b_ = a; a = line[k - 1]
+        return (b_[0] - a[0], b_[1] - a[1])
+    for k, c in enumerate(line):
+        d = dirn(k); n = (d[1], -d[0])                       # the left of the way
+        deck.append((c, (c[0] + n[0], c[1] + n[1]), n))
+        if k:
+            di = (c[0] - line[k - 1][0], c[1] - line[k - 1][1]); ni = (di[1], -di[0])
+            if di != d: extra += [(c[0] + ni[0], c[1] + ni[1]), (c[0] + ni[0] + n[0], c[1] + ni[1] + n[1])]
+    board = line
+    # the gaps: 4..5 on straight runs (4 straight cells before the gap, 5 after: room to land), spread along
+    straight = [k for k in range(6, len(line) - 7) if len({dirn(q) for q in range(k - 4, k + 6)}) == 1]     # straight: 4 cells before, 5 after (room to land)
+    runs = []; r0 = 0
+    for k in range(1, len(line)):
+        if dirn(k) != dirn(k - 1): runs.append(k - r0); r0 = k
+    print("   boardwalk: %d cells, runs %s, straight places for gaps %d" % (len(line), runs, len(straight)))
+    n = len(line); gaps = []
+    for g in range(5):                                       # HQ: 4..6 gaps; as many as the straight runs hold (one gap needs 10 cells)
+        want = int(n * (g + 1) / 6.2) + 2
+        free_ = [q for q in straight if all(abs(q - gg["k"]) >= 10 for gg in gaps)]
+        if not free_: break
+        gaps.append(dict(k=min(free_, key=lambda q: abs(q - want)), dark=False))
+    if len(gaps) < 4: raise SystemExit("the boardwalk has room for %d gaps only (HQ: 4..6)" % len(gaps))
+    gaps.sort(key=lambda g_: g_["k"])
+    gaps[len(gaps) // 2 if len(gaps) == 4 else 3]["dark"] = True      # the dark one: the 3rd of 4, the 4th of 5
     # pools: 5 small ponds beside the channels (3x3 .. 5x5), > 30 from the hut, > 25 apart
     chm = mainm | sidem; allc = main + [c for s_ in side for c in s_]
     pools = []
@@ -311,7 +348,7 @@ def features(gr, W, bw, holes):
         if not best: raise SystemExit("no pool site near %s" % ((px, pz),))
         pools.append(dict(id=k + 1, x=best[1], z=best[2], r=r))
     # ruins: 6 houses on piles near the side channels: footprint (+-4) in the bowl, off the channels, the boardwalk, the pools, 14 apart
-    boardm = mask_of(gr, [c for d_ in deck for c in d_[:2]]); bd = cheb_dist(boardm, 6); pd_ = cheb_dist(mask_of(gr, [(p["x"], p["z"]) for p in pools]), 9)
+    boardm = mask_of(gr, [c for d_ in deck for c in d_[:2]] + extra); bd = cheb_dist(boardm, 6); pd_ = cheb_dist(mask_of(gr, [(p["x"], p["z"]) for p in pools]), 9)
     chd2 = cheb_dist(chm, 3)
     ruins = []; KINDS = [(1, 0, "note"), (0, 1, "empty"), (1, 1, "ambush"), (0, 0, "ruin"), (0, 2, "ruin"), (1, 2, "ruin")]
     for k, (rx, rz, _) in enumerate(RUINS):
@@ -329,18 +366,24 @@ def features(gr, W, bw, holes):
                 if best is None or sc < best[0]: best = (sc, qx, qz)
         if not best: raise SystemExit("no ruin site near %s" % ((rx, rz),))
         ruins.append(dict(id=k + 1, x=best[1], z=best[2], kind=kind, rot=rot, role=role))
-    return dict(main=main, side=side, mainm=mainm, sidem=sidem, board=board, deck=deck, gaps=gaps, pools=pools, inner=inner, ruins=ruins)
+    return dict(main=main, side=side, mainm=mainm, sidem=sidem, board=[d_[0] for d_ in deck], deck=deck, extra=extra, gaps=gaps, pools=pools, inner=inner, ruins=ruins)
 
 def climb(gr, W):
-    """the start cell (west of the pad of bonfire 5, level with it), the end (the land end of the outer pier on the berm), K steps"""
-    al = gr["allow"]
-    hz = HEARTH5[2]; pad_y = HEARTH5[1] - 1
-    start = None
-    for x in range(HEARTH5[0], HEARTH5[0] - 40, -1):
-        if not al[ix(gr, x, hz)]: start = (x, hz); break
-    gr["f0"] = pad_y + 1                                   # feet level on the pad
+    """the start cell (next to the pad of bonfire 5, level with it: the 1:1 rims of the pad (T-022) are left alone, so the way starts
+    where the pad meets the land flat), the end (the land end of the outer pier on the berm), K steps"""
+    al = gr["allow"]; bf = gr["before"]; X, Z = gr["X"], gr["Z"]
+    pad_y = HEARTH5[1] - 1; gr["f0"] = pad_y + 1                  # feet level on the pad
     K = 2 * ((W + 2) - gr["f0"])
-    end = (PIER_OUT[0] + 7, PIER_OUT[1])
+    end0 = (PIER_OUT[0] + 7, PIER_OUT[1])
+    cands = []
+    for i, j in zip(*np.nonzero(~al & gr["core"])):
+        x, z = int(X[i, j]), int(Z[i, j])
+        if bf[i, j] != pad_y: continue
+        if not any(al[i + a, j + c] and bf[i + a, j + c] == pad_y for a, c in ((1, 0), (-1, 0), (0, 1), (0, -1))): continue
+        if math.hypot(x - HEARTH5[0], z - HEARTH5[2]) > 14: continue
+        cands.append((abs(x - end0[0]) + abs(z - end0[1]), x, z))
+    _, sx, sz = min(cands)
+    start = (sx, sz); end = end0
     if (abs(end[0] - start[0]) + abs(end[1] - start[1]) - K) % 2: end = (end[0] - 1, end[1])     # a 4-connected line of K steps: parity
     return start, end, K
 
@@ -386,6 +429,7 @@ def relief(gr, W, bw, holes, hills, ft, cpath):
                 if g["dark"]: dark.add(c)
                 elif k == g["k"]: tuss.add(c)
         else: deckc.add(a); deckc.add(b_)
+    deckc |= set(ft["extra"]) - set(gapc)
     for c in deckc:
         i, j = ix(gr, *c); T[i, j] = min(T[i, j], W)
     for c, g in gapc.items():
@@ -529,7 +573,7 @@ def plan_main():
                 checks="checks: berm max %d over the natural ground (stop > 8); cut > 15 on %.1f%% of the bowl (stop >= 10%%), max cut %d" % (ck["berm_max"], 100 * ck["cut15"], ck["cut_max"]),
                 checks2="climb %d cells (60..100), main channel %d (150..220), boardwalk %d" % (len(cpath), len(ft["main"]), len(ft["board"])))
     plan_png(gr, W, bw, holes, hills, ft, rl, cpath, os.path.join(ROOT, "docs/reports/T-026/fens_plan.png"), meta)
-    return gr, W, bw, holes, hills, ft, cpath, rl, ck
+    return gr, W, bw, holes, hills, ft, cpath, rl, ck, meta
 # ---------------------------------------------------------------- the blocks of the whole place
 BOTTOM = Mix({"mud": 55, "clay": 25, "coarse_dirt": 10, "muddy_mangrove_roots": 10}, 5701)
 BOGLAND = Mix({"mud": 30, "grass_block[snowy=false]": 30, "coarse_dirt": 15, "moss_block": 10, "muddy_mangrove_roots": 15}, 5702)
@@ -705,6 +749,19 @@ def write_terrain(gr, rl, b, W):
     write_grid(os.path.join(OUT, "fens_terrain.bin"), gr["x1"], gr["z1"], H, F, Wg, S, np.full(T.shape, R_STONE, np.uint8), np.zeros(T.shape, np.uint8))
     return int(touch.sum())
 
+def unsnow(b, gr, rl):
+    """HQ T-026, 1: no snow in the place - also the snow blocks and the powder snow of the snowy slopes under the ground (read from the
+    world: tools/build/fens_scan.py): dirt within 3 of the ground, stone deeper; snow layers, spruces and cherries: air"""
+    import fens_scan
+    T = rl["T"]; n = 0
+    for (x, y, z, nm) in fens_scan.scan(os.path.join(ROOT, "server/world"), inside=lambda x, z: bool(in_place(x, z)) and not gr["allow"][ix(gr, x, z)]):
+        if b.get(x, y, z) is not None: continue
+        g = int(T[ix(gr, x, z)])
+        if nm in ("minecraft:snow_block", "minecraft:powder_snow") and y <= g: b.set(x, y, z, "minecraft:dirt" if y >= g - 3 else "minecraft:stone")
+        else: b.set(x, y, z, "minecraft:air")
+        n += 1
+    return n
+
 def ruin_templates():
     """structure/fens/ruin_a.nbt, ruin_b.nbt (the 2 templates of the ruins; placed in the world by BlockWriter, rotated)"""
     import fens_build as FB, subprocess
@@ -722,10 +779,11 @@ def data_files(meta, W):
     replace_lines(os.path.join(ROOT, "altars/keys.txt"), ["crown_witches "], ["crown_witches 1 %d,%d,%d Венец Трёх Ведьм" % (t[0], t[1], t[2])])
 
 def main():
-    gr, W, bw, holes, hills, ft, cpath, rl, ck = plan_main()
+    gr, W, bw, holes, hills, ft, cpath, rl, ck, pmeta = plan_main()
     if ck["berm_max"] > 8 or ck["cut15"] >= 0.10: raise SystemExit("HQ T-026, 1: the berm or the cut is over the limit: stop, send the plan")
     b, c, meta = build(gr, W, bw, holes, hills, ft, rl)
     nair = surface(b, c, gr, rl, bw, ft)
+    nsnow = unsnow(b, gr, rl)
     from connect import connect
     connect(b)
     bad = [k for k in b.v if not in_place(k[0], k[2])]
@@ -740,16 +798,20 @@ def main():
         a, b2, nv = ft["deck"][g["k"]]
         gaps.append(dict(k=g["k"], dark=g["dark"], x=a[0], z=a[1], cells=[list(ft["deck"][kk][q]) for kk in (g["k"] - 1, g["k"], g["k"] + 1) for q in (0, 1)]))
     dark = next(g for g in gaps if g["dark"])
+    c0 = rl["cpath"][0]; pad_y = HEARTH5[1] - 1
+    climb_pad = next([c0[0] + a, c0[1] + d] for a, d in ((1, 0), (-1, 0), (0, 1), (0, -1)) if gr["allow"][ix(gr, c0[0] + a, c0[1] + d)] and gr["before"][ix(gr, c0[0] + a, c0[1] + d)] == pad_y)
     amb = next(r_ for r_ in meta["ruins"] if r_["role"] == "ambush")
     out = dict(W=W, floor=W + 4, hut=meta["hut"], hut_centre=[HCX, HCZ], platform=[HX1, HZ1, HX2, HZ2], pools=[dict(p, y=W) for p in ft["pools"]], gaps=gaps, dark=dark,
                dark_posts=meta["dark_posts"], boats=meta["boats_out"] + meta["hut"]["boats_hut"], pier_out=meta["pier_out"], ruins=meta["ruins"],
                lanterns=meta["lanterns"], main=ft["main"], board=ft["board"], deck=[[list(a), list(b2)] for a, b2, _ in ft["deck"]], climb=[[x, y, z, h] for (x, y, z, h) in meta["climb"]],
-               cpath=rl["cpath"], cprof=rl["prof"], hearth=list(HEARTH5), chest=amb["chest"], chest_facing=amb["chest_facing"], terrain_columns=ncol, blocks=n, air=nair, trees=meta["trees"], checks=ck)
+               cpath=rl["cpath"], cprof=rl["prof"], hearth=list(HEARTH5), climb_pad=climb_pad, chest=amb["chest"], chest_facing=amb["chest_facing"], terrain_columns=ncol, blocks=n, air=nair, trees=meta["trees"], checks=ck)
     import fens_dp
     fens_dp.run(sys.modules[__name__], out)
     data_files(meta, W)
     json.dump(out, open(os.path.join(OUT, "fens.json"), "w"), ensure_ascii=False)
-    print(f"fens: terrain {ncol} columns, {n} blocks (air {nair}), trees {meta['trees']}, ruins {len(meta['ruins'])}, lanterns {len(meta['lanterns'])}, W {W}")
+    pmeta.update(lanterns=meta["lanterns"], ruins=meta["ruins"])            # the plan again, with the lanterns and the roles of the ruins
+    plan_png(gr, W, bw, holes, hills, ft, rl, cpath, os.path.join(ROOT, "docs/reports/T-026/fens_plan.png"), pmeta)
+    print(f"fens: terrain {ncol} columns, {n} blocks (air {nair}, snow replaced {nsnow}), trees {meta['trees']}, ruins {len(meta['ruins'])}, lanterns {len(meta['lanterns'])}, W {W}")
 
 if __name__ == "__main__" and sys.argv[1:2] == ["plan"]:
     plan_main()

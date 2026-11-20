@@ -97,6 +97,13 @@ def run(R, meta):
         w("talkbox_%d" % k, [hdr + "the talk box of the witch %d" % k, "kill @e[type=minecraft:interaction,tag=le.ft%d]" % k,
                              'summon minecraft:interaction %.2f %d %.2f {Tags:["le.ftalk","le.ft%d"],width:%.2ff,height:%.2ff,response:1b}' % (bx, by, bz, k, bw_, bh)])
         L.append("execute if loaded %d %d %d unless entity @e[type=minecraft:interaction,tag=le.ft%d] run function last_ember:fens/gen/talkbox_%d" % (item[k][0], item[k][1], item[k][2], k, k))
+    # the entities of a chunk load a little after its blocks: a witch / talk box summoned before the old one came in is one too many
+    for k in (1, 2, 3):
+        for typ, tag in (("witch", "le.fw%d" % k), ("interaction", "le.ft%d" % k)):
+            L.append("execute store result score #c le.fn if entity @e[type=minecraft:%s,tag=%s]" % (typ, tag))
+            L.append("execute if score #c le.fn matches 2.. as @e[type=minecraft:%s,tag=%s,limit=1] run tag @s add le.fone" % (typ, tag))
+            L.append("execute if score #c le.fn matches 2.. run kill @e[type=minecraft:%s,tag=%s,tag=!le.fone]" % (typ, tag))
+            L.append("tag @e[type=minecraft:%s,tag=le.fone] remove le.fone" % typ)
     # NoAI does not stop a witch from drinking (vanilla Witch.aiStep): she drinks healing when her health is below the maximum, fire
     # resistance when burning, water breathing under water. Invulnerable + the two endless effects keep her from all three; on top of
     # that a potion she took into her hand is taken away (her drink ends with nothing in it) and her health is kept full
@@ -258,9 +265,14 @@ def run(R, meta):
                   "data modify storage last_ember:r1 m.fens_chest set value %s" % json.dumps(meta["chest"]),
                   "data modify storage last_ember:r1 m.fens_enchant set value %s" % json.dumps(hut["enchant"])])
     # ------------------------------------------------------------------ boats: 4 places (2 at the outer pier, 2 at the hut's)
-    L = [hdr + "every second: a boat that is not at its place while nobody is within 32 of the place comes back (the old one goes when nobody rides it); 4 at most"]
+    L = [hdr + "every second: a boat that is not at its place while nobody is within 32 of the place comes back (the old one goes when nobody rides it); 4 at most",
+         "# (a boat left in a chunk that was not loaded comes in later: then the one nearest its place stays, an unridden other goes)"]
     for k, (bx, by, bz) in enumerate(meta["boats"], 1):
         L.append("execute if loaded %d %d %d positioned %.1f %d %.1f unless entity @e[type=minecraft:mangrove_boat,tag=le.fb%d,distance=..4] unless entity @a[distance=..32,gamemode=!spectator] run function last_ember:fens/gen/boat_%d" % (bx, by, bz, bx + 0.5, by, bz + 0.5, k, k))
+        L.append("execute store result score #c le.fn if entity @e[type=minecraft:mangrove_boat,tag=le.fb%d]" % k)
+        L.append("execute if score #c le.fn matches 2.. positioned %.1f %d %.1f as @e[type=minecraft:mangrove_boat,tag=le.fb%d,sort=nearest,limit=1] run tag @s add le.fone" % (bx + 0.5, by, bz + 0.5, k))
+        L.append("execute if score #c le.fn matches 2.. as @e[type=minecraft:mangrove_boat,tag=le.fb%d,tag=!le.fone] at @s unless entity @a[distance=..3] run kill @s" % k)
+        L.append("tag @e[type=minecraft:mangrove_boat,tag=le.fone] remove le.fone")
         w("boat_%d" % k, [hdr + "the boat %d back at its place" % k,
                           "execute as @e[type=minecraft:mangrove_boat,tag=le.fb%d] at @s unless entity @a[distance=..3] run kill @s" % k,
                           "execute if entity @e[type=minecraft:mangrove_boat,tag=le.fb%d] run return 0" % k,

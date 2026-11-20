@@ -37,6 +37,7 @@ def water_fence(c, x, y, z, block="spruce_fence"):
 # ---------------------------------------------------------------- the boardwalk (2 wide, deck W+1, gaps with tussocks, the dark gap)
 def boardwalk(b, c, ft):
     W = c.W; deck = ft["deck"]; rl = c.rl; posts = []; route = []
+    on_deck = {q for d_ in deck for q in d_[:2]} | set(ft.get("extra", []))
     gaps = ft["gaps"]
     for k, (a, b2, n) in enumerate(deck):
         g = next((g for g in gaps if g["k"] - 1 <= k <= g["k"] + 1), None)
@@ -55,19 +56,29 @@ def boardwalk(b, c, ft):
         # the railing: chains between fence posts on the outer side (right of the way), on every second stretch of 9
         if g is None and (k // 9) % 2 == 1:
             rx, rz = a[0] - n[0], a[1] - n[1]
-            if not any(gg["k"] - 3 <= k <= gg["k"] + 3 for gg in gaps):
+            if (rx, rz) not in on_deck and not any(gg["k"] - 3 <= k <= gg["k"] + 3 for gg in gaps):
                 if k % 3 == 0:
                     for y in range(c.g(rx, rz) + 1, W + 3): b.set(rx, y, rz, water_fence(c, rx, y, rz))
                 else:
                     tx = deck[min(k + 1, len(deck) - 1)][0][0] - deck[max(k - 1, 0)][0][0]
                     b.set(rx, W + 2, rz, chain("x" if abs(tx) >= 1 else "z"))
-    # the dark gap: piles beside it (the way round by jumping), no tussock
+    # the corners: the full 2x2 (the cells off the two runs)
+    for (x, z) in ft.get("extra", []):
+        if b.get(x, W + 1, z) is None or b.get(x, W + 1, z) == "minecraft:air":
+            b.set(x, W + 1, z, deck_block(x, z, 5201)); pile(b, c, x, z, W)
+            for y in range(W + 2, W + 5):
+                if b.get(x, y, z) is None: b.set(x, y, z, "minecraft:air")
+    # the dark gap: a row of piles beside it (the way round), one pile missing beside its middle: one jump; no tussock
     for g in gaps:
         if not g["dark"]: continue
-        k = g["k"]; a, b2, n = deck[k]
-        for kk in (k - 1, k + 1):
-            aa = deck[kk][0]; px, pz = aa[0] - n[0], aa[1] - n[1]
-            pile(b, c, px, pz, W + 1, "minecraft:mangrove_log[axis=y]"); posts.append((px, W + 1, pz))
+        k = g["k"]; n = deck[k][2]
+        for kk in (k - 2, k - 1, k + 1, k + 2, k + 3):          # two rows of piles beside the gap, one pile-row missing beside its middle
+            for m in (1, 2):
+                aa = deck[kk][0]; px, pz = aa[0] - n[0] * m, aa[1] - n[1] * m
+                pile(b, c, px, pz, W + 1, "minecraft:mangrove_log[axis=y]")
+                if m == 1 and kk != k + 3: posts.append((px, W + 1, pz))
+                for y in range(W + 2, W + 5):
+                    if b.get(px, y, pz) is None: b.set(px, y, pz, "minecraft:air")
     return posts
 
 # ---------------------------------------------------------------- piers
@@ -99,18 +110,22 @@ def climb_blocks(b, c, rl, gr, R):
         for yy in range(y + 1, y + 5):
             if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air")
         out.append((x, y, z, half))
-    # the railing: on the outer cells of the trestle (the drop >= 2), fence posts every 3 with chains between
-    cp = rl["cpath"]
-    for k, (x, z) in enumerate(cp):
-        if (x, z) not in trestle: continue
-        a = cp[max(0, k - 1)]; b_ = cp[min(len(cp) - 1, k + 1)]; tx, tz = b_[0] - a[0], b_[1] - a[1]
-        for sgn in (1, -1):
-            nx, nz = (0, sgn) if abs(tx) >= abs(tz) else (sgn, 0)
-            q = (x + nx, z + nz)
-            if q not in surf or q not in trestle: continue
-            s2 = surf[q]; y = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
-            if b.get(q[0], y + 1, q[1]) not in (None, "minecraft:air"): continue
-            b.set(q[0], y + 1, q[1], fence("spruce_fence") if k % 3 == 0 else chain("x" if abs(tx) >= abs(tz) else "z"))
+    # the railing of the deck on piles: on the cells round it (outside the way), at the deck's level a plank and over it a rail - fence
+    # posts with chains between them (iron chain along the rail), so nobody steps off the high deck
+    rails = {}
+    for (x, z) in trestle:
+        s2 = surf[(x, z)]; y = (s2 - 1) // 2 if s2 % 2 else s2 // 2 - 1
+        for dx in (-1, 0, 1):
+            for dz in (-1, 0, 1):
+                q = (x + dx, z + dz)
+                if q in surf or gr["allow"][R.ix(gr, *q)]: continue
+                rails[q] = max(rails.get(q, -999), y)
+    for (x, z), y in rails.items():
+        if b.get(x, y, z) is None or b.get(x, y, z) == "minecraft:air": b.set(x, y, z, "minecraft:spruce_planks")
+        ax = "x" if ((x - 1, z) in rails and (x + 1, z) in rails) else ("z" if ((x, z - 1) in rails and (x, z + 1) in rails) else None)
+        b.set(x, y + 1, z, chain(ax) if ax and (x + z) % 2 else fence("spruce_fence"))
+        for yy in range(y + 2, y + 4):
+            if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air")
     return out
 
 # ---------------------------------------------------------------- lanterns on poles along the main channel

@@ -8,5 +8,29 @@ execute if loaded -380 140 329 unless entity @e[type=minecraft:interaction,tag=l
 execute if loaded -380 139 348 unless entity @e[type=minecraft:witch,tag=le.fw3,x=-379.5,y=139,z=348.5,distance=..3] run function last_ember:fens/gen/witch_3
 execute as @e[type=minecraft:witch,tag=le.fw3] unless entity @s[x=-379.5,y=139,z=348.5,distance=..0.3] run tp @s -379.5 139 348.5 180.0 0
 execute if loaded -378 141 349 unless entity @e[type=minecraft:interaction,tag=le.ft3] run function last_ember:fens/gen/talkbox_3
+execute store result score #c le.fn if entity @e[type=minecraft:witch,tag=le.fw1]
+execute if score #c le.fn matches 2.. as @e[type=minecraft:witch,tag=le.fw1,limit=1] run tag @s add le.fone
+execute if score #c le.fn matches 2.. run kill @e[type=minecraft:witch,tag=le.fw1,tag=!le.fone]
+tag @e[type=minecraft:witch,tag=le.fone] remove le.fone
+execute store result score #c le.fn if entity @e[type=minecraft:interaction,tag=le.ft1]
+execute if score #c le.fn matches 2.. as @e[type=minecraft:interaction,tag=le.ft1,limit=1] run tag @s add le.fone
+execute if score #c le.fn matches 2.. run kill @e[type=minecraft:interaction,tag=le.ft1,tag=!le.fone]
+tag @e[type=minecraft:interaction,tag=le.fone] remove le.fone
+execute store result score #c le.fn if entity @e[type=minecraft:witch,tag=le.fw2]
+execute if score #c le.fn matches 2.. as @e[type=minecraft:witch,tag=le.fw2,limit=1] run tag @s add le.fone
+execute if score #c le.fn matches 2.. run kill @e[type=minecraft:witch,tag=le.fw2,tag=!le.fone]
+tag @e[type=minecraft:witch,tag=le.fone] remove le.fone
+execute store result score #c le.fn if entity @e[type=minecraft:interaction,tag=le.ft2]
+execute if score #c le.fn matches 2.. as @e[type=minecraft:interaction,tag=le.ft2,limit=1] run tag @s add le.fone
+execute if score #c le.fn matches 2.. run kill @e[type=minecraft:interaction,tag=le.ft2,tag=!le.fone]
+tag @e[type=minecraft:interaction,tag=le.fone] remove le.fone
+execute store result score #c le.fn if entity @e[type=minecraft:witch,tag=le.fw3]
+execute if score #c le.fn matches 2.. as @e[type=minecraft:witch,tag=le.fw3,limit=1] run tag @s add le.fone
+execute if score #c le.fn matches 2.. run kill @e[type=minecraft:witch,tag=le.fw3,tag=!le.fone]
+tag @e[type=minecraft:witch,tag=le.fone] remove le.fone
+execute store result score #c le.fn if entity @e[type=minecraft:interaction,tag=le.ft3]
+execute if score #c le.fn matches 2.. as @e[type=minecraft:interaction,tag=le.ft3,limit=1] run tag @s add le.fone
+execute if score #c le.fn matches 2.. run kill @e[type=minecraft:interaction,tag=le.ft3,tag=!le.fone]
+tag @e[type=minecraft:interaction,tag=le.fone] remove le.fone
 execute as @e[type=minecraft:witch,tag=le.fw] if items entity @s weapon.mainhand * run item replace entity @s weapon.mainhand with minecraft:air
 execute as @e[type=minecraft:witch,tag=le.fw] run data modify entity @s Health set value 26.0f

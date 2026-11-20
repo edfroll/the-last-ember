@@ -173,8 +173,10 @@ def t_trade():
             okb = buy("Cam", k, i)
             chk(f"{KEY[k]} deal {i + 1}: bought ({goods[k][i]})", okb and goods[k][i] in inv("Cam") and "nautilus_shell" not in inv("Cam"), (okb, inv("Cam")[:160]))
     R("clear Cam"); tc.setc(1, 1, 0, "Cam"); R("gamemode survival Cam"); trophy("Cam", 4); R("give Cam minecraft:feather 8")
-    face_witch("Cam", 2); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(1.2)
-    sp = R(f"data get entity {T(2)} Offers.Recipes[0].specialPrice"); tc.act("Cam", "!sneak_off"); time.sleep(1)
+    for _ in range(3):                               # a click may come before the window can open: again
+        face_witch("Cam", 2); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(1.5)
+        sp = R(f"data get entity {T(2)} Offers.Recipes[0].specialPrice"); tc.act("Cam", "!sneak_off"); time.sleep(1)
+        if "-" in sp: break
     chk("a human: the vanilla discount (Hero of the Village) on the witch's deal", "-1" in sp or "-2" in sp, sp)
     R("clear Cam")
     unstage()
@@ -402,8 +404,8 @@ def t_zones():
     print("[zones]"); stage(night=True)
     R("tp Cam -385.5 139 336.5"); time.sleep(1.5)
     chk("in the hut: adventure (no block can be broken)", passed("execute if entity @a[name=Cam,gamemode=adventure]"))
-    R("summon minecraft:zombie -386.5 139 342.5 {PersistenceRequired:1b,Tags:[\"tz\"]}"); time.sleep(2.5)
-    chk("a monster in the hut is removed (no_spawn), the witches stay", count("@e[type=minecraft:zombie,tag=tz]") == 0 and count("@e[type=minecraft:witch,tag=le.fw]") == 3)
+    R("summon minecraft:zombie -386.5 139 342.5 {PersistenceRequired:1b,Tags:[\"tz\"]}"); time.sleep(3.5)
+    chk("a monster in the hut is removed (no_spawn), the witches stay", count("@e[type=minecraft:zombie,tag=tz]") == 0 and count("@e[type=minecraft:witch,tag=le.fw]") == 3, (count("@e[type=minecraft:zombie,tag=tz]"), count("@e[type=minecraft:witch,tag=le.fw]")))
     r = next(r_ for r_ in M["ruins"] if r_["role"] == "empty"); R(f"forceload add {r['x'] - 5} {r['z'] - 5} {r['x'] + 5} {r['z'] + 5}")
     R(f"tp Cam {r['x'] + 0.5} {W + 3} {r['z'] + 6.5}"); time.sleep(2.0)
     chk("in the fens (a ruin): survival, blocks can be broken", passed("execute if entity @a[name=Cam,gamemode=survival]"))

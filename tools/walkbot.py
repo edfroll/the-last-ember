@@ -3,7 +3,8 @@
 (!fwd_on / !fwd_off) and RCON (yaw via tp, position polling). Reports where it gets stuck or falls, with a screenshot.
 Usage: walkbot.py route.json [--player Cam] [--out DIR]
 route.json: {"start": [x, y, z], "points": [[x, z, expected_y], ...]}   (block-centre coordinates are used as given)
-  a point [x, z, expected_y, 1] is jumped to (T-026: a gap of the boardwalk): the jump is pressed as soon as the bot heads for it"""
+  a point [x, z, expected_y, 1] is jumped to (T-026: a gap of the boardwalk): the bot sneaks to the edge (sneaking does not step off it),
+  stands up and jumps from there (a slow client would press a running jump too late)"""
 import argparse, json, math, os, sys, time, importlib.util
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sp = importlib.util.spec_from_file_location("rcon", os.path.join(ROOT, "tools/rcon.py")); rc = importlib.util.module_from_spec(sp); sp.loader.exec_module(rc)
@@ -53,9 +54,14 @@ def main():
         rc.run(f"rotate {P} {yaw:.1f} 20"); cur = yaw
         if not held: agent("!fwd_on"); held = True          # forward stays held from point to point (a slow agent: a release and a new press run the bot on past the turn)
         used = False; side = False; last_jump = 0; pj = 0; t0 = time.time(); best = math.hypot(tx - x, tz - z); last_improve = t0
-        if want_jump and jst == 0: send("!jump_on"); jt = time.time(); jst = 1; jumps[0] += 1; pj += 1
+        edge = False
+        if want_jump and jst == 0:                       # stop, then creep (sneaking) to the edge: the run-up would carry the bot off a small tussock
+            agent("!fwd_off"); time.sleep(0.25); agent("!sneak_on"); agent("!fwd_on"); edge = True; edge_t = time.time()
         while True:
             time.sleep(0.12); x, y, z = pos(P); d = math.hypot(tx - x, tz - z)
+            if edge and time.time() - last_improve > 0.45 and time.time() - edge_t > 0.6:      # at the edge: stand up and jump
+                agent("!hop")                                  # at the edge, forward held: stand up and jump in one tick (the agent's !hop)
+                jt = time.time(); jst = 1; jumps[0] += 1; pj += 1; edge = False; last_improve = time.time(); continue
             if a.clear: rc.run(f"execute at {P} run tp @e[distance=..6,{NOT}] ~ -200 ~")
             if d < 0.6: break
             if d < best - 0.05: best = d; last_improve = time.time()
@@ -65,6 +71,7 @@ def main():
             if jst == 2 and ready():
                 jst = 0; last_jump = time.time()
                 if pj <= 3: best = d; last_improve = time.time()        # the jump may carry the bot past the point: let it walk back
+            if edge: continue
             if a.jump and jst == 0 and time.time() - last_improve > 0.5 and time.time() - last_jump > 0.8:
                 send("!jump_on"); jt = time.time(); jst = 1; jumps[0] += 1; pj += 1   # not waiting: a slow agent (low client fps) answers late
             if jst: continue
@@ -77,6 +84,7 @@ def main():
                 problems.append(("stuck", i, round(x, 1), round(y, 1), round(z, 1), ey)); break
             yaw = math.degrees(math.atan2(-(tx - x), tz - z))
             if abs((yaw - cur + 180) % 360 - 180) > 4: rc.run(f"rotate {P} {yaw:.1f} 20"); cur = yaw   # rotate only: a tp would cancel step-ups
+        if edge: agent("!sneak_off")
         if problems and problems[-1][1] == i:
             if jst == 1: agent("!jump_off")
             jst = 0; agent("!fwd_off"); held = False

@@ -22,7 +22,7 @@ def simplify(pts):
 # the climb: cells with the feet level (s2 / 2)
 climb = [[c[0] + 0.5, c[1] + 0.5, s2 / 2.0] for c, s2 in zip(M["cpath"], M["cprof"])]
 hx, hy, hz = M["hearth"]
-pad = [hx - 3.5, hz + 0.5, hy * 1.0]
+cp_ = M["climb_pad"]; pad = [cp_[0] + 0.5, cp_[1] + 0.5, hy * 1.0]       # the cell of the pad next to the first cell of the climb
 pier_end = [M["pier_out"][0] - 0.5 + 0.5, M["pier_out"][2] + 0.5, W + 2.0]
 # the boardwalk: the line of the way (the first cell of each 2-wide row), feet W+2; the gaps: over the tussock (the middle row of the
 # gap), the dark gap: by the two piles beside it
@@ -31,10 +31,11 @@ board = []; skip = set()
 for k, (a, b) in enumerate(deck):
     if k in skip: continue
     g = gaps.get(k + 2)
-    if g and g["dark"]:                  # deck k -> the pile beside the gap (a diagonal step) -> jump to the second pile -> the deck after the gap
-        (p1, p2) = M["dark_posts"]
-        board += [[a[0] + 0.5, a[1] + 0.5, W + 2.0], [p1[0] + 0.5, p1[2] + 0.5, p1[1] + 1.0], [p2[0] + 0.5, p2[2] + 0.5, p2[1] + 1.0, 1]]
-        skip.update({k + 1, k + 2, k + 3}); continue
+    if g and g["dark"]:                  # deck k -> the row of piles beside the gap (one jump over its middle) -> the deck after the gap
+        p0, p1, p2, p3 = M["dark_posts"]; e = deck[k + 4][0]
+        board += [[a[0] + 0.5, a[1] + 0.5, W + 2.0], [p0[0] + 0.5, p0[2] + 0.5, p0[1] + 1.0], [p1[0] + 0.5, p1[2] + 0.5, p1[1] + 1.0],
+                  [p2[0] + 0.5, p2[2] + 0.5, p2[1] + 1.0, 1], [p3[0] + 0.5, p3[2] + 0.5, p3[1] + 1.0], [e[0] + 0.5, e[1] + 0.5, W + 2.0]]
+        skip.update({k + 1, k + 2, k + 3, k + 4}); continue
     if g:                                # deck k -> jump onto the tussock (the gap's middle row) -> jump onto the deck after the gap
         t = deck[k + 2][0]; n = deck[k + 4][0]
         board += [[a[0] + 0.5, a[1] + 0.5, W + 2.0], [t[0] + 0.5, t[1] + 0.5, W + 2.0, 1], [n[0] + 0.5, n[1] + 0.5, W + 2.0, 1]]
@@ -42,8 +43,9 @@ for k, (a, b) in enumerate(deck):
     board.append([a[0] + 0.5, a[1] + 0.5, W + 2.0])
 board = [b for b in board]
 porch = M["hut"]["porch"]          # the boardwalk's end at the stairs (x, W+1, z): stairs up west to the platform, then into the hall
-hut_in = [[porch[0] - 0.5, porch[2] + 0.5, W + 2.0], [porch[0] - 1.5, porch[2] + 0.5, W + 3.0], [porch[0] - 2.5, porch[2] + 0.5, W + 4.0],
-          [porch[0] - 3.5, porch[2] + 0.5, FL + 1.0], [porch[0] - 8.5, porch[2] + 0.5, FL + 1.0], [porch[0] - 11.5, porch[2] + 0.5, FL + 1.0]]
+px = porch[0]                      # the lowest stair (W+2), then W+3, then the stair at the platform's edge (FL), the platform, the hall door (x -384)
+hut_in = [[px + 1.5, porch[2] + 0.5, W + 2.0], [px + 0.5, porch[2] + 0.5, W + 3.0], [px - 0.5, porch[2] + 0.5, W + 4.0],
+          [px - 1.5, porch[2] + 0.5, FL + 1.0], [px - 5.5, porch[2] + 0.5, FL + 1.0], [-385.5, porch[2] + 0.5, FL + 1.0], [-387.5, porch[2] + 0.5, FL + 1.0]]
 cl = simplify(climb)
 def back(pts):
     """the way back: the jump marks move to the point after each gap seen from the other side"""
