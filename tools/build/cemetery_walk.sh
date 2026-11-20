@@ -18,7 +18,7 @@ walk() {
     echo "$n RETRY :: $(echo "$out" | tr '\n' ' ')" | tee -a "$LOG"
   fi
 }
-for n in c_lodge c_lodge_b c_down c_up; do
+for n in c_lodge c_lodge_b c_spy c_down c_up; do
   [ -n "${1:-}" ] && [[ "$n" != *$1* ]] && continue
   walk $n
 done

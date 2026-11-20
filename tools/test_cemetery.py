@@ -472,13 +472,21 @@ def tro(p): m = re.search(r"(\d+)", R(f"execute store result score #tro le.cem r
 # ---------------------------------------------------------------- spyglass
 def t_spyglass():
     print("[spyglass]"); stage(); reset_all()
-    sp = LO["spyglass"]
-    R("time set noon"); R(f"tp Cam {sp[0] - 1.3} {sp[1] - 1} {sp[2] + 0.5}"); look_at("Cam", sp[0] + 0.5, sp[1] + 0.4, sp[2] + 0.5); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(0.8)
+    sp = M["spyglass"]
+    R("time set noon"); R(f"tp Cam {M['spyglass_eye'][0] + 0.5} {M['spyglass_eye'][1]} {M['spyglass_eye'][2] + 0.5}"); look_at("Cam", sp[0] + 0.5, sp[1] + 0.4, sp[2] + 0.5); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(0.8)
     chk("by day: no lights (the line)", cm("Cam") is None or (tc.score("Cam", "le.cspy") or 0) <= cm("#gt"))
     R("time set midnight"); time.sleep(0.4); tc.act("Cam", "!use"); time.sleep(0.8)
     chk("at night: 15 s of soul lights for Cam (his score), not for Cam2", (tc.score("Cam", "le.cspy") or 0) > (cm("#gt") or 0) and (tc.score("Cam2", "le.cspy") or 0) <= (cm("#gt") or 0))
     v0 = tc.score("Cam", "le.cspy"); tc.act("Cam", "!use"); time.sleep(0.8)
     chk("a second click within 20 s: the cooldown", tc.score("Cam", "le.cspy") == v0)
+    se = M["spyglass_eye"]
+    chk("the spyglass on its post by the SE corner of the pad, the player's cell on the pad next to it (review T-027)",
+        blk(sp[0], sp[1] - 1, sp[2], "minecraft:polished_deepslate_wall") and not blk(se[0], se[1] - 1, se[2], "#minecraft:air") and
+        blk(se[0], se[1], se[2], "#minecraft:air") and blk(se[0], se[1] + 1, se[2], "#minecraft:air") and abs(sp[0] - se[0]) + abs(sp[2] - se[2]) <= 2)
+    R("save-all flush"); time.sleep(2)
+    v = subprocess.run([sys.executable, os.path.join(ROOT, "tools/build/cemetery_view.py")], capture_output=True, text=True)
+    print("    " + "\n    ".join(v.stdout.strip().splitlines()))
+    chk("from there all 6 columns are seen (blocks of the saved world, tools/build/cemetery_view.py)", v.returncode == 0)
     R("time set noon"); reset_all(); unstage()
 
 # ---------------------------------------------------------------- fade

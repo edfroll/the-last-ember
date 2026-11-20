@@ -61,7 +61,10 @@ def build(b, c, R, lr):
         for x in R.STREAM:
             if (x, nxt) not in st_:
                 for yy in range(st_[(x, z)] - 1, st_[(x, z)] + 1): b.set(x, yy, nxt, RET.at(x, yy, nxt)) if not R.P.on_pad(x, nxt) else None
-            # (the falls over the lips form by themselves at the first block update: the scan reads flowing water as air)
+    # the falls over the lips: the scan reads flowing water as air, so the blocks here are still water; the datapack starts the flow
+    # (cemetery/gen/stream: the source at each lip set again when its fall is missing) -> m["falls"] = [[source], [fall cell]]
+    m["falls"] = [[[x, st_[(x, z)], z], [x, st_[(x, z)], z + 1]] for z in zs for x in R.STREAM
+                  if (x, z + 1) in st_ and st_[(x, z + 1)] < st_[(x, z)]]
     for x in R.STREAM:                                       # the spring: a niche in the rock face at z 427
         b.set(x, 196, 427, "minecraft:water[level=0]"); b.set(x, 195, 427, "minecraft:mossy_cobblestone")
         for yy in (197, 198): b.set(x, yy, 427, "minecraft:air")
@@ -139,7 +142,7 @@ def build(b, c, R, lr):
     for (x, z) in wins:
         for yy in (H + 1, H + 2): b.set(x, yy, z, "minecraft:glass_pane")
         b.set(x + (1 if x == hx2 else (-1 if x == hx1 else 0)), H, z + (1 if z == hz2 else (-1 if z == hz1 else 0)), "minecraft:spruce_trapdoor[facing=%s,half=top,open=false,powered=false,waterlogged=false]" % ("east" if x == hx2 else "west" if x == hx1 else "south" if z == hz2 else "north")) if False else None
-    # inside: the hearth at the south wall (campfire in a stone hearth, chimney 1 over it), table, bed, armchair + spyglass by the east window
+    # inside: the hearth at the south wall (campfire in a stone hearth, chimney 1 over it), table, bed, the armchair by the east window
     hx, hz = 104, hz2 - 1
     for x in (hx - 1, hx, hx + 1):
         b.set(x, H + 2, hz, "minecraft:cobblestone"); b.set(x, H + 3, hz, "minecraft:cobblestone")
@@ -168,12 +171,11 @@ def build(b, c, R, lr):
     for (x, z) in ((hx1 + 1, 448), (hx1 + 1, 449)): b.set(x, H, z, st("barrel", facing="up", open="false"))
     for yy in range(H, H + 5): b.set(hx1 + 1, yy, hz1 + 1, "minecraft:ladder[facing=south,waterlogged=false]")
     b.set(hx1 + 1, H + 4, hz1 + 1, "minecraft:ladder[facing=south,waterlogged=false]")
-    # the armchair by the east window (the keeper sits here by day) and the spyglass on its stand next to it
+    # the armchair by the east window (the keeper sits here by day)
     b.set(hx2 - 1, H, 444, stairs("spruce_stairs", "east"))
     b.set(hx2 - 1, H, 443, "minecraft:spruce_trapdoor[facing=south,half=bottom,open=true,powered=false,waterlogged=false]")
     b.set(hx2 - 1, H, 445, "minecraft:spruce_trapdoor[facing=north,half=bottom,open=true,powered=false,waterlogged=false]")
-    b.set(hx2 - 1, H, 441, "minecraft:spruce_fence")
-    m["chair"] = [hx2 - 1, H, 444]; m["spyglass"] = [hx2 - 1, H + 1, 441]; m["window"] = [hx2, H + 1, 441]
+    m["chair"] = [hx2 - 1, H, 444]; m["window"] = [hx2, H + 1, 441]       # the spyglass stands at the gate of the descent (review T-027)
     # lanterns (the warm windows; gone after the fading)
     lan = [(105, H + 3, 441), (103, H + 3, 447), (105, H + 8, 444), (107, H + 3, 446)]
     for (x, y, z) in lan: b.set(x, y, z, lantern("lantern", True))

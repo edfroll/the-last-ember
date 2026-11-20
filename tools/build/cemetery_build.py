@@ -80,6 +80,13 @@ def gate(b, c):
         for yy in (y + 1, y + 2, y + 3): b.set(x + 1, yy, zz, "minecraft:iron_bars"); b.set(x + 2, yy, zz, "minecraft:iron_bars")
     return [x, y + 1, 448]
 
+def spyglass_stand(b, c, x, y, z, pad_y):
+    """the spyglass of the keeper on a post at the head of the descent (review T-027: from the lodge the hollow is not seen): a deepslate
+    wall post from the ground y up to the pad level pad_y + 1, the spyglass (item_display) and its click box over it -> [x, top + 1, z]"""
+    top = max(y + 1, pad_y + 1)
+    for yy in range(y + 1, top + 1): b.set(x, yy, z, "minecraft:polished_deepslate_wall")
+    return [x, top + 1, z]
+
 def lights(b, c, desc):
     """lanterns on posts at the top of the descent (the first three landings), nothing lower: the floor and the barrows stay dark"""
     out = []

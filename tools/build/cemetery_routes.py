@@ -3,6 +3,7 @@
 server/build/r1/cemetery.json:
   c_lodge     the pad of bonfire 2 -> the road -> the footbridge -> the yard -> the lodge door
   c_lodge_b   the lodge door -> back to the pad
+  c_spy       the pad -> its SE corner by the spyglass post (the player stands on the pad)
   c_down      the pad -> the gate -> the descent -> the trail -> the crypt door -> the trail -> the hill stair -> the top of the hill
   c_up        the top of the hill -> the hill stair -> the trails -> the descent -> the gate -> the pad
   c_crypt     the crypt (door open, the Magister laid to rest): the vestibule -> the stair -> the trap corridor -> the stair -> the hall ->
@@ -51,7 +52,10 @@ crypt = [door_front, [cx, ZF - 1.5, E + 1.0], [cx, ZF - 6.5, E + 1.0], [cx, ZF -
          [cx, hz2 + 0.5, HF + 1.0], [hx1 + 2.5, hz2 - 1.5, HF + 1.0], [hx1 + 2.5, bz + 0.5, HF + 1.0], [hx1 - 2.5, bz + 0.5, HF + 1.0]]
 ep = CR["exit_path"]
 crypt += simplify([[p[0] + 0.5, p[1] + 0.5, p[2] + 1.0] for p in ep]) + [[ep[-1][0] + 0.5, ep[-1][1] + 3.5, W + 1.0]]
-routes = {"c_lodge": lodge, "c_lodge_b": lodge[::-1], "c_down": down, "c_up": up, "c_crypt": crypt}
+# the spyglass (review T-027): over the pad to its SE corner, next to the post on the slope
+se = M["spyglass_eye"]
+spy = [pad, [124.5, 446.5, pad[2]], [124.5, se[2] + 0.5, pad[2]], [se[0] + 0.5, se[2] + 0.5, pad[2]]]
+routes = {"c_lodge": lodge, "c_lodge_b": lodge[::-1], "c_down": down, "c_up": up, "c_crypt": crypt, "c_spy": spy}
 # the barrows
 for br in M["barrows"]:
     b = next(x for x in P.BARROWS if x[0] == br["id"])

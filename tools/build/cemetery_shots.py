@@ -89,29 +89,63 @@ def mobs():
     R(f"tp @e[type=minecraft:skeleton,tag=le.cmag] {sx + 0.5} {sy + 1} {sz + 4.5} 0 0")
     R(f"setblock {sx} {sy + 5} {sz + 6} minecraft:light[level=12]")
     shot("magister", (sx + 0.5, sy, sz + 9.5), (sx + 0.5, sy + 2.2, sz + 4.5))
-    R(f"setblock {sx} {sy + 5} {sz + 6} minecraft:air"); R("function last_ember:cemetery/mag_leash")
+    R(f"setblock {sx} {sy + 5} {sz + 6} minecraft:air"); R("function last_ember:cemetery/mag_leash"); R("difficulty peaceful")
+def spirits():
+    """a knight spirit and an evil spirit on the floor at night (review T-027: the old frame had the camera in the ground of a slope).
+    The camera stands over the scanned ground (cemetery_post.bin) 9 south of them, Cam2 (a living player: spirits leave when only
+    spectators are near) behind the camera, out of the frame"""
+    import scanio
+    sc = scanio.Scan(os.path.join(ROOT, "server/build/r1/cemetery_post.bin"))
+    gnd = lambda x, z: int(sc.ground[z - sc.z0, x - sc.x0])
+    R("difficulty easy"); night()
     g = G[2]; x, y, z = g["x"], g["y"] + 1, g["z"]
-    R("gamemode survival Cam2"); R(f"tp Cam2 {x + 6.5} {y} {z + 1.5}")              # a living player near: spirits leave when only spectators are
+    cz = z + 10; cy = max(gnd(x + a, cz + d) for a in (-1, 0, 1) for d in (-1, 0, 1)) + 1
+    R("gamemode survival Cam2"); R(f"tp Cam2 {x + 0.5} {gnd(x, cz + 6) + 1} {cz + 6.5}")
     R(f"execute positioned {x + 2.5} 0 {z + 4.5} positioned over motion_blocking_no_leaves run function last_ember:cemetery/spirit_knight")
     R(f"execute positioned {x - 1.5} 0 {z + 4.5} positioned over motion_blocking_no_leaves run function last_ember:cemetery/spirit_vex")
     R("execute as @e[tag=le.cspirit] run data merge entity @s {NoAI:1b}"); R("effect give @e[tag=le.cspirit] minecraft:fire_resistance infinite 0 true")
     R("execute as @e[tag=le.cspirit] at @s run tp @s ~ ~ ~ 180 0")
-    shot("spirits", (x + 0.5, y + 3, z + 11.5), (x + 0.5, y + 1.5, z + 4.5), settle=8)
+    shot("spirits", (x + 0.5, cy + 0.6, cz + 0.5), (x + 0.5, y + 1.2, z + 4.5), settle=8)
     R("gamemode spectator Cam2"); R("tp Cam2 240 250 300")
-    R("execute as @e[tag=le.cspirit] at @s run function last_ember:cemetery/spirit_gone"); R("difficulty peaceful")
+    R("execute as @e[tag=le.cspirit] at @s run function last_ember:cemetery/spirit_gone"); R("difficulty peaceful"); day()
 def lodge():
     hx, hy, hz = LO["centre"]
     shot("lodge_out", (122, 201, 432), (104, 199, 444))
-    shot("lodge_stream", (117, 199, 437), (111, 196, 433))
+    # the falls between the steps of the stream (started by the datapack), along the stream from over the spring, and from the road: 193 -> 191
+    shot("lodge_stream_a", (112.0, 200.5, 428.0), (112.0, 192.5, 438.5)); shot("lodge_stream_b", (115.5, 196.5, 441.5), (111.5, 192.5, 437.5))
+    from PIL import Image
+    sheet = Image.new("RGB", (1284, 362))
+    for k, n in enumerate(("lodge_stream_a", "lodge_stream_b")):
+        sheet.paste(Image.open(os.path.join(OUT, n + ".jpg")).resize((640, 360)), (k * 644, 1)); os.remove(os.path.join(OUT, n + ".jpg"))
+    sheet.save(os.path.join(OUT, "lodge_stream.jpg"), quality=82)
     shot("lodge_room", (101.5, hy, 440.5), (109, hy + 0.5, 445))
     R(f"tp Cam {LO['lectern'][0] + 0.5} {LO['lectern'][1]} {LO['lectern'][2] - 2.5}")
     shot("lodge_attic", (LO["lectern"][0] + 0.5, LO["lectern"][1], LO["lectern"][2] - 3), (LO["lectern"][0] + 0.5, LO["lectern"][1] + 0.6, LO["lectern"][2] + 0.5))
     h = LO["holder"]; shot("lodge_shed", (h[0] - 3.5, h[1] - 1, h[2] + 0.5), (h[0] + 1, h[1], h[2] + 0.5))
 def spyglass():
     night(); R("scoreboard players set #q le.cem 0")
-    R("execute store result score Cam le.cspy run time query gametime"); R("scoreboard players add Cam le.cspy 1200")
-    shot("spyglass_gate", (127.5, 193, 448.5), (205, 96, 470), settle=5)      # from the gate: from the lodge the hollow is hidden by the shoulder
-    shot("spyglass_night", (210.5, 99, 474.5), (204.5, 96, 468.5), settle=5)          # over the floor: the columns over the right graves (1, 5) and Thane's
+    R("execute store result score Cam le.cspy run time query gametime"); R("scoreboard players add Cam le.cspy 6000")
+    sp = M["spyglass"]; gs = [g for g in M["graves"] if g["kind"] in ("right", "thane")]
+    shot("spyglass_floor", (210.5, 99, 474.5), (204.5, 110, 468.5), settle=5)        # over the floor: the columns over graves 1, 5 and Thane's
+    # through the spyglass itself (held by the dev agent: !use_on) from the player's place on the pad by the post, at each of the six
+    # columns (its top part: the hollow's humps and ridge hide the low part) -> spyglass_scope_<n>, montage spyglass_night
+    R("gamemode survival Cam"); R("item replace entity Cam weapon.mainhand with minecraft:spyglass")
+    se = M["spyglass_eye"]; eye = (se[0] + 0.5, se[1], se[2] + 0.5); names = []
+    for g in gs:
+        import cemetery_view as CV                       # aim at the middle of the part of the column seen from here
+        if "G" not in CV.__dict__: CV.G = CV.grid(os.path.join(ROOT, "server/world"), (108, 436, 290, 530), M["W"] - 10, 200)
+        vis = [y for y in range(g["y"] + 2, 141) if CV.seen(CV.G, (eye[0], eye[1] + 1.62, eye[2]), (g["x"] + 0.5, y, g["z"] + 0.5))]
+        t = (g["x"] + 0.5, (min(vis) + 140) / 2 if vis else 134, g["z"] + 0.5)
+        yw, pt = yawpitch((eye[0], eye[1] + 1.62, eye[2]), t)
+        R(f"tp Cam {eye[0]} {eye[1]} {eye[2]} {yw:.1f} {pt:.1f}"); time.sleep(1); tc.act("Cam", "!use_on"); time.sleep(1)
+        shot("spyglass_scope_%d" % g["n"], eye, t, spectator=False, settle=4); names.append("spyglass_scope_%d" % g["n"])
+        tc.act("Cam", "!use_off"); time.sleep(0.5)
+    R("clear Cam minecraft:spyglass")
+    from PIL import Image
+    sheet = Image.new("RGB", (3 * 644, 2 * 364))
+    for k, n in enumerate(names): sheet.paste(Image.open(os.path.join(OUT, n + ".jpg")).resize((640, 360)), ((k % 3) * 644 + 2, (k // 3) * 364 + 2))
+    sheet.save(os.path.join(OUT, "spyglass_night.jpg"), quality=82)
+    for n in names: os.remove(os.path.join(OUT, n + ".jpg"))
     R("scoreboard players reset Cam le.cspy"); day()
 def faded():
     R("function last_ember:region/gen/fade_r1"); time.sleep(6)
@@ -139,7 +173,7 @@ def cursed():
     tc.act("Cam", "!swap"); time.sleep(0.3); tc.act("Cam", "!swap"); time.sleep(0.5)
     shot("cursed_item", (118.5, 192, 450.5), (118.5, 192.5, 460), hud=True, spectator=False, settle=1)
     R("clear Cam")
-SHOTS = dict(gate=gate, descent=descent, hill=hill, swords=swords, chapel=chapel, grave=grave, barrow=barrow, crypt=crypt, mobs=mobs, lodge=lodge,
+SHOTS = dict(gate=gate, descent=descent, hill=hill, swords=swords, chapel=chapel, grave=grave, barrow=barrow, crypt=crypt, mobs=mobs, spirits=spirits, lodge=lodge,
              spyglass=spyglass, faded=faded, window=window, cursed=cursed)
 if __name__ == "__main__":
     setup()

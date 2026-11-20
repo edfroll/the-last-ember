@@ -37,6 +37,7 @@ ITEMS = {
     "seal": 'minecraft:stick[minecraft:item_model="last_ember:cemetery/seal",minecraft:custom_data={le_citem:"seal",le_keep:1b,gen:$(gen)},minecraft:max_stack_size=1,'
             'minecraft:item_name={"text":"Печать Магистра","color":"gold","italic":false},minecraft:lore=[{"text":"Колоссы помнят эту руку.","color":"gray","italic":false}]]',
 }
+SPY_TOP = 140               # the top of the soul light columns of the spyglass (W + 46; review T-027, HQ option (a))
 LEATHER = 11393254           # the pale blue of the knight spirits
 
 def run(R, meta, out):
@@ -109,7 +110,7 @@ def run(R, meta, out):
     w("key_near_coffin", [hdr + "#c = items lying in Thane's coffin", "execute store result score #c le.cem positioned %d.5 %d.3 %d.5 if entity @e[type=minecraft:item,distance=..2.5]" % (tx_, ty_, tz_)])
     # ------------------------------------------------------------------ waves: the points the spirits may stand on are found at run time (macro)
     # ------------------------------------------------------------------ the keeper, the dog, the click boxes (spyglass, door, seal)
-    ch, hh = lo["chair"], lo["hearth"]; dg = lo["dog"]; sp = lo["spyglass"]; dr = cr["door"]
+    ch, hh = lo["chair"], lo["hearth"]; dg = lo["dog"]; sp = meta["spyglass"]; dr = cr["door"]
     KP = {"day": (ch[0] + 0.5, ch[1] + 0.5, ch[2] + 0.5, -90.0), "night": (hh[0] + 0.5, hh[1], hh[2] + 0.5, 180.0),
           "faded": (dr[0] + 2.5, dr[1], dr[2] + 2.5, 180.0)}
     DG = {"home": (dg[0] + 0.5, dg[1], dg[2] + 0.5, 180.0), "faded": (dr[0] - 1.5, dr[1], dr[2] + 2.5, 160.0)}
@@ -129,11 +130,15 @@ def run(R, meta, out):
         L.append("execute if score %s if loaded %d %d %d unless entity @e[type=minecraft:wolf,tag=le.cdog,x=%.1f,y=%.1f,z=%.1f,distance=..0.6] run function last_ember:cemetery/gen/dog_%s" % (sel, x, y, z, x, y, z, k))
     L.append("execute as @e[type=minecraft:villager,tag=le.ckeeper] run data modify entity @s Health set value 20.0f")
     w("npcs", L)
-    w("boxes", [hdr + "every second: the click boxes of the spyglass and the crypt door, the decor stands (once)",
+    w("boxes", [hdr + "every second: the click boxes of the spyglass and the crypt door, the decor stands (once), the falls of the stream",
                 "execute if loaded %d %d %d unless entity @e[type=minecraft:interaction,tag=le.cspy] run summon minecraft:interaction %.1f %d %.1f {Tags:[\"le.cspy\"],width:0.7f,height:0.9f,response:1b}" % (sp[0], sp[1], sp[2], sp[0] + 0.5, sp[1], sp[2] + 0.5),
                 "execute if loaded %d %d %d unless entity @e[type=minecraft:item_display,tag=le.cspyd] run summon minecraft:item_display %.1f %.2f %.1f {Tags:[\"le.cspyd\"],item:{id:\"minecraft:spyglass\",count:1},transformation:{left_rotation:[0.38f,0f,0f,0.92f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]},Rotation:[-90f,0f]}" % (sp[0], sp[1], sp[2], sp[0] + 0.5, sp[1] + 0.3, sp[2] + 0.5),
                 "execute if loaded %d %d %d unless entity @e[type=minecraft:interaction,tag=le.cdoor] run summon minecraft:interaction %.1f %d %.1f {Tags:[\"le.cdoor\"],width:1.1f,height:2.1f,response:1b}" % (dr[0], dr[1], dr[2], dr[0] + 0.5, dr[1], dr[2] + 0.6),
-                "execute if loaded %d %d %d unless entity @e[type=minecraft:armor_stand,tag=le.cstand] run function last_ember:cemetery/gen/stands" % tuple(lo["scarecrow"])])
+                "execute if loaded %d %d %d unless entity @e[type=minecraft:armor_stand,tag=le.cstand] run function last_ember:cemetery/gen/stands" % tuple(lo["scarecrow"])] +
+      # the falls of the lodge stream (review T-027): the offline build leaves still water (the scan reads flowing water as air); where a
+      # fall is missing, its source is set again: the new source schedules its flow, the fall forms over the lip
+      ["execute if loaded %d %d %d unless block %d %d %d minecraft:water run setblock %d %d %d minecraft:air" % (tuple(f) + tuple(f) + tuple(s_)) for s_, f in lo["falls"]] +
+      ["execute if loaded %d %d %d unless block %d %d %d minecraft:water run setblock %d %d %d minecraft:water" % (tuple(f) + tuple(f) + tuple(s_)) for s_, f in lo["falls"]])
     # the decor stands: rusty armour on old graves (brown leather, cannot be taken), the scarecrow of the garden
     S = [hdr + "the decor stands: rusty armour on 8 old graves, the scarecrow (summoned once; DisabledSlots after the armour)"]
     browns = (6704179, 5126182, 7031360, 4538147)
@@ -149,9 +154,13 @@ def run(R, meta, out):
     L = [hdr + "every 10 ticks as a player who looked through the spyglass at night: columns of soul lights over the unopened right graves and Thane's"]
     for g in gv:
         if g["kind"] not in ("right", "thane"): continue
-        for dy in (1.5, 2.5, 3.5, 4.5):
-            L.append("execute if score #g%d le.cem matches 0 run particle minecraft:soul_fire_flame %d.5 %.1f %d.5 0.08 0.3 0.08 0.0 5 force @s" % (g["n"], g["x"], g["y"] + dy, g["z"]))
-        L.append("execute if score #g%d le.cem matches 0 run particle minecraft:end_rod %d.5 %.1f %d.5 0.05 0.9 0.05 0.0 2 force @s" % (g["n"], g["x"], g["y"] + 3.0, g["z"]))
+        # the column from the grave up to SPY_TOP (review T-027: the hollow's own humps and ridge hide the low lights from the spyglass
+        # at the head of the descent; tools/build/cemetery_view.py checks that every column is seen from there)
+        dy = 1.5
+        while g["y"] + dy <= SPY_TOP:
+            L.append("execute if score #g%d le.cem matches 0 run particle minecraft:soul_fire_flame %d.5 %.1f %d.5 0.08 0.3 0.08 0.0 3 force @s" % (g["n"], g["x"], g["y"] + dy, g["z"]))
+            if int(dy) % 4 == 1: L.append("execute if score #g%d le.cem matches 0 run particle minecraft:end_rod %d.5 %.1f %d.5 0.05 0.9 0.05 0.0 2 force @s" % (g["n"], g["x"], g["y"] + dy + 1.5, g["z"]))
+            dy += 1.0
     w("spy", L)
     # ------------------------------------------------------------------ the crypt: the door, the Magister, the seal, the chest, the exit
     d0 = "minecraft:iron_door[facing=north,half=%s,hinge=left,open=%s,powered=false]"

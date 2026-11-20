@@ -49,6 +49,6 @@ python3 tools/build/r1_check.py places fens
 # T-027: the Cemetery of the Fallen Knights and the Keeper's Lodge (only inside their places: the floor, the descent from bonfire 2, the
 # hill with the three swords, the graves, the barrows, the crypt, the chapel, the trails; the lodge on its terrace with the stream)
 tools/build/cemetery_step.sh
-tools/biomepaint.sh | grep -v JAVA_TOOL | head -1
+tools/biomepaint.sh | grep -v JAVA_TOOL | sed -n 1p      # not head -1: it closed the pipe, SIGPIPE + pipefail stopped the step (exit 141)
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

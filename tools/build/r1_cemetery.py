@@ -38,6 +38,9 @@ GARDEN = (107, 451, 110, 455)
 STREAM = (111, 112)                        # the channel x, from the spring (z 428) to the pool (z 437..441)
 ROAD_X = (114, 116)                        # the road (x 113 is the curb of the stream)
 BRIDGE_Z = (434, 435)
+SPYGLASS = (126, 454)                      # the spyglass post on the slope by the SE corner of the pad of bonfire 2 (review T-027), north of
+SPYGLASS_EYE = (125, 455)                  # the player's cell on the pad (from here all 6 columns are seen, tools/build/cemetery_view.py):
+                                          # the post stands off the lines of sight to the graves (they all go east and south-east)
 
 def relief(gr, W, paths):
     """T (ground top per column), walk {(x, z): (y, kind, stairs facing)}, ring {(x, z): ('wall'|'parapet', y)} and the masks"""
@@ -326,6 +329,7 @@ def build(gr, W, paths):
     meta["trails"] = tr["lines"]
     meta["gate"] = CB.gate(b, c)
     meta["lights"] = CB.lights(b, c, paths["desc"])
+    sx, sz = SPYGLASS; meta["spyglass"] = CB.spyglass_stand(b, c, sx, int(c.g(sx, sz)), sz, P.PAD_Y); meta["spyglass_eye"] = [SPYGLASS_EYE[0], P.PAD_Y + 1, SPYGLASS_EYE[1]]
     L = paths["hill_level"]
     sw = CB.three_swords(b, c, L)
     stair = {cc[1]: cc[2] for cc in paths["hill"] if cc[4] == "S" and cc[0] == paths["hill"][2][0]}
