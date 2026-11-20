@@ -71,12 +71,38 @@ def build(gr, rl):
             if b.get(x, y, z) is None: b.set(x, y, z, "minecraft:water[level=0]" if y <= P.W else "minecraft:air")
     return b, meta
 
+def drain(b, gr, rl):
+    """standing water above the ground that our cuts would spill (natural pools of the plateau, the pool the R1 frame left over the west
+    edge of the pad of bonfire 8): every pool touching a column that is now lower than its water goes, all of it (air from the ground
+    up). Read from the scan before the place (castle_pre.bin): a re-run finds none. The pads' ground is not touched (only water over it)."""
+    if "lwater" not in gr: return 0
+    T, now, lw = rl["T"], gr["live"], gr["lwater"]
+    wet = (lw != NONE) & (lw > now) & gr["place"] & (rl["Wt"] == NONE)
+    rew = (T != gr["before"]) | (rl["Wt"] != NONE)
+    seed = np.zeros(T.shape, bool)
+    for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        nT = np.roll(np.roll(T, dz, 0), dx, 1); nwet = np.roll(np.roll(wet, dz, 0), dx, 1)
+        seed |= wet & ~nwet & (nT < lw)
+    pools = P.flood(wet, list(zip(*np.nonzero(seed))))
+    n = 0
+    for i, j in zip(*np.nonzero(pools)):
+        if rew[i, j] and not gr["pad"][i, j]: continue            # the terrain rewrites this column anyway
+        x, z = j + gr["x1"], i + gr["z1"]
+        for y in range(int(now[i, j]) + 1, int(lw[i, j]) + 1):
+            if b.get(x, y, z) is None: b.set(x, y, z, "minecraft:air"); n += 1
+    return n
+
 def unsnow(b, gr, rl):
     """HQ T-028, 1: no snow in the place (snow blocks / powder snow under the ground: dirt within 3, stone deeper; snow layers: air; snowy
     grass: not snowy), no spruces (air; dark oaks of our model where they stood, on the untouched natural ground). Read from the world."""
-    import fens_scan
+    import fens_scan, re
+    from lib import Mix
     T = rl["T"]; n = 0; spruce = set()
     changed, F = rewritten(gr, rl)
+    steep = np.zeros(T.shape, bool)
+    for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): steep |= np.abs(np.roll(np.roll(T, dz, 0), dx, 1) - T) >= 3
+    ROCK = Mix({"stone": 4, "andesite": 2, "tuff": 2, "cobblestone": 1}, 2861)
+    fens_scan.BAN = re.compile(fens_scan.BAN.pattern[:-2] + "|packed_ice|blue_ice)$")   # + the ice of the peak (not snow, but white-blue)
     inside = lambda x, z: bool(P.in_place(x, z)) and not gr["pad"][P.ix(gr, x, z)]
     for (x, y, z, nm) in fens_scan.scan(os.path.join(ROOT, "server/world"), box=P.BOX, inside=inside):
         if b.get(x, y, z) is not None: continue
@@ -85,8 +111,10 @@ def unsnow(b, gr, rl):
         if changed[i, j]:                       # the terrain rewrites this column from F up: only the snow under it is ours to replace
             if y < F[i, j]: b.set(x, y, z, "minecraft:stone"); n += 1
             continue
-        if nm in ("minecraft:snow_block", "minecraft:powder_snow") and y <= g:
-            b.set(x, y, z, ("minecraft:grass_block[snowy=false]" if y == g else "minecraft:dirt") if y >= g - 3 else "minecraft:stone")
+        if nm in ("minecraft:snow_block", "minecraft:powder_snow", "minecraft:packed_ice", "minecraft:blue_ice") and y <= g:
+            if steep[i, j] or "ice" in nm: b.set(x, y, z, ROCK.at(x, y, z))
+            else: b.set(x, y, z, ("minecraft:grass_block[snowy=false]" if y == g else "minecraft:dirt") if y >= g - 3 else "minecraft:stone")
+        elif "ice" in nm: b.set(x, y, z, ROCK.at(x, y, z))
         else: b.set(x, y, z, "minecraft:air")
         n += 1
     for (x, y, z) in snowy_grass(gr):
@@ -101,6 +129,45 @@ def rewritten(gr, rl):
     for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): lo = np.minimum(lo, np.roll(np.roll(lo, dz, 0), dx, 1))
     F = np.minimum(np.minimum(T, now), lo) - 4
     return (T != gr["before"]) | (rl["Wt"] != NONE), F
+
+def springs(b, gr, rl):
+    """natural springs above the lake (water / lava in the place, out of the lake): a source in a cliff face would run down the sheer edge
+    of the rock and the walls of the gorge (and a waterfall can be swum up). Inside the ground -> rock, open on top -> air. Read from the
+    world: a re-run finds none."""
+    import fens_scan
+    from lib import Mix
+    ROCK = Mix({"stone": 4, "andesite": 2, "tuff": 2}, 2862)
+    out = []; x1, z1, x2, z2 = P.BOX; sb = fens_scan.sb; T = rl["T"]; g = gr.get("live", gr["before"])
+    for rx in range(x1 // 512, x2 // 512 + 1):
+        for rz in range(z1 // 512, z2 // 512 + 1):
+            path = os.path.join(ROOT, "server/world/dimensions/minecraft/overworld/region", "r.%d.%d.mca" % (rx, rz))
+            if not os.path.exists(path): continue
+            for c in sb.chunks(path):
+                cx, cz = c.get("xPos"), c.get("zPos")
+                if cx is None or cx * 16 + 15 < x1 or cx * 16 > x2 or cz * 16 + 15 < z1 or cz * 16 > z2: continue
+                for s in c.get("sections", []):
+                    if (s.get("Y", 0) + 1) * 16 <= P.W + 2: continue
+                    bs = s.get("block_states") or {}; pal = bs.get("palette", [])
+                    hit = [k for k, p in enumerate(pal) if (p if isinstance(p, str) else (p.get("id") or p.get("Name") or "")) in ("minecraft:water", "minecraft:lava")]
+                    if not hit: continue
+                    data = bs.get("data") or []
+                    if len(pal) == 1: idx = [0] * 4096
+                    else:
+                        bits = max(4, (len(pal) - 1).bit_length()); per = 64 // bits; idx = []
+                        for v in data:
+                            v &= (1 << 64) - 1
+                            for k in range(per):
+                                if len(idx) < 4096: idx.append((v >> (k * bits)) & ((1 << bits) - 1))
+                    for n_, i in enumerate(idx):
+                        if i not in hit: continue
+                        x, y, z = cx * 16 + n_ % 16, s.get("Y", 0) * 16 + n_ // 256, cz * 16 + (n_ // 16) % 16
+                        if y <= P.W + 1 or not (x1 <= x <= x2 and z1 <= z <= z2) or not P.in_place(x, z): continue
+                        ii, jj = P.ix(gr, x, z)
+                        if rl["Wt"][ii, jj] != NONE or b.get(x, y, z) is not None: continue
+                        if gr["pad"][ii, jj] and y <= int(g[ii, jj]): continue
+                        out.append((x, y, z, y < int(g[ii, jj]) and y <= int(T[ii, jj])))
+    for (x, y, z, inside) in out: b.set(x, y, z, ROCK.at(x, y, z) if inside else "minecraft:air")
+    return len(out)
 
 def snowy_grass(gr):
     """grass / podzol / mycelium with snowy=true in the place (the snow layer over it is gone)"""
@@ -261,13 +328,15 @@ def main(plan_only=False):
         for k, v in ch.items(): print(k, v)
         return
     b, meta = build(gr, rl)
+    meta["drained"] = drain(b, gr, rl)
+    meta["springs"] = springs(b, gr, rl)
     nsnow, spruce = unsnow(b, gr, rl)
     meta["trees"] = trees(b, gr, rl, spruce)
     from connect import connect
     connect(b)
     bad = [k for k in b.v if not P.in_place(k[0], k[2])]
     if bad: raise SystemExit("blocks outside the place: %s" % bad[:5])
-    pad = [k for k in b.v if gr["pad"][P.ix(gr, k[0], k[2])]]
+    pad = [k for k, v in b.v.items() if gr["pad"][P.ix(gr, k[0], k[2])] and not (v == "minecraft:air" and k[1] > (P.PAD8_Y if k[0] > 400 else P.PAD7_Y))]
     if pad: raise SystemExit("blocks on a bonfire pad: %s" % pad[:5])
     meta["templates"] = templates(b, gr, rl, meta)
     ncol = write_terrain(gr, rl, b)
@@ -276,7 +345,7 @@ def main(plan_only=False):
     import castle_dp
     castle_dp.run(gr, rl, meta)
     json.dump(meta, open(os.path.join(OUT, "castle.json"), "w"), ensure_ascii=False, default=lambda o: list(o) if isinstance(o, (set, tuple)) else int(o) if isinstance(o, np.integer) else str(o))
-    print(f"castle: terrain {ncol} columns, {n} blocks (snow/spruce replaced {nsnow}), trees {meta['trees']}, W {P.W}, P {ch['P']}, boulders {meta['boulders']}")
+    print(f"castle: terrain {ncol} columns, {n} blocks (snow/spruce replaced {nsnow}, water drained {meta['drained']}, springs {meta['springs']}), trees {meta['trees']}, W {P.W}, P {ch['P']}, boulders {meta['boulders']}")
 
 if __name__ == "__main__" and sys.argv[1:2] == ["plan"]:
     main(plan_only=True)

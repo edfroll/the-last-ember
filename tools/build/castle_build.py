@@ -62,18 +62,18 @@ def colossus(zc, side):
     for r in range(22, 39):                                      # the lowered arm (sleeve) on the outer side, the hand at r 22..23
         for u in range(3, 7):
             put(u, -side * 5, r, pal(u, -side * 5, r))
-    for (u, r) in ((7, 39), (8, 39), (8, 40), (9, 40), (9, 41)):  # the raised arm: forward to the elbow, the forearm up, the palm
-        for v in (side * 4, side * 5):
-            put(u, v, r, pal(u, v, r)); arm.add((u, v, r))
-    for r in range(42, 45):
-        for u in (9, 10):
-            for v in (side * 4, side * 5): put(u, v, r, pal(u, v, r)); arm.add((u, v, r))
+    # the raised arm on the inner side (over the channel): the upper arm out from the shoulder, the forearm up, the palm 3 x 6 facing
+    # the lake (u 10) beside the head, fingers apart at the top
+    for (u, vv, r) in [(u, 6, r) for u in (5, 6, 7) for r in (39, 40, 41)] + [(u, 7, r) for u in (7, 8) for r in (41, 42, 43)] + \
+                      [(u, vv, r) for u in (8, 9) for vv in (7, 8) for r in (43, 44, 45, 46)]:
+        v = side * vv; put(u, v, r, pal(u, v, r)); arm.add((u, v, r))
     palm = []
-    for r in range(44, 50):                                      # the palm 3 wide facing the lake (u 10), fingers up to r 49
-        for v in (side * 3, side * 4, side * 5):
-            if r >= 48 and v == side * 4: continue              # a gap between the fingers
-            put(10, v, r, pal(10, v, r)); arm.add((10, v, r)); palm.append((10, v, r))
-        put(9, side * 4, r, pal(9, side * 4, r)); arm.add((9, side * 4, r))
+    for r in range(45, 51):
+        for vv in (6, 7, 8):
+            if r >= 49 and vv == 7: continue                    # a gap between the fingers
+            v = side * vv; put(10, v, r, pal(10, v, r)); arm.add((10, v, r)); palm.append((10, v, r))
+            if r <= 48: put(9, v, r, pal(9, v, r)); arm.add((9, v, r))
+    for r in (46, 47): put(10, side * 5, r, pal(10, side * 5, r)); arm.add((10, side * 5, r))      # the thumb
     for r in (40, 41):                                           # the neck
         for u in (4, 5, 6):
             for v in (-1, 0, 1): put(u, v, r, pal(u, v, r))
@@ -97,12 +97,12 @@ def colossus(zc, side):
                 if (u + v) % 2 == 0: put(u, v, 49, CROWN.at(431 - u, W + 49, zc + v)); put(u, v, 50, "minecraft:gold_block" if (u * 3 + v) % 4 else "minecraft:raw_gold_block")
             else: put(u, v, 48, pal(u, v, 48))
     armw = {(431 - u, W + r, zc + v) for (u, v, r) in arm}
-    strike = [420.5, W + 46.5, zc + side * 4 + 0.5]
-    return m, dict(eyes=eyes, arm=sorted(armw), strike=strike, zc=zc, side=side, box=[420, W - 6, zc - 5, 431, W + 50, zc + 5])
+    strike = [420.5, W + 47.5, zc + side * 7 + 0.5]
+    return m, dict(eyes=eyes, arm=sorted(armw), strike=strike, zc=zc, side=side, box=[420, W - 6, zc - 8, 431, W + 50, zc + 8])
 
 def fallen_arm(zc, side):
     """the faded lake: the raised arm broken off lies in the shallow water in front of the colossus (along -x), half out of it"""
-    m = {}; z0 = zc + side * 4
+    m = {}; z0 = zc + side * 7
     for k in range(13):
         x = 417 - k
         for dz in (-1, 0, 1):
