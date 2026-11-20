@@ -1,1 +1,2 @@
-# r1 lake: back to the living version (test/admin) (filled by the task of the place)
+# r1 lake: back to the living lake (T-028)
+function last_ember:castle/unfade

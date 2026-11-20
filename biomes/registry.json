@@ -61,7 +61,7 @@
     "chapter1": [
       {"from": "weeping_vale", "to": "blood_vale", "rects": [[224, -120, 348, 120], [72, -380, 212, -228]]},
       {"from": "barrows", "to": "barrows_faded", "rects": [[124, 374, 276, 526]]},
-      {"from": "castle_dream", "to": "castle_dream_faded", "rects": [[460, -40, 540, 40]], "y": [40, 120]}
+      {"from": "castle_dream", "to": "castle_dream_faded", "rects": [[370, -58, 431, 7]], "y": [100, 180]}
     ]
   }
 }
