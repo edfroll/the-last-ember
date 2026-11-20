@@ -123,17 +123,17 @@ def sword(b):
         for z in range(z1, z2 + 1):
             top = W + 2 if (x1 < x < x2 and z1 < z < z2) else W + 1
             for y in range(W - 5, top + 1): b.set(x, y, z, Mix({"stone": 3, "mossy_cobblestone": 3, "andesite": 2, "moss_block": 1}, 2830).at(x, y, z))
-    dx, dy = -math.sin(math.radians(58)), math.cos(math.radians(58))
+    dx, dy = -math.sin(math.radians(22)), math.cos(math.radians(22))
     ox, oy, zc = 419.5, W + 1.5, -45
     cells = []
-    for k in range(12):                                          # the blade: 12 along the line, 2 wide (z), rust streaks
+    for k in range(12):                                          # the blade: 12 along the line (leaning west 22 degrees), 2 wide (z), rust
         t = k + 0.5; x = math.floor(ox + dx * t); y = math.floor(oy + dy * t)
         for z in (zc, zc + 1):
             s = "minecraft:polished_andesite" if z == zc else "minecraft:andesite"
             if hsh(x, y, z, 2831) < 0.18: s = "minecraft:brown_terracotta"
             cells.append((x, y, z, s))
     t = 12.5; gx = math.floor(ox + dx * t); gy = math.floor(oy + dy * t)
-    for z in range(zc - 2, zc + 4): cells.append((gx, gy, z, "minecraft:polished_tuff"))      # the guard across
+    for z in range(zc - 3, zc + 5): cells.append((gx, gy, z, "minecraft:polished_tuff"))      # the guard across
     for k in (13.5, 14.5, 15.5):                                 # the grip and the pommel
         x = math.floor(ox + dx * k); y = math.floor(oy + dy * k)
         for z in (zc, zc + 1): cells.append((x, y, z, "minecraft:tuff_bricks" if k < 15 else "minecraft:chiseled_tuff"))
@@ -144,8 +144,14 @@ def sword(b):
     for (x, y, z, s) in cells:
         if (x, z) in walk and y < W + 4: raise SystemExit("the sword blocks the causeway at %s" % ((x, y, z),))
         b.set(x, y, z, s)
-    sign = (gx, gy - 1, zc + 3)
-    b.set(*sign, 'minecraft:dark_oak_hanging_sign[rotation=4,attached=false,waterlogged=false]' + sign_nbt(["Дошёл до воды.", "Короли не узнали", "его руки."]))
+    # the sign at the hilt: a plaque on chains from the north end of the guard down to the eye level of the causeway, the sign on
+    # its west face (a hanging sign is too narrow for the lines; «Короли не узнали» does not fit one line even here: 4 lines)
+    pz = zc - 3; py = W + 4
+    for y in range(py + 1, gy): b.set(gx, y, pz, "minecraft:iron_chain[axis=y,waterlogged=false]")
+    b.set(gx, py, pz, "minecraft:polished_tuff")
+    sign = (gx - 1, py, pz)
+    if (sign[0], sign[2]) in walk and False: pass
+    b.set(*sign, 'minecraft:dark_oak_wall_sign[facing=west,waterlogged=false]' + sign_nbt(["Дошёл до воды.", "Короли", "не узнали", "его руки."]))
     return dict(guard=[gx, gy, zc], sign=list(sign), tip=[419, W + 1, zc])
 
 # ---------------------------------------------------------------- the pier and the causeway

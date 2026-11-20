@@ -48,6 +48,20 @@ def lights_bridgehead(b, gr, rl, taken):
     if left: raise SystemExit("the bridgehead: no lantern can light %s" % sorted(left)[:6])
     return out
 
+def rock_surface(b, gr, rl):
+    """the rock (bridgehead, table, peak) where its top is the natural ground (the terrain write skips such a column): the top block of the
+    card's rock with moss like the rewritten ones, nothing growing on it (air from the top to what stood there: the trees of the table)"""
+    from lib import Mix
+    TOP = Mix({"moss_block": 5, "stone": 3, "andesite": 1, "tuff": 1}, 2863)
+    T, bf = rl["T"], gr["before"]; n = 0
+    for i, j in zip(*np.nonzero(rl["rock"] & (T == bf) & ~gr["pad"])):
+        x, z = j + gr["x1"], i + gr["z1"]; y = int(T[i, j])
+        if b.get(x, y, z) is None: b.set(x, y, z, TOP.at(x, y, z))
+        top = int(gr["top"][i, j]) if "top" in gr else y
+        for yy in range(y + 1, min(top, y + 40) + 1):
+            if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air"); n += 1
+    return n
+
 def build(gr, rl):
     b = B("castle"); meta = dict(W=P.W, P=rl["P"])
     cn, mn = CB.colossus(-46, +1); cs, ms = CB.colossus(-21, -1)
@@ -65,6 +79,7 @@ def build(gr, rl):
     taken = set()
     for (x, y, z) in b.v: taken.add((x, z))
     meta["pred_lamps"] = lights_bridgehead(b, gr, rl, taken)
+    meta["rock_top_cleared"] = rock_surface(b, gr, rl)
     # boulders on the rift floor (dry, under the bridge "the abyss")
     T = rl["T"]; nb = 0
     for i, j in zip(*np.nonzero(rl["rift"])):
