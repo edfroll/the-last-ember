@@ -15,8 +15,8 @@ Branch `world-cache` = one orphan commit (overwritten on every push): manifest.j
                                                  then the tail (biomepaint, borders, sync). A place new since the cache is just run.
                                                  Without places: the ones `status` names.
   python3 tools/world_cache.py save gen|final    (rebuild.sh) pack the current world into server/cache/<name>.tar.gz + manifest
-  python3 tools/world_cache.py push              upload server/cache/ to the branch (only from a commit that is in origin/main or
-                                                 descends from the cached commit; refuses to overwrite a newer cache)
+  python3 tools/world_cache.py push              upload server/cache/ to the branch: only worlds of origin/main (a commit in it, or one whose
+                                                 world inputs equal main's); refuses to overwrite a newer cache
 Modes `status` prints: final (nothing in the world inputs changed: use the archive as is), redo <places> (only these places changed),
 gen (the frame, Refuge, tools or biomes changed: rebuild.sh --cache = everything after pregen), scratch (seed/jar/worldgen/pregen changed)."""
 import hashlib, json, os, re, shutil, struct, subprocess, sys, tarfile, time
@@ -122,6 +122,25 @@ def snap_restore(world, snap):
 
 
 # ---------------------------------------------------------------- r1_apply.sh sections
+def place_text(lines):
+    """a section's text with the step scripts it calls (tools/build/<x>_step.sh) inlined: their edits count as the section's"""
+    out = []
+    for l in lines:
+        out.append(l)
+        m = re.match(r"\s*(tools/build/\w+\.sh)\b", l)
+        if m and os.path.exists(os.path.join(ROOT, m.group(1))): out.append(open(os.path.join(ROOT, m.group(1))).read())
+    return "".join(out)
+
+
+def aliases(lines):
+    """other names a place goes by: `r1_check.py places cemetery+lodge`"""
+    m = re.search(r"r1_check\.py places ([\w+]+)", place_text(lines))
+    return m.group(1).split("+") if m else []
+
+
+def sec_hash(lines): return hashlib.sha1(place_text(lines).encode()).hexdigest()
+
+
 def apply_sections(text=None):
     """{'frame': lines, '<place>': lines, 'tail': lines} of tools/build/r1_apply.sh: a place's section starts at its `# T-0NN:` comment,
     it is named by the `<place>_pre.bin` it scans; the tail starts at tools/biomepaint.sh"""
@@ -131,7 +150,7 @@ def apply_sections(text=None):
         if not buf: return
         name = cur
         if cur == "place":
-            m = re.search(r"/(\w+)_pre\.bin", "".join(buf)); name = m.group(1) if m else "place%d" % len(secs)
+            m = re.search(r"/(\w+)_pre\.bin", place_text(buf)); name = m.group(1) if m else "place%d" % len(secs)
         secs[name] = list(buf)
     for line in text.splitlines(keepends=True):
         if re.match(r"# T-0\d\d", line) and cur in ("frame", "place"):
@@ -182,7 +201,7 @@ def save(name):
     m[name] = {"commit": head, "dirty": dirty, "made": time.strftime("%Y-%m-%d %H:%M:%S"), "sha256": sha256(out), "size": os.path.getsize(out)}
     if name == "gen": m["gen"]["key"] = gen_key()
     else:
-        m["final"]["gen_key"] = gen_key(); m["final"]["sections"] = {k: hashlib.sha1("".join(v).encode()).hexdigest() for k, v in apply_sections().items()}
+        m["final"]["gen_key"] = gen_key(); m["final"]["sections"] = {k: sec_hash(v) for k, v in apply_sections().items()}
     json.dump(m, open(manifest_path(), "w"), indent=1)
     print("saved %s: %.1f MB, commit %s%s" % (out, os.path.getsize(out) / 1e6, head[:10], " (uncommitted world inputs!)" if dirty else ""))
 
@@ -232,10 +251,15 @@ def push():
     for name in ("gen", "final"):
         if name not in m: sys.exit("nothing to push: no %s snapshot (tools/build/rebuild.sh makes both)" % name)
         if m[name].get("dirty"): sys.exit("%s was built with uncommitted world inputs: commit, rebuild, push" % name)
-    commit = m["final"]["commit"]
     sh("git", "fetch", "origin", "main")
-    if subprocess.run(["git", "merge-base", "--is-ancestor", commit, "origin/main"], cwd=ROOT).returncode:
-        sys.exit("final was built from %s, which is not in origin/main: the cache holds only worlds of main" % commit[:10])
+    main = sh("git", "rev-parse", "origin/main")
+    for name in ("gen", "final"):   # a world of a branch whose world inputs are those of main counts as main's (recorded as main's commit)
+        c = m[name]["commit"]
+        if subprocess.run(["git", "merge-base", "--is-ancestor", c, "origin/main"], cwd=ROOT).returncode == 0: continue
+        if subprocess.run(["git", "diff", "--quiet", c, main, "--", *WORLD_INPUTS, "tools/build/r1_apply.sh"], cwd=ROOT).returncode == 0:
+            m[name]["commit"] = main; continue
+        sys.exit("%s was built from %s: not in origin/main and its world inputs differ from main's" % (name, c[:10]))
+    commit = m["final"]["commit"]
     old = subprocess.run(["git", "ls-remote", "origin", "refs/heads/" + BRANCH], cwd=ROOT, capture_output=True, text=True).stdout.split()
     lease = old[0] if old else ""
     if lease:
@@ -287,14 +311,14 @@ def plan(m=None):
     changed = sorted(set(f for f in changed if not NOT_WORLD.search(f)))
     secs = apply_sections(); old = m["final"].get("sections", {})
     places = [k for k in secs if k not in ("head", "frame", "tail")]
-    redo = set(k for k in places if old.get(k) != hashlib.sha1("".join(secs[k]).encode()).hexdigest())
-    if any(old.get(k) != hashlib.sha1("".join(secs[k]).encode()).hexdigest() for k in ("frame", "tail") if k in secs):
+    redo = set(k for k in places if old.get(k) != sec_hash(secs[k]))
+    if any(old.get(k) != sec_hash(secs[k]) for k in ("frame", "tail") if k in secs):
         return "gen", [], changed + ["r1_apply.sh: frame/tail lines"]
     rest = []
     for f in changed:
         if f == "tools/build/r1_apply.sh": continue
         b = os.path.basename(f)
-        owner = [p for p in places if b.startswith(("r1_%s." % p, "%s_" % p, "%s." % p))]
+        owner = [p for p in places if any(b.startswith(("r1_%s." % n, "%s_" % n, "%s." % n)) for n in [p] + aliases(secs[p]))]
         if owner: redo.update(owner)
         else: rest.append(f)
     if rest: return "gen", [], rest
