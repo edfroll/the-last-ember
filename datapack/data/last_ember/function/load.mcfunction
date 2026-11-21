@@ -53,3 +53,5 @@ function last_ember:garden/setup
 function last_ember:fens/setup
 # T-027: the Cemetery of the Fallen Knights and the Keeper's Lodge
 function last_ember:cemetery/setup
+# T-028: the approaches to the Enchanted Castle (the colossi, the stair, the bridge)
+function last_ember:castle/setup

@@ -156,7 +156,7 @@ public class Terrain {
         return T((String) wb[wb.length - 1]);
     }
     /** rock styles: 0 plain stone, 1 west ridge strata, 2 charred east ridge, 3 rift wall (Dol side, dark), 4 rift wall (south: red clay, sandstone),
-     *  5 north ridge (light strata), 6 wall body south half, 7 wall body north half, 8 deepslate dark (rift floor) */
+     *  5 north ridge (light strata), 6 wall body south half, 7 wall body north half, 8 deepslate dark (rift floor), 9 castle rock (T-028) */
     static Tag rock(int style, int x, int y, int z) {
         double band = (y + vnoise(x / 23.0, z / 23.0, 51) * 7) / 4.0; int b = Math.floorMod((int) Math.floor(band + hash(x / 7, 0, z / 7, 52) * 0.8), 6);
         switch (style) {
@@ -167,8 +167,42 @@ public class Terrain {
                 return switch (bb) { case 0 -> T("red_terracotta"); case 1 -> T("terracotta"); case 2 -> T("red_sandstone"); case 3 -> T("orange_terracotta"); case 4 -> T("sandstone"); case 5 -> T("brown_terracotta"); default -> T("red_sandstone"); }; }
             case 5: return switch (b) { case 0, 3 -> T("stone"); case 1 -> T("andesite"); case 2 -> T("tuff"); case 4 -> T("calcite"); default -> T("stone"); };
             case 8: return pick(x, y, z, 8, 5, "deepslate[axis=y]", 2, "tuff", 2, "cobbled_deepslate");
+            case 9: return castleRock(x, y, z, 1000);   // T-028 castle rock (card palette), see castleRock
             default: return y < 0 - (int) (hash(x >> 1, 0, z >> 1, 7) * 6) ? T("deepslate[axis=y]") : T("stone");
         }
+    }
+
+    /** smooth 3-D value noise in [0, 1] (smoothstep between lattice points `cell` blocks apart) */
+    static double vnoise3(double x, double y, double z, double cell, int salt) {
+        double fx = x / cell, fy = y / cell, fz = z / cell; int xi = (int) Math.floor(fx), yi = (int) Math.floor(fy), zi = (int) Math.floor(fz);
+        double tx = fx - xi, ty = fy - yi, tz = fz - zi; tx = tx * tx * (3 - 2 * tx); ty = ty * ty * (3 - 2 * ty); tz = tz * tz * (3 - 2 * tz);
+        double acc = 0;
+        for (int a = 0; a < 2; a++) for (int b = 0; b < 2; b++) for (int c = 0; c < 2; c++)
+            acc += hash(xi + a, yi + b, zi + c, salt) * (a == 1 ? tx : 1 - tx) * (b == 1 ? ty : 1 - ty) * (c == 1 ? tz : 1 - tz);
+        return acc;
+    }
+    /** T-028 castle rock (HQ review T-028, 1): horizontal strata 2..4 thick (stone / tuff / cobbled deepslate 4:2:1, the band line wobbles
+     *  a little), andesite in patches 2..5 blocks (3-D noise, ~20 %), moss in patches, thicker towards the top of the column (H = its top;
+     *  1000 = unknown). The same function is ported to tools/build/castle_build.py (rock_at) for the overhangs. Card shares: stone 40,
+     *  tuff 20, andesite 20, cobbled deepslate 10, moss 10. */
+    static final String[] STRATA = {"stone", "stone", "tuff", "stone", "cobbled_deepslate", "stone", "tuff"};
+    static Tag castleRock(int x, int y, int z, int H) {
+        double d = H - y;
+        double mo = vnoise3(x, y, z, 2.6, 92);
+        double thr = 0.735 - 0.15 * Math.max(0, 1 - d / 10.0);        // ~5 % of a deep face, ~25 % at its top
+        if (mo > thr) return hash(x, y, z, 93) < 0.6 ? T("moss_block") : T("mossy_cobblestone");
+        if (vnoise3(x + 31, y, z - 17, 3.4, 94) > 0.63) return T("andesite");
+        double band = y + vnoise(x / 17.0, z / 17.0, 95) * 3 + vnoise(x / 6.0, z / 6.0, 96) * 1.2;
+        int k = (int) Math.floor(band / 3.0);
+        return T(STRATA[Math.floorMod(k, STRATA.length)]);
+    }
+    /** the top of the castle rock: stone with patches of moss and grass (2-D noise patches 3..6 across), dirt under the grass */
+    static Tag castleTop(int x, int y, int z, int depth, int H) {
+        double n = vnoise(x / 4.3, z / 4.3, 97) * 0.7 + vnoise(x / 1.9, z / 1.9, 98) * 0.3;
+        String top = n < 0.40 ? (vnoise(x / 2.5, z / 2.5, 99) < 0.6 ? "stone" : "andesite") : n < 0.62 ? "moss_block" : "grass_block[snowy=false]";
+        if (depth == 0) return T(top);
+        if (depth == 1) return top.startsWith("grass") ? T("dirt") : top.equals("moss_block") ? T("moss_block") : null;
+        return null;
     }
     /** surface styles (top `depth` blocks): returns null = keep rock */
     static Tag surf(int style, int x, int y, int z, int depth, int H) {
@@ -183,6 +217,8 @@ public class Terrain {
             case 8: return depth == 0 ? pick(x, y, z, 27, 5, "coarse_dirt", 3, "podzol[snowy=false]", 2, "blackstone", 1, "gravel") : depth < 3 ? T("coarse_dirt") : null;  // charred slope
             case 9: return depth == 0 ? pick(x, y, z, 28, 6, "gravel", 3, "red_sand", 2, "coarse_dirt", 1, "cobblestone") : depth < 2 ? T("gravel") : null;  // dry riverbed
             case 10: return depth == 0 ? pick(x, y, z, 29, 4, "stone", 3, "andesite", 2, "tuff", 1, "cobblestone") : null;  // bare rock top
+            case 11: return castleTop(x, y, z, depth, H);  // T-028 castle rock top: rock with patches of moss and grass
+            case 12: return depth == 0 ? pick(x, y, z, 34, 4, "gravel", 3, "mud", 2, "clay", 1, "dirt") : depth < 3 ? pick(x, y, z, 35, 2, "dirt", 1, "clay") : null;  // T-028 lake bed
             default: return null;
         }
     }
@@ -191,7 +227,7 @@ public class Terrain {
             Tag t;
             if (y > H) t = (W != NONE && y <= W) ? T("water[level=0]") : AIR;
             else if (rk == 6 || rk == 7) t = wall(x, y, z, H, rk == 7, aux);
-            else { Tag s = sf > 0 ? surf(sf, x, y, z, H - y, H) : null; t = s != null ? s : rock(rk, x, y, z); }
+            else { Tag s = sf > 0 ? surf(sf, x, y, z, H - y, H) : null; t = s != null ? s : rk == 9 ? castleRock(x, y, z, H) : rock(rk, x, y, z); }
             c[y - MINY] = t;
         }
         if (sf == 4 && H + 1 <= MAXY && (W == NONE || W <= H)) c[H + 1 - MINY] = T("snow[layers=" + (1 + (int) (hash(x, 0, z, 9) * 2)) + "]");

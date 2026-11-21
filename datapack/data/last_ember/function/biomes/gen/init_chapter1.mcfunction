@@ -88,6 +88,3 @@ execute unless score #bt_chapter1_84 le.bio matches 0..1 run scoreboard players 
 execute unless score #bt_chapter1_85 le.bio matches 0..1 run scoreboard players set #bt_chapter1_85 le.bio 0
 execute unless score #bt_chapter1_86 le.bio matches 0..1 run scoreboard players set #bt_chapter1_86 le.bio 0
 execute unless score #bt_chapter1_87 le.bio matches 0..1 run scoreboard players set #bt_chapter1_87 le.bio 0
-execute unless score #bt_chapter1_88 le.bio matches 0..1 run scoreboard players set #bt_chapter1_88 le.bio 0
-execute unless score #bt_chapter1_89 le.bio matches 0..1 run scoreboard players set #bt_chapter1_89 le.bio 0
-execute unless score #bt_chapter1_90 le.bio matches 0..1 run scoreboard players set #bt_chapter1_90 le.bio 0

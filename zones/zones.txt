@@ -26,3 +26,10 @@ cemetery_barrow_3 overworld box  206 98 480  217 106 488   dungeon   # T-027: ba
 cemetery_barrow_4 overworld box  257 94 494  268 102 502   dungeon   # T-027: barrow 4
 cemetery_barrow_5 overworld box  140 93 509  148 101 520   dungeon   # T-027: barrow 5
 lodge           overworld cyl 105 444 16 177 227   no_spawn   # T-027: the Keeper's Lodge (r 16 round the house)
+castle          overworld cyl 450 0 100 103 260   # T-028: the castle and its approaches (indestructible; W-12 .. the keep)
+castle_rock_head overworld box  432 103 -55  474 260 7   no_blink,no_chorus   # T-028: the castle rock
+castle_rock_peak overworld box  438 103 -81  512 260 -41   no_blink,no_chorus   # T-028: the castle rock
+castle_rock_stair overworld box  432 116 -38  447 162 -30   no_blink,no_chorus   # T-028: the castle rock
+castle_rock_rest overworld box  424 140 -38  431 146 -30   no_blink,no_chorus   # T-028: the castle rock
+castle_rock_rift overworld box  405 103 3  485 260 31   no_blink,no_chorus   # T-028: the castle rock
+castle_rock_table overworld box  398 103 26  490 260 97   no_blink,no_chorus   # T-028: the castle rock
