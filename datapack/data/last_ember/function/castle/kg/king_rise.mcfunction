@@ -14,6 +14,7 @@ bossbar set last_ember:king players @a[x=431,y=196,z=59,dx=31,dy=20,dz=31]
 bossbar set last_ember:king visible true
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] run ride @s dismount
 kill @e[type=minecraft:armor_stand,tag=le.kseat]
+tp @e[type=minecraft:zombie,tag=le.king,limit=1] 456.5 198.5 75.0 90 0
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] run data merge entity @s {NoAI:0b,Invulnerable:0b}
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run playsound minecraft:item.armor.equip_netherite hostile @a[distance=..48] ~ ~ ~ 2 0.5
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run playsound minecraft:block.chain.break hostile @a[distance=..48] ~ ~ ~ 1.5 0.5

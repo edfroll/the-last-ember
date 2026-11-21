@@ -76,7 +76,7 @@ def stage(two=True, knight=True):
     for p in ps:
         if not passed(f"execute if entity @a[name={p},tag=le.cinit]"): tc.setc(1, 1, 0, p)
         R(f"gamemode survival {p}"); R(f"effect clear {p}"); R(f"effect give {p} minecraft:saturation infinite 1 true")
-        R(f"execute as {p} run function last_ember:sleep/set_awake {{ticks:0}}"); R(f"tag {p} add le.cpass"); R(f"effect give {p} minecraft:instant_health 1 10 true")
+        R(f"execute as {p} run function last_ember:sleep/set_awake {{ticks:0}}"); R(f"tag {p} add le.cpass"); R(f"scoreboard players set {p} le.co 0"); R(f"effect give {p} minecraft:instant_health 1 10 true")
         R(f"tp {p} {OUT1[0]} {OUT1[1]} {OUT1[2]} -90 0")
     if not two and "Cam2" in R("list"): R("gamemode spectator Cam2"); R("tp Cam2 450 260 0")
     if knight:
@@ -204,15 +204,19 @@ def t_leash():
     chk("nobody in the hall: reset after ~10 s", wait(lambda: sc("#king") == 0, 14) and time.time() - t0 > 8.5, (sc("#king"), round(time.time() - t0, 1)))
     time.sleep(1.5)
     chk("the guard gone", count("@e[tag=le.kguard]") == 0)
-    chk("the king on the throne, full health", count("@e[type=minecraft:zombie,tag=le.king]") == 1 and abs((num(R(f"data get entity {KING} Health")) or 0) - 700) < 1 and "le.kseat" in R(f"execute on vehicle run data get entity @s Tags") if False else count("@e[type=minecraft:armor_stand,tag=le.kseat]") == 1)
+    hk = num(R(f"data get entity {KING} Health")); seat = R(f"execute as {KING} on vehicle run data get entity @s Tags")
+    chk("the king on the throne (riding his stand), full health (700)", count("@e[type=minecraft:zombie,tag=le.king]") == 1 and hk is not None and abs(hk - 700) < 1 and "le.kseat" in seat
+        and count("@e[type=minecraft:armor_stand,tag=le.kseat]") == 1, (hk, seat[-60:]))
     chk("the doors open, the niches shut, the bar hidden", block(*DOOR1, "minecraft:air") and block(L.NICHE_GUARD["n"][0] + 1, HG + 2, L.HALL[1], "minecraft:iron_bars") and "hidden" in R("bossbar get last_ember:king visible"))
 
 def t_respawn():
     print("[respawn at bonfire 11, back into the fight]"); stage(two=False, knight=False)
     hx, hy, hz = L.HEARTH11
     R("execute as Cam run function last_ember:ember/give_to_me"); time.sleep(1)
-    face("Cam", (hx + 0.5, hy, hz + 3.5), (hx + 0.5, hy + 0.6, hz + 0.5)); time.sleep(1); tc.act("Cam", "!use"); time.sleep(1.5)
-    tc.act("Cam", "!use"); time.sleep(1.5)
+    R("scoreboard players set Cam le.sb 1")
+    for _ in range(4):           # the first click lights it (the Ember's carrier), the next one rests and binds; a slow client may miss one
+        face("Cam", (hx + 0.5, hy, hz + 3.5), (hx + 0.5, hy + 0.6, hz + 0.5)); time.sleep(1); tc.act("Cam", "!use"); time.sleep(1.5)
+        if sc("@a[name=Cam,limit=1]", "le.sb") == 11: break
     chk("Cam (the Ember's carrier) lights bonfire 11 and is bound to it (a real click on the hearth, le.sb 11)", sc("@a[name=Cam,limit=1]", "le.sb") == 11, sc("@a[name=Cam,limit=1]", "le.sb"))
     R(f"tp Cam {OUT1[0]} {OUT1[1]} {OUT1[2]} -90 0"); time.sleep(0.5); king_fight(("Cam",))
     R("gamemode spectator Cam2"); R("tp Cam2 446 214 75")
@@ -265,6 +269,44 @@ def t_absent():
     chk("back in the game: Cam2 gets 2 trophies", wait(lambda: n() == 2, 4), n())
     R("function last_ember:castle/kg/reset_all")
 
+def fill_inv(p):
+    for i in range(36): R(f"item replace entity {p} container.{i} with minecraft:cobblestone 64")
+def ground(p, pred):
+    """the item count lying within 3 of p whose stack matches pred (an item predicate)"""
+    tot = 0
+    for _ in range(12):
+        r = R(f"execute at {p} as @e[type=minecraft:item,distance=..3] if items entity @s contents {pred} run data get entity @s Item.count")
+        if "data" not in r: break
+        n = num(r) or 0; tot += int(n); R(f"execute at {p} as @e[type=minecraft:item,distance=..3,limit=1] if items entity @s contents {pred} run kill @s")
+    return tot
+def t_full():
+    """T-029 review: a full inventory: the trophies of the king, the Creaking armour (T-025), the healer's cauldron (T-007) land at the feet"""
+    print("[full inventory: the things land at the feet]"); stage(two=False, knight=False)
+    R("tp Cam 446.5 %d 72.5" % (L.P + 1)); time.sleep(1)
+    R(f'kill @e[type=minecraft:item,x=440,y={L.P},z=66,dx=14,dy=6,dz=14]')
+    fill_inv("Cam"); R("tag Cam add le.kpart"); R("scoreboard players operation Cam le.kfight = #fight le.cs")
+    R("execute as Cam at @s run function last_ember:castle/kg/king_pay"); time.sleep(0.5)
+    chk("the king's reward, the inventory full: 2 trophies at the feet", ground("Cam", '*[minecraft:custom_data~{le_trophy:"r1"}]') == 2)
+    R("clear Cam"); R("tag Cam add le.kpart"); R("scoreboard players operation Cam le.kfight = #fight le.cs")
+    R("execute as Cam at @s run function last_ember:castle/kg/king_pay"); time.sleep(0.3)
+    chk("an empty inventory: 2 trophies in it", passed('execute if items entity Cam container.* *[minecraft:custom_data~{le_trophy:"r1"}]') and "Found 2" in R('clear Cam *[minecraft:custom_data~{le_trophy:"r1"}] 0'))
+    # the Creaking armour (garden asleep, not taken yet)
+    R("clear Cam"); fill_inv("Cam"); R("tag Cam remove le.creak_got"); a0 = sc("#asleep", "le.gd"); R("scoreboard players set #asleep le.gd 1")
+    R("execute as Cam at @s run function last_ember:garden/armor_click"); time.sleep(0.5)
+    chk("the Creaking armour, the inventory full: 4 pieces at the feet", ground("Cam", "*[minecraft:custom_data~{le_creak:1b}]") == 4)
+    R("scoreboard players set #asleep le.gd %d" % (a0 if a0 is not None else 0)); R("tag Cam remove le.creak_got")
+    # the healer's cauldron (plain and the old one), taken back by a sneaking healer
+    for old in (False, True):
+        R("clear Cam"); tc.setc(1, 4, 0, "Cam"); R("gamemode survival Cam"); R("tp Cam 446.5 %d 72.5" % (L.P + 1)); fill_inv("Cam")
+        R("setblock 448 %d 72 minecraft:cauldron" % (L.P + 1))
+        R('summon minecraft:interaction 448.5 %d 72.5 {Tags:["le.pot","le.ktestpot"%s],width:1.0f,height:1.0f}' % (L.P + 1, ',"le.pot_old"' if old else ""))
+        tc.act("Cam", "!sneak_on"); time.sleep(0.6); R("tag Cam add le.clicker")
+        R("execute as @e[type=minecraft:interaction,tag=le.ktestpot,limit=1] at @s run function last_ember:bonfire/cauldron_take"); R("tag Cam remove le.clicker")
+        tc.act("Cam", "!sneak_off"); time.sleep(0.5)
+        chk("the %s cauldron, the inventory full: at the feet" % ("old" if old else "healer's"), ground("Cam", "*[minecraft:custom_data~{le_cauldron:1b}]") == 1)
+        R("kill @e[type=minecraft:interaction,tag=le.ktestpot]")
+    R("clear Cam"); tc.setc(1, 1, 0, "Cam")
+
 def t_peace():
     print("[peaceful]"); stage(two=False)
     R("function last_ember:castle/kg/reset_all"); time.sleep(1.5)
@@ -311,7 +353,7 @@ def aim_shelf(p, side, dist=1.6):
     R(f"tp {p} {px} {L.P + 1} {pz} {yaw:.2f} {pitch:.2f}"); time.sleep(0.6)
 def put(p, key, side):
     """p puts the volume `key` into the empty cell of the shelf `side` (a real click; up to 3 tries)"""
-    for _ in range(3):
+    for _ in range(5):
         if not hold(p, key): return False
         aim_shelf(p, side); tc.act(p, "!use"); time.sleep(0.7)
         if in_shelf(side, key): return True
@@ -319,7 +361,7 @@ def put(p, key, side):
     print("     put %s %s failed: hand %s | shelf %s" % (key, side, R(f"data get entity {p} SelectedItem.components.minecraft:custom_data")[-60:], R(f"data get block {x} {y} {z} Items")[-200:]))
     return False
 def take(p, side):
-    for _ in range(3):
+    for _ in range(5):
         empty_hand(p); aim_shelf(p, side); tc.act(p, "!use"); time.sleep(0.7)
         if not in_shelf(side): return True
     return False
@@ -468,7 +510,7 @@ def t_perf():
     chk("the fight: castle/* under 0.5 ms per tick (the garden's limit)", 0 <= f < 0.5, f)
     R("function last_ember:castle/kg/king_reset"); R("effect clear Cam"); R("effect clear Cam2")
 
-SUITES = {"gate": t_gate, "riddle": t_riddle, "lost": t_lost, "secret": t_secret, "restart": t_restart, "cap": t_cap, "perf": t_perf, "king": t_king, "sweep": t_sweep, "phase": t_phase, "quake": t_quake, "leash": t_leash, "respawn": t_respawn, "death": t_death, "absent": t_absent, "peace": t_peace}
+SUITES = {"gate": t_gate, "riddle": t_riddle, "lost": t_lost, "secret": t_secret, "restart": t_restart, "cap": t_cap, "perf": t_perf, "king": t_king, "sweep": t_sweep, "phase": t_phase, "quake": t_quake, "leash": t_leash, "respawn": t_respawn, "death": t_death, "absent": t_absent, "full": t_full, "peace": t_peace}
 if __name__ == "__main__":
     for s in sys.argv[1:] or list(SUITES): SUITES[s]()
     print("RESULT: %d ok, %d failed" % (ok, bad))

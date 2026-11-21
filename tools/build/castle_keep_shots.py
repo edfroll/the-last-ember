@@ -22,7 +22,14 @@ def jpg(name):
     from PIL import Image
     src = os.path.join(CL, "screenshots", name + ".png")
     if os.path.exists(src): Image.open(src).convert("RGB").resize((1280, 720)).save(os.path.join(OUT, name + ".jpg"), quality=80); os.remove(src)
+LAST = [0.0]
+def gap(sec=12.5):
+    """the «Saved screenshot» line of the frame before comes asynchronously a few seconds after it; the next frame (with clean) only
+    after it came, else it lands in the frame"""
+    t = LAST[0] + sec - time.time()
+    if t > 0: time.sleep(t)
 def snap(name, hud=False, pre=False):
+    gap()
     for nm in ((name + "__pre",) if pre else ()) + (name,):
         d = os.path.join(CL, "shot-done.txt")
         if os.path.exists(d): os.remove(d)
@@ -34,7 +41,7 @@ def snap(name, hud=False, pre=False):
         if nm != name:
             p = os.path.join(CL, "screenshots", nm + ".png")
             if os.path.exists(p): os.remove(p)
-    jpg(name); print("  shot", name, flush=True)
+    LAST[0] = time.time(); jpg(name); print("  shot", name, flush=True)
 def place(f, t, nv=True):
     R("gamemode spectator Cam"); yw, pt = yawpitch((f[0], f[1] + 1.62, f[2]), t)
     if nv: R("effect give Cam minecraft:night_vision infinite 0 true")
@@ -44,6 +51,7 @@ def shot(name, f, t, hud=False, settle=6, nv=True):
     place(f, t, nv); time.sleep(settle); snap(name, hud)
 
 def static():
+    R("function last_ember:castle/kg/reset_all"); time.sleep(2)            # the king asleep on his throne, the doors as built
     R("time set noon"); R("weather clear")
     R("time set 12600"); shot("castle_sunset", (436, 170, -26), (452, 200, 60), settle=10, nv=False)
     R("time set noon")
@@ -63,6 +71,7 @@ def static():
     shot("throne_hall_door", (431.5, HY + 1, 67.5), (458, HY + 4, 75))
     shot("throne_hall_dark", (431.5, HY + 1, 67.5), (458, HY + 4, 75), nv=False)
     shot("king_on_throne", (450.5, HY + 2, 74.5), (458.5, HY + 3.5, 75))
+    shot("king_closeup", (455.2, HY + 3.4, 73.2), (458.5, HY + 4.3, 75))
     shot("north_tower", (500, P + 20, 20), (477, P + 26, 38), nv=False)
     shot("secret_tunnel", (471, L.TUN_Y + 1, 40), (471, L.TUN_Y + 2, 20))
     shot("spiral", (475.5, HY - 10, 73.5), (478, HY - 25, 76))
@@ -70,29 +79,39 @@ def static():
 
 def fight():
     """Cam2 the actor: the waking, standing, the sweep, the quake, the guard on the gallery, the bar with the HUD, the death, the throne after"""
-    R("difficulty normal"); R("gamemode survival Cam2"); R("tag Cam2 add le.cpass"); R("effect give Cam2 minecraft:resistance infinite 4 true")
-    R("effect give Cam2 minecraft:invisibility infinite 0 true"); R("function last_ember:castle/kg/king_reset"); time.sleep(1.5)
+    R("difficulty normal"); R("gamemode survival Cam2"); R("tag Cam2 add le.cpass"); R("scoreboard players set Cam2 le.co 0"); R("effect give Cam2 minecraft:resistance infinite 4 true")
+    R("effect give Cam2 minecraft:invisibility infinite 0 true"); R("function last_ember:castle/kg/reset_all"); time.sleep(2)
+    print("  king", R("scoreboard players get #king le.cs"), R("execute if entity " + KING), flush=True)
     place((448.5, HY + 2, 74.5), (458.5, HY + 3.5, 75)); time.sleep(4)
-    R(f"tp Cam2 {L.HALL[0] + 2.5} {HY + 1} 67.5")
+    gap(); R(f"tp Cam2 {L.HALL[0] + 2.5} {HY + 1} 67.5")
     time.sleep(0.9); snap("king_wakes", pre=False)
-    time.sleep(1.6); snap("king_stands", pre=False)
-    R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 448.5 {HY + 1} 74.5 90 0"); R(f"tp Cam2 445.5 {HY + 1} 74.5 -90 0")
-    place((441.5, HY + 3, 70.5), (448.5, HY + 2.5, 74.5)); time.sleep(3)
-    R(f"execute as {KING} at @s run function last_ember:castle/kg/sweep_try"); time.sleep(0.5); snap("sweep_windup", pre=False)
+    time.sleep(2.5); R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 452.5 {HY + 1} 74.5 90 0")
+    print("  king at", R(f"data get entity {KING} Pos"), R("scoreboard players get #king le.cs"), flush=True)
+    snap("king_stands", pre=False)
+    R("scoreboard players set #sw le.cs 100000")             # no sweep of his own while he poses (a sweep's end lets him walk)
+    R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 448.5 {HY + 1} 74.5 90 0"); R(f"tp Cam2 445.5 {HY + 1} 76.5 -90 0")
+    place((444.8, HY + 2.6, 72.2), (448.5, HY + 2.6, 74.5)); time.sleep(3); snap("king_closeup_fight", pre=False)
+    gap(); R(f"execute as {KING} at @s run function last_ember:castle/kg/sweep_try"); time.sleep(0.5); snap("sweep_windup", pre=False)
     time.sleep(1.2)
     real = int(R("scoreboard players get #real le.cs").split("has ")[1].split(" ")[0])
-    R(f"data modify entity {KING} Health set value {500 + real // 2 - 1}f"); time.sleep(0.6); snap("kneel", pre=False)
+    R("scoreboard players set #sw le.cs 100000"); R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 448.5 {HY + 1} 74.5 90 0")
+    gap(); R(f"data modify entity {KING} Health set value {500 + real // 2 - 1}f"); time.sleep(0.6); snap("kneel", pre=False)
     time.sleep(3)
     place((452.5, HY + 2, 82.5), (446.5, HG + 1.5, 61)); time.sleep(3); snap("guards_gallery", pre=False)
     R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 448.5 {HY + 1} 74.5 90 0"); R(f"tp Cam2 442.5 {HY + 1} 74.5 -90 0")
-    place((440.5, HY + 8, 62.5), (446.5, HY + 1, 74.5)); time.sleep(2)
-    R("function last_ember:castle/kg/quake_start"); time.sleep(1.2); snap("quake_windup", pre=False); time.sleep(0.6); snap("quake_ring", pre=False)
+    place((452.5, HY + 12, 78.5), (447.5, HY + 1, 74.5)); time.sleep(2)
+    gap(); R("function last_ember:castle/kg/quake_start"); time.sleep(1.0); snap("quake_windup", pre=False)
+    for k, name in enumerate(("quake_ring", "quake_ring2")):      # the ring at two radii (the dust lingers: an expanding lilac disc)
+        R("scoreboard players set #sw le.cs 100000"); R("scoreboard players set #qk le.cs 100000")
+        R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 448.5 {HY + 1} 74.5 90 0")
+        place((452.5, HY + 12, 78.5), (447.5, HY + 1, 74.5)); gap()
+        R("function last_ember:castle/kg/quake_start"); time.sleep(2.5 + 0.5 * k); snap(name, pre=False); time.sleep(3)
     R("kill @e[tag=le.kguard]")
-    R("gamemode survival Cam"); R("effect give Cam minecraft:resistance infinite 4 true"); R("tag Cam add le.cpass"); R("effect give Cam minecraft:night_vision infinite 0 true")
+    R("gamemode survival Cam"); R("effect give Cam minecraft:resistance infinite 4 true"); R("tag Cam add le.cpass"); R("scoreboard players set Cam le.co 0"); R("effect give Cam minecraft:night_vision infinite 0 true")
     R(f"tp Cam 440.5 {HY + 1} 74.5 -90 0"); time.sleep(2); snap("bossbar_hud", hud=True, pre=False)
     R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}")
     place((450.5, HY + 2, 70.5), (452.5, HY + 2, 74.5)); R(f"tp {KING} 452.5 {HY + 1} 74.5 90 0"); time.sleep(2)
-    R(f"data modify entity {KING} Health set value 500.5f"); R(f"damage {KING} 2 minecraft:player_attack by Cam2"); time.sleep(1.2)
+    gap(); R(f"data modify entity {KING} Health set value 500.5f"); R(f"damage {KING} 2 minecraft:player_attack by Cam2"); time.sleep(1.2)
     snap("king_dies", pre=False); time.sleep(3)
     shot("throne_after", (452.5, HY + 3, 74.5), (458.5, HY + 3.5, 75))
     time.sleep(2); shot("reliquary_signet", (465.5, HY + 2, 73.5), (468.5, HY + 1.5, 76.5))

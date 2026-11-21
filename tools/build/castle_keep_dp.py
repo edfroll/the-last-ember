@@ -305,6 +305,7 @@ def king(km, places, HALL, front):
                     "execute store result bossbar last_ember:king value run scoreboard players get #hp le.cs",
                     "bossbar set last_ember:king players @a[%s]" % HALL, "bossbar set last_ember:king visible true",
                     "execute as %s run ride @s dismount" % KS, "kill @e[type=minecraft:armor_stand,tag=le.kseat]",
+                    "tp %s %s %s %s 90 0" % (KS, f(tx - 2.0), f(L.HALL_Y + 2.5), f(tz)),          # onto the top of the dais in front of the seat
                     "execute as %s run data merge entity @s {NoAI:0b,Invulnerable:0b}" % KS,
                     "execute as %s at @s run playsound minecraft:item.armor.equip_netherite hostile @a[distance=..48] ~ ~ ~ 2 0.5" % KS,
                     "execute as %s at @s run playsound minecraft:block.chain.break hostile @a[distance=..48] ~ ~ ~ 1.5 0.5" % KS,
@@ -427,11 +428,12 @@ def king(km, places, HALL, front):
                       "scoreboard players set #qt le.cs 0", "tag @a remove le.kqh"])
     ring = []
     for t in range(0, 25):
-        r = t * 0.5; n = max(6, int(2 * math.pi * r / 0.8))
+        r = t * 0.5; n = max(6, int(2 * math.pi * r / 1.1))
         pts = ["particle minecraft:block{block_state:\"minecraft:deepslate_tiles\"} ^ ^0.2 ^%s 0.05 0.05 0.05 0 1 force @a[distance=..40]" % f(r)]
         lines = [HDR + ": the ring of the quake at radius %s (as/at the king, on the floor)" % f(r)]
-        for i in range(n):
-            lines.append("execute rotated %s 0 run particle minecraft:block{block_state:\"minecraft:deepslate_tiles\"} ^ ^0.15 ^%s 0.05 0.05 0.05 0 1 force @a[distance=..40]" % (f(360.0 * i / n), f(r)))
+        for i in range(n):          # lilac dust (readable on the dark chequer), every third point stone crumbs too
+            lines.append("execute rotated %s 0 run particle minecraft:dust{color:[0.78,0.45,1.0],scale:1.8} ^ ^0.2 ^%s 0.08 0.08 0.08 0 2 force @a[distance=..40]" % (f(360.0 * i / n), f(r)))
+            if i % 4 == 0: lines.append("execute rotated %s 0 run particle minecraft:block{block_state:\"minecraft:deepslate_tiles\"} ^ ^0.15 ^%s 0.05 0.05 0.05 0 1 force @a[distance=..40]" % (f(360.0 * i / n), f(r)))
         lo, hi = max(0.0, r - 0.75), r + 0.75
         lines.append("execute positioned ~ %d ~ as @a[distance=%s..%s,%s,tag=!le.kqh] if predicate last_ember:castle/on_ground run function last_ember:castle/kg/quake_one" % (HY + 1, f(lo), f(hi), ALIVE))
         w("ring_%d" % t, lines)
@@ -558,8 +560,12 @@ def king(km, places, HALL, front):
                      "execute as @e[tag=le.kguard] at @s run tp @s ~ -500 ~", "kill @e[tag=le.kguard]", "execute as %s at @s run tp @s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]",
                      "kill @e[type=minecraft:armor_stand,tag=le.kseat]", "kill @e[type=minecraft:armor_stand,tag=le.kneel]",
                      "function last_ember:castle/kg/king_rest"])
-    w("king_pay", [HDR + ": as a player of the fight that killed the king (now or when he comes back): 2 Trophies of the Dol (on the ground when the inventory is full)",
-                   "loot give @s loot last_ember:contract/trophy_r1", "loot give @s loot last_ember:contract/trophy_r1",
+    w("king_pay", [HDR + ": as a player of the fight that killed the king (now or when he comes back): 2 Trophies of the Dol (no free slot: on the ground at the feet)",
+                   "function last_ember:give/free",
+                   "execute if score #free le.gv matches 1.. run loot give @s loot last_ember:contract/trophy_r1",
+                   "execute if score #free le.gv matches 1.. run loot give @s loot last_ember:contract/trophy_r1",
+                   "execute if score #free le.gv matches 0 at @s run loot spawn ~ ~ ~ loot last_ember:contract/trophy_r1",
+                   "execute if score #free le.gv matches 0 at @s run loot spawn ~ ~ ~ loot last_ember:contract/trophy_r1",
                    "tag @s remove le.kpart", "scoreboard players add #paid le.cs 1"])
     w("king_hurt", [HDR + ": advancement reward: a player hit the king: a participant of this fight; the clank of his armour",
                     "advancement revoke @s only last_ember:castle/k_hurt", "tag @s add le.kpart", "scoreboard players operation @s le.kfight = #fight le.cs",
