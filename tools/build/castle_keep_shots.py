@@ -22,11 +22,11 @@ def jpg(name):
     from PIL import Image
     src = os.path.join(CL, "screenshots", name + ".png")
     if os.path.exists(src): Image.open(src).convert("RGB").resize((1280, 720)).save(os.path.join(OUT, name + ".jpg"), quality=80); os.remove(src)
-def snap(name, hud=False, pre=True):
+def snap(name, hud=False, pre=False):
     for nm in ((name + "__pre",) if pre else ()) + (name,):
         d = os.path.join(CL, "shot-done.txt")
         if os.path.exists(d): os.remove(d)
-        open(os.path.join(CL, "shot-request.txt"), "w").write(f"{nm} {1 if hud else 0}{' clean' if not hud else ''}\n")
+        open(os.path.join(CL, "shot-request.txt"), "w").write(f"{nm} {1 if hud else 0} clean\n")
         for _ in range(120):
             if os.path.exists(d): break
             time.sleep(0.5)
@@ -47,14 +47,14 @@ def static():
     R("time set noon"); R("weather clear")
     R("time set 12600"); shot("castle_sunset", (436, 170, -26), (452, 200, 60), settle=10, nv=False)
     R("time set noon")
-    shot("castle_day", (380, 200, -60), (452, 200, 60), settle=10, nv=False)
+    shot("castle_day", (452, 215, -14), (452, 195, 60), settle=10, nv=False)
     shot("court", (462, P + 6, 42), (440, P + 6, 56))
     shot("gallery", (468, L.GAL + 1, 42), (468, L.GAL + 2, 57))
     shot("chapel", (430, P + 2, 46), (410, P + 4, 46))
     shot("library", (418.5, L.GAL + 1, 80), (412, P + 2, 62))
-    shot("riddle_wall", (414.5, P + 1, 64), (414.5, P + 2.5, 55))
+    shot("riddle_wall", (417.5, P + 1, 61), (417.5, P + 2.5, 55))
     shot("library_dark", (418.5, L.GAL + 1, 80), (412, P + 2, 62), nv=False)
-    shot("kitchens", (472, P + 2, 52), (481, P + 2, 46))
+    shot("kitchens", (473.5, P + 4, 49.5), (481, P + 1, 46))
     shot("armoury", (472, P + 2, 56), (480, P + 2, 66))
     shot("vestibule", (446.5, P + 1, 84), (446.5, P + 2, 66))
     shot("gaol", (414.5, L.GAOL_Y + 1, 68), (414.5, L.GAOL_Y + 2, 82))
@@ -85,7 +85,7 @@ def fight():
     time.sleep(3)
     place((452.5, HY + 2, 82.5), (446.5, HG + 1.5, 61)); time.sleep(3); snap("guards_gallery", pre=False)
     R(f"execute as {KING} run data merge entity @s {{NoAI:1b}}"); R(f"tp {KING} 448.5 {HY + 1} 74.5 90 0"); R(f"tp Cam2 442.5 {HY + 1} 74.5 -90 0")
-    place((448.5, HY + 7, 66.5), (448.5, HY + 1, 74.5)); time.sleep(2)
+    place((440.5, HY + 8, 62.5), (446.5, HY + 1, 74.5)); time.sleep(2)
     R("function last_ember:castle/kg/quake_start"); time.sleep(1.2); snap("quake_windup", pre=False); time.sleep(0.6); snap("quake_ring", pre=False)
     R("kill @e[tag=le.kguard]")
     R("gamemode survival Cam"); R("effect give Cam minecraft:resistance infinite 4 true"); R("tag Cam add le.cpass"); R("effect give Cam minecraft:night_vision infinite 0 true")

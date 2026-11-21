@@ -7,6 +7,6 @@ execute if score #hp le.cs matches ..0 run return run function last_ember:castle
 scoreboard players operation #h2 le.cs = #hp le.cs
 scoreboard players operation #h2 le.cs *= #2 le.cs
 execute if score #king le.cs matches 2 if score #h2 le.cs <= #real le.cs if score #swt le.cs matches -1 run return run function last_ember:castle/kg/kneel_start
-execute as @e[type=minecraft:zombie,tag=le.king,limit=1] unless entity @s[x=431,y=196,z=59,dx=31,dy=20,dz=31] run tp @s 452.5 197 75
+execute as @e[type=minecraft:zombie,tag=le.king,limit=1] unless entity @s[x=431,y=196,z=59,dx=31,dy=20,dz=31] run tp @s 452.5 197 75.0
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s if entity @s[y=200,dy=30] run tp @s ~ 197 ~
 execute if score #swt le.cs matches -1 if score #qt le.cs matches -1 if score #sw le.cs matches 0 as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s if entity @a[distance=..4.5,gamemode=!spectator,gamemode=!creative] run function last_ember:castle/kg/sweep_try

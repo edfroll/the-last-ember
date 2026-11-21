@@ -39,7 +39,9 @@ def jw(rel, obj):
 def box(x1, y1, z1, x2, y2, z2): return "x=%d,y=%d,z=%d,dx=%d,dy=%d,dz=%d" % (x1, y1, z1, x2 - x1, y2 - y1, z2 - z1)
 
 
-def f(v): return ("%.2f" % v).rstrip("0").rstrip(".")
+def f(v):
+    """a coordinate for commands: always with a decimal point (a whole number in summon/tp is taken as the block's centre)"""
+    t = ("%.2f" % v).rstrip("0"); return t + "0" if t.endswith(".") else t
 
 
 ALIVE = "gamemode=!spectator,gamemode=!creative"
@@ -257,7 +259,7 @@ SWEEP_R, SWEEP_HALF = 5, 70
 def king(km, places, HALL, front):
     H = km["hall"]; tx, ty, tz = H["throne"]
     hx1, hy1, hz1, hx2, hy2, hz2 = H["box"]
-    seat = (tx, ty - 0.35, tz)
+    seat = (tx, ty + 1.2, tz)          # the stand (marker): its rider sits 1.05 lower, on the seat (stairs at ty)
     w("king_summon", [HDR + ": the king asleep on his throne: a zombie (1.5 x) riding an invisible stand on the seat, still and unhurt",
                       "kill @e[type=minecraft:armor_stand,tag=le.kseat]",
                       "summon minecraft:armor_stand %s %s %s {Tags:[\"le.kseat\",\"le.kent\"],Invisible:1b,Marker:1b,NoGravity:1b,Invulnerable:1b,Rotation:[90f,0f],"

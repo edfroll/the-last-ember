@@ -6,7 +6,7 @@ place template last_ember:castle/k_niche_n_closed 445 203 58
 place template last_ember:castle/k_niche_s_closed 445 203 91
 place template last_ember:castle/k_niche_w_closed 430 203 73
 kill @e[type=minecraft:item_display,tag=le.kthr]
-summon minecraft:item_display 458.3 200.1 75 {Tags:["le.kthr"],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:castle/king_sword"}},transformation:{left_rotation:[0f,0f,0.7071f,0.7071f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[1.4f,1.4f,1.4f]}}
+summon minecraft:item_display 458.3 200.1 75.0 {Tags:["le.kthr"],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:castle/king_sword"}},transformation:{left_rotation:[0f,0f,0.7071f,0.7071f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[1.4f,1.4f,1.4f]}}
 summon minecraft:item_display 458.5 199.75 75.6 {Tags:["le.kthr"],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:castle/king_crown"}},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]}}
 bossbar set last_ember:king visible false
 bossbar set last_ember:king players

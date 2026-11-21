@@ -2,9 +2,9 @@
 execute unless loaded 450 163 31 run return 0
 place template last_ember:castle/k_gate_open 450 163 31
 kill @e[type=minecraft:interaction,tag=le.cgate]
-playsound minecraft:block.grindstone.use block @a[distance=..48] 451.5 163 30.5 2 0.4
-playsound minecraft:block.chain.place block @a[distance=..48] 451.5 163 30.5 2 0.5
-playsound minecraft:block.iron_door.open block @a[distance=..48] 451.5 163 30.5 2 0.4
+playsound minecraft:block.grindstone.use block @a[distance=..48] 451.5 163.0 30.5 2 0.4
+playsound minecraft:block.chain.place block @a[distance=..48] 451.5 163.0 30.5 2 0.5
+playsound minecraft:block.iron_door.open block @a[distance=..48] 451.5 163.0 30.5 2 0.4
 title @a[distance=..40] actionbar {"text":"Замок впускает огонь.","color":"gold","italic":true}
 scoreboard players set #gate le.cs 1
 function last_ember:castle/kg/save

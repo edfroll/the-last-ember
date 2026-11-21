@@ -208,16 +208,22 @@ def t_leash():
     chk("the doors open, the niches shut, the bar hidden", block(*DOOR1, "minecraft:air") and block(L.NICHE_GUARD["n"][0] + 1, HG + 2, L.HALL[1], "minecraft:iron_bars") and "hidden" in R("bossbar get last_ember:king visible"))
 
 def t_respawn():
-    print("[respawn at bonfire 11]"); stage(two=False)
+    print("[respawn at bonfire 11, back into the fight]"); stage(two=False, knight=False)
     hx, hy, hz = L.HEARTH11
-    R(f"tp Cam {hx + 0.5} {hy} {hz + 3.5}"); time.sleep(1)
-    R(f"execute as Cam at @s run function last_ember:bonfire/place_test") if False else None
-    R("execute as @e[type=minecraft:interaction,tag=le.hearth,sort=nearest,limit=1] at @s run tp Cam ~ ~ ~")
-    b = sc("@a[name=Cam,limit=1]", "le.sb")
-    print("     bound to bonfire", b)
-    king_fight(("Cam",))
-    R("kill Cam"); time.sleep(3)
-    q = pos("Cam"); print("     respawned at", q)
+    R("execute as Cam run function last_ember:ember/give_to_me"); time.sleep(1)
+    face("Cam", (hx + 0.5, hy, hz + 3.5), (hx + 0.5, hy + 0.6, hz + 0.5)); time.sleep(1); tc.act("Cam", "!use"); time.sleep(1.5)
+    tc.act("Cam", "!use"); time.sleep(1.5)
+    chk("Cam (the Ember's carrier) lights bonfire 11 and is bound to it (a real click on the hearth, le.sb 11)", sc("@a[name=Cam,limit=1]", "le.sb") == 11, sc("@a[name=Cam,limit=1]", "le.sb"))
+    R(f"tp Cam {OUT1[0]} {OUT1[1]} {OUT1[2]} -90 0"); time.sleep(0.5); king_fight(("Cam",))
+    R("gamemode spectator Cam2"); R("tp Cam2 446 214 75")
+    time.sleep(3.5); R("kill Cam"); time.sleep(4)
+    q = pos("Cam")
+    chk("dead in the fight: respawned at bonfire 11 (the vestibule)", q is not None and abs(q[0] - (hx + 0.5)) < 3 and abs(q[2] - (hz + 5.5)) < 3 and abs(q[1] - hy) < 2, q)
+    chk("the pass kept (no strike in the keep)", "le.cpass" in R("data get entity Cam Tags"))
+    chk("the fight goes on", sc("#king") in (2, 4), sc("#king"))
+    R(f"tp Cam {OUT1[0]} {OUT1[1]} {OUT1[2]} -90 0")
+    chk("back at the door: let in again", wait(lambda: block(*DOOR1, "minecraft:air"), 3))
+    R("function last_ember:castle/kg/king_reset")
 
 def t_death():
     print("[death of the king, reward, reliquary, Signet]"); stage()
@@ -242,6 +248,22 @@ def t_death():
     chk("the Signet on its pedestal", wait(lambda: count("@e[type=minecraft:interaction,tag=le.cskey]") == 1, 3))
     R(f"tp Cam {pd[0] - 1.6} {pd[1] - 1} {pd[2]} -90 30"); time.sleep(1); tc.act("Cam", "!use"); time.sleep(1)
     chk("Cam took the Signet (a real click), got 1b", passed('execute if items entity Cam container.* *[minecraft:custom_data~{le_key:"signet_king"}]') and "got: 1b" in R("data get storage last_ember:keys k.signet_king"), R("data get storage last_ember:keys k.signet_king"))
+
+def t_absent():
+    print("[an absent participant gets the trophies when back]"); stage()
+    R("function last_ember:castle/kg/reset_all"); time.sleep(1.5); R("clear Cam2")
+    for p in ("Cam", "Cam2"): R(f"tp {p} {OUT1[0]} {OUT1[1]} {OUT1[2]} -90 0")
+    king_fight(("Cam", "Cam2"))
+    R(f"damage {KING} 5 minecraft:player_attack by Cam2"); time.sleep(0.3)
+    subprocess.run("pkill -f 'username Cam2'", shell=True); wait(lambda: "Cam2" not in R("list"), 20, 1)
+    chk("Cam2 (hit him) left the game", "Cam2" not in R("list"))
+    R(f"data modify entity {KING} Health set value 500.5f"); R(f"damage {KING} 2 minecraft:player_attack by Cam")
+    chk("the king laid to rest", wait(lambda: sc("#king") == 6, 6))
+    subprocess.Popen(f"cd {ROOT} && python3 -I tools/client_launch.py --name Cam2 --dir server/client2 --mem 1500M --size 640x360 > server/client2.out 2>&1", shell=True)
+    wait(lambda: "Cam2" in R("list"), 150, 3); time.sleep(3)
+    n = lambda: num(R('clear Cam2 *[minecraft:custom_data~{le_trophy:"r1"}] 0').split("Found ")[-1].split(" ")[0]) if "Found" in R('clear Cam2 *[minecraft:custom_data~{le_trophy:"r1"}] 0') else 0
+    chk("back in the game: Cam2 gets 2 trophies", wait(lambda: n() == 2, 4), n())
+    R("function last_ember:castle/kg/reset_all")
 
 def t_peace():
     print("[peaceful]"); stage(two=False)
@@ -446,7 +468,7 @@ def t_perf():
     chk("the fight: castle/* under 0.5 ms per tick (the garden's limit)", 0 <= f < 0.5, f)
     R("function last_ember:castle/kg/king_reset"); R("effect clear Cam"); R("effect clear Cam2")
 
-SUITES = {"gate": t_gate, "riddle": t_riddle, "lost": t_lost, "secret": t_secret, "restart": t_restart, "cap": t_cap, "perf": t_perf, "king": t_king, "sweep": t_sweep, "phase": t_phase, "quake": t_quake, "leash": t_leash, "respawn": t_respawn, "death": t_death, "peace": t_peace}
+SUITES = {"gate": t_gate, "riddle": t_riddle, "lost": t_lost, "secret": t_secret, "restart": t_restart, "cap": t_cap, "perf": t_perf, "king": t_king, "sweep": t_sweep, "phase": t_phase, "quake": t_quake, "leash": t_leash, "respawn": t_respawn, "death": t_death, "absent": t_absent, "peace": t_peace}
 if __name__ == "__main__":
     for s in sys.argv[1:] or list(SUITES): SUITES[s]()
     print("RESULT: %d ok, %d failed" % (ok, bad))

@@ -12,5 +12,5 @@ summon minecraft:armor_stand 479.5 167 64.5 {Tags:["le.karm"],Invulnerable:1b,Pe
 execute as @e[type=minecraft:armor_stand,tag=le.karm] run data merge entity @s {DisabledSlots:4144959}
 kill @e[type=minecraft:item_display,tag=le.kdeco]
 summon minecraft:item_display 414.5 155.07 75.5 {Tags:["le.kdeco"],item:{id:"minecraft:bone",count:1},transformation:{left_rotation:[0.7071f,0f,0f,0.7071f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.6f,0.6f,0.6f]}}
-summon minecraft:item_display 418 144.55 43.5 {Tags:["le.kdeco"],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:castle/king_crown"}},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.7f,0.7f,0.7f]}}
+summon minecraft:item_display 418.0 144.55 43.5 {Tags:["le.kdeco"],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:castle/king_crown"}},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.7f,0.7f,0.7f]}}
 scoreboard players set #deco le.cs 1

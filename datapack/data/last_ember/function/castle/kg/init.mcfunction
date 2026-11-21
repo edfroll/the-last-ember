@@ -18,5 +18,5 @@ scoreboard players set #qt le.cs -1
 scoreboard players set #l1 le.cs 0
 scoreboard players set #l2 le.cs 0
 execute if score #king le.cs matches 1..5 run function last_ember:castle/kg/king_reset
-data modify storage last_ember:r1 m.castle_throne set value {pos:[458.5,199d,75]}
-data modify storage last_ember:r1 m.castle_pier_door set value {pos:[434.5,117d,-31.5]}
+data modify storage last_ember:r1 m.castle_throne set value {pos:[458.5,199d,75.0]}
+data modify storage last_ember:r1 m.castle_pier_door set value {pos:[434.5,117.0d,-31.5]}
