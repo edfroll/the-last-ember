@@ -2,5 +2,6 @@
 execute store result score #g le.cs run data get storage last_ember:castle vg.autumn.gen
 scoreboard players add #g le.cs 1
 execute store result storage last_ember:castle vg.autumn.gen int 1 run scoreboard players get #g le.cs
+execute store result storage last_ember:castle vgen.autumn int 1 run scoreboard players get #g le.cs
 function last_ember:castle/kg/lect_autumn with storage last_ember:castle vg.autumn
 scoreboard players set #vs_autumn le.cs 0

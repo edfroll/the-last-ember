@@ -61,4 +61,6 @@ execute if entity @s[x=430,y=163,z=94,dx=36,dy=97,dz=3] run return 1
 execute if entity @s[x=432,y=116,z=-38,dx=15,dy=46,dz=8] run return 1
 execute if entity @s[x=424,y=140,z=-38,dx=7,dy=6,dz=8] run return 1
 execute if entity @s[x=405,y=103,z=3,dx=80,dy=157,dz=28] run return 1
+# T-029: the castle under the rock top (gaol, crypt, the secret way)
+execute if function last_ember:castle/kg/in_keep run return 1
 return 0

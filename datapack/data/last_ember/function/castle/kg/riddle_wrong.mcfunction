@@ -2,3 +2,4 @@
 execute as @a[x=408,y=166,z=54,dx=13,dy=13,dz=29,gamemode=!spectator,gamemode=!creative] at @s run function last_ember:halluc/whisper
 scoreboard players operation #wh le.cs = #gt le.cas
 scoreboard players add #wh le.cs 400
+scoreboard players add #whispers le.cs 1

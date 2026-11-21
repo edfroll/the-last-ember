@@ -19,5 +19,6 @@ function last_ember:castle/kg/vol_back_spring
 function last_ember:castle/kg/vol_back_summer
 function last_ember:castle/kg/vol_back_autumn
 function last_ember:castle/kg/vol_back_winter
+function last_ember:castle/kg/shelves_reset
 data modify storage last_ember:keys k.signet_king.got set value 0b
 function last_ember:castle/kg/save

@@ -2,5 +2,6 @@
 execute store result score #g le.cs run data get storage last_ember:castle vg.spring.gen
 scoreboard players add #g le.cs 1
 execute store result storage last_ember:castle vg.spring.gen int 1 run scoreboard players get #g le.cs
+execute store result storage last_ember:castle vgen.spring int 1 run scoreboard players get #g le.cs
 function last_ember:castle/kg/lect_spring with storage last_ember:castle vg.spring
 scoreboard players set #vs_spring le.cs 0

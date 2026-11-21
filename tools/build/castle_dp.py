@@ -118,7 +118,8 @@ def run(gr, rl, meta):
                      "execute %s run return 0" % tr, "return 1"])
     w("in_rock", [hdr + ": 1 when @s is on the castle rock (the bridgehead and the peak, the stair, the rift, the table): boxes hugging the rock,",
                   "# from 3 under its top (no ground outside the rock reaches into them)"]
-      + ["execute if entity @s[%s] run return 1" % boxsel(b) for b in ex] + ["return 0"])
+      + ["execute if entity @s[%s] run return 1" % boxsel(b) for b in ex]
+      + ["# T-029: the castle under the rock top (gaol, crypt, the secret way)", "execute if function last_ember:castle/kg/in_keep run return 1", "return 0"])
     w("near_hearth8", [hdr + ": 1 when @s is at bonfire 8 (its pad)",
                        "execute unless entity @s[%s] run return 0" % boxsel((P.PAD8[0] - 1, P.PAD8_Y - 1, P.PAD8[1] - 1, P.PAD8[2] + 1, P.PAD8_Y + 6, P.PAD8[3] + 1)), "return 1"])
     # ------------------------------------------------------------------ the eyes (4 sockets x 2 colossi, the eye block one deep)

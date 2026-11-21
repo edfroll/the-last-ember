@@ -70,7 +70,8 @@ def run(meta, nbt):
     st = ["gate", "gaol", "pier", "reliq", "king", "fight", "deco"] + ["vs_" + v for v in VOLS]
     w("init", [HDR + ": the scores from storage after a reset of the scoreboard; a fight cut by a restart starts again from the throne",
                "execute unless data storage last_ember:castle keep run data modify storage last_ember:castle keep set value {gate:0,gaol:0,pier:0,reliq:0,king:0,fight:0,deco:0,%s}" % ",".join("vs_%s:0" % v for v in VOLS),
-               "execute unless data storage last_ember:castle vg run data modify storage last_ember:castle vg set value {%s}" % ",".join('%s:{key:"vol_%s",gen:1}' % (v, v) for v in VOLS)]
+               "execute unless data storage last_ember:castle vg run data modify storage last_ember:castle vg set value {%s}" % ",".join('%s:{key:"vol_%s",gen:1}' % (v, v) for v in VOLS),
+               "execute unless data storage last_ember:castle vgen run data modify storage last_ember:castle vgen set value {%s}" % ",".join('%s:1' % v for v in VOLS)]
       + ["execute unless score #%s le.cs matches -1.. store result score #%s le.cs run data get storage last_ember:castle keep.%s" % (s, s, s) for s in st]
       + ["scoreboard players set #swt le.cs -1", "scoreboard players set #qt le.cs -1", "scoreboard players set #l1 le.cs 0", "scoreboard players set #l2 le.cs 0",
          "execute if score #king le.cs matches 1..5 run function last_ember:castle/kg/king_reset",
@@ -83,7 +84,7 @@ def run(meta, nbt):
                     "kill @e[type=minecraft:item_display,tag=le.kthr]", "kill @e[type=minecraft:item_display,tag=le.cskey_d]", "kill @e[type=minecraft:interaction,tag=le.cskey]",
                     "scoreboard players set #gate le.cs 0", "scoreboard players set #gaol le.cs 0", "scoreboard players set #reliq le.cs 0", "scoreboard players set #pier le.cs 0",
                     "scoreboard players set #king le.cs 0", "scoreboard players set #wh le.cs 0", "tag @a remove le.kpart"]
-      + ["function last_ember:castle/kg/vol_back_%s" % v for v in VOLS] + ["data modify storage last_ember:keys k.signet_king.got set value 0b", "function last_ember:castle/kg/save"])
+      + ["function last_ember:castle/kg/vol_back_%s" % v for v in VOLS] + ["function last_ember:castle/kg/shelves_reset", "data modify storage last_ember:keys k.signet_king.got set value 0b", "function last_ember:castle/kg/save"])
     # ------------------------------------------------------------------ the 5-tick loop and the second
     w("loop5", [HDR + ": every 5 ticks (castle/loop): the waking of the king at the threshold, the fight's tick",
                 "execute if score #king le.cs matches 0 if entity @a[%s,%s] run function last_ember:castle/kg/king_wake" % (HALL, ALIVE),
@@ -91,7 +92,7 @@ def run(meta, nbt):
     bm = meta["bridge"]["mid"]
     w("second", [HDR + ": every second (castle/second)",
                  "execute if score #gate le.cs matches 0 positioned %s %s %s if entity @a[distance=..3,tag=le.cpass,%s] run function last_ember:castle/kg/gate_open" % (f(bm[0]), f(bm[1]), f(bm[2]), ALIVE),
-                 "execute if score #gaol le.cs matches 0 if entity @a[%s,%s] run function last_ember:castle/kg/riddle" % (LIB, ALIVE)]
+                 "execute if score #gaol le.cs matches 0 if entity @a[%s,%s] run function last_ember:castle/kg/riddle with storage last_ember:castle vgen" % (LIB, ALIVE)]
       + ["function last_ember:castle/kg/vol_%s" % v for v in VOLS]
       + ["execute if score #pier le.cs matches 0 positioned %s %s %s if entity @a[distance=..3,%s] run function last_ember:castle/kg/pier_open" % (f(km["tunnel"]["inside"][0] + 0.5), f(km["tunnel"]["inside"][1]), f(km["tunnel"]["inside"][2]), ALIVE),
          "execute store result score #d le.cs run difficulty",
@@ -114,24 +115,28 @@ def run(meta, nbt):
     # ------------------------------------------------------------------ the riddle of the library
     def has(side, key=None, slot="container.*"):
         x, y, z = sh[side]["pos"]
-        return "items block %d %d %d %s %s" % (x, y, z, slot, '*[minecraft:custom_data~{le_citem:"vol_%s"}]' % key if key else "*")
-    lines = [HDR + ": every second while a player is in the library and the gaol is shut: the four empty cells of the riddle wall",
+        return "items block %d %d %d %s %s" % (x, y, z, slot, '*[minecraft:custom_data~{le_citem:"vol_%s",gen:$(%s)}]' % (key, key) if key else "*")
+    lines = [HDR + ": macro (storage last_ember:castle vgen: the current generation of each volume; old copies do not count): every second while a",
+             "# player is in the library and the gaol is shut: the four empty cells of the riddle wall",
              "scoreboard players set #ok le.cs 1"]
     for key, side in SHELF_OF.items():
-        lines.append("execute unless %s run scoreboard players set #ok le.cs 0" % has(side, key, "container.%d" % sh[side]["slot"]))
+        lines.append("$execute unless %s run scoreboard players set #ok le.cs 0" % has(side, key, "container.%d" % sh[side]["slot"]))
     lines.append("execute if %s run scoreboard players set #ok le.cs 0" % has("north", None, "container.%d" % sh["north"]["slot"]))
-    for side in sh: lines.append("execute if %s run scoreboard players set #ok le.cs 0" % has(side, "winter"))
+    for side in sh: lines.append("$execute if %s run scoreboard players set #ok le.cs 0" % has(side, "winter"))
     lines.append("execute if score #ok le.cs matches 1 run return run function last_ember:castle/kg/gaol_open")
     lines.append("scoreboard players set #tv le.cs 0")
     for key in VOLS:
         lines.append("scoreboard players set #h le.cs 0")
-        for side in sh: lines.append("execute if %s run scoreboard players set #h le.cs 1" % has(side, key))
+        for side in sh: lines.append("$execute if %s run scoreboard players set #h le.cs 1" % has(side, key))
         lines.append("scoreboard players operation #tv le.cs += #h le.cs")
     lines += ["execute if score #tv le.cs matches 4 if score #gt le.cas >= #wh le.cs run function last_ember:castle/kg/riddle_wrong"]
     w("riddle", lines)
+    w("shelves_reset", [HDR + ": admin/test: the four shelves of the riddle as built (five plain books, the lower middle cell empty)"]
+      + sum((["setblock %d %d %d %s replace" % (tuple(sh[sd]["pos"]) + (K.riddle_shelf(sh[sd]["facing"], sh[sd]["slot"]),)),
+              "data modify block %d %d %d Items set value %s" % (tuple(sh[sd]["pos"]) + (K.riddle_shelf(sh[sd]["facing"], sh[sd]["slot"]).split("{Items:")[1][:-1],))] for sd in sh), []))
     w("riddle_wrong", [HDR + ": all four volumes stand on the wall, wrongly: a whisper at the shelves to the players in the library (every 20 s at most)",
                        "execute as @a[%s,%s] at @s run function last_ember:halluc/whisper" % (LIB, ALIVE),
-                       "scoreboard players operation #wh le.cs = #gt le.cas", "scoreboard players add #wh le.cs 400"])
+                       "scoreboard players operation #wh le.cs = #gt le.cas", "scoreboard players add #wh le.cs 400", "scoreboard players add #whispers le.cs 1"])
     gd = km["gaol_door"]
     w("gaol_open", [HDR + ": the riddle is solved: the gaol door opens for ever", places["gaol_door_open"],
                     "playsound minecraft:block.iron_door.open block @a[distance=..32] %d %d %d 2 0.5" % tuple(gd),
@@ -152,15 +157,16 @@ def run(meta, nbt):
         w("vol_%s" % v, [HDR + ": every second: the click box over the lectern while the volume lies there; the volume lost while it is out",
                          "execute if score #vs_%s le.cs matches 0 if loaded %d %d %d positioned %d.5 %d %d.5 unless entity @e[type=minecraft:interaction,tag=le.cvol,distance=..1] run summon minecraft:interaction %d.5 %d %d.5 {Tags:[\"le.cvol\"],width:1.1f,height:1.4f,response:1b}" % (v, x, y, z, x, y, z, x, y, z),
                          "execute if score #vs_%s le.cs matches 0 positioned %d.5 %d %d.5 run scoreboard players set @e[type=minecraft:interaction,tag=le.cvol,distance=..1] le.cvid %d" % (v, x, y, z, i + 1),
-                         "execute if score #vs_%s le.cs matches 1 run function last_ember:castle/kg/vol_lost_%s" % (v, v)])
-        cnt = ["execute if items block %d %d %d container.* *[minecraft:custom_data~{le_citem:\"vol_%s\"}] run scoreboard players add #c le.fn 1" % (tuple(sh[s]["pos"]) + (v,)) for s in sh]
-        w("vol_lost_%s" % v, [HDR + ": the volume «%s» is out: old copies go; no copy with a player in the game, on the ground or on the riddle wall -> back on its lectern (a new generation)" % K.VOLUMES[v][0],
-                              "function last_ember:fens/invalid with storage last_ember:castle vg.%s" % v,
+                         "function last_ember:fens/invalid with storage last_ember:castle vg.%s" % v,
+                         "execute if score #vs_%s le.cs matches 1 run function last_ember:castle/kg/vol_lost_%s with storage last_ember:castle vg.%s" % (v, v, v)])
+        cnt = ["$execute if items block %d %d %d container.* *[minecraft:custom_data~{le_citem:\"vol_%s\",gen:$(gen)}] run scoreboard players add #c le.fn 1" % (tuple(sh[s]["pos"]) + (v,)) for s in sh]
+        w("vol_lost_%s" % v, [HDR + ": macro key, gen: the volume «%s» is out: no copy of this generation with a player in the game, on the ground or on the riddle wall -> back on its lectern (a new generation)" % K.VOLUMES[v][0],
                               "function last_ember:fens/count with storage last_ember:castle vg.%s" % v] + cnt
           + ["execute if score #c le.fn matches 1.. run return 0", "function last_ember:castle/kg/vol_back_%s" % v])
         w("vol_back_%s" % v, [HDR + ": the volume «%s» lies again on its lectern (a new generation: the old copies are invalid)" % K.VOLUMES[v][0],
                               "execute store result score #g le.cs run data get storage last_ember:castle vg.%s.gen" % v, "scoreboard players add #g le.cs 1",
                               "execute store result storage last_ember:castle vg.%s.gen int 1 run scoreboard players get #g le.cs" % v,
+                              "execute store result storage last_ember:castle vgen.%s int 1 run scoreboard players get #g le.cs" % v,
                               "function last_ember:castle/kg/lect_%s with storage last_ember:castle vg.%s" % (v, v),
                               "scoreboard players set #vs_%s le.cs 0" % v])
         w("take_%s" % v, [HDR + ": as the click box of the volume «%s»: the clicker takes it from the lectern" % K.VOLUMES[v][0],
@@ -195,11 +201,11 @@ def run(meta, nbt):
     deco.append("kill @e[type=minecraft:armor_stand,tag=le.karm]")
     sets = [("leather", "chainmail", "leather"), ("chainmail", "leather", "leather"), ("leather", "leather", "chainmail"),
             ("chainmail", "chainmail", "leather"), ("leather", "chainmail", "chainmail"), ("chainmail", "leather", "chainmail")]
-    trim = 'minecraft:trim={material:"minecraft:copper",pattern:"minecraft:%s"}'
+    trim = '"minecraft:trim":{material:"minecraft:copper",pattern:"minecraft:%s"}'
     for i, (x, y, z, yaw) in enumerate(st0):
         a, b_, c = sets[i]
         def it(mat, piece, pat):
-            col = ',minecraft:dyed_color=%d' % (0x5a3a22 if i % 2 else 0x4a3324) if mat == "leather" else ""
+            col = ',"minecraft:dyed_color":%d' % (0x5a3a22 if i % 2 else 0x4a3324) if mat == "leather" else ""
             return '{id:"minecraft:%s_%s",count:1,components:{%s%s}}' % (mat, piece, trim % pat, col)
         deco.append("summon minecraft:armor_stand %s %d %s {Tags:[\"le.karm\"],Invulnerable:1b,PersistenceRequired:1b,ShowArms:1b,NoBasePlate:0b,Rotation:[%df,0f],"
                     "equipment:{head:%s,chest:%s,legs:%s},drop_chances:{head:0.0f,chest:0.0f,legs:0.0f,feet:0.0f,mainhand:0.0f,offhand:0.0f}}"
@@ -443,7 +449,7 @@ def king(km, places, HALL, front):
     dc = '{head:0.0f,chest:0.0f,legs:0.0f,feet:0.0f,mainhand:0.0f,offhand:0.0f}'
     tags = '"le.kguard","le.noelite","le.keep","le.eq_done","le.rolled","le.kent"'
     na = (nichep["n"][0], HG + 1, L.inside(L.HALL)[1] + 1.5); sa = (nichep["s"][0], HG + 1, L.inside(L.HALL)[3] - 0.5)
-    wa = (nichep["w"][0], HG + 1, nichep["w"][2])
+    wa = (L.HALL[0] + 2.0, HG + 1, nichep["w"][2])         # out of the west niche onto the gallery (from inside the niche they see nobody)
     arch = [na, sa, (na[0] + 2, na[1], na[2]), (sa[0] - 2, sa[1], sa[2])]
     for i in range(6):
         # archers: guards 1, 2, 4, (6: a third archer only for 5..6 guards); swordsmen: 3, 5, 6
@@ -558,7 +564,7 @@ def zones(km, meta):
               ("castle_throne_3", (L.NICHE_GUARD["w"][0] - 1, HG - 1, L.NICHE_GUARD["w"][1] - 1, L.HALL[0], HG + 6, L.NICHE_GUARD["w"][3] + 1))]
     secret = [("castle_secret_1", (L.SPIRAL[0], L.TUN_Y - 1, L.SPIRAL[1], L.SPIRAL[2], HY + 8, L.SPIRAL[3])), ("castle_secret_2", (469, L.TUN_Y - 1, 9, 474, L.TUN_Y + 5, 81)),
               ("castle_secret_3", (460, L.TUN_Y - 1, 9, 469, L.TUN_Y + 5, 13)), ("castle_secret_4", (460, L.TUN_Y - 1, -34, 464, L.TUN_Y + 5, 9)),
-              ("castle_secret_5", (432, L.TUN_Y - 1, -34, 461, L.DOOR_Y + 5, -30))]
+              ("castle_secret_5", (433, L.TUN_Y - 1, -34, 461, L.DOOR_Y + 5, -30))]
     rock = [("castle_keep_rock_1", (404, L.CRYPT_Y - 2, 30, 487, L.KEEP_TOP + 6, 95))] + [("castle_keep_rock_%d" % (i + 2), b) for i, (_, b) in enumerate(secret[1:])]
     zl = []
     for n, b in halls: zl.append("%-19s overworld box  %d %d %d  %d %d %d   dungeon   # T-029: the wings, galleries, library, gaol, crypt" % ((n,) + b))
@@ -567,6 +573,11 @@ def zones(km, meta):
     for n, b in rock: zl.append("%-19s overworld box  %d %d %d  %d %d %d   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)" % ((n,) + b))
     replace_lines(os.path.join(ROOT, "zones/zones.txt"), ["castle_halls_", "castle_throne_", "castle_secret_", "castle_keep_rock_"], zl)
     meta["keep"]["zones"] = {"halls": halls, "throne": throne, "secret": secret, "rock": rock}
+    w("in_keep", [HDR + ": 1 when @s is in the parts of the castle under the rock's top (the gaol, the crypt, the spiral, the tunnel): they count as the rock for the pass of the colossi (castle/gen/in_rock)"]
+      + ["execute if entity @s[%s] run return 1" % box(*b) for b in [halls[5][1]] + [b for _, b in secret]] + ["return 0"])
+    hx, hy, hz = L.HEARTH11
+    w("near_hearth11", [HDR + ": 1 when @s is at bonfire 11 (its pad): bound to it, the pass of the colossi (as at bonfire 8)",
+                        "execute unless entity @s[%s] run return 0" % box(hx - 4, hy - 1, hz - 4, hx + 4, hy + 5, hz + 9), "return 1"])
     w("in_halls", [HDR + ": 1 when @s is in castle_halls"] + ["execute if entity @s[%s] run return 1" % box(*b) for _, b in halls] + ["return 0"])
     w("cap_one", [HDR + ": as a new monster near the castle: in castle_halls and 20 there already -> removed",
                   "tag @s add le.cseen", "execute unless function last_ember:castle/kg/in_halls run return 0",

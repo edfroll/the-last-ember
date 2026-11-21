@@ -356,8 +356,8 @@ def library(k):
     k.air(x2, G + 1, 66, x2, G + 3, 68)
     # the riddle wall: one chiseled shelf in the middle of each wall at P+2 (ground floor), a banner over it
     mid_x, mid_z = (ix1 + ix2) // 2, (iz1 + iz2) // 2
-    shelves = {"north": (mid_x + 4, P + 2, iz1, "south", "white"), "south": (mid_x, P + 2, iz2, "north", "yellow"),
-               "west": (ix1, P + 2, mid_z, "east", "orange"), "east": (ix2, P + 2, mid_z - 4, "west", "lime")}
+    shelves = {"north": (mid_x + 3, P + 2, iz1, "south", "white"), "south": (mid_x, P + 2, iz2, "north", "yellow"),       # clear of the balcony posts
+               "west": (ix1, P + 2, mid_z - 1, "east", "orange"), "east": (ix2, P + 2, mid_z - 4, "west", "lime")}
     k.meta["shelves"] = {}
     for side, (x, y, z, f, col) in shelves.items():
         for dy in (-1, 0, 1, 2, 3):
