@@ -156,7 +156,7 @@ public class Terrain {
         return T((String) wb[wb.length - 1]);
     }
     /** rock styles: 0 plain stone, 1 west ridge strata, 2 charred east ridge, 3 rift wall (Dol side, dark), 4 rift wall (south: red clay, sandstone),
-     *  5 north ridge (light strata), 6 wall body south half, 7 wall body north half, 8 deepslate dark (rift floor) */
+     *  5 north ridge (light strata), 6 wall body south half, 7 wall body north half, 8 deepslate dark (rift floor), 9 castle rock (T-028) */
     static Tag rock(int style, int x, int y, int z) {
         double band = (y + vnoise(x / 23.0, z / 23.0, 51) * 7) / 4.0; int b = Math.floorMod((int) Math.floor(band + hash(x / 7, 0, z / 7, 52) * 0.8), 6);
         switch (style) {
@@ -167,6 +167,7 @@ public class Terrain {
                 return switch (bb) { case 0 -> T("red_terracotta"); case 1 -> T("terracotta"); case 2 -> T("red_sandstone"); case 3 -> T("orange_terracotta"); case 4 -> T("sandstone"); case 5 -> T("brown_terracotta"); default -> T("red_sandstone"); }; }
             case 5: return switch (b) { case 0, 3 -> T("stone"); case 1 -> T("andesite"); case 2 -> T("tuff"); case 4 -> T("calcite"); default -> T("stone"); };
             case 8: return pick(x, y, z, 8, 5, "deepslate[axis=y]", 2, "tuff", 2, "cobbled_deepslate");
+            case 9: return pick(x, y, z, 31, 40, "stone", 20, "tuff", 20, "andesite", 10, "cobbled_deepslate", 6, "mossy_cobblestone", 4, "moss_block");   // T-028 castle rock (card palette)
             default: return y < 0 - (int) (hash(x >> 1, 0, z >> 1, 7) * 6) ? T("deepslate[axis=y]") : T("stone");
         }
     }
@@ -183,6 +184,8 @@ public class Terrain {
             case 8: return depth == 0 ? pick(x, y, z, 27, 5, "coarse_dirt", 3, "podzol[snowy=false]", 2, "blackstone", 1, "gravel") : depth < 3 ? T("coarse_dirt") : null;  // charred slope
             case 9: return depth == 0 ? pick(x, y, z, 28, 6, "gravel", 3, "red_sand", 2, "coarse_dirt", 1, "cobblestone") : depth < 2 ? T("gravel") : null;  // dry riverbed
             case 10: return depth == 0 ? pick(x, y, z, 29, 4, "stone", 3, "andesite", 2, "tuff", 1, "cobblestone") : null;  // bare rock top
+            case 11: return depth == 0 ? pick(x, y, z, 32, 5, "moss_block", 3, "stone", 1, "andesite", 1, "tuff") : depth == 1 ? pick(x, y, z, 33, 1, "moss_block", 2, "stone") : null;  // T-028 castle rock top: rock with moss
+            case 12: return depth == 0 ? pick(x, y, z, 34, 4, "gravel", 3, "mud", 2, "clay", 1, "dirt") : depth < 3 ? pick(x, y, z, 35, 2, "dirt", 1, "clay") : null;  // T-028 lake bed
             default: return null;
         }
     }

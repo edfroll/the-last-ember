@@ -1,0 +1,2 @@
+# T-028: admin: the state of the approaches
+tellraw @s [{"text":"castle: faded "},{"score":{"name":"#faded","objective":"le.cas"}},{"text":", eyes "},{"score":{"name":"#eyes","objective":"le.cas"}},{"text":"/"},{"score":{"name":"#eyesv","objective":"le.cas"}},{"text":", ambush "},{"score":{"name":"#amb","objective":"le.cas"}},{"text":" ("},{"score":{"name":"#ambt","objective":"le.cas"}},{"text":" s), arm "},{"score":{"name":"#arm","objective":"le.cas"}}]
