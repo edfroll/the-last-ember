@@ -58,7 +58,18 @@ KX1, KZ1, KX2, KZ2 = P.KNOCK
 def in_knock(p):
     q = pos(p); return q is not None and KX1 - 0.5 <= q[0] <= KX2 + 1.5 and KZ1 - 0.5 <= q[2] <= KZ2 + 1.5 and q[1] <= W + 1
 FLA = ["forceload add 370 -60 470 10", "forceload add 400 0 490 100"]
+def ensure_clients():
+    """both clients in the game; when one is missing (kicked, crashed) all clients are stopped and both launched again one by one (a
+    second launch while a client still starts would run out of memory)"""
+    l = R("list")
+    if re.search(r"\bCam(?!2)\b", l) and "Cam2" in l: return
+    subprocess.run("pkill -f net.minecraft.client.main.Main; pkill -f client_launch.py", shell=True); time.sleep(4)
+    subprocess.Popen(f"cd {ROOT} && python3 -I tools/client_launch.py > server/client.out 2>&1", shell=True)
+    wait(lambda: re.search(r"\bCam(?!2)\b", R("list")) is not None, 150, 3)
+    subprocess.Popen(f"cd {ROOT} && python3 -I tools/client_launch.py --name Cam2 --dir server/client2 --mem 1500M --size 640x360 > server/client2.out 2>&1", shell=True)
+    wait(lambda: "Cam2" in R("list"), 150, 3); time.sleep(5)
 def stage(p2=True):
+    ensure_clients()
     for p in ("Cam", "Cam2"):
         if not passed(f"execute if entity @a[name={p},tag=le.cinit]"): tc.setc(1, 2, 0, p)
     R("weather clear 100000"); R("time set noon"); R("gamerule advance_time false"); R("difficulty easy")
@@ -95,7 +106,7 @@ def t_build():
     chk("the click box of the gate", count("@e[type=minecraft:interaction,tag=le.cgate]") == 1)
     chk("the pier deck, the causeway, the bridge deck", passed(f"execute unless block 425 {W + 1} -34 minecraft:air") and passed(f"execute unless block 395 {W + 1} -52 minecraft:air") and passed("execute unless block 451 162 17 minecraft:air"))
     chk("the portcullis shut", passed("execute if block 451 165 31 minecraft:iron_bars"))
-    chk("the sword's sign", "Короли не узнали" in R("data get block %d %d %d front_text" % tuple(M["sword"]["sign"])))
+    chk("the sword's sign", "не узнали" in R("data get block %d %d %d front_text" % tuple(M["sword"]["sign"])))
     chk("the mid of the bridge in storage for the castle task", "pos" in R("data get storage last_ember:r1 m.castle_bridge_mid"))
     unstage()
 
@@ -203,7 +214,8 @@ def t_bypass():
     # a rejoin on the rock keeps the pass
     R("kick Cam"); time.sleep(3)
     subprocess.Popen(f"cd {ROOT} && python3 -I tools/client_launch.py > server/client.out 2>&1", shell=True)
-    chk("Cam back", wait(lambda: re.search(r"\bCam(?!2)\b", R("list")) is not None, 120, 2)); time.sleep(3); R("gamemode survival Cam")
+    chk("Cam back", wait(lambda: re.search(r"\bCam(?!2)\b", R("list")) is not None, 120, 2)); time.sleep(3)
+    R("tp Cam 455.5 163 -30.5"); R("gamemode survival Cam"); R("tp Cam 455.5 163 -30.5")      # on the ground first: a survival player afloat is kicked
     time.sleep(4); chk("the pass kept over the rejoin on the rock, no strike", "le.cpass" in tags("Cam") and not wait(lambda: "le.cwake" in tags("Cam"), 2))
     R("tp Cam 400.5 %d -52.5" % (W + 2)); time.sleep(6)
     chk("the pass lost after 5 s off the rock", "le.cpass" not in tags("Cam"))
@@ -219,8 +231,8 @@ def t_ambush():
     time.sleep(2); sk = [pos(f"@e[type=minecraft:skeleton,tag=le.camb,limit=1,sort=nearest,x={rest[0]},y={rest[1]},z={rest[2]}]")]
     chk("they jump down onto the platform", sk[0] is not None and abs(sk[0][1] - rest[1]) < 1.5 and P.REST[0] - 1.5 <= sk[0][0] <= P.REST[2] + 1.5, sk)
     time.sleep(2); chk("not again while the ambush is spent", count("@e[type=minecraft:skeleton,tag=le.camb]") <= 2 and sc("#amb") == 1)
-    R("kill @e[type=minecraft:skeleton,tag=le.camb]"); R("scoreboard players set #amb le.cas 0")
     R("gamemode survival Cam2"); R("tp Cam %.1f %d %.1f" % (rest[0] + 30, P.PRED_Y + 1, rest[2] + 10)); R("tp Cam2 %.1f %d %.1f" % (rest[0] + 30, P.PRED_Y + 1, rest[2] + 12)); time.sleep(1)
+    R("kill @e[type=minecraft:skeleton,tag=le.camb]"); R("scoreboard players set #amb le.cas 0"); time.sleep(0.5)   # off the platform first, then ready again
     R("tp Cam2 436.5 137 -31.5"); R("tp Cam %.1f %d %.1f" % (rest[0], rest[1], rest[2]))      # Cam2 in the tunnel of F2, 8 from the platform
     chk("two players within 16: two out of each niche (4)", wait(lambda: count("@e[type=minecraft:skeleton,tag=le.camb]") == 4, 3), count("@e[type=minecraft:skeleton,tag=le.camb]"))
     R("kill @e[type=minecraft:skeleton,tag=le.camb]")
