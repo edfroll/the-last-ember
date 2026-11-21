@@ -7,3 +7,5 @@ execute in minecraft:overworld positioned 239 89 443 if entity @a[distance=..24]
 execute in minecraft:overworld positioned 241 89 440 if entity @a[distance=..24] run function last_ember:trap/gen/hint_cem_plate_2
 execute in minecraft:overworld positioned 240 89 437 if entity @a[distance=..24] run function last_ember:trap/gen/hint_cem_plate_3
 execute in minecraft:overworld positioned 239 89 434 if entity @a[distance=..24] run function last_ember:trap/gen/hint_cem_plate_4
+execute in minecraft:overworld positioned 414 155 75 if entity @a[distance=..24] run function last_ember:trap/gen/hint_castle_arrows
+execute in minecraft:overworld positioned 414 155 75 if entity @a[distance=..24] run function last_ember:trap/gen/hint_castle_plate

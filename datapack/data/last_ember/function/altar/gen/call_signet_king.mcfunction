@@ -1,5 +1,5 @@
-scoreboard players set #dx le.alt 450
-scoreboard players set #dz le.alt 0
+scoreboard players set #dx le.alt 468
+scoreboard players set #dz le.alt 76
 scoreboard players operation #dx le.alt -= #px le.alt
 scoreboard players operation #dz le.alt -= #pz le.alt
 scoreboard players operation #dx le.alt *= #dx le.alt

@@ -9,3 +9,4 @@ bonfire_r1_causeway overworld cyl 356 -40 6 165 174
 bonfire_r1_bridge overworld cyl 440 -10 6 160 169
 bonfire_r1_heather overworld cyl 70 -420 6 61 70
 bonfire_r1_grove overworld cyl -404 72 6 134 143
+bonfire_r1_throne overworld cyl 446 67 6 164 173

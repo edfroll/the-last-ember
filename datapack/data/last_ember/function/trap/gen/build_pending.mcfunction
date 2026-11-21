@@ -7,3 +7,5 @@ execute if score #cem_plate_1_bl le.tr matches 0 in minecraft:overworld if loade
 execute if score #cem_plate_2_bl le.tr matches 0 in minecraft:overworld if loaded 241 89 440 run function last_ember:trap/gen/build_cem_plate_2
 execute if score #cem_plate_3_bl le.tr matches 0 in minecraft:overworld if loaded 240 89 437 run function last_ember:trap/gen/build_cem_plate_3
 execute if score #cem_plate_4_bl le.tr matches 0 in minecraft:overworld if loaded 239 89 434 run function last_ember:trap/gen/build_cem_plate_4
+execute if score #castle_arrows_bl le.tr matches 0 in minecraft:overworld if loaded 414 155 75 run function last_ember:trap/gen/build_castle_arrows
+execute if score #castle_plate_bl le.tr matches 0 in minecraft:overworld if loaded 414 155 75 run function last_ember:trap/gen/build_castle_plate

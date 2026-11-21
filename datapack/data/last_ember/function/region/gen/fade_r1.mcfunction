@@ -2,7 +2,7 @@
 execute if score #fade_r1 le.alt matches 1 run return 0
 scoreboard players set #fade_r1 le.alt 1
 function last_ember:biomes/gen/fade_chapter1
-# bonfires go out: 2, 3, 4, 5, 7, 8, 9 (kept: 6, 10)
+# bonfires go out: 2, 3, 4, 5, 7, 8, 9, 11 (kept: 6, 10)
 execute if data storage last_ember:bonfires by.b2{state:1} run data modify storage last_ember:bonfires by.b2 merge value {state:0,faded:1b,lv:1b}
 execute if data storage last_ember:bonfires by.b3{state:1} run data modify storage last_ember:bonfires by.b3 merge value {state:0,faded:1b,lv:1b}
 execute if data storage last_ember:bonfires by.b4{state:1} run data modify storage last_ember:bonfires by.b4 merge value {state:0,faded:1b,lv:1b}
@@ -10,6 +10,7 @@ execute if data storage last_ember:bonfires by.b5{state:1} run data modify stora
 execute if data storage last_ember:bonfires by.b7{state:1} run data modify storage last_ember:bonfires by.b7 merge value {state:0,faded:1b,lv:1b}
 execute if data storage last_ember:bonfires by.b8{state:1} run data modify storage last_ember:bonfires by.b8 merge value {state:0,faded:1b,lv:1b}
 execute if data storage last_ember:bonfires by.b9{state:1} run data modify storage last_ember:bonfires by.b9 merge value {state:0,faded:1b,lv:1b}
+execute if data storage last_ember:bonfires by.b11{state:1} run data modify storage last_ember:bonfires by.b11 merge value {state:0,faded:1b,lv:1b}
 function last_ember:bonfire/gen/build_pending
 execute as @a at @s run function last_ember:region/gen/msg_r1
 function last_ember:region/hook/fade_r1_lake

@@ -169,7 +169,8 @@ def run(gr, rl, meta):
       + ["playsound minecraft:entity.zombie.attack_wooden_door hostile @a[distance=..48] %.1f %d %.1f 0.8 0.5" % nis[0]])
     # ------------------------------------------------------------------ the gate of the barbican (a click box in the gateway)
     g = bb["gate"]
-    w("gate_box", [hdr + ": the click box over the locked gate (once; again when it is missing and the chunk is loaded)",
+    w("gate_box", [hdr + ": the click box over the locked gate (once; again when it is missing and the chunk is loaded); none once open (T-029)",
+                   "execute if score #gate le.cs matches 1 run return 0",
                    "execute unless loaded %d %d %d run return 0" % (int(g[0]), int(g[1]), int(g[2])),
                    "execute positioned %.1f %d %.1f if entity @e[type=minecraft:interaction,tag=le.cgate,distance=..3] run return 0" % (g[0], g[1], g[2] + 0.6),
                    "summon minecraft:interaction %.1f %d %.1f {Tags:[\"le.cgate\"],width:3.2f,height:4.0f,response:1b}" % (g[0], g[1], g[2] + 0.6)])

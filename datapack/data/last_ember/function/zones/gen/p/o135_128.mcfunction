@@ -9,4 +9,35 @@ execute if entity @s[x=400,y=98,z=-2,dx=90,dy=167,dz=38] run tag @s add le.zf.no
 execute if entity @s[x=393,y=98,z=21,dx=102,dy=167,dz=81] run scoreboard players set #hit le.z 1
 execute if entity @s[x=393,y=98,z=21,dx=102,dy=167,dz=81] run tag @s add le.zf.no_blink
 execute if entity @s[x=393,y=98,z=21,dx=102,dy=167,dz=81] run tag @s add le.zf.no_chorus
+execute if entity @s[x=432,y=162,z=49,dx=43,dy=24,dz=14] run scoreboard players set #hit le.z 1
+execute if entity @s[x=432,y=162,z=49,dx=43,dy=24,dz=14] run tag @s add le.zf.dungeon
+execute if entity @s[x=461,y=161,z=34,dx=14,dy=25,dz=25] run scoreboard players set #hit le.z 1
+execute if entity @s[x=461,y=161,z=34,dx=14,dy=25,dz=25] run tag @s add le.zf.dungeon
+execute if entity @s[x=465,y=161,z=39,dx=22,dy=24,dz=35] run scoreboard players set #hit le.z 1
+execute if entity @s[x=465,y=161,z=39,dx=22,dy=24,dz=35] run tag @s add le.zf.dungeon
+execute if entity @s[x=425,y=191,z=50,dx=43,dy=31,dz=49] run scoreboard players set #hit le.z 1
+execute if entity @s[x=425,y=191,z=50,dx=43,dy=31,dz=49] run tag @s add le.zf.no_spawn
+execute if entity @s[x=458,y=191,z=66,dx=20,dy=18,dz=20] run scoreboard players set #hit le.z 1
+execute if entity @s[x=458,y=191,z=66,dx=20,dy=18,dz=20] run tag @s add le.zf.no_spawn
+execute if entity @s[x=468,y=94,z=66,dx=20,dy=115,dz=20] run scoreboard players set #hit le.z 1
+execute if entity @s[x=468,y=94,z=66,dx=20,dy=115,dz=20] run tag @s add le.zf.no_spawn
+execute if entity @s[x=464,y=94,z=4,dx=15,dy=16,dz=82] run scoreboard players set #hit le.z 1
+execute if entity @s[x=464,y=94,z=4,dx=15,dy=16,dz=82] run tag @s add le.zf.no_spawn
+execute if entity @s[x=455,y=94,z=4,dx=19,dy=16,dz=14] run scoreboard players set #hit le.z 1
+execute if entity @s[x=455,y=94,z=4,dx=19,dy=16,dz=14] run tag @s add le.zf.no_spawn
+execute if entity @s[x=455,y=94,z=-39,dx=14,dy=16,dz=53] run scoreboard players set #hit le.z 1
+execute if entity @s[x=455,y=94,z=-39,dx=14,dy=16,dz=53] run tag @s add le.zf.no_spawn
+execute if entity @s[x=399,y=135,z=25,dx=93,dy=127,dz=75] run scoreboard players set #hit le.z 1
+execute if entity @s[x=399,y=135,z=25,dx=93,dy=127,dz=75] run tag @s add le.zf.no_blink
+execute if entity @s[x=399,y=135,z=25,dx=93,dy=127,dz=75] run tag @s add le.zf.no_chorus
+execute if entity @s[x=464,y=94,z=4,dx=15,dy=16,dz=82] run scoreboard players set #hit le.z 1
+execute if entity @s[x=464,y=94,z=4,dx=15,dy=16,dz=82] run tag @s add le.zf.no_blink
+execute if entity @s[x=464,y=94,z=4,dx=15,dy=16,dz=82] run tag @s add le.zf.no_chorus
+execute if entity @s[x=455,y=94,z=4,dx=19,dy=16,dz=14] run scoreboard players set #hit le.z 1
+execute if entity @s[x=455,y=94,z=4,dx=19,dy=16,dz=14] run tag @s add le.zf.no_blink
+execute if entity @s[x=455,y=94,z=4,dx=19,dy=16,dz=14] run tag @s add le.zf.no_chorus
+execute if entity @s[x=455,y=94,z=-39,dx=14,dy=16,dz=53] run scoreboard players set #hit le.z 1
+execute if entity @s[x=455,y=94,z=-39,dx=14,dy=16,dz=53] run tag @s add le.zf.no_blink
+execute if entity @s[x=455,y=94,z=-39,dx=14,dy=16,dz=53] run tag @s add le.zf.no_chorus
 execute if entity @s[y=155,dy=19] positioned 440.5 ~ -9.5 if entity @s[distance=..11] run scoreboard players set #hit le.z 1
+execute if entity @s[y=159,dy=19] positioned 446.5 ~ 67.5 if entity @s[distance=..11] run scoreboard players set #hit le.z 1

@@ -7,3 +7,5 @@ execute if score #cem_plate_1_st le.tr matches 1 run function last_ember:trap/ge
 execute if score #cem_plate_2_st le.tr matches 1 run function last_ember:trap/gen/tk_cem_plate_2
 execute if score #cem_plate_3_st le.tr matches 1 run function last_ember:trap/gen/tk_cem_plate_3
 execute if score #cem_plate_4_st le.tr matches 1 run function last_ember:trap/gen/tk_cem_plate_4
+execute if score #castle_arrows_st le.tr matches 1 run function last_ember:trap/gen/tk_castle_arrows
+execute if score #castle_plate_st le.tr matches 1 run function last_ember:trap/gen/tk_castle_plate

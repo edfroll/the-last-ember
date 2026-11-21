@@ -7,4 +7,6 @@ execute if score #amb le.cas matches 1 run function last_ember:castle/gen/ambush
 execute if score #amb le.cas matches 1 if score #n32 le.cas matches 0 run scoreboard players add #ambt le.cas 1
 execute if score #amb le.cas matches 1 if score #n32 le.cas matches 1.. run scoreboard players set #ambt le.cas 0
 execute if score #amb le.cas matches 1 if score #ambt le.cas matches 600.. run scoreboard players set #amb le.cas 0
+# T-029: the castle (gate, riddle, volumes, king, Signet, secret door)
+function last_ember:castle/kg/second
 function last_ember:castle/save

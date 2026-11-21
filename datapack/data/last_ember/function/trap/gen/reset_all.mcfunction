@@ -7,3 +7,5 @@ function last_ember:trap/gen/reset_cem_plate_1
 function last_ember:trap/gen/reset_cem_plate_2
 function last_ember:trap/gen/reset_cem_plate_3
 function last_ember:trap/gen/reset_cem_plate_4
+function last_ember:trap/gen/reset_castle_arrows
+function last_ember:trap/gen/reset_castle_plate

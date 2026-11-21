@@ -16,3 +16,4 @@
 8  r1_bridge     overworld  440 163 -10  normal  r1
 9  r1_heather    overworld  70 64 -420  normal  r1
 10 r1_grove      overworld  -404 137 72  normal  r1  nofade
+11 r1_throne    overworld  446 167 67  normal  r1

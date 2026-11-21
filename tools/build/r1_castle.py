@@ -78,6 +78,8 @@ def build(gr, rl):
     meta["stair"] = CB.stair_blocks(b)
     meta["bridge"] = CB.bridge(b)
     meta["barbican"] = CB.barbican(b, rl["P"])
+    import castle_keep                         # T-029: the castle on the table (its own templates and points: meta["keep"])
+    kp = castle_keep.build(b, gr, rl, meta["barbican"]); meta["keep"] = kp.meta; meta["keep_tpl"] = kp.tpl
     taken = set()
     for (x, y, z) in b.v: taken.add((x, z))
     meta["pred_lamps"] = lights_bridgehead(b, gr, rl, taken)
@@ -344,6 +346,28 @@ def templates(b, gr, rl, meta):
     out["lake_tiles"] = lt
     return out
 
+def keep_plan(gr, rl, b):
+    """T-029: the stop conditions of HQ T-029, 1 and the plan docs/reports/T-029/castle_plan.png (levels P, galleries, hall, its gallery;
+    the section through the keep and the spiral)"""
+    import castle_layout as L
+    T = rl["Tw"]
+    def get(x, y, z):
+        s_ = b.get(x, y, z)
+        if s_ is not None: return s_
+        i, j = P.ix(gr, x, z)
+        return "minecraft:stone" if 0 <= i < T.shape[0] and 0 <= j < T.shape[1] and y <= T[i, j] else None
+    rift = [int(T[P.ix(gr, x, z)]) for x in range(461, 464) for z in range(5, 30) if rl["rift"][P.ix(gr, x, z)]]
+    rift += [int(T[P.ix(gr, x, z)]) for x in range(470, 473) for z in range(5, 30) if rl["rift"][P.ix(gr, x, z)]]
+    ch = L.checks(rl["rock"], gr["x1"], gr["z1"], [], rift)
+    if ch["stop"]: raise SystemExit("STOP (HQ T-029, 1): %s" % ch["stop"])
+    txt = ["T-029 the Enchanted Castle on the table (P = %d): 4 levels (1 block = 5 px, north up) and the section W-E at z 76." % L.P,
+           "Margins to the sheer edge (>= 3 = 2 blocks): %s" % ", ".join("%s %d" % kv for kv in sorted(ch["margins"].items())),
+           "Throne hall %d x %d, height %d, floor %d; the keep's top %d (<= 255); the gaol floor %d, the crypt floor %d (>= 70)." % (ch["hall"][0], ch["hall"][1], ch["hall"][2], L.HALL_Y, L.KEEP_TOP, L.GAOL_Y, L.CRYPT_Y),
+           "Columns: the farthest floor cell inside the gallery line %.2f, under the gallery %.2f (Euclid to the nearest column)." % ch["column_reach"],
+           "The secret way: spiral %d -> %d, the tunnel at %d under the rift (rock over it >= %d), up to the pier door (floor %d)." % (L.HALL_Y, L.TUN_Y, L.TUN_Y, ch["tunnel_cover_min"], L.DOOR_Y)]
+    L.plan_png(get, rl["rock"], gr["x1"], gr["z1"], os.path.join(ROOT, "docs/reports/T-029/castle_plan.png"), txt)
+    return ch
+
 def plan_main(gr=None):
     gr = gr or P.grids(); rl = P.relief(gr); ch = P.checks(gr, rl)
     return gr, rl, ch
@@ -378,6 +402,10 @@ def main(plan_only=False):
     meta.update(terrain_columns=ncol, blocks=n, snow=nsnow, checks=ch, hearth7=list(P.HEARTH7), hearth8=list(P.HEARTH8))
     import castle_dp
     castle_dp.run(gr, rl, meta)
+    import castle_keep_dp                      # T-029: the castle's datapack, zones, bonfire 11, the trap, the Signet's source
+    castle_keep_dp.run(meta, nbt)
+    keep_plan(gr, rl, b)
+    meta.pop("keep_tpl")
     json.dump(meta, open(os.path.join(OUT, "castle.json"), "w"), ensure_ascii=False, default=lambda o: list(o) if isinstance(o, (set, tuple)) else int(o) if isinstance(o, np.integer) else str(o))
     print(f"castle: terrain {ncol} columns, {n} blocks (snow/spruce replaced {nsnow}, water drained {meta['drained']}, springs {meta['springs']}), trees {meta['trees']}, W {P.W}, P {ch['P']}, boulders {meta['boulders']}")
 

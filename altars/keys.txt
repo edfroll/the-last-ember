@@ -2,7 +2,7 @@
 #   source = x,y,z[,dimension] (where the key comes from: the Call of the Ember points to it) or "-" (not known yet)
 # Chapter VI has no pedestals (the summoning of the Withered, region R6): its keys are not listed here.
 # T-023: chapter I (Circle of the Weepers); the source = the centre of the place, y = its ground (the Call of the Ember points there)
-signet_king 1 450,147,0 Перстень Спящего Короля
+signet_king 1 468,197,76 Перстень Спящего Короля
 tear_creaker 1 343,92,-317 Слеза Скрипуна
 crown_witches 1 -390,140,336 Венец Трёх Ведьм
 thread_labyrinth 1 -150,114,-430 Нить Лабиринта

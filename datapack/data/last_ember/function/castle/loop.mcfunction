@@ -17,6 +17,8 @@ execute if score #faded le.cas matches 1 run scoreboard players set #eyes le.cas
 execute if score #faded le.cas matches 0 if score #eyes le.cas matches 3 run scoreboard players set #eyes le.cas 0
 execute unless score #eyesv le.cas = #eyes le.cas in minecraft:overworld run function last_ember:castle/gen/eyes_sync
 execute if score #amb le.cas matches 0 in minecraft:overworld run function last_ember:castle/ambush_try
+# T-029: the castle: the waking of the king, the fight's tick
+execute in minecraft:overworld run function last_ember:castle/kg/loop5
 scoreboard players operation #t20 le.cas = #t le.cas
 scoreboard players operation #t20 le.cas %= #20 le.cas
 execute if score #t20 le.cas matches 0 in minecraft:overworld run function last_ember:castle/second

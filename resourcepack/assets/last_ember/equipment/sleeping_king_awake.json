@@ -1,0 +1,14 @@
+{
+ "layers": {
+  "humanoid": [
+   {
+    "texture": "last_ember:sleeping_king_awake"
+   }
+  ],
+  "humanoid_leggings": [
+   {
+    "texture": "last_ember:sleeping_king"
+   }
+  ]
+ }
+}

@@ -27,3 +27,6 @@ execute if data storage last_ember:bonfires by.b9{built:1b,state:1,lv:0b} in min
 execute if data storage last_ember:bonfires by.b10{built:0b} in minecraft:overworld if loaded -404 137 72 positioned -404 137 72 run function last_ember:bonfire/build_now {i:10}
 execute if data storage last_ember:bonfires by.b10{built:1b,state:0,lv:1b} in minecraft:overworld if loaded -404 137 72 positioned -404 137 72 run function last_ember:bonfire/unlit with storage last_ember:bonfires by.b10
 execute if data storage last_ember:bonfires by.b10{built:1b,state:1,lv:0b} in minecraft:overworld if loaded -404 137 72 positioned -404 137 72 run function last_ember:bonfire/set_lit with storage last_ember:bonfires by.b10
+execute if data storage last_ember:bonfires by.b11{built:0b} in minecraft:overworld if loaded 446 167 67 positioned 446 167 67 run function last_ember:bonfire/build_now {i:11}
+execute if data storage last_ember:bonfires by.b11{built:1b,state:0,lv:1b} in minecraft:overworld if loaded 446 167 67 positioned 446 167 67 run function last_ember:bonfire/unlit with storage last_ember:bonfires by.b11
+execute if data storage last_ember:bonfires by.b11{built:1b,state:1,lv:0b} in minecraft:overworld if loaded 446 167 67 positioned 446 167 67 run function last_ember:bonfire/set_lit with storage last_ember:bonfires by.b11

@@ -1,0 +1,20 @@
+{
+ "criteria": {
+  "hit": {
+   "trigger": "minecraft:player_hurt_entity",
+   "conditions": {
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "minecraft:zombie",
+      "minecraft:nbt": "{Tags:[\"le.king\"]}"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:castle/kg/king_hurt"
+ }
+}

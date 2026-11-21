@@ -10,4 +10,6 @@ tag @a remove le.cfly
 scoreboard players set @a le.cg 0
 scoreboard players set @a le.co 0
 kill @e[type=minecraft:skeleton,tag=le.camb]
+# T-029: the castle as in a new world too (the king asleep, doors shut, volumes on their lecterns)
+function last_ember:castle/kg/reset_all
 function last_ember:castle/save
