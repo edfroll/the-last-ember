@@ -51,12 +51,11 @@ def lights_bridgehead(b, gr, rl, taken):
 def rock_surface(b, gr, rl):
     """the rock (bridgehead, table, peak) where its top is the natural ground (the terrain write skips such a column): the top block of the
     card's rock with moss like the rewritten ones, nothing growing on it (air from the top to what stood there: the trees of the table)"""
-    from lib import Mix
-    TOP = Mix({"moss_block": 5, "stone": 3, "andesite": 1, "tuff": 1}, 2863)
-    T, bf = rl["T"], gr["before"]; n = 0
+    T, bf = rl["Tw"], gr["before"]; n = 0
     for i, j in zip(*np.nonzero(rl["rock"] & (T == bf) & ~gr["pad"])):
         x, z = j + gr["x1"], i + gr["z1"]; y = int(T[i, j])
-        if b.get(x, y, z) is None: b.set(x, y, z, TOP.at(x, y, z))
+        if (x, z) in rl["hang"]: continue
+        if b.get(x, y, z) is None: b.set(x, y, z, CB.top_at(x, y, z, 0))
         top = int(gr["top"][i, j]) if "top" in gr else y
         for yy in range(y + 1, min(top, y + 40) + 1):
             if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air"); n += 1
@@ -72,6 +71,9 @@ def build(gr, rl):
     meta["causeway"], meta["piles"] = CB.causeway(b, gr, rl)
     CB.sand(b, gr, rl)
     meta["sword"] = CB.sword(b)
+    meta["recess"] = CB.recess(b, gr, rl)
+    meta["grooves"] = CB.face_grooves(b, gr, rl)
+    meta["overhang_blocks"] = CB.overhangs(b, gr, rl)
     meta["desc_lamps"] = CB.descent(b, rl)
     meta["stair"] = CB.stair_blocks(b)
     meta["bridge"] = CB.bridge(b)
@@ -80,8 +82,9 @@ def build(gr, rl):
     for (x, y, z) in b.v: taken.add((x, z))
     meta["pred_lamps"] = lights_bridgehead(b, gr, rl, taken)
     meta["rock_top_cleared"] = rock_surface(b, gr, rl)
+    meta["moss_carpets"] = CB.moss_edges(b, gr, rl, lambda x, z: (x, z) not in taken)
     # boulders on the rift floor (dry, under the bridge "the abyss")
-    T = rl["T"]; nb = 0
+    T = rl["Tw"]; nb = 0
     for i, j in zip(*np.nonzero(rl["rift"])):
         x, z = j + gr["x1"], i + gr["z1"]
         if hsh(x, 7, z, 2850) < 0.035 and (x, z) not in taken and not (P.BRIDGE_X[0] <= x <= P.BRIDGE_X[1]):
@@ -106,7 +109,7 @@ def drain(b, gr, rl):
     edge of the pad of bonfire 8): every pool touching a column that is now lower than its water goes, all of it (air from the ground
     up). Read from the scan before the place (castle_pre.bin): a re-run finds none. The pads' ground is not touched (only water over it)."""
     if "lwater" not in gr: return 0
-    T, now, lw = rl["T"], gr["live"], gr["lwater"]
+    T, now, lw = rl["Tw"], gr["live"], gr["lwater"]
     wet = (lw != NONE) & (lw > now) & gr["place"] & (rl["Wt"] == NONE)
     rew = (T != gr["before"]) | (rl["Wt"] != NONE)
     seed = np.zeros(T.shape, bool)
@@ -127,7 +130,7 @@ def unsnow(b, gr, rl):
     grass: not snowy), no spruces (air; dark oaks of our model where they stood, on the untouched natural ground). Read from the world."""
     import fens_scan, re
     from lib import Mix
-    T = rl["T"]; n = 0; spruce = set()
+    T = rl["Tw"]; n = 0; spruce = set()
     changed, F = rewritten(gr, rl)
     steep = np.zeros(T.shape, bool)
     for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): steep |= np.abs(np.roll(np.roll(T, dz, 0), dx, 1) - T) >= 3
@@ -154,7 +157,7 @@ def unsnow(b, gr, rl):
 
 def rewritten(gr, rl):
     """the columns the terrain write rewrites (changed ground or water) and their floor F (the same formula as write_terrain)"""
-    T = rl["T"]; now = gr["live"]
+    T = rl["Tw"]; now = gr["live"]
     lo = T.copy()
     for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): lo = np.minimum(lo, np.roll(np.roll(lo, dz, 0), dx, 1))
     F = np.minimum(np.minimum(T, now), lo) - 4
@@ -167,7 +170,7 @@ def springs(b, gr, rl):
     import fens_scan
     from lib import Mix
     ROCK = Mix({"stone": 4, "andesite": 2, "tuff": 2}, 2862)
-    out = []; x1, z1, x2, z2 = P.BOX; sb = fens_scan.sb; T = rl["T"]; g = gr.get("live", gr["before"])
+    out = []; x1, z1, x2, z2 = P.BOX; sb = fens_scan.sb; T = rl["Tw"]; g = gr.get("live", gr["before"])
     for rx in range(x1 // 512, x2 // 512 + 1):
         for rz in range(z1 // 512, z2 // 512 + 1):
             path = os.path.join(ROOT, "server/world/dimensions/minecraft/overworld/region", "r.%d.%d.mca" % (rx, rz))
@@ -251,7 +254,7 @@ def trees(b, gr, rl, spruce):
 def write_terrain(gr, rl, b):
     """only the columns whose scan is not yet what it should be (a re-run on the built place rewrites nothing)"""
     import r1_fens as RF
-    T, Wt = rl["T"], rl["Wt"]; bf = gr["before"]
+    T, Wt = rl["Tw"], rl["Wt"]; bf = gr["before"]
     now, nw = gr["live"], gr["lwater"]
     cols = {}
     for (x, y, z), s_ in b.v.items(): cols.setdefault((x, z), {})[y] = s_
@@ -269,6 +272,7 @@ def write_terrain(gr, rl, b):
     S = np.where(steep, S_BARE, S_FOREST).astype(np.uint8)
     S[rl["rift"] | rl["moat"]] = S_PLATFORM
     S[rl["rock"]] = S_TOP
+    for (x, z) in rl["hang"]: S[P.ix(gr, x, z)] = S_PLATFORM      # the ground under an overhang is the moat's
     S[Wt != NONE] = S_BED
     Wg = np.where(touch, Wt, NONE).astype(np.int32)
     write_grid(os.path.join(OUT, "castle_terrain.bin"), gr["x1"], gr["z1"], H, F, Wg, S, np.full(T.shape, R_CASTLE, np.uint8), np.zeros(T.shape, np.uint8))

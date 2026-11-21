@@ -2,6 +2,7 @@
 the descent from bonfire 7, the stair in the rock with the rest platform and the niches, the bridge, the barbican, the lanterns, the trees)
 for tools/build/r1_castle.py. Palettes from the card «Заколдованный замок и Колоссы · Р1»."""
 import math
+import numpy as np
 from lib import Mix, h as hsh
 import castle_plan as P
 from castle_plan import W
@@ -15,9 +16,64 @@ def sign_nbt(lines):
     return "{is_waxed:1b,front_text:{messages:[%s]},back_text:{messages:[%s]}}" % (m, m)
 AIR = "minecraft:air"
 LOG = st("stripped_dark_oak_log", axis="y")
-COL_LO = Mix({"stone": 24, "andesite": 20, "tuff": 16, "mossy_cobblestone": 24, "moss_block": 16}, 2810)     # the card: 30/25/20/15/10,
-COL = Mix({"stone": 32, "andesite": 27, "tuff": 21, "mossy_cobblestone": 13, "moss_block": 7}, 2811)         # more moss low, less high
-COL_HI = Mix({"stone": 36, "andesite": 30, "tuff": 24, "mossy_cobblestone": 10}, 2812)
+
+class PatchMix:
+    """a palette in patches 2..5 blocks across, not block by block (HQ review T-028, 1-2): 3-D value noise (two octaves) made uniform by
+    its ranks, the weights cut the ranks; the same salt in several PatchMix keeps the patches in place while the shares change"""
+    _cdf = {}
+    def __init__(self, weights, salt, cell=3.2):
+        tot = sum(weights.values()); acc = 0; self.t = []
+        for k, w in weights.items(): acc += w / tot; self.t.append((acc, k if ":" in k.split("[")[0] else "minecraft:" + k))
+        self.salt, self.cell = salt, cell
+        key = (salt, cell)
+        if key not in PatchMix._cdf:
+            pts = [(int(P.jhash(i, 1, 2, 9) * 4000), int(P.jhash(i, 3, 4, 9) * 400), int(P.jhash(i, 5, 6, 9) * 4000)) for i in range(5000)]
+            PatchMix._cdf[key] = sorted(self.raw(*q) for q in pts)
+    def raw(self, x, y, z):
+        return 0.72 * vnoise3(x, y, z, self.cell, self.salt) + 0.28 * vnoise3(x + 17, y, z - 9, self.cell / 2.1, self.salt + 1)
+    def at(self, x, y, z):
+        import bisect
+        c = PatchMix._cdf[(self.salt, self.cell)]; r = bisect.bisect_left(c, self.raw(x, y, z)) / len(c)
+        for a, k in self.t:
+            if r <= a: return k
+        return self.t[-1][1]
+
+def vnoise3(x, y, z, cell, salt):
+    """Terrain.java vnoise3 (the same values)"""
+    fx, fy, fz = x / cell, y / cell, z / cell; xi, yi, zi = math.floor(fx), math.floor(fy), math.floor(fz)
+    tx, ty, tz = fx - xi, fy - yi, fz - zi; tx, ty, tz = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty), tz * tz * (3 - 2 * tz)
+    acc = 0.0
+    for a in (0, 1):
+        for b_ in (0, 1):
+            for c in (0, 1):
+                acc += P.jhash(xi + a, yi + b_, zi + c, salt) * (tx if a else 1 - tx) * (ty if b_ else 1 - ty) * (tz if c else 1 - tz)
+    return acc
+def vnoise(x, z, salt):
+    """Terrain.java vnoise(x, z, salt) (arguments already divided by the cell)"""
+    xi, zi = math.floor(x), math.floor(z); fx, fz = x - xi, z - zi; fx, fz = fx * fx * (3 - 2 * fx), fz * fz * (3 - 2 * fz)
+    a, b_, c, d = P.jhash(xi, 0, zi, salt), P.jhash(xi + 1, 0, zi, salt), P.jhash(xi, 0, zi + 1, salt), P.jhash(xi + 1, 0, zi + 1, salt)
+    return (a * (1 - fx) + b_ * fx) * (1 - fz) + (c * (1 - fx) + d * fx) * fz
+STRATA = ["stone", "stone", "tuff", "stone", "cobbled_deepslate", "stone", "tuff"]
+def rock_at(x, y, z, H):
+    """the castle rock at a block (Terrain.java castleRock, the same function): strata, andesite patches, moss thicker to the top H"""
+    d = H - y
+    if vnoise3(x, y, z, 2.6, 92) > 0.735 - 0.15 * max(0.0, 1 - d / 10.0): return "minecraft:moss_block" if P.jhash(x, y, z, 93) < 0.6 else "minecraft:mossy_cobblestone"
+    if vnoise3(x + 31, y, z - 17, 3.4, 94) > 0.63: return "minecraft:andesite"
+    band = y + vnoise(x / 17.0, z / 17.0, 95) * 3 + vnoise(x / 6.0, z / 6.0, 96) * 1.2
+    return "minecraft:" + STRATA[math.floor(band / 3.0) % len(STRATA)]
+def top_at(x, y, z, depth):
+    """the top of the castle rock (Terrain.java castleTop): stone with patches of moss and grass; None = rock"""
+    n = vnoise(x / 4.3, z / 4.3, 97) * 0.7 + vnoise(x / 1.9, z / 1.9, 98) * 0.3
+    top = ("stone" if vnoise(x / 2.5, z / 2.5, 99) < 0.6 else "andesite") if n < 0.40 else "moss_block" if n < 0.62 else "grass_block[snowy=false]"
+    if depth == 0: return "minecraft:" + top
+    if depth == 1: return "minecraft:dirt" if top.startswith("grass") else "minecraft:moss_block" if top == "moss_block" else None
+    return None
+STAIR_OF = {"stone": "stone_stairs", "tuff": "tuff_stairs", "cobbled_deepslate": "cobbled_deepslate_stairs", "andesite": "andesite_stairs",
+            "moss_block": "mossy_cobblestone_stairs", "mossy_cobblestone": "mossy_cobblestone_stairs"}
+
+COL_LO = PatchMix({"stone": 24, "andesite": 20, "tuff": 16, "mossy_cobblestone": 24, "moss_block": 16}, 2810)   # the card: 30/25/20/15/10,
+COL = PatchMix({"stone": 32, "andesite": 27, "tuff": 21, "mossy_cobblestone": 13, "moss_block": 7}, 2810)       # more moss low, less high
+COL_HI = PatchMix({"stone": 36, "andesite": 30, "tuff": 24, "mossy_cobblestone": 10}, 2810)
 CROWN = Mix({"gold_block": 7, "raw_gold_block": 3}, 2813)
 PLINTH = Mix({"stone_bricks": 4, "mossy_stone_bricks": 4, "cracked_stone_bricks": 1, "mossy_cobblestone": 2}, 2814)
 CAUSE = Mix({"cobblestone": 5, "mossy_cobblestone": 4, "stone_brick_slab[type=top,waterlogged=false]": 2}, 2815)
@@ -32,61 +88,51 @@ EYE_SLEEP, EYE_LIT, EYE_DIM = "minecraft:polished_blackstone", "minecraft:pearle
 def colossus(zc, side):
     """cells {(x, y, z): state} of a colossus whose plinth is x 420..431, z zc-5..zc+5; side = +1 raises the arm on the south (+z)
     side, -1 on the north. Local frame: u = 431 - x (0 at the back, 11 the front of the plinth), v = z - zc, r = y - W. Returns
-    (cells, meta) with the eye cells, the palm, the raised arm cells (the fade breaks it off) and the strike point."""
+    (cells, meta) with the eye cells, the raised arm cells (the fade breaks it off) and the strike point (the open palm).
+    Pose (HQ review T-028, 2): the head stands clear of the shoulders on a neck one block narrower (and the beard), the crown; the raised
+    arm: shoulder -> upper arm out and up -> the forearm upright -> the open palm (4 wide) facing the lake with three fingers and the
+    thumb, above the head; the other arm hangs along the body, the hand on the grip of a sword standing on the plinth."""
     m = {}; arm = set(); eyes = []
-    def put(u, v, r, s):
-        m[(431 - u, W + r, zc + v)] = s
+    def put(u, v, r, s): m[(431 - u, W + r, zc + v)] = s
     def pal(u, v, r): return (COL_LO if r < 16 else COL if r < 34 else COL_HI).at(431 - u, W + r, zc + v)
+    def rk(u, v, r): put(u, v, r, pal(u, v, r))
     for r in range(-6, 6):                                       # the plinth from the lake floor to W+5, sheer sides
         for u in range(0, 12):
             for v in range(-5, 6): put(u, v, r, PLINTH.at(431 - u, W + r, zc + v))
     for r in (6, 7):                                             # the toes under the hem
         for u in (8, 9, 10):
-            for v in (-3, -2, -1, 1, 2, 3): put(u, v, r, pal(u, v, r))
+            for v in (-3, -2, -1, 1, 2, 3): rk(u, v, r)
     def fold(k): return k % 2 == 0
     for r in range(6, 30):                                       # the robe: vertical folds on the front and the sides
         front = 8 if r < 10 else 7; hw = 4
         for u in range(1, front + 2):
             for v in range(-hw - 1, hw + 2):
                 f = front + (1 if fold(v) else 0); s_ = hw + (1 if fold(u) and r < 26 else 0)
-                if u <= f and abs(v) <= s_: put(u, v, r, pal(u, v, r))
+                if u <= f and abs(v) <= s_: rk(u, v, r)
     for r in (30, 31):                                           # the belt
         for u in range(2, 9):
             for v in range(-4, 5): put(u, v, r, "minecraft:polished_andesite")
-    for r in range(32, 39):                                      # the chest
+    for r in range(32, 38):                                      # the chest
         for u in range(2, 8 + (1 if r >= 35 else 0)):
-            for v in range(-4, 5): put(u, v, r, pal(u, v, r))
-    for r in (39, 40):                                           # the shoulders
+            for v in range(-4, 5): rk(u, v, r)
+    for r in (38, 39):                                           # the shoulders, round caps over the arms
         for u in range(2, 8):
-            for v in range(-5, 6): put(u, v, r, pal(u, v, r))
-    for r in range(22, 39):                                      # the lowered arm (sleeve) on the outer side, the hand at r 22..23
-        for u in range(3, 7):
-            put(u, -side * 5, r, pal(u, -side * 5, r))
-    # the raised arm on the inner side (over the channel): the upper arm out from the shoulder, the forearm up, the palm 3 x 6 facing
-    # the lake (u 10) beside the head, fingers apart at the top
-    for (u, vv, r) in [(u, 6, r) for u in (5, 6, 7) for r in (39, 40, 41)] + [(u, 7, r) for u in (7, 8) for r in (41, 42, 43)] + \
-                      [(u, vv, r) for u in (8, 9) for vv in (7, 8) for r in (43, 44, 45, 46)]:
-        v = side * vv; put(u, v, r, pal(u, v, r)); arm.add((u, v, r))
-    palm = []
-    for r in range(45, 51):
-        for vv in (6, 7, 8):
-            if r >= 49 and vv == 7: continue                    # a gap between the fingers
-            v = side * vv; put(10, v, r, pal(10, v, r)); arm.add((10, v, r)); palm.append((10, v, r))
-            if r <= 48: put(9, v, r, pal(9, v, r)); arm.add((9, v, r))
-    for r in (46, 47): put(10, side * 5, r, pal(10, side * 5, r)); arm.add((10, side * 5, r))      # the thumb
-    for r in (40, 41):                                           # the neck
-        for u in (4, 5, 6):
-            for v in (-1, 0, 1): put(u, v, r, pal(u, v, r))
-    for r in range(41, 48):                                      # the head (7 wide, 6 deep), the hair falling behind
+            for v in range(-5, 6): rk(u, v, r)
+    for r in (37, 38, 39):
+        for u in (3, 4, 5, 6):
+            for v in (-6, 6): rk(u, v, r)
+    for u in (4, 5, 6):                                          # the neck (one narrower than the head on each side)
+        for v in range(-2, 3): rk(u, v, 40)
+    for r in range(36, 42):                                      # the hair falling behind, narrower than the head
+        for v in range(-2, 3): rk(2, v, r)
+    for r in range(41, 48):                                      # the head (7 wide, 6 deep)
         for u in range(3, 9):
-            for v in range(-3, 4): put(u, v, r, pal(u, v, r))
-    for r in range(36, 41):
-        for v in range(-3, 4): put(2, v, r, pal(2, v, r))
-    for r in range(36, 44):                                      # the beard in front of the chest and the chin
-        w_ = 2 if r >= 39 else 1
-        for v in range(-w_, w_ + 1): put(9, v, r, pal(9, v, r))
-    for v in range(-3, 4): put(9, v, 46, pal(9, v, 46))          # the brow over the eyes
-    put(9, 0, 44, pal(9, 0, 44)); put(9, 0, 45, pal(9, 0, 45))   # the nose
+            for v in range(-3, 4): rk(u, v, r)
+    for r in range(36, 43):                                      # the beard in front of the chest and the chin (narrower than the head)
+        w_ = 1 if r <= 38 else 2
+        for v in range(-w_, w_ + 1): rk(9, v, r)
+    for v in range(-3, 4): rk(9, v, 46)                          # the brow over the eyes
+    rk(9, 0, 44); rk(9, 0, 45)                                   # the nose
     for v in (-2, -1, 1, 2):                                     # the eye sockets: 2 x 2 niches, the eye block one deep (u 7)
         for r in (44, 45):
             put(8, v, r, AIR); put(7, v, r, EYE_SLEEP); eyes.append((431 - 7, W + r, zc + v))
@@ -95,64 +141,173 @@ def colossus(zc, side):
             if u in (3, 8) or abs(v) == 3:
                 put(u, v, 48, CROWN.at(431 - u, W + 48, zc + v))
                 if (u + v) % 2 == 0: put(u, v, 49, CROWN.at(431 - u, W + 49, zc + v)); put(u, v, 50, "minecraft:gold_block" if (u * 3 + v) % 4 else "minecraft:raw_gold_block")
-            else: put(u, v, 48, pal(u, v, 48))
+            else: rk(u, v, 48)
+    # the lowered arm (outer side o): the upper arm hangs along the body (v 6..7), the forearm comes forward to the hand on the grip of
+    # a sword whose blade stands on the front edge of the plinth (u 10, v 5)
+    o = -side
+    for r in range(30, 37):
+        for u in (3, 4, 5):
+            for vv in (6, 7): rk(u, o * vv, r)
+    for t in range(8):                                           # the forearm: elbow (u 4, r 29) -> wrist (u 9, r 22)
+        uc = 4 + round(t * 5 / 7); r = 29 - t
+        for u in (uc, uc + 1):
+            for vv in (6, 7): rk(u, o * vv, r)
+    for r in range(20, 24):                                      # the fist round the grip
+        for u in (9, 10, 11):
+            for vv in (4, 5, 6): rk(u, o * vv, r)
+    for r in range(6, 19): put(10, o * 5, r, "minecraft:polished_andesite")      # the blade
+    for vv in range(3, 8): put(10, o * vv, 19, "minecraft:polished_tuff")       # the guard
+    put(10, o * 5, 24, "minecraft:chiseled_tuff")                               # the pommel over the fist
+    # the raised arm (inner side, over the channel): the upper arm out and up from the shoulder cap, the forearm upright, the open palm
+    # (v 5..8, r 53..56) facing the lake at u 6 with three fingers (gap at v 6) and the thumb towards the head
+    cells = [(u, vv, r) for u in (4, 5) for (vv, r) in ((6, 40), (7, 40), (6, 41), (7, 41), (7, 42), (8, 42), (7, 43), (8, 43))]
+    cells += [(u, vv, r) for u in (4, 5) for vv in (7, 8) for r in range(44, 53)]
+    palm = [(u, vv, r) for u in (5, 6) for vv in (5, 6, 7, 8) for r in range(53, 57)]
+    fingers = [(6, 5, r) for r in (57, 58, 59)] + [(6, 7, r) for r in (57, 58, 59, 60)] + [(6, 8, r) for r in (57, 58)]
+    thumb = [(6, 4, 54), (6, 4, 55), (6, 3, 56), (6, 3, 57)]
+    for (u, vv, r) in cells + palm + fingers + thumb:
+        v = side * vv; rk(u, v, r); arm.add((u, v, r))
     armw = {(431 - u, W + r, zc + v) for (u, v, r) in arm}
-    strike = [420.5, W + 47.5, zc + side * 7 + 0.5]
-    return m, dict(eyes=eyes, arm=sorted(armw), strike=strike, zc=zc, side=side, box=[420, W - 6, zc - 8, 431, W + 50, zc + 8])
+    strike = [431 - 6 - 0.5, W + 55.0, zc + side * 6.5 + 0.5]
+    return m, dict(eyes=eyes, arm=sorted(armw), strike=strike, zc=zc, side=side, box=[420, W - 6, zc - 8, 431, W + 60, zc + 8])
+
+def recess(b, gr, rl):
+    """the colossi stand clear of the rock (HQ review T-028, 2): behind each colossus the face of the bridgehead (x 432..433) is hollowed
+    from the plinth (W+6) up to 4 under the top, 2 beyond the colossus on each side: a dark gap round its back. The roof stays (the top
+    of the rock and its edge do not change)."""
+    n = 0
+    for zc in (-46, -21):
+        for x in (P.FACE_X, P.FACE_X + 1):
+            for z in range(zc - 7, zc + 8):
+                i, j = P.ix(gr, x, z)
+                if not rl["rock"][i, j] or (x, z) in rl["hang"]: continue
+                top = int(rl["T"][i, j])
+                for y in range(W + 6, top - 3):
+                    if b.get(x, y, z) is None: b.set(x, y, z, AIR); n += 1
+    return n
+
+def face_grooves(b, gr, rl):
+    """the west face of the bridgehead over the lake south of the south colossus (z -13..4: no growth there, the lake is under it): vertical
+    grooves 1..2 wide, 1..2 deep, from W+4 (out of reach from the water) up to 3..8 under the top, the roof stays: the columnar rock"""
+    n = 0; z = -13
+    while z <= 4:
+        w = 1 + int(hsh(0, 1, z, 2898) < 0.4); deep = 1 + int(hsh(0, 2, z, 2899) < 0.3)
+        for zz in range(z, min(z + w, 5)):
+            for x in range(P.FACE_X, P.FACE_X + deep):
+                i, j = P.ix(gr, x, zz)
+                if not rl["rock"][i, j] or (x, zz) in rl["hang"] or gr["pad"][i, j]: continue
+                top = int(rl["T"][i, j]); y2 = top - 3 - int(hsh(x, 3, zz, 2900) * 6)
+                for y in range(W + 4 + int(hsh(x, 4, zz, 2901) * 4), y2):
+                    if b.get(x, y, zz) is None: b.set(x, y, zz, AIR); n += 1
+        z += w + 1 + int(hsh(0, 5, z, 2902) * 2)
+    return n
+
+def overhangs(b, gr, rl):
+    """the blocks of the overhangs (castle_plan.relief: rl["hang"]): the top k blocks of the rock's palette, the lowest one an upside-down
+    stair stepped towards the rock (the overhang widens upward), the top like the rock top, moss carpet on part of the moss"""
+    T = rl["T"]; n = 0
+    for (x, z), (top, k, fl, ring) in sorted(rl["hang"].items()):
+        tow = None
+        for (a, c, f) in ((1, 0, "east"), (-1, 0, "west"), (0, 1, "south"), (0, -1, "north")):
+            q = (x + a, z + c); i, j = P.ix(gr, *q)
+            if rl["rock"][i, j] and (q not in rl["hang"] or rl["hang"][q][1] > k): tow = f; break
+        for y in range(top - k + 1, top + 1):
+            d = top - y
+            s_ = top_at(x, y, z, d) or rock_at(x, y, z, top)
+            if y == top - k + 1 and k >= 2 and tow:
+                base_ = rock_at(x, y, z, top).split(":")[1]; s_ = stairs(STAIR_OF.get(base_, "stone_stairs"), tow, "top")
+            b.set(x, y, z, s_); n += 1
+        if top_at(x, top, z, 0).endswith("moss_block") and hsh(x, 5, z, 2895) < 0.55 and b.get(x, top + 1, z) is None:
+            b.set(x, top + 1, z, "minecraft:moss_carpet")
+    return n
+
+def moss_edges(b, gr, rl, walk_free):
+    """moss carpet on the moss of the rock top near its edge (within 3), the table and the peak (not the bridgehead: lanterns, the walk)"""
+    X, Z = gr["X"], gr["Z"]; rock = rl["rock"]; T = rl["T"]; n = 0
+    cur = ~rock
+    for _ in range(3):
+        nxt = cur.copy()
+        for a, c in ((1, 0), (-1, 0), (0, 1), (0, -1)): nxt |= np.roll(np.roll(cur, a, 0), c, 1)
+        cur = nxt
+    near = cur & rock & (rl["table"] | rl["peak"]) & ~gr["pad"]
+    for i, j in zip(*np.nonzero(near)):
+        x, z = int(X[i, j]), int(Z[i, j]); y = int(T[i, j])
+        if (x, z) in rl["hang"] or not walk_free(x, z): continue
+        if top_at(x, y, z, 0).endswith("moss_block") and hsh(x, 6, z, 2896) < 0.5 and b.get(x, y + 1, z) is None and b.get(x, y, z) is None:
+            b.set(x, y + 1, z, "minecraft:moss_carpet"); n += 1
+    return n
 
 def fallen_arm(zc, side):
-    """the faded lake: the raised arm broken off lies in the shallow water in front of the colossus (along -x), half out of it"""
+    """the faded lake: the raised arm broken off lies in the shallow water in front of the colossus (along -x), half out of it: the
+    upper arm (3 wide), the forearm (2 x 2), the open palm lying flat with three fingers and the thumb"""
     m = {}; z0 = zc + side * 7
-    for k in range(13):
-        x = 417 - k
+    def put(x, y, z): m[(x, y, z)] = COL.at(x, y, z)
+    for x in range(412, 418):                                    # the upper arm, the broken end at x 417
         for dz in (-1, 0, 1):
             for y in (W - 1, W, W + 1):
                 if y == W + 1 and abs(dz) == 1: continue
-                m[(x, y, z0 + dz)] = COL.at(x, y, z0 + dz)
-    for dz in (-2, -1, 0, 1, 2):                                  # the palm lying flat, fingers
-        for x in (402, 403, 404):
-            m[(x, W, z0 + dz)] = COL.at(x, W, z0 + dz)
-            if dz in (-2, 0, 2) and x == 402: m[(401, W, z0 + dz)] = COL.at(401, W, z0 + dz)
+                put(x, y, z0 + dz)
+    for x in range(406, 412):                                    # the forearm
+        for dz in (0, side):
+            for y in (W - 1, W): put(x, y, z0 + dz)
+    for x in range(402, 406):                                    # the palm, flat, the back down
+        for dz in (-1, 0, 1, 2):
+            put(x, W, z0 + side * dz)
+            if x >= 404: put(x, W - 1, z0 + side * dz)
+    for (dz, ln) in ((-1, 3), (1, 4), (2, 2)):                   # the fingers (gap at 0), the thumb on the other side
+        for k in range(ln): put(401 - k, W, z0 + side * dz)
+    put(404, W, z0 - side * 2); put(403, W, z0 - side * 3)
     return m
 
 # ---------------------------------------------------------------- the sword of the fallen Bearer on the islet
 def sword(b):
-    """the islet (rock up to W+2) and the great sword stuck in it, leaning west over the causeway; the hanging sign under the guard"""
+    """the islet (rock up to W+2) and the great sword stuck in it, leaning north towards the causeway (HQ review T-028, 3): a blade 3 wide
+    in the plane of its lean (z-y, its flat faces the causeway in the west), polished andesite on the edges (1 thick), andesite on the
+    flat with the ridge (2 thick), the guard of
+    polished tuff across it (7), the grip and the pommel over the guard; the sign on a plaque on a low post at the edge of the islet"""
     x1, z1, x2, z2 = P.SWORD_ISLET
     for x in range(x1, x2 + 1):
         for z in range(z1, z2 + 1):
             top = W + 2 if (x1 < x < x2 and z1 < z < z2) else W + 1
             for y in range(W - 5, top + 1): b.set(x, y, z, Mix({"stone": 3, "mossy_cobblestone": 3, "andesite": 2, "moss_block": 1}, 2830).at(x, y, z))
-    dx, dy = -math.sin(math.radians(22)), math.cos(math.radians(22))
-    ox, oy, zc = 419.5, W + 1.5, -45
-    cells = []
-    for k in range(12):                                          # the blade: 12 along the line (leaning west 22 degrees), 2 wide (z), rust
-        t = k + 0.5; x = math.floor(ox + dx * t); y = math.floor(oy + dy * t)
-        for z in (zc, zc + 1):
-            s = "minecraft:polished_andesite" if z == zc else "minecraft:andesite"
-            if hsh(x, y, z, 2831) < 0.18: s = "minecraft:brown_terracotta"
-            cells.append((x, y, z, s))
-    t = 12.5; gx = math.floor(ox + dx * t); gy = math.floor(oy + dy * t)
-    for z in range(zc - 3, zc + 5): cells.append((gx, gy, z, "minecraft:polished_tuff"))      # the guard across
-    for k in (13.5, 14.5, 15.5):                                 # the grip and the pommel
-        x = math.floor(ox + dx * k); y = math.floor(oy + dy * k)
-        for z in (zc, zc + 1): cells.append((x, y, z, "minecraft:tuff_bricks" if k < 15 else "minecraft:chiseled_tuff"))
+    lean = math.radians(22)
+    az, ay = -math.sin(lean), math.cos(lean)                     # along the blade (up and north: the lean is seen from the causeway)
+    pz, py = math.cos(lean), math.sin(lean)                      # across it in the plane of the lean (z-y)
+    oz, oy, xc, L = -44.4, W + 2.4, 416, 12.0                    # where the blade goes into the islet; xc the flat, xc-1 the ridge (west)
+    cells = {}
+    for z in range(-60, -38):
+        for y in range(W + 1, W + 22):
+            cz, cy = z + 0.5 - oz, y + 0.5 - oy; t = cz * az + cy * ay; s_ = cz * pz + cy * py
+            if 0 <= t <= L and abs(s_) <= 1.3:
+                edge = abs(s_) > 0.55
+                cells[(xc, y, z)] = "minecraft:polished_andesite" if edge else ("minecraft:brown_terracotta" if hsh(xc, y, z, 2831) < 0.08 else "minecraft:andesite")
+                if not edge: cells[(xc - 1, y, z)] = "minecraft:andesite"
+            elif L < t <= L + 1.15 and abs(s_) <= 3.3:          # the guard
+                for x in (xc - 1, xc, xc + 1): cells[(x, y, z)] = "minecraft:polished_tuff"
+            elif L + 1.15 < t <= L + 4.0 and abs(s_) <= 0.55:   # the grip
+                for x in (xc - 1, xc): cells[(x, y, z)] = "minecraft:tuff_bricks"
+            elif L + 4.0 < t <= L + 5.3 and abs(s_) <= 0.95:    # the pommel
+                for x in (xc - 1, xc): cells[(x, y, z)] = "minecraft:chiseled_tuff"
+    zc = -45
     walk = set()
     for r in P.CAUSEWAY:
         for x in range(r[0], r[2] + 1):
             for z in range(r[1], r[3] + 1): walk.add((x, z))
-    for (x, y, z, s) in cells:
+    for (x, y, z), s_ in cells.items():
         if (x, z) in walk and y < W + 4: raise SystemExit("the sword blocks the causeway at %s" % ((x, y, z),))
-        b.set(x, y, z, s)
-    # the sign at the hilt: a plaque on chains from the north end of the guard down to the eye level of the causeway, the sign on
-    # its west face (a hanging sign is too narrow for the lines; «Короли не узнали» does not fit one line even here: 4 lines)
-    pz = zc - 3; py = W + 4
-    for y in range(py + 1, gy): b.set(gx, y, pz, "minecraft:iron_chain[axis=y,waterlogged=false]")
-    b.set(gx, py, pz, "minecraft:polished_tuff")
-    sign = (gx - 1, py, pz)
-    if (sign[0], sign[2]) in walk and False: pass
-    b.set(*sign, 'minecraft:dark_oak_wall_sign[facing=west,waterlogged=false]' + sign_nbt(["Дошёл до воды.", "Короли", "не узнали", "его руки."]))
-    return dict(guard=[gx, gy, zc], sign=list(sign), tip=[419, W + 1, zc])
+        if y <= W + 2 and x1 <= x <= x2 and z1 <= z <= z2: continue        # inside the islet
+        b.set(x, y, z, s_)
+    # the sign: a plaque of polished tuff on a low post at the west edge of the islet, north of the blade (nothing in front of the blade
+    # seen from the causeway), the wall sign on its north face at the eye level of the causeway (4 lines; a wall sign has no collision)
+    sx, sz = x1, z1
+    b.set(sx, W + 2, sz, "minecraft:cobblestone_wall[east=none,north=none,south=none,up=true,waterlogged=false,west=none]")
+    b.set(sx, W + 3, sz, "minecraft:polished_tuff")
+    sign = (sx, W + 3, sz - 1)                                   # on its north face: over the water, not over the causeway
+    b.set(*sign, 'minecraft:dark_oak_wall_sign[facing=north,waterlogged=false]' + sign_nbt(["Дошёл до воды.", "Короли", "не узнали", "его руки."]))
+    gcells = sorted((z, y) for (x, y, z), s_ in cells.items() if x == xc and "polished_tuff" in s_)
+    gz, gy = gcells[len(gcells) // 2]; gx = xc
+    top = max(y for (x, y, z) in cells)
+    return dict(guard=[gx, gy, gz], sign=list(sign), tip=[xc, W + 2, int(oz)], top=top)
 
 # ---------------------------------------------------------------- the pier and the causeway
 def pier(b, gr, rl):

@@ -26,6 +26,13 @@ RIFT = (405, 5, 485, 29)                   # between the bridgehead (z <= 4) and
 LAKE = [(381, -56, 431, -34), (374, -33, 431, 4)]   # water (minus the colossi and the pier, which stand in it)
 MOAT_D = 5                                 # cells within MOAT_D of the rock are >= 6 under it; further out 1:1 up to the ground
 SHEER = 6
+# the living rock (HQ review T-028, 1): the contour of the rock grows outward by noise (never inward: the table stays >= its spot), the
+# faces get overhangs (cornices and hanging bulges, wider at the top than below, none reachable from below)
+GROW_MAX, GROW_RIFT = 5, 3                 # outward growth of the rock contour (blocks); into the rift at most 3 (the rift stays >= 18 wide)
+ROCK_RMAX = 95                             # the grown rock stays within r 95..98 (a wobbly circle: the old table edge r 94 +- 2; further out the
+                                           # moat would not reach the ground inside the place)
+FACE_ZONE = (300, -58, FACE_X + 1, 8)      # the west face over the lake (the colossi, the pier, the stair): no growth, no overhangs
+HANG_GAP = 3                               # the lowest block of an overhang is >= 3 over the ground under it (unreachable from below)
 # the pier, the colossi, the channel, the knock zone, the causeway, the sword islet, the sandy way out
 PIER = (420, -38, 431, -30)                # 12 (x) x 9 (z), deck block at W+1
 COL_N = (420, -51, 431, -41)               # footprints of the colossi (plinth), backs to the face, facing west (the lake)
@@ -55,6 +62,38 @@ def wob(t, salt, amp, per=(23.0, 11.0, 6.0)):
     from lib import h as hsh
     v = sum(np.sin(2 * np.pi * (t / p + hsh(int(p), salt, 7, 2899))) * (0.5 ** k) for k, p in enumerate(per))
     return np.round(amp * v / 1.75).astype(int)
+def jhash(x, y, z, salt):
+    """tools/seedmap/Terrain.java hash() (the same bits: 64-bit wrap-around, logical shifts)"""
+    M = (1 << 64) - 1
+    n = (x * 374761393 + y * 1442695040888963407 + z * 668265263 + salt * 2654435761) & M
+    n = ((n ^ (n >> 13)) * 1274126177) & M; n ^= n >> 16
+    return (n & 0xffffff) / 0x1000000
+def vnoise2(X, Z, cell, salt):
+    """2-D value noise over arrays (smoothstep between lattice points `cell` apart), as Terrain.java vnoise(x / cell, z / cell)"""
+    fx, fz = X / cell, Z / cell; xi, zi = np.floor(fx).astype(np.int64), np.floor(fz).astype(np.int64)
+    tx, tz = fx - xi, fz - zi; tx = tx * tx * (3 - 2 * tx); tz = tz * tz * (3 - 2 * tz)
+    hv = np.vectorize(lambda a, c: jhash(int(a), 0, int(c), salt))
+    a, b, c, d = hv(xi, zi), hv(xi + 1, zi), hv(xi, zi + 1), hv(xi + 1, zi + 1)
+    return (a * (1 - tx) + b * tx) * (1 - tz) + (c * (1 - tx) + d * tx) * tz
+def rank(a):
+    """values -> ranks 0..1 (uniform shares)"""
+    o = np.argsort(a, axis=None, kind="stable"); r = np.empty(a.size); r[o] = np.arange(a.size) / max(1, a.size - 1); return r.reshape(a.shape)
+def chamfer(src, blocked=None):
+    """distance (3-4 chamfer / 3, about euclidean) from the cells of `src` and the index of the nearest source cell (flat), over the grid;
+    `blocked` cells are never entered"""
+    n0, n1 = src.shape; INF = 10 ** 9
+    d = np.where(src, 0, INF).astype(np.int64); near = np.where(src, np.arange(src.size).reshape(src.shape), -1)
+    blk = np.zeros(src.shape, bool) if blocked is None else blocked
+    fw = ((-1, -1, 4), (-1, 0, 3), (-1, 1, 4), (0, -1, 3)); bw = ((1, 1, 4), (1, 0, 3), (1, -1, 4), (0, 1, 3))
+    for it in range(2):
+        for rng_i, rng_j, nb in ((range(n0), range(n1), fw), (range(n0 - 1, -1, -1), range(n1 - 1, -1, -1), bw)):
+            for i in rng_i:
+                for j in rng_j:
+                    if blk[i, j] and not src[i, j]: continue
+                    for a, c, w in nb:
+                        p, r = i + a, j + c
+                        if 0 <= p < n0 and 0 <= r < n1 and d[p, r] + w < d[i, j]: d[i, j] = d[p, r] + w; near[i, j] = near[p, r]
+    return d / 3.0, near
 def rect(r, X, Z): return (X >= r[0]) & (X <= r[2]) & (Z >= r[1]) & (Z <= r[3])
 def in_place(x, z): return np.hypot(x - CX, z - CZ) <= R_PLACE + MARGIN
 def ix(gr, x, z): return z - gr["z1"], x - gr["x1"]
@@ -166,8 +205,36 @@ def relief(gr):
     pk = (bf >= PEAK_MIN) & (np.hypot(X - CX, Z - CZ) <= PEAK_R) & (Z < -40) & (X >= FACE_X) & ~lake
     seeds = [ix(gr, x, PRED[1] - 1) for x in range(PRED[0], PRED[2] + 1)]
     peak = flood(pk, seeds)
-    rock = pred | table | peak
     T[pred] = PRED_Y; T[table] = P
+    # the living rock: the contour grows outward by a noise (patches about 6 across + ribs about 2 across: the columnar faces), each grown
+    # cell takes the top of the nearest rock cell; never into the lake, the pads, the west face over the lake, the bridge, the barbican,
+    # out of r 99; into the rift at most GROW_RIFT
+    base = pred | table | peak
+    rr = np.hypot(X - CX, Z - CZ)
+    prot = lake | pad | (rr > ROCK_RMAX + 3 * rank(vnoise2(X, Z, 2.5, 2897))) | rect(FACE_ZONE, X, Z) | rect((BRIDGE_X[0] - 3, RIFT[1] - 4, BRIDGE_X[1] + 3, RIFT[3] + 4), X, Z) \
+        | rect((BARBICAN[0] - 2, BARBICAN[1] - 4, BARBICAN[2] + 2, BARBICAN[3]), X, Z)
+    g = np.clip(np.round(3.0 * rank(vnoise2(X, Z, 6.0, 2890)) + 3.6 * rank(vnoise2(X, Z, 1.6, 2891)) - 0.6), 0, GROW_MAX)
+    inrift = rect((RIFT[0], RIFT[1] - 2, RIFT[2], RIFT[3] + 2), X, Z); g = np.where(inrift, np.minimum(g, GROW_RIFT), g)
+    dist, near = chamfer(base, prot)
+    grown = ~base & ~prot & (dist <= g) & (dist > 0)
+    src = near.ravel()[grown.ravel()]; T[grown] = T.ravel()[src]
+    for msk in (pred, table, peak): msk |= grown & msk.ravel()[near.ravel()].reshape(X.shape)
+    # no straight run of the contour longer than 8: in the middle of a longer one a bump out (where allowed) or a grown cell taken back
+    for it in range(8):
+        rock = pred | table | peak; runs = straight_list(gr, rock, 8)
+        if not runs: break
+        for (cells, (a, c)) in runs:
+            for (i, j) in cells[3::5][:max(1, len(cells) // 5)]:
+                p_, r_ = i + a, j + c
+                if 0 <= p_ < X.shape[0] and 0 <= r_ < X.shape[1] and not prot[p_, r_] and not rock[p_, r_]:
+                    for msk in (pred, table, peak):
+                        if msk[i, j]: msk[p_, r_] = True
+                    T[p_, r_] = T[i, j]; grown[p_, r_] = True
+                elif grown[i, j]:
+                    for msk in (pred, table, peak): msk[i, j] = False
+                    grown[i, j] = False; T[i, j] = bf[i, j]
+    rock = pred | table | peak
+    rift &= ~rock                                  # the rift was cut before the growth
     # the lake floor: 4 deep, the channel and the knock zone 5, by the causeway 2..3, by the rock face 6
     Wt = np.full(X.shape, NONE, np.int32)
     fl = np.full(X.shape, W - 4)
@@ -215,6 +282,37 @@ def relief(gr):
         x, z = j + gr["x1"], i + gr["z1"]
         cap = W + 1 + 5 * (int(dist[i, j]) - 1) + int(hsh(x, 3, z, 2803) * 3)
         T[i, j] = min(int(T[i, j]), cap)
+    # overhangs (HQ review T-028, 1): cornices and hanging bulges round the rock, wider at the top than below. A cell next to the rock
+    # (outside it, not in the lake or the protected zones) carries blocks only in the top k of its rock's height; the lowest is >= HANG_GAP
+    # over the ground under it, so no overhang is reachable from below. Ring 1 (next to the rock): k 2..10 by noise; ring 2 (next to a
+    # ring-1 cell with k >= 4): the top 1..2 blocks (the corbel widens upward). The overhang cells count as rock for the moat and the
+    # checks (their top is the rock top: no ledge for the sheer-edge test); the terrain under them is written at `floor`.
+    hang = {}
+    hprot = prot | lake | (Wt != NONE) | rift & rect((BRIDGE_X[0] - 4, RIFT[1] - 4, BRIDGE_X[1] + 4, RIFT[3] + 4), X, Z)
+    u1 = rank(vnoise2(X, Z, 4.0, 2892)); u2 = rank(vnoise2(X, Z, 2.2, 2893)); u3 = rank(vnoise2(X, Z, 3.0, 2894))
+    n4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+    for ring in (1, 2):
+        cur = rock.copy()
+        for (x, z) in hang: cur[ix(gr, x, z)] = True
+        for i, j in zip(*np.nonzero(~cur & ~hprot & place)):
+            nbs = [(i + a, j + c) for a, c in n4 if 0 <= i + a < X.shape[0] and 0 <= j + c < X.shape[1]]
+            x, z = int(X[i, j]), int(Z[i, j])
+            if ring == 1:
+                srcs = [q for q in nbs if rock[q]]
+                if not srcs or u1[i, j] < 0.42: continue
+                top = min(int(T[q]) for q in srcs)
+                kmax = min(10, top - min(int(T[i, j]), top - SHEER) - HANG_GAP + 1)
+                k = int(round(2 + u2[i, j] * (kmax - 2))) if kmax >= 2 else 0
+            else:
+                srcs = [q for q in nbs if (int(X[q]), int(Z[q])) in hang and hang[(int(X[q]), int(Z[q]))][1] >= 4 and not rock[q]]
+                if not srcs or u3[i, j] < 0.5 or any(rock[q] for q in nbs): continue
+                top = min(hang[(int(X[q]), int(Z[q]))][0] for q in srcs); k = 1 + int(u2[i, j] > 0.6)
+            if k < 1: continue
+            fl = min(int(T[i, j]), top - SHEER)
+            if top - k + 1 < fl + 1 + HANG_GAP: continue
+            hang[(x, z)] = (top, k, fl, ring)
+    for (x, z), (top, k, fl, ring) in hang.items():
+        i, j = ix(gr, x, z); T[i, j] = top; rock[i, j] = True
     # the moat: within MOAT_D of the rock >= 6 under the nearest rock cells, then 1:1 up (only in the place, never the pads)
     # cap = min over the rock cells r of (T_r - 6 + max(0, Chebyshev distance - MOAT_D)): flat for MOAT_D cells, then a 1:1 cone
     C = np.where(rock, T - SHEER, 10 ** 6)
@@ -247,8 +345,10 @@ def relief(gr):
         q = (DESC_X[5] + 1, z)
         if q in rings: del rings[q]
         T[ix(gr, *q)] = W + 1
-    return dict(T=T, Wt=Wt, P=P, lake=lake, pred=pred, table=table, peak=peak, rock=rock, rift=rift, moat=moat, sand=halves,
-                knock=knock, chan=chan, walk=walk, rings=rings, desc_order=dorder, desc_end=dend, cw=cw)
+    Tw = T.copy()                                  # the ground the terrain writes (under an overhang: its floor)
+    for (x, z), (top, k, fl, ring) in hang.items(): Tw[ix(gr, x, z)] = fl
+    return dict(T=T, Tw=Tw, Wt=Wt, P=P, lake=lake, pred=pred, table=table, peak=peak, rock=rock, rift=rift, moat=moat, sand=halves,
+                knock=knock, chan=chan, walk=walk, rings=rings, desc_order=dorder, desc_end=dend, cw=cw, hang=hang, grow=grown, base=base)
 
 def checks(gr, rl):
     """HQ T-028, 1: the stop conditions and the numbers of the plan"""
@@ -277,14 +377,56 @@ def checks(gr, rl):
     out["desc_cells"] = len(rl["desc_order"]); out["desc_end"] = rl["desc_end"]
     sc, top = stair(); out["stair_top"] = top; out["stair_cells"] = sum(c[2] - c[1] + 1 for c in sc)
     out["P"] = rl["P"]; out["W"] = W
+    out["straight_max"], out["straight_at"] = straight_runs(gr, rl)
+    tb = rl["table"]; xs, zs = X[tb], Z[tb]; out["table_cells"] = int(tb.sum()); out["table_bbox"] = [int(xs.min()), int(zs.min()), int(xs.max()), int(zs.max())]
+    out["grown_cells"] = int(rl["grow"].sum()); out["hang_cells"] = len(rl["hang"]); out["hang_ring2"] = sum(1 for v in rl["hang"].values() if v[3] == 2)
+    out["hang_min_gap"] = min((v[0] - v[1] + 1) - (v[2] + 1) for v in rl["hang"].values()) if rl["hang"] else None
     stop = []
     if out["knock_min_depth"] < 4 or out["knock_cells"] != 14 * 16: stop.append("knock zone")
     if top != PRED_Y: stop.append("stair does not reach the bridgehead (%d)" % top)
     if out["max_fill_rock"] > 40: stop.append("fill %d > 40" % out["max_fill_rock"])
     if out["moat_out_of_place"]: stop.append("moat out of the place")
     if out["desc_cells"] > 250: stop.append("descent %d > 250" % out["desc_cells"])
+    if out["straight_max"] > 8: stop.append("a straight run of the rock contour %d > 8 at %s" % (out["straight_max"], out["straight_at"]))
+    if out["hang_min_gap"] is not None and out["hang_min_gap"] < HANG_GAP: stop.append("an overhang %d over the ground" % out["hang_min_gap"])
     out["stop"] = stop
     return out
+
+def straight_list(gr, rock, limit):
+    """the straight runs of the contour longer than `limit`: [(cells [(i, j)...], facing (a, c))] (same zones skipped as straight_runs)"""
+    X, Z = gr["X"], gr["Z"]
+    skip = rect(FACE_ZONE, X, Z) | rect((BRIDGE_X[0] - 1, RIFT[1] - 2, BRIDGE_X[1] + 1, RIFT[3] + 2), X, Z) | gr["pad"]
+    out = []
+    for a, c in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        e = rock & ~np.roll(np.roll(rock, -a, 0), -c, 1) & ~skip
+        n0, n1 = e.shape
+        lines = [[(i, j) for j in range(n1)] for i in range(n0)] if a else [[(i, j) for i in range(n0)] for j in range(n1)]
+        for ln in lines:
+            run = []
+            for q in ln + [None]:
+                if q is not None and e[q]: run.append(q); continue
+                if len(run) > limit: out.append((run, (a, c)))
+                run = []
+    return out
+
+def straight_runs(gr, rl):
+    """the longest straight run of the contour of the rock seen from above (overhangs included: the top outline), outside the west face
+    over the lake (the colossi, the pier, the stair) and the bridge: edge cells facing the same side in a row along one line"""
+    rock = rl["rock"]; X, Z = gr["X"], gr["Z"]
+    skip = rect(FACE_ZONE, X, Z) | rect((BRIDGE_X[0] - 1, RIFT[1] - 2, BRIDGE_X[1] + 1, RIFT[3] + 2), X, Z) | gr["pad"]
+    best, at = 0, None
+    for a, c in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        nb = np.roll(np.roll(rock, -a, 0), -c, 1)
+        e = rock & ~nb & ~skip
+        line = e.T if a == 0 else e                 # runs go across the facing direction (east/west faces run along z)
+        for k in range(line.shape[0]):
+            run = 0
+            for v in line[k]:
+                run = run + 1 if v else 0
+                if run > best: best = run; at = (a, c, k)
+    if at:
+        a, c, k = at; at = ("x" if a == 0 else "z", int(X[0, k]) if a == 0 else int(Z[k, 0]), "facing", (a, c))
+    return best, at
 
 # ---------------------------------------------------------------- the plan picture
 def plan_png(gr, rl, path, extra=None, S=4):
@@ -301,6 +443,7 @@ def plan_png(gr, rl, path, extra=None, S=4):
             c = (int(50 + 170 * t), int(60 + 160 * t), int(45 + 110 * t))
             if Wt[i, j] != NONE: c = (35, 70, 150) if not rl["knock"][i, j] else (25, 110, 190)
             if rl["rock"][i, j]: c = (int(c[0] * 0.75 + 60), int(c[1] * 0.7), int(c[2] * 0.7))
+            if (x, z) in rl["hang"]: c = (150, 70, 60) if rl["hang"][(x, z)][3] == 1 else (180, 100, 90)
             if rl["moat"][i, j]: c = (min(255, c[0] + 40), c[1], min(255, c[2] + 60))
             if rl["rift"][i, j]: c = (int(c[0] * 0.6), int(c[1] * 0.6), int(c[2] * 0.5))
             if gr["pad"][i, j]: c = (230, 140, 40)

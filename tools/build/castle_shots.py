@@ -54,8 +54,9 @@ def pier():
     shot("pier", (403.5, W + 3, -34.5), (432, 128, -34))
 def sword():
     s = M["sword"]["sign"]; g = M["sword"]["guard"]
-    shot("sword", (404.5, W + 3, -47.5), (416, W + 5, -44))
-    shot("sword_sign", (s[0] - 1.6, W + 2, s[2] + 0.5), (s[0] + 0.5, s[1] + 0.5, s[2] + 0.5), settle=6)
+    shot("sword", (404.5, W + 3, -47.5), (416, W + 8, -46))
+    shot("sword_sign", (s[0] - 0.6, W + 2, s[2] - 1.4), (s[0] + 0.5, s[1] + 0.5, s[2] + 0.5), settle=6)
+    shot("sword_causeway", (400.5, W + 2, -52.5), (416, W + 8, -45.5))
 def eyes():
     f = (410.5, W + 40, -46.5); t = (424, W + 45, -46)
     R("tick freeze"); R("function last_ember:castle/gen/eyes_asleep"); shot("eyes_asleep", f, t)
@@ -94,11 +95,15 @@ def bridge():
 def faded():
     R("function last_ember:region/gen/fade_r1"); time.sleep(8)
     shot("faded_lake", (396.5, 135, -4.5), (424, 128, -26), settle=8)
-    shot("faded_arm", (410.5, 124, -17.5), (420, 130, -27), settle=6)
+    shot("faded_arm", (408.5, 130, -14.5), (424, 158, -25), settle=6)
     R("function last_ember:region/gen/unfade_r1"); time.sleep(8)
+CLIFF_EYE, CLIFF_AT = (414.5, 119, 11.5), (448, 146, 27)     # the dry rift (its west sill), along the north face of the table
+def cliff():
+    """the face of the rock from the moat, close (HQ review T-028: the living rock)"""
+    R("time set 2000"); shot("cliff", CLIFF_EYE, CLIFF_AT); day()
 def overview():
     shot("overview", (330, 232, 30), (440, 140, -10), settle=12)
-SH = dict(from7=from7, causeway=causeway, pier=pier, sword=sword, eyes=eyes, strike=strike, stair=stair, bridge=bridge, faded=faded, overview=overview)
+SH = dict(cliff=cliff, from7=from7, causeway=causeway, pier=pier, sword=sword, eyes=eyes, strike=strike, stair=stair, bridge=bridge, faded=faded, overview=overview)
 if __name__ == "__main__":
     setup()
     for a in sys.argv[1:] or list(SH): SH[a]()
