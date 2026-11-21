@@ -3,7 +3,7 @@ execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run particle mine
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run playsound minecraft:block.sand.break hostile @a[distance=..48] ~ ~ ~ 2 0.5
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run summon minecraft:experience_orb ~ ~0.5 ~ {Value:50s}
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run summon minecraft:experience_orb ~ ~0.5 ~ {Value:50s}
-tp @e[type=minecraft:zombie,tag=le.king,limit=1] ~ -500 ~
+execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run tp @s ~ -500 ~
 kill @e[type=minecraft:zombie,tag=le.king]
 kill @e[type=minecraft:armor_stand,tag=le.kneel]
 kill @e[type=minecraft:item_display,tag=le.kcrown]

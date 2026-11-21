@@ -99,6 +99,7 @@ def run(meta, nbt):
          "execute if score #d le.cs matches 0 if score #king le.cs matches ..5 run function last_ember:castle/kg/king_peace",
          "execute if score #king le.cs matches 0 run function last_ember:castle/kg/king_present",
          "execute if score #king le.cs matches 2..5 run function last_ember:castle/kg/king_second",
+         "execute if score #king le.cs matches 6 if entity @e[tag=le.kent,type=!minecraft:item_display] run function last_ember:castle/kg/king_dead_clean",
          "execute if score #reliq le.cs matches 1 if data storage last_ember:keys k.signet_king{got:0b} run function last_ember:castle/kg/signet_box",
          "execute if score #king le.cs matches 6 as @a[tag=le.kpart] if score @s le.kfight = #fight le.cs run function last_ember:castle/kg/king_pay",
          "execute unless score #deco le.cs matches 1 run function last_ember:castle/kg/deco",
@@ -266,9 +267,19 @@ def king(km, places, HALL, front):
                       "attributes:[{id:\"minecraft:max_health\",base:700},{id:\"minecraft:scale\",base:1.5},{id:\"minecraft:armor\",base:8},{id:\"minecraft:knockback_resistance\",base:0.8},"
                       "{id:\"minecraft:movement_speed\",base:0.22},{id:\"minecraft:attack_damage\",base:8},{id:\"minecraft:spawn_reinforcements\",base:0},{id:\"minecraft:follow_range\",base:40}],"
                       "equipment:%s,drop_chances:{head:0.0f,chest:0.0f,legs:0.0f,feet:0.0f,mainhand:0.0f,offhand:0.0f}}]}" % (f(seat[0]), f(seat[1]), f(seat[2]), KING_EQ % "sleeping_king")])
-    w("king_present", [HDR + ": every second while asleep: the king sits on the throne (summoned again when the hall is loaded and he is missing)",
+    w("king_present", [HDR + ": every second while asleep: the king sits on the throne (summoned again when the hall is loaded and he is missing);",
+                       "# what a restart left of a fight (the entities load with their chunks after the reset): the guard, a king off the throne, the stands",
                        "execute unless loaded %d %d %d run return 0" % (int(tx), int(ty), int(tz)),
+                       "execute as @e[tag=le.kguard] run function last_ember:castle/kg/gone",
+                       "kill @e[type=minecraft:armor_stand,tag=le.kneel]", "kill @e[type=minecraft:item_display,tag=le.kcrown]",
+                       "execute as @e[type=minecraft:zombie,tag=le.king] unless function last_ember:castle/kg/king_seated run function last_ember:castle/kg/gone",
+                       "execute as @e[type=minecraft:armor_stand,tag=le.kseat] unless data entity @s Passengers run kill @s",
                        "execute if entity %s run return 0" % KS, "function last_ember:castle/kg/king_summon"])
+    w("king_seated", [HDR + ": as the king: 1 when he sits on his stand on the throne", "execute on vehicle if entity @s[tag=le.kseat] run return 1", "return 0"])
+    w("gone", [HDR + ": as an entity of the fight: away without drops", "execute at @s run tp @s ~ -500 ~", "kill @s"])
+    w("king_dead_clean", [HDR + ": every second once he is laid to rest: nothing of the fight is left (a restart in his dying)",
+                          "execute as @e[tag=le.kguard] run function last_ember:castle/kg/gone", "execute as @e[type=minecraft:zombie,tag=le.king] run function last_ember:castle/kg/gone",
+                          "kill @e[type=minecraft:armor_stand,tag=le.kneel]", "kill @e[type=minecraft:armor_stand,tag=le.kseat]", "kill @e[type=minecraft:item_display,tag=le.kcrown]"])
     w("king_wake", [HDR + ": a player crossed the threshold: the king wakes (2 s), the doors close 3 s after",
                     "execute unless entity %s run return 0" % KS,
                     "scoreboard players set #king le.cs 1", "scoreboard players set #kt le.cs 0", "scoreboard players set #dc le.cs 60",
@@ -315,7 +326,7 @@ def king(km, places, HALL, front):
                           "execute positioned %s %d %s as @a[distance=..2,%s] unless score @s le.kint >= #gt2 le.cs run tag @s add le.klate" % (f(x - 1.0), y1, f(zc), ALIVE),
                           "execute unless entity @a[tag=le.klate] run return 0",
                           "title @a[tag=le.klate] actionbar {\"text\":\"Король впускает.\",\"color\":\"dark_purple\",\"italic\":true}", "tag @a remove le.klate",
-                          "function last_ember:castle/kg/door%d_open" % k_, "scoreboard players set #l%d le.cs 40" % k_,
+                          "function last_ember:castle/kg/door%d_open" % k_, "scoreboard players set #l%d le.cs 20" % k_,
                           "schedule function last_ember:castle/kg/door%d_back 40t replace" % k_])
         w("door%d_back" % k_, [HDR + ": door %d shuts after the late player (if the fight goes on)" % k_, "execute if score #king le.cs matches 2..5 run function last_ember:castle/kg/door%d_close" % k_])
     ann = (L.ANNEX[0] + 1, HY, L.ANNEX[1] + 1, L.HALL[0], HY + 4, L.ANNEX[3] - 1)
@@ -332,7 +343,7 @@ def king(km, places, HALL, front):
                     "execute unless score #king le.cs matches 1..5 run return 0",
                     "schedule function last_ember:castle/kg/king_tick 1t append",
                     "scoreboard players add #kt le.cs 1",
-                    "execute store result score #gt2 le.cs run time query gametime", "scoreboard players remove #gt2 le.cs 4",
+
                     "execute unless entity %s run return run function last_ember:castle/kg/king_reset" % KS,
                     "execute if score #king le.cs matches 1 run return run function last_ember:castle/kg/wake_tick",
                     "execute if score #dc le.cs matches 1.. run scoreboard players remove #dc le.cs 1",
@@ -350,22 +361,30 @@ def king(km, places, HALL, front):
     hp_lines = ["execute store result score #hp le.cs run data get entity %s Health" % KS, "scoreboard players remove #hp le.cs 500",
                 "execute if score #hp le.cs matches ..0 run scoreboard players set #hp le.cs 0",
                 "execute store result bossbar last_ember:king value run scoreboard players get #hp le.cs"]
-    w("fight_tick", [HDR + ": a tick of the fight (phases 1 and 2): health, the death, the phase change, the leash, the sweep, the quake, the doors"] + hp_lines
+    w("fight_slow", [HDR + ": every 5 ticks of the fight: the true health (Health - 500: the bar), the death, the phase change, the king kept in the hall and off the gallery"] + hp_lines
       + ["execute if score #hp le.cs matches ..0 run return run function last_ember:castle/kg/die_start",
          "scoreboard players operation #h2 le.cs = #hp le.cs", "scoreboard players operation #h2 le.cs *= #2 le.cs",
          "execute if score #king le.cs matches 2 if score #h2 le.cs <= #real le.cs if score #swt le.cs matches -1 run return run function last_ember:castle/kg/kneel_start",
          "execute as %s unless entity @s[%s] run tp @s %s %d %s" % (KS, HALL, f(front[0]), front[1], f(front[2])),
          "execute as %s at @s if entity @s[y=%d,dy=30] run tp @s ~ %d ~" % (KS, HY + 4, HY + 1),
-         "execute as @a[%s,%s] store result score @s le.kint run time query gametime" % (HALL, ALIVE),
-         "execute as @a[%s,%s] if score @s le.kint >= #gt2 le.cs at @s run function last_ember:castle/kg/no_leave" % (box(*ann), ALIVE),
-         "execute if score #dc le.cs matches -1 run function last_ember:castle/kg/late1",
-         "execute if score #dc le.cs matches -1 run function last_ember:castle/kg/late2",
-         "execute if score #swt le.cs matches 0.. run return run function last_ember:castle/kg/sweep_tick",
-         "execute if score #qt le.cs matches 0.. run return run function last_ember:castle/kg/quake_tick",
-         "execute if score #sw le.cs matches 1.. run scoreboard players remove #sw le.cs 1",
-         "execute if score #king le.cs matches 4 if score #qk le.cs matches 1.. run scoreboard players remove #qk le.cs 1",
-         "execute if score #king le.cs matches 4 if score #qk le.cs matches 0 run return run function last_ember:castle/kg/quake_start",
-         "execute if score #sw le.cs matches 0 as %s at @s if entity @a[distance=..4.5,%s] run function last_ember:castle/kg/sweep_try" % (KS, ALIVE)])
+         "execute if score #swt le.cs matches -1 if score #qt le.cs matches -1 if score #sw le.cs matches 0 as %s at @s if entity @a[distance=..4.5,%s] run function last_ember:castle/kg/sweep_try" % (KS, ALIVE)])
+    w("fight_doors", [HDR + ": every 2 ticks of the fight: who is in the hall, nobody of them walks out, the late ones are let in",
+                      "execute store result score #gt2 le.cs run time query gametime", "scoreboard players remove #gt2 le.cs 4",
+                      "execute as @a[%s,%s] store result score @s le.kint run time query gametime" % (HALL, ALIVE),
+                      "execute as @a[%s,%s] if score @s le.kint >= #gt2 le.cs at @s run function last_ember:castle/kg/no_leave" % (box(*ann), ALIVE),
+                      "execute if score #dc le.cs matches -1 run function last_ember:castle/kg/late1",
+                      "execute if score #dc le.cs matches -1 run function last_ember:castle/kg/late2"])
+    w("fight_tick", [HDR + ": a tick of the fight (phases 1 and 2): the slow checks every 5 / 2 ticks, the sweep, the quake",
+                     "scoreboard players operation #k5 le.cs = #kt le.cs", "scoreboard players operation #k5 le.cs %= #5 le.cs",
+                     "execute if score #k5 le.cs matches 0 run function last_ember:castle/kg/fight_slow",
+                     "execute unless score #king le.cs matches 2 unless score #king le.cs matches 4 run return 0",
+                     "scoreboard players operation #k2 le.cs = #kt le.cs", "scoreboard players operation #k2 le.cs %= #2 le.cs",
+                     "execute if score #k2 le.cs matches 0 run function last_ember:castle/kg/fight_doors",
+                     "execute if score #swt le.cs matches 0.. run return run function last_ember:castle/kg/sweep_tick",
+                     "execute if score #qt le.cs matches 0.. run return run function last_ember:castle/kg/quake_tick",
+                     "execute if score #sw le.cs matches 1.. run scoreboard players remove #sw le.cs 1",
+                     "execute if score #king le.cs matches 4 if score #qk le.cs matches 1.. run scoreboard players remove #qk le.cs 1",
+                     "execute if score #king le.cs matches 4 if score #qk le.cs matches 0 run function last_ember:castle/kg/quake_start"])
     w("no_leave", [HDR + ": a player of the fight walked out through a door opened for a late one: back into the hall",
                    "tp @s %d %d ~ -90 0" % (L.HALL[0] + 2, HY + 1)])
     # the sweep: a wind-up of 1 s (frozen, sword raised, crit particles, grind), then 10 to every player in the cone 140 deg, r 5
@@ -488,8 +507,8 @@ def king(km, places, HALL, front):
                       "execute if score #king le.cs matches 2..4 if score #empty le.cs matches 10.. run function last_ember:castle/kg/king_reset"])
     w("king_reset", [HDR + ": the fight is over without a victory (the leash, a restart): the guard goes, the king sits again on the throne with full health",
                      "execute as @e[tag=le.kguard] at @s run particle minecraft:large_smoke ~ ~1 ~ 0.3 0.6 0.3 0.01 10 force @a[distance=..48]",
-                     "tp @e[tag=le.kguard] ~ -500 ~", "kill @e[tag=le.kguard]",
-                     "tp %s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]", "kill @e[type=minecraft:armor_stand,tag=le.kseat]",
+                     "execute as @e[tag=le.kguard] at @s run tp @s ~ -500 ~", "kill @e[tag=le.kguard]",
+                     "execute as %s at @s run tp @s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]", "kill @e[type=minecraft:armor_stand,tag=le.kseat]",
                      "kill @e[type=minecraft:armor_stand,tag=le.kneel]", "kill @e[type=minecraft:marker,tag=le.kaim]",
                      places["niche_n_closed"], places["niche_s_closed"], places["niche_w_closed"], places["hall_doors_open"],
                      "bossbar set last_ember:king visible false", "bossbar set last_ember:king players",
@@ -507,7 +526,7 @@ def king(km, places, HALL, front):
                     "execute as %s run %s" % (KS, sword("king_sword_down")),
                     "bossbar set last_ember:king visible false", "bossbar set last_ember:king players",
                     "execute as @e[tag=le.kguard] at @s run particle minecraft:block{block_state:\"minecraft:gravel\"} ~ ~1 ~ 0.3 0.8 0.3 0 30 force @a[distance=..48]",
-                    "tp @e[tag=le.kguard] ~ -500 ~", "kill @e[tag=le.kguard]",
+                    "execute as @e[tag=le.kguard] at @s run tp @s ~ -500 ~", "kill @e[tag=le.kguard]",
                     "execute as %s at @s run playsound minecraft:block.anvil.land hostile @a[distance=..48] ~ ~ ~ 2 0.4" % KS,
                     "execute as %s at @s anchored eyes run summon minecraft:item_display ^ ^0.4 ^ {Tags:[\"le.kcrown\",\"le.kent\"],teleport_duration:20,item:{id:\"minecraft:stick\",count:1,components:{\"minecraft:item_model\":\"last_ember:castle/king_crown\"}},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]}}" % KS])
     w("dying_tick", [HDR + ": the dying (60 ticks)",
@@ -520,7 +539,7 @@ def king(km, places, HALL, front):
                   "execute as %s at @s run playsound minecraft:block.sand.break hostile @a[distance=..48] ~ ~ ~ 2 0.5" % KS,
                   "execute as %s at @s run summon minecraft:experience_orb ~ ~0.5 ~ {Value:50s}" % KS,
                   "execute as %s at @s run summon minecraft:experience_orb ~ ~0.5 ~ {Value:50s}" % KS,
-                  "tp %s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]", "kill @e[type=minecraft:armor_stand,tag=le.kneel]",
+                  "execute as %s at @s run tp @s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]", "kill @e[type=minecraft:armor_stand,tag=le.kneel]",
                   "kill @e[type=minecraft:item_display,tag=le.kcrown]",
                   "function last_ember:castle/kg/king_rest"])
     w("king_rest", [HDR + ": the king laid to rest for ever (his death; at peaceful difficulty at once): doors, reliquary, the throne after",
@@ -534,7 +553,7 @@ def king(km, places, HALL, front):
                     "scoreboard players set #king le.cs 6", "scoreboard players set #reliq le.cs 1", "function last_ember:castle/kg/save"])
     w("king_peace", [HDR + ": peaceful difficulty: the king counts as defeated, the reliquary is open (as the Magister, T-027)",
                      "execute unless loaded %d %d %d run return 0" % (int(tx), int(ty), int(tz)),
-                     "tp @e[tag=le.kguard] ~ -500 ~", "kill @e[tag=le.kguard]", "tp %s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]",
+                     "execute as @e[tag=le.kguard] at @s run tp @s ~ -500 ~", "kill @e[tag=le.kguard]", "execute as %s at @s run tp @s ~ -500 ~" % KS, "kill @e[type=minecraft:zombie,tag=le.king]",
                      "kill @e[type=minecraft:armor_stand,tag=le.kseat]", "kill @e[type=minecraft:armor_stand,tag=le.kneel]",
                      "function last_ember:castle/kg/king_rest"])
     w("king_pay", [HDR + ": as a player of the fight that killed the king (now or when he comes back): 2 Trophies of the Dol (on the ground when the inventory is full)",

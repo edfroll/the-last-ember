@@ -22,5 +22,6 @@ function last_ember:castle/gen/init
 scoreboard objectives add le.cs dummy
 scoreboard players set #2 le.cs 2
 scoreboard players set #50 le.cs 50
+scoreboard players set #5 le.cs 5
 function last_ember:castle/kg/setup
 schedule function last_ember:castle/loop 5t replace

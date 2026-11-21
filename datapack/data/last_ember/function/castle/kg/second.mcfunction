@@ -10,6 +10,7 @@ execute store result score #d le.cs run difficulty
 execute if score #d le.cs matches 0 if score #king le.cs matches ..5 run function last_ember:castle/kg/king_peace
 execute if score #king le.cs matches 0 run function last_ember:castle/kg/king_present
 execute if score #king le.cs matches 2..5 run function last_ember:castle/kg/king_second
+execute if score #king le.cs matches 6 if entity @e[tag=le.kent,type=!minecraft:item_display] run function last_ember:castle/kg/king_dead_clean
 execute if score #reliq le.cs matches 1 if data storage last_ember:keys k.signet_king{got:0b} run function last_ember:castle/kg/signet_box
 execute if score #king le.cs matches 6 as @a[tag=le.kpart] if score @s le.kfight = #fight le.cs run function last_ember:castle/kg/king_pay
 execute unless score #deco le.cs matches 1 run function last_ember:castle/kg/deco

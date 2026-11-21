@@ -8,7 +8,7 @@ execute as @e[type=minecraft:zombie,tag=le.king,limit=1] run item replace entity
 bossbar set last_ember:king visible false
 bossbar set last_ember:king players
 execute as @e[tag=le.kguard] at @s run particle minecraft:block{block_state:"minecraft:gravel"} ~ ~1 ~ 0.3 0.8 0.3 0 30 force @a[distance=..48]
-tp @e[tag=le.kguard] ~ -500 ~
+execute as @e[tag=le.kguard] at @s run tp @s ~ -500 ~
 kill @e[tag=le.kguard]
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s run playsound minecraft:block.anvil.land hostile @a[distance=..48] ~ ~ ~ 2 0.4
 execute as @e[type=minecraft:zombie,tag=le.king,limit=1] at @s anchored eyes run summon minecraft:item_display ^ ^0.4 ^ {Tags:["le.kcrown","le.kent"],teleport_duration:20,item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:castle/king_crown"}},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]}}

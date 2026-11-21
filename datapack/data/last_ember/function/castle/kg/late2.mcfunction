@@ -5,5 +5,5 @@ execute unless entity @a[tag=le.klate] run return 0
 title @a[tag=le.klate] actionbar {"text":"Король впускает.","color":"dark_purple","italic":true}
 tag @a remove le.klate
 function last_ember:castle/kg/door2_open
-scoreboard players set #l2 le.cs 40
+scoreboard players set #l2 le.cs 20
 schedule function last_ember:castle/kg/door2_back 40t replace

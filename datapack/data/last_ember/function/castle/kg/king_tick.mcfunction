@@ -2,8 +2,6 @@
 execute unless score #king le.cs matches 1..5 run return 0
 schedule function last_ember:castle/kg/king_tick 1t append
 scoreboard players add #kt le.cs 1
-execute store result score #gt2 le.cs run time query gametime
-scoreboard players remove #gt2 le.cs 4
 execute unless entity @e[type=minecraft:zombie,tag=le.king,limit=1] run return run function last_ember:castle/kg/king_reset
 execute if score #king le.cs matches 1 run return run function last_ember:castle/kg/wake_tick
 execute if score #dc le.cs matches 1.. run scoreboard players remove #dc le.cs 1

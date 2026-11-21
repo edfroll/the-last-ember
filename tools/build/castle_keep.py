@@ -496,9 +496,15 @@ def keep(k):
             for y in range(P + 1, P + 13): k.set(x, y, z, AIR)
             for y in range(P + 13, HY): k.set(x, y, z, "minecraft:stone_bricks" if y in (P + 13, HY - 1) else "minecraft:tuff")
     # pillars and arches of the vestibule
-    for px in (436, 456):
-        for pz in (66, 74, 82):
+    for px in (438, 455):                          # clear of the way from the court door to the annex door (x 430, z 81..83)
+        for pz in (64, 74, 86):
             for y in range(P + 1, P + 13): k.set(px, y, pz, "minecraft:polished_tuff" if y % 4 else "minecraft:chiseled_tuff")
+            for (a, c, f) in ((1, 0, "east"), (-1, 0, "west")):
+                k.set(px + a, P + 6, pz + c, st("lantern", hanging="false", waterlogged="false")) if False else None
+            k.set(px, P + 13, pz, "minecraft:polished_tuff")
+    # the vestibule is lit (the bonfire's hall): lanterns hanging from the vault
+    for (lx, lz) in ((440, 70), (452, 70), (440, 80), (452, 80), (446, 86), (434, 75), (459, 75)):
+        k.set(lx, P + 12, lz, "minecraft:iron_chain[axis=y,waterlogged=false]"); k.set(lx, P + 11, lz, lantern(True))
     # the door from the court (north wall, x 450..452)
     k.air(450, P + 1, z1, 452, P + 4, z1)
     # the bonfire 11: a clear pad 7 x 7 + the respawn 3 x 3 south of it (built by the datapack: bonfire/gen/register)
@@ -515,7 +521,7 @@ def keep(k):
     rt = k.hip_roof(H, hall_top + 2, overhang=1, spire=True)
     for (x, z) in edge_cells(H): k.wall(x, hall_top + 2, z) if is_air(k.get(x, hall_top + 2, z)) else None
     # corner turrets
-    for (cx, cz) in ((x1, z1), (x2, z1), (x1, z2), (x2, z2)):
+    for (cx, cz) in ((x1 - 1, z1 - 1), (x2 + 1, z1 - 1), (x1 - 1, z2 + 1), (x2 + 1, z2 + 1)):      # bartizans outside the corners
         for y in range(hall_top - 4, hall_top + 6):
             for a in (-1, 0, 1):
                 for c in (-1, 0, 1): k.wall(cx + a, y, cz + c)
@@ -585,6 +591,8 @@ def annex(k):
     k.air(LW[0], G + 1, z1, LW[1], G + 3, z1)
     k.air(x1, G + 1, 66, x1, G + 3, 68)
     # lanterns? the annex is the keep's: dark like the wings (spawn) -- except one lantern at each landing (the stair is long)
+    for (lx, ly, lz) in ((424, G + 4, 60), (428, P + 20, 60), (424, HY + 4, 80), (428, HY + 4, 75), (428, P + 4, 82)):
+        k.set(lx, ly, lz, lantern(True)); k.set(lx, ly + 1, lz, "minecraft:iron_chain[axis=y,waterlogged=false]")
     k.meta["annex"] = dict(lvl={str(z): l for z, l in lvl.items()})
 
 
@@ -840,6 +848,7 @@ def tunnel(k):
         k.set(dx, L.DOOR_Y, z, "minecraft:cobbled_deepslate")
     for p, s in closed.items(): k.set(*p, s)
     k.tpl["pier_door_closed"] = closed; k.tpl["pier_door_open"] = opened
+    k.tunnel_cells = dict(cells)
     k.meta["tunnel"] = dict(cells=len(cells), lamps=lamps, door=[dx, L.DOOR_Y + 1, -32], inside=[dx + 2.5, L.DOOR_Y + 1, -31.5])
     return cells
 
@@ -850,6 +859,14 @@ def gaol(k):
     with cells on both sides (bars), the arrow trap with its hint, the prisoner's note, chest 2 in the last cell; the stair down to the
     crypt from the corridor's north end (x 413..415, z 66 -> 55, P-13 .. P-24)"""
     GY, CY = L.GAOL_Y, L.CRYPT_Y
+    # the room of the gaol: x 408..421, z 66..83 (walls), floor GY, air GY+1..GY+4
+    gx1, gz1, gx2, gz2 = 408, 66, 421, 83
+    for x in range(gx1, gx2 + 1):
+        for z in range(gz1, gz2 + 1):
+            for y in range(GY - 1, GY + 6):
+                edge = x in (gx1, gx2) or z in (gz1, gz2) or y in (GY - 1, GY + 5)
+                k.set(x, y, z, DUNG.at(x, y, z) if edge else AIR)
+            k.set(x, GY, z, DUNG.at(x, GY, z)) if gx1 < x < gx2 and gz1 < z < gz2 else None
     # the entrance stair (the alcove floor at P is opened over its first steps)
     for i in range(12):
         z = 55 + i; y = P - i            # the first stair flush with the library floor, the last one over the landing GY
@@ -861,17 +878,6 @@ def gaol(k):
         for x in (408, 412):
             for yy in range(y - 1, y + 6):
                 if yy < P: k.set(x, yy, z, DUNG.at(x, yy, z))
-    # the room of the gaol: x 408..421, z 66..83 (walls), floor GY, air GY+1..GY+4
-    gx1, gz1, gx2, gz2 = 408, 66, 421, 83
-    for x in range(gx1, gx2 + 1):
-        for z in range(gz1, gz2 + 1):
-            for y in range(GY - 1, GY + 6):
-                edge = x in (gx1, gx2) or z in (gz1, gz2) or y in (GY - 1, GY + 5)
-                k.set(x, y, z, DUNG.at(x, y, z) if edge else AIR)
-            k.set(x, GY, z, DUNG.at(x, GY, z)) if gx1 < x < gx2 and gz1 < z < gz2 else None
-    for x in range(409, 412):
-        k.set(x, GY, 66, DUNG.at(x, GY, 66))
-        for y in range(GY + 1, GY + 5): k.set(x, y, 66, AIR)
     # cells: west x 409..411 (z 70..73, 75..78, 80..82), east x 417..420 (z 67..70, 72..75, 77..80); bars toward the corridor x 412 / 416
     cells_w = [(70, 73), (75, 78), (80, 82)]; cells_e = [(68, 71), (73, 76), (78, 82)]
     for (za, zb) in cells_w:
@@ -911,8 +917,7 @@ def gaol(k):
             for yy in range(y - 1, y + 6):
                 if yy <= GY + 5 and not (x == 412 and z >= 55 and yy >= P - 13 - (z - 55)): k.set(x, yy, z, DUNG.at(x, yy, z))
     for x in range(413, 416):
-        for y in range(GY + 1, GY + 5): k.set(x, y, 66, AIR)
-        k.set(x, GY, 66, AIR)
+        for y in range(GY + 1, GY + 5): k.set(x, y, 66, AIR)       # the top stair (z 66, flush with the gaol floor) stays
     k.meta["gaol_box"] = [gx1, GY, gz1, gx2, GY + 5, gz2]
 
 
@@ -960,6 +965,8 @@ def build(b, gr, rl, barbican):
     k = K(b)
     court(k, gr, rl)
     galleries(k)
+    for (bx, bz, f, c) in ((440, 40, "south", "purple"), (463, 40, "south", "purple"), (452, 53, "north", "black")):   # banners of the court
+        k.set(bx, P + 5, bz, st("%s_wall_banner" % c, facing=f))
     chapel(k)
     library(k)
     kitchens(k)
@@ -972,4 +979,17 @@ def build(b, gr, rl, barbican):
     gaol(k)
     gate_templates(k, barbican)
     k.meta["hearth11"] = list(L.HEARTH11)
+    m = k.meta
+    k.marks = [(L.HEARTH11[0], L.HEARTH11[2], "bonfire 11", 0), (450, 36, "gate", 0), (m["well"][0], m["well"][2], "well", 0),
+               (m["lectern_spring"][0], m["lectern_spring"][2], "Spring", 0), (m["lectern_summer"][0], m["lectern_summer"][2], "Summer", 0),
+               (m["lectern_autumn"][0], m["lectern_autumn"][2], "Autumn", 0), (m["lectern_winter"][0], m["lectern_winter"][2], "Winter", 0),
+               (m["lectern_riddle"][0], m["lectern_riddle"][2], "riddle", 0), (m["chest1"][0], m["chest1"][2], "chest 1", 0),
+               (m["gaol_door"][0], m["gaol_door"][2], "gaol door", 0), (412, 70, "gaol (P-12)", 0), (420, 47, "crypt (P-24)", 0), (409, 82, "chest 2", 0),
+               (414, 75, "trap", 0), (477, 38, "north tower", 0), (476, 61, "6 stands", 0), (434, -32, "pier door", 0)]
+    k.marks += [(s_["pos"][0], s_["pos"][2], "shelf " + n[0].upper(), 0) for n, s_ in m["shelves"].items()]
+    h = m["hall"]
+    k.marks += [(int(h["throne"][0]), int(h["throne"][2]), "throne", 2), (L.HALL[0], 67, "door 1", 2), (L.HALL[0], 82, "door 2", 2),
+                (L.HALL[2], 74, "reliquary door", 2), (int(m["pedestal"][0]), int(m["pedestal"][2]), "Signet", 2), (m["chest3"][0], m["chest3"][2], "chest 3", 2),
+                (476, 79, "spiral down", 2)]
+    k.marks += [(int(v[0]), int(v[2]), "guard " + n, 3) for n, v in h["niches"].items()]
     return k

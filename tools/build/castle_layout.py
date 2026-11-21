@@ -118,7 +118,7 @@ def checks(table, x1, z1, rock_top, rift_floor):
 LEVELS = [("P (court, ground floors)", P + 1), ("P+8 (galleries)", GAL + 1), ("P+30 (throne hall)", HALL_Y + 1), ("P+36 (hall gallery)", HALL_Y + HG + 1)]
 
 
-def plan_png(get, table, x1, z1, path, text, S=5):
+def plan_png(get, table, x1, z1, path, text, S=5, marks=None, tunnel=None):
     """four level plans (blocks at the feet height of each level) and the section W-E through the keep and the secret way"""
     from PIL import Image, ImageDraw
     X1, Z1, X2, Z2 = 398, -40, 492, 98
@@ -151,6 +151,16 @@ def plan_png(get, table, x1, z1, path, text, S=5):
                     c = (60, 45, 35) if 0 <= i < table.shape[0] and 0 <= j < table.shape[1] and table[i, j] else (14, 14, 18)
                 a = (ox + (x - X1) * S, oz + (z - Z1) * S); d.rectangle([a[0], a[1], a[0] + S - 1, a[1] + S - 1], fill=c)
         d.text((ox + 4, oz + 4), "%s  y %d" % (name, y), fill=(255, 255, 0))
+        if tunnel and k == 0:                          # the secret way drawn on the ground plan: colour by height (blue low .. red high)
+            for (tx, tz), ty in tunnel.items():
+                t = max(0.0, min(1.0, (ty - TUN_Y) / float(DOOR_Y - TUN_Y + 4)))
+                a = (ox + (tx - X1) * S, oz + (tz - Z1) * S)
+                d.rectangle([a[0] + 1, a[1] + 1, a[0] + S - 2, a[1] + S - 2], fill=(int(60 + 190 * t), 80, int(250 - 190 * t)))
+        for (mx, mz, label, lv) in (marks or []):
+            if lv is not None and lv != k: continue
+            a = (ox + (mx - X1) * S + S // 2, oz + (mz - Z1) * S + S // 2)
+            d.ellipse([a[0] - 4, a[1] - 4, a[0] + 4, a[1] + 4], outline=(255, 60, 60), width=2)
+            d.text((a[0] + 5, a[1] - 6), label, fill=(255, 140, 140))
         for x in range(X1 - X1 % 20 + 20, X2, 20): d.text((ox + (x - X1) * S + 2, oz + h - 12), str(x), fill=(200, 200, 0))
         for z in range(Z1 - Z1 % 20 + 20, Z2, 20): d.text((ox + 2, oz + (z - Z1) * S + 2), str(z), fill=(200, 200, 0))
     # the section: x 398..492 at z 76 (the keep, the hall, the reliquary, the spiral), y 96..256; and the tunnel line

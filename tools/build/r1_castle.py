@@ -80,6 +80,7 @@ def build(gr, rl):
     meta["barbican"] = CB.barbican(b, rl["P"])
     import castle_keep                         # T-029: the castle on the table (its own templates and points: meta["keep"])
     kp = castle_keep.build(b, gr, rl, meta["barbican"]); meta["keep"] = kp.meta; meta["keep_tpl"] = kp.tpl
+    meta["keep_draw"] = (kp.marks, kp.tunnel_cells)
     taken = set()
     for (x, y, z) in b.v: taken.add((x, z))
     meta["pred_lamps"] = lights_bridgehead(b, gr, rl, taken)
@@ -346,7 +347,7 @@ def templates(b, gr, rl, meta):
     out["lake_tiles"] = lt
     return out
 
-def keep_plan(gr, rl, b):
+def keep_plan(gr, rl, b, marks=None, tunnel=None):
     """T-029: the stop conditions of HQ T-029, 1 and the plan docs/reports/T-029/castle_plan.png (levels P, galleries, hall, its gallery;
     the section through the keep and the spiral)"""
     import castle_layout as L
@@ -365,7 +366,8 @@ def keep_plan(gr, rl, b):
            "Throne hall %d x %d, height %d, floor %d; the keep's top %d (<= 255); the gaol floor %d, the crypt floor %d (>= 70)." % (ch["hall"][0], ch["hall"][1], ch["hall"][2], L.HALL_Y, L.KEEP_TOP, L.GAOL_Y, L.CRYPT_Y),
            "Columns: the farthest floor cell inside the gallery line %.2f, under the gallery %.2f (Euclid to the nearest column)." % ch["column_reach"],
            "The secret way: spiral %d -> %d, the tunnel at %d under the rift (rock over it >= %d), up to the pier door (floor %d)." % (L.HALL_Y, L.TUN_Y, L.TUN_Y, ch["tunnel_cover_min"], L.DOOR_Y)]
-    L.plan_png(get, rl["rock"], gr["x1"], gr["z1"], os.path.join(ROOT, "docs/reports/T-029/castle_plan.png"), txt)
+    txt.append("Red circles: the points of the mechanics; the secret way on the ground plan, blue (y %d) .. red (the pier door, y %d)." % (L.TUN_Y, L.DOOR_Y))
+    L.plan_png(get, rl["rock"], gr["x1"], gr["z1"], os.path.join(ROOT, "docs/reports/T-029/castle_plan.png"), txt, marks=marks, tunnel=tunnel)
     return ch
 
 def plan_main(gr=None):
@@ -404,7 +406,9 @@ def main(plan_only=False):
     castle_dp.run(gr, rl, meta)
     import castle_keep_dp                      # T-029: the castle's datapack, zones, bonfire 11, the trap, the Signet's source
     castle_keep_dp.run(meta, nbt)
-    keep_plan(gr, rl, b)
+    meta["keep"]["plan_checks"] = keep_plan(gr, rl, b, *meta.pop("keep_draw"))
+    import castle_keep_check                   # T-029: the arena by the card, the ways with the doors shut / open
+    meta["keep"]["checks"] = castle_keep_check.run(b, gr, rl, meta["keep_tpl"])
     meta.pop("keep_tpl")
     json.dump(meta, open(os.path.join(OUT, "castle.json"), "w"), ensure_ascii=False, default=lambda o: list(o) if isinstance(o, (set, tuple)) else int(o) if isinstance(o, np.integer) else str(o))
     print(f"castle: terrain {ncol} columns, {n} blocks (snow/spruce replaced {nsnow}, water drained {meta['drained']}, springs {meta['springs']}), trees {meta['trees']}, W {P.W}, P {ch['P']}, boulders {meta['boulders']}")
