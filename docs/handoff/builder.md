@@ -64,7 +64,7 @@
 
 ## 4. Что лежит только на Mac и как восстановить
 
-Корень проекта: `~/Desktop/Folders/GitHub/Repositories/the-last-ember`. До 25.10 был `~/Desktop/GitHub/Repositories/the-last-ember`. Пути в скриптах относительные (от `ROOT`), абсолютных путей в коде нет.
+Корень проекта: `/Users/edward/Desktop/the-last-ember` (с 22.11.2026; раньше `~/Desktop/Folders/GitHub/Repositories/the-last-ember`, до 25.10 — `~/Desktop/GitHub/Repositories/the-last-ember`). Пути в скриптах относительные (от `ROOT`), абсолютных путей в коде нет.
 
 | Что | Где | Как восстановить |
 | --- | --- | --- |
