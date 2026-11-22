@@ -17,6 +17,9 @@ Branch `world-cache` = one orphan commit (overwritten on every push): manifest.j
   python3 tools/world_cache.py save gen|final    (rebuild.sh) pack the current world into server/cache/<name>.tar.gz + manifest
   python3 tools/world_cache.py push              upload server/cache/ to the branch: only worlds of origin/main (a commit in it, or one whose
                                                  world inputs equal main's); refuses to overwrite a newer cache
+  python3 tools/world_cache.py push --bundle DIR the same checks and the same commit, but no git push (a session that cannot push):
+                                                 DIR/world-cache.bundle.NN (git bundle of branch world-cache, parts < 95 MB) + the commit and
+                                                 the lease (world-cache on origin now) to push it from elsewhere with --force-with-lease
 Modes `status` prints: final (nothing in the world inputs changed: use the archive as is), redo <places> (only these places changed),
 gen (the frame, Refuge, tools or biomes changed: rebuild.sh --cache = everything after pregen), scratch (seed/jar/worldgen/pregen changed)."""
 import hashlib, json, os, re, shutil, struct, subprocess, sys, tarfile, time
@@ -246,7 +249,7 @@ def fetch():
     print("fetched: " + ", ".join("%s %s (%.0f MB)" % (n, m[n]["commit"][:10], m[n]["size"] / 1e6) for n in ("gen", "final") if n in m))
 
 
-def push():
+def push(bundle=None):
     m = load_manifest()
     for name in ("gen", "final"):
         if name not in m: sys.exit("nothing to push: no %s snapshot (tools/build/rebuild.sh makes both)" % name)
@@ -285,6 +288,7 @@ def push():
     tree = subprocess.run(["git", "mktree"], cwd=ROOT, input="\n".join(entries) + "\n", capture_output=True, text=True, check=True).stdout.strip()
     msg = "world cache for main %s (gen %s)" % (commit[:10], m["gen"]["commit"][:10])
     c = subprocess.run(["git", "commit-tree", tree, "-m", msg], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+    if bundle: return push_bundle(m, c, lease, msg, bundle)
     args = ["git", "push", "--force-with-lease=refs/heads/%s:%s" % (BRANCH, lease), "origin", "%s:refs/heads/%s" % (c, BRANCH)]
     for attempt in range(4):
         r = subprocess.run(args, cwd=ROOT, capture_output=True, text=True)
@@ -294,6 +298,38 @@ def push():
     else: sys.exit("push failed: " + r.stderr[-300:])
     json.dump(m, open(manifest_path(), "w"), indent=1)
     print("pushed %s: %s" % (BRANCH, msg))
+
+
+def push_bundle(m, c, lease, msg, out):
+    """the commit push() would upload, as a git bundle of refs/heads/world-cache cut into parts < 95 MB (for a session without push rights)"""
+    out = os.path.abspath(out); os.makedirs(out, exist_ok=True)
+    for f in os.listdir(out):
+        if f.startswith("world-cache.bundle"): os.remove(os.path.join(out, f))
+    full = os.path.join(out, "world-cache.bundle")
+    sh("git", "update-ref", "refs/heads/" + BRANCH, c)   # a local branch only to name the ref inside the bundle
+    sh("git", "bundle", "create", full, "refs/heads/" + BRANCH)
+    sh("git", "bundle", "verify", full)
+    digest = sha256(full); parts = []
+    with open(full, "rb") as f:
+        k = 0
+        while True:
+            b = f.read(PART)
+            if not b: break
+            pname = "world-cache.bundle.%02d" % k; k += 1
+            open(os.path.join(out, pname), "wb").write(b); parts.append(pname)
+    os.remove(full)
+    json.dump(m, open(manifest_path(), "w"), indent=1)
+    lease_txt = lease or "(none: the branch is not on origin yet)"
+    info = ("commit %s\nlease %s\nsha256 %s\nparts %s\nmessage %s\n" % (c, lease_txt, digest, " ".join(parts), msg))
+    open(os.path.join(out, "world-cache.txt"), "w").write(info)
+    print("bundle of %s in %s:" % (BRANCH, out))
+    for p in parts: print("  %s  %.1f MB" % (p, os.path.getsize(os.path.join(out, p)) / 1e6))
+    print(info.rstrip())
+    print("push from a clone with rights:\n  cat world-cache.bundle.?? > world-cache.bundle   # sha256 above\n"
+          "  git fetch world-cache.bundle %s:%s-new\n"
+          "  git push --force-with-lease=refs/heads/%s:%s origin %s-new:refs/heads/%s\n"
+          "  python3 tools/world_cache.py fetch && python3 tools/world_cache.py status"
+          % (BRANCH, BRANCH, BRANCH, lease, BRANCH, BRANCH))
 
 
 # ---------------------------------------------------------------- what to rebuild
@@ -366,7 +402,10 @@ def main():
     elif cmd == "fetch": fetch()
     elif cmd == "restore": restore(a[1])
     elif cmd == "save": save(a[1])
-    elif cmd == "push": push()
+    elif cmd == "push":
+        if a[1:2] == ["--bundle"] and len(a) == 3: push(bundle=a[2])
+        elif len(a) == 1: push()
+        else: sys.exit("usage: world_cache.py push [--bundle DIR]")
     elif cmd == "redo": redo(a[1:])
     elif cmd == "snap": print("snap %s: %d chunks" % (a[6], snap_save(a[1], [int(v) for v in a[2:6]], a[6])))
     elif cmd == "unsnap": print("unsnap: %d chunks" % snap_restore(a[1], a[2]))

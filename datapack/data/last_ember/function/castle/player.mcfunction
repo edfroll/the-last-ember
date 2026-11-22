@@ -2,6 +2,8 @@
 scoreboard players set #prot le.cas 0
 execute if entity @a[tag=le.sealh,distance=..10] run scoreboard players set #prot le.cas 1
 execute if score @s le.sb matches 8 if function last_ember:castle/gen/near_hearth8 run tag @s add le.cpass
+# T-029: bonfire 11 in the keep gives the pass too
+execute if score @s le.sb matches 11 if function last_ember:castle/kg/near_hearth11 run tag @s add le.cpass
 scoreboard players set #in le.cas 0
 execute if function last_ember:castle/gen/in_trigger run scoreboard players set #in le.cas 1
 execute if score #in le.cas matches 0 if function last_ember:castle/gen/in_rock run scoreboard players set #in le.cas 2

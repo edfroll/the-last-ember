@@ -152,6 +152,15 @@
 
 **После слияния PR в `main`** (делает билдер следующей задачи, если архив старше `main` и `status` не `final`): собрать мир `main` нужным режимом (`rebuild.sh`/`--cache` сами пишут `server/cache/gen|final.tar.gz` и манифест; после `redo` — `python3 tools/world_cache.py save final`), затем `python3 tools/world_cache.py push`. `push` отказывается, если мир собран из незакоммиченных входов, если коммит мира не входит в `origin/main` или если в ветке лежит мир более нового коммита (через `--force-with-lease`). Контрольная сборка с нуля тоже заканчивается `push` — так обновляется и `gen`.
 
+**Сессия без права пуша** (облачный тред без подключённого репо): `python3 tools/world_cache.py push --bundle <папка>` — те же проверки (нет грязных входов, коммит мира в `origin/main`, архив на origin не новее) и тот же коммит ветки `world-cache` из `server/cache/gen|final.tar.gz` и манифеста, но вместо `git push` — `git bundle` этой ветки, нарезанный на `<папка>/world-cache.bundle.NN` (≤ 95 МБ), и `world-cache.txt`: коммит, lease (текущий `world-cache` на origin; пусто — ветки ещё нет), sha256 целого бандла. Части пересылаются Эдварду, локальная сессия выкладывает:
+```bash
+cat world-cache.bundle.?? > world-cache.bundle   # сверить sha256 с world-cache.txt
+git fetch world-cache.bundle world-cache:world-cache-new
+git push --force-with-lease=refs/heads/world-cache:<lease> origin world-cache-new:refs/heads/world-cache
+python3 tools/world_cache.py fetch && python3 tools/world_cache.py status
+```
+Если за это время кто-то обновил `world-cache`, lease не совпадёт и push откажет — тогда архив пересобирают заново от нового.
+
 **Проверка равенства (20.11.2026, коммит `cad9725`):** `python3 tools/world_diff.py <мир_а> <мир_б> [x1 z1 x2 z2]` сравнивает блоки, биомы и блочные сущности каждого чанка (сущности — нет: UUID случайные).
 - с нуля (B) и `rebuild.sh --cache` (C): 0 различий в блоках, биомах и блочных сущностях; все `server/build/r1/*.bin` побайтно равны;
 - B и `redo maze fens` из архива: 0 различий;

@@ -149,6 +149,14 @@ INGOTS = {"r1": ["iron_ingot"], "r2": ["iron_ingot"], "r3": ["iron_ingot"], "r4"
 POTIONS = {"r1": ["healing", "regeneration"], "r2": ["healing", "water_breathing", "strength"], "r3": ["healing", "regeneration", "strength"],
            "r4": ["fire_resistance", "healing", "strength"], "r5": ["night_vision", "healing", "regeneration"], "r6": ["fire_resistance", "strong_healing", "strength"]}
 def potion(p, weight): return item("potion", weight, mods=[{"type": "minecraft:set_potion", "id": "minecraft:" + p}])
+# T-029: chest 3 of the Enchanted Castle, the reliquary behind the throne (Р1 pools): a book of level 2, an iron thing (sword, axe or
+# chestplate, each as likely, Unbreaking I in half of the cases), 4..8 iron ingots, a golden apple, a potion, Р1 food 2..4
+def castle_reliquary():
+    r = "r1"; iron = []
+    for n in ("iron_sword", "iron_axe", "iron_chestplate"): iron += [item(n, 1), item(n, 1, mods=[ench({"unbreaking": 1})])]
+    return table([pool([book(e, 2) for e, l in BOOKS[r]]), pool(iron), pool([item(INGOTS[r][0], count=(4, 8))]), pool([item("golden_apple")]),
+                  pool([potion(p, 1) for p in POTIONS[r]]), pool([item(f, count=(2, 4)) for f in FOOD[r]])])
+dump(os.path.join(LT, "chests", "r1", "castle_reliquary.json"), castle_reliquary())
 for r in BOOKS:
     good = [book(e, l, 3) for e, l in BOOKS[r]] + [item(i, 6 // len(INGOTS[r]), 1, count=(4, 8)) for i in INGOTS[r]] + [potion(p, 2) for p in POTIONS[r]]
     pools = [pool(good, (2, 3) if r in GRIMOIRES else (3, 5))]

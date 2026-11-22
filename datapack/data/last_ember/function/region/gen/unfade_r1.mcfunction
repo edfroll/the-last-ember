@@ -8,6 +8,7 @@ execute if data storage last_ember:bonfires by.b5{faded:1b} run data modify stor
 execute if data storage last_ember:bonfires by.b7{faded:1b} run data modify storage last_ember:bonfires by.b7 merge value {state:1,faded:0b,lv:0b}
 execute if data storage last_ember:bonfires by.b8{faded:1b} run data modify storage last_ember:bonfires by.b8 merge value {state:1,faded:0b,lv:0b}
 execute if data storage last_ember:bonfires by.b9{faded:1b} run data modify storage last_ember:bonfires by.b9 merge value {state:1,faded:0b,lv:0b}
+execute if data storage last_ember:bonfires by.b11{faded:1b} run data modify storage last_ember:bonfires by.b11 merge value {state:1,faded:0b,lv:0b}
 function last_ember:bonfire/gen/build_pending
 function last_ember:region/hook/unfade_r1_lake
 function last_ember:region/hook/unfade_r1_cemetery

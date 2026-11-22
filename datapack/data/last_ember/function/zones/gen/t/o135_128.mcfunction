@@ -3,4 +3,18 @@ execute if entity @s[y=95,dy=173] positioned 450.5 ~ 0.5 if entity @s[distance=.
 execute if entity @s[x=424,y=95,z=-63,dx=58,dy=173,dz=78] run scoreboard players set #hit le.z 1
 execute if entity @s[x=397,y=95,z=-5,dx=96,dy=173,dz=44] run scoreboard players set #hit le.z 1
 execute if entity @s[x=390,y=95,z=18,dx=108,dy=173,dz=87] run scoreboard players set #hit le.z 1
+execute if entity @s[x=429,y=159,z=46,dx=49,dy=30,dz=20] run scoreboard players set #hit le.z 1
+execute if entity @s[x=458,y=158,z=31,dx=20,dy=31,dz=31] run scoreboard players set #hit le.z 1
+execute if entity @s[x=462,y=158,z=36,dx=28,dy=30,dz=41] run scoreboard players set #hit le.z 1
+execute if entity @s[x=422,y=188,z=47,dx=49,dy=37,dz=55] run scoreboard players set #hit le.z 1
+execute if entity @s[x=455,y=188,z=63,dx=26,dy=24,dz=26] run scoreboard players set #hit le.z 1
+execute if entity @s[x=465,y=91,z=63,dx=26,dy=121,dz=26] run scoreboard players set #hit le.z 1
+execute if entity @s[x=461,y=91,z=1,dx=21,dy=22,dz=88] run scoreboard players set #hit le.z 1
+execute if entity @s[x=452,y=91,z=1,dx=25,dy=22,dz=20] run scoreboard players set #hit le.z 1
+execute if entity @s[x=452,y=91,z=-42,dx=20,dy=22,dz=59] run scoreboard players set #hit le.z 1
+execute if entity @s[x=396,y=132,z=22,dx=99,dy=133,dz=81] run scoreboard players set #hit le.z 1
+execute if entity @s[x=461,y=91,z=1,dx=21,dy=22,dz=88] run scoreboard players set #hit le.z 1
+execute if entity @s[x=452,y=91,z=1,dx=25,dy=22,dz=20] run scoreboard players set #hit le.z 1
+execute if entity @s[x=452,y=91,z=-42,dx=20,dy=22,dz=59] run scoreboard players set #hit le.z 1
 execute if entity @s[y=152,dy=25] positioned 440.5 ~ -9.5 if entity @s[distance=..14] run scoreboard players set #hit le.z 1
+execute if entity @s[y=156,dy=25] positioned 446.5 ~ 67.5 if entity @s[distance=..14] run scoreboard players set #hit le.z 1

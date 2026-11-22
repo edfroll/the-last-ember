@@ -33,3 +33,22 @@ castle_rock_stair overworld box  432 116 -38  447 162 -30   no_blink,no_chorus  
 castle_rock_rest overworld box  424 140 -38  431 146 -30   no_blink,no_chorus   # T-028: the castle rock
 castle_rock_rift overworld box  405 103 3  485 260 31   no_blink,no_chorus   # T-028: the castle rock
 castle_rock_table overworld box  398 103 26  490 260 97   no_blink,no_chorus   # T-028: the castle rock
+castle_halls_1      overworld box  407 166 39  433 182 83   dungeon   # T-029: the wings, galleries, library, gaol, crypt
+castle_halls_2      overworld box  433 166 39  437 181 58   dungeon   # T-029: the wings, galleries, library, gaol, crypt
+castle_halls_3      overworld box  437 167 54  470 181 58   dungeon   # T-029: the wings, galleries, library, gaol, crypt
+castle_halls_4      overworld box  466 166 39  470 181 54   dungeon   # T-029: the wings, galleries, library, gaol, crypt
+castle_halls_5      overworld box  470 166 44  482 180 69   dungeon   # T-029: the wings, galleries, library, gaol, crypt
+castle_halls_6      overworld box  407 141 39  434 165 84   dungeon   # T-029: the wings, galleries, library, gaol, crypt
+castle_throne_1     overworld box  430 196 55  463 217 94   no_spawn   # T-029: the throne hall, its gallery and niches, the reliquary
+castle_throne_2     overworld box  463 196 71  473 204 81   no_spawn   # T-029: the throne hall, its gallery and niches, the reliquary
+castle_throne_3     overworld box  426 201 72  430 208 76   no_spawn   # T-029: the throne hall, its gallery and niches, the reliquary
+castle_secret_1     overworld box  473 99 71  483 204 81   no_spawn   # T-029: the secret way (the spiral, the tunnel)
+castle_secret_2     overworld box  469 99 9  474 105 81   no_spawn   # T-029: the secret way (the spiral, the tunnel)
+castle_secret_3     overworld box  460 99 9  469 105 13   no_spawn   # T-029: the secret way (the spiral, the tunnel)
+castle_secret_4     overworld box  460 99 -34  464 105 9   no_spawn   # T-029: the secret way (the spiral, the tunnel)
+castle_secret_5     overworld box  433 99 -34  461 121 -30   no_spawn   # T-029: the secret way (the spiral, the tunnel)
+castle_keep_rock_1  overworld box  404 140 30  487 257 95   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
+castle_keep_rock_2  overworld box  469 99 9  474 105 81   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
+castle_keep_rock_3  overworld box  460 99 9  469 105 13   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
+castle_keep_rock_4  overworld box  460 99 -34  464 105 9   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
+castle_keep_rock_5  overworld box  433 99 -34  461 121 -30   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)

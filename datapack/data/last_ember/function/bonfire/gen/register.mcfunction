@@ -9,3 +9,4 @@ function last_ember:bonfire/place {i:7,id:"r1_causeway",dim:"minecraft:overworld
 function last_ember:bonfire/place {i:8,id:"r1_bridge",dim:"minecraft:overworld",d:0,x:440,y:163,z:-10,rx:440,ry:163,rz:-5,kind:"normal",region:"r1",eternal:0,lit:0,variant:"dol",r:3}
 function last_ember:bonfire/place {i:9,id:"r1_heather",dim:"minecraft:overworld",d:0,x:70,y:64,z:-420,rx:70,ry:64,rz:-415,kind:"normal",region:"r1",eternal:0,lit:0,variant:"dol",r:3}
 function last_ember:bonfire/place {i:10,id:"r1_grove",dim:"minecraft:overworld",d:0,x:-404,y:137,z:72,rx:-404,ry:137,rz:77,kind:"normal",region:"r1",eternal:0,lit:0,variant:"dol",r:3}
+function last_ember:bonfire/place {i:11,id:"r1_throne",dim:"minecraft:overworld",d:0,x:446,y:167,z:67,rx:446,ry:167,rz:72,kind:"normal",region:"r1",eternal:0,lit:0,variant:"dol",r:3}

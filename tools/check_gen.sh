@@ -30,6 +30,7 @@ run python3 tools/gen_lab.py
 run python3 tools/gen_loot.py
 run python3 tools/gen_contracts.py
 run python3 tools/build/gen_runtime.py
+run python3 tools/make_castle_textures.py
 after=$(state)
 if [ "$before" != "$after" ]; then
   echo; echo "CHANGED by the generators (commit the regenerated output, or fix the generator):"

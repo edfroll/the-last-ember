@@ -18,4 +18,10 @@ scoreboard players set #3 le.cas 3
 scoreboard players set #4 le.cas 4
 scoreboard players set #20 le.cas 20
 function last_ember:castle/gen/init
+# T-029: the castle (the keep, the riddle, the king, the secret way): function/castle/kg/* (tools/build/castle_keep_dp.py)
+scoreboard objectives add le.cs dummy
+scoreboard players set #2 le.cs 2
+scoreboard players set #50 le.cs 50
+scoreboard players set #5 le.cs 5
+function last_ember:castle/kg/setup
 schedule function last_ember:castle/loop 5t replace

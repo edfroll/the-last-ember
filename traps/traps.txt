@@ -17,3 +17,5 @@ cem_plate_1 plate overworld 239 89 443 239 90 443 link=cem_arrows   # T-027: pla
 cem_plate_2 plate overworld 241 89 440 241 90 440 link=cem_arrows   # T-027: plate 2 of the crypt corridor
 cem_plate_3 plate overworld 240 89 437 240 90 437 link=cem_arrows   # T-027: plate 3 of the crypt corridor
 cem_plate_4 plate overworld 239 89 434 239 90 434 link=cem_arrows   # T-027: plate 4 of the crypt corridor
+castle_arrows arrows overworld 413 155 73 415 157 77 pts=412,156,74;412,156,79   # T-029: the gaol of the castle (slits in the wall, a bone on the plate)
+castle_plate plate overworld 414 155 75 414 155 75 link=castle_arrows   # T-029
