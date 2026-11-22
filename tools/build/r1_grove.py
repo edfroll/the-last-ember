@@ -122,8 +122,9 @@ def garden(b, gr, rl, meta):
     # the bee nest on a post at the garden's west end, 2 bees inside
     nx, nz = x1, z1 + 4
     b.set(nx, y + 1, nz, "minecraft:stripped_oak_log[axis=y]"); b.set(nx, y + 2, nz, "minecraft:stripped_oak_log[axis=y]")
-    b.set(nx, y + 3, nz, "minecraft:bee_nest[facing=east,honey_level=0]{bees:[{entity_data:{id:\"minecraft:bee\"},min_ticks_in_hive:600,ticks_in_hive:0},{entity_data:{id:\"minecraft:bee\"},min_ticks_in_hive:600,ticks_in_hive:0}]}")
-    for (a, c) in ((1, 0), (2, 1), (1, -1)): b.set(nx + a, y + 1, nz + c, "minecraft:" + ("allium" if (a + c) % 2 else "oxeye_daisy"))
+    b.set(nx, y + 3, nz, "minecraft:bee_nest[facing=east,honey_level=0]{bees:[{entity_data:{id:\"minecraft:bee\",Tags:[\"le.gbee\"],PersistenceRequired:1b},min_ticks_in_hive:600,ticks_in_hive:0},{entity_data:{id:\"minecraft:bee\",Tags:[\"le.gbee\"],PersistenceRequired:1b},min_ticks_in_hive:600,ticks_in_hive:0}]}")
+    flowers = ["allium", "oxeye_daisy", "cornflower", "azure_bluet", "lily_of_the_valley", "dandelion"]      # the bees keep to the garden
+    for k, (a, c) in enumerate(((1, 0), (2, 1), (1, -1), (2, -1), (3, 0), (1, 1))): b.set(nx + a, y + 1, nz + c, "minecraft:" + flowers[k])
     # the stump and its bench
     sx, sz = x1 + 4, z1 + 4
     b.set(sx, y + 1, sz, "minecraft:stripped_oak_wood[axis=y]")

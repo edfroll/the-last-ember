@@ -14,6 +14,7 @@ execute if score #pin le.grv matches 1 run return 0
 execute unless score #ap le.grv = #cur le.grv run function last_ember:grove/gen/try_move
 function last_ember:grove/gen/check_here
 function last_ember:grove/gen/deco_check
+function last_ember:grove/gen/bees
 scoreboard players operation #s2 le.grv = #sec le.grv
 scoreboard players operation #s2 le.grv %= #2 le.grv
 execute if score #s2 le.grv matches 0 run function last_ember:grove/gen/smoke

@@ -146,8 +146,11 @@ def t_build():
     chk("two chiseled bookshelves in the study", all(shelves), shelves)
     pots = sum(1 for p in M["pots"] if not blk(*p, "minecraft:air"))
     chk("8..10 pots (decorated and flower pots)", 8 <= pots <= 10 and pots == len(M["pots"]), pots)
-    nest = R("data get block %d %d %d bees" % tuple(M["garden"]["nest"]))
-    chk("the bee nest of the garden with 2 bees", nest.count("entity_data") == 2 or count("@e[type=minecraft:bee,x=%d,y=%d,z=%d,distance=..24]" % tuple(M["garden"]["nest"])) >= 1, nest[:120])
+    nest = M["garden"]["nest"]
+    def bees(): return R("data get block %d %d %d bees" % tuple(nest)).count("entity_data") + count("@e[type=minecraft:bee,tag=le.gbee]")
+    chk("the bee nest of the garden: 2 bees (in the nest + out)", wait(lambda: bees() == 2, 4), bees())
+    R("execute as @e[type=minecraft:bee,tag=le.gbee,limit=1] run tp @s %d 140 %d" % (nest[0] - 60, nest[2])); time.sleep(2.5)
+    chk("a bee strayed 60 away comes back by the nest; still 2", bees() == 2 and count("@e[type=minecraft:bee,tag=le.gbee,x=%d,y=%d,z=%d,distance=40..]" % tuple(nest)) == 0, bees())
     gi = sum(1 for g in M["giants"] if blk(g["x"], g["lo"] + 1, g["z"], "minecraft:mushroom_stem") and not blk(g["cap"][0] + g["cap"][3] - 1, g["cap"][1], g["cap"][2], "minecraft:air"))
     chk("9 giant mushrooms (stems standing)", len(M["giants"]) == 9 and gi == 9, gi)
     sys.path.insert(0, os.path.join(ROOT, "tools/build")); import grove_dp

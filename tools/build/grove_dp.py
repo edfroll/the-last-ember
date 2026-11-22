@@ -137,6 +137,19 @@ def run(meta):
     hx, hy, hz = meta["house"][0], meta["L"], meta["house"][1]
     w("deco_check", [hdr + "every second (the house loaded): the decor entities once (they are part of the house)",
                      "execute if loaded %d %d %d unless entity @e[type=minecraft:item_display,tag=le.gdeco,x=%d,y=%d,z=%d,distance=..16] run function last_ember:grove/gen/deco" % (hx, hy, hz, hx, hy + 6, hz)])
+    # the 2 bees of the garden (tag le.gbee, kept in the nest's entity data): one strayed > 40 comes back to the nest (its hive again), one
+    # missing (nest + out < 2) is born at the nest, a third (one from a chunk loaded late) goes
+    nx_, ny_, nz_ = meta["garden"]["nest"]
+    w("bees", [hdr + "every second (the garden loaded): the two bees of the nest",
+               "execute unless loaded %d %d %d run return 0" % (nx_, ny_, nz_),
+               "execute store result score #bn le.grv run data get block %d %d %d bees" % (nx_, ny_, nz_),
+               "execute store result score #be le.grv if entity @e[type=minecraft:bee,tag=le.gbee]",
+               "scoreboard players operation #bn le.grv += #be le.grv",
+               'execute if score #bn le.grv matches ..1 run summon minecraft:bee %.1f %d %.1f {Tags:["le.gbee"],PersistenceRequired:1b,hive_pos:[I;%d,%d,%d]}' % (nx_ + 1.5, ny_, nz_ + 0.5, nx_, ny_, nz_),
+               "execute as @e[type=minecraft:bee,tag=le.gbee] unless entity @s[x=%d,y=%d,z=%d,distance=..40] run function last_ember:grove/gen/bee_home" % (nx_, ny_, nz_),
+               "execute if score #bn le.grv matches 3.. run kill @e[type=minecraft:bee,tag=le.gbee,sort=furthest,limit=1,x=%d,y=%d,z=%d]" % (nx_, ny_, nz_)])
+    w("bee_home", [hdr + "a strayed bee of the garden back by its nest, the nest its hive again",
+                   "tp @s %.1f %d %.1f" % (nx_ + 1.5, ny_, nz_ + 0.5), "data modify entity @s hive_pos set value [I;%d,%d,%d]" % (nx_, ny_, nz_)])
     # the faces: open / closed (admin, for the ending)
     for st in ("open", "closed"):
         w("faces_%s" % st, [hdr + "the 6 faces in the poplars: %s (the chunks must be loaded)" % st] +
