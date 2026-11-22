@@ -198,8 +198,8 @@ def checks(gr, rl):
                 changed=int(((T != bf) & gr["circle"]).sum()))
 
 # ---------------------------------------------------------------- the trees and the giant mushrooms
-GIANTS = [  # (kind, height, cap radius): 4 templates (HQ T-030 / card: 4 shapes in rotations)
-    ("red_dome", 17, 6), ("red_bell", 13, 5), ("brown_flat", 15, 7), ("brown_small", 11, 4)]
+GIANTS = [  # (kind, stem height, cap radius): 4 templates (card: 4 shapes in rotations); with the cap 11..17 high (card: 10..18), below the house (26)
+    ("red_dome", 11, 6), ("red_bell", 10, 5), ("brown_flat", 14, 7), ("brown_small", 10, 4)]
 
 def keepout(gr, rl):
     """cells where nothing grows: the flats, the pad, the approaches, the house cap's footprint + 1, and 2 round them"""

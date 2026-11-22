@@ -183,7 +183,7 @@ def giant(b, x, z, kind, rot, ground_lo, ground_at, hh, cr):
     g0 = ground_at(x, z); lo = ground_lo
     gmax = max(ground_at(x + a, z + c) for a in range(-cr - 2, cr + 3) for c in range(-cr - 2, cr + 3) if a * a + c * c <= (cr + 1.5) ** 2)
     hh = max(hh, gmax + 4 - g0)                 # the cap clears the slope under it (never into the hillside)
-    thick = 2 if hh >= 13 else 1
+    thick = 2 if cr >= 5 else 1                 # the wide caps on a stem of 5 (a plus), the small one on 1
     cells = [(a, c) for a in range(-thick + 1, thick) for c in range(-thick + 1, thick)] if thick == 2 else [(0, 0)]
     if thick == 2: cells = [(0, 0), (1, 0), (0, 1), (-1, 0), (0, -1)]
     top = g0 + hh
