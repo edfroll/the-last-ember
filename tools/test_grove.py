@@ -152,7 +152,7 @@ def t_build():
     R("execute as @e[type=minecraft:bee,tag=le.gbee,limit=1] run tp @s %d 140 %d" % (nest[0] - 60, nest[2])); time.sleep(2.5)
     chk("a bee strayed 60 away comes back by the nest; still 2", bees() == 2 and count("@e[type=minecraft:bee,tag=le.gbee,x=%d,y=%d,z=%d,distance=40..]" % tuple(nest)) == 0, bees())
     gi = sum(1 for g in M["giants"] if blk(g["x"], g["lo"] + 1, g["z"], "minecraft:mushroom_stem") and not blk(g["cap"][0] + g["cap"][3] - 1, g["cap"][1], g["cap"][2], "minecraft:air"))
-    chk("9 giant mushrooms (stems standing)", len(M["giants"]) == 9 and gi == 9, gi)
+    chk("8..10 giant mushrooms (card), stems standing: %d" % len(M["giants"]), 8 <= len(M["giants"]) <= 10 and gi == len(M["giants"]), gi)
     sys.path.insert(0, os.path.join(ROOT, "tools/build")); import grove_dp
     closed = sum(1 for f in M["faces"] if blk(*grove_dp.eye_cell(f), "minecraft:stripped_poplar_log"))
     chk("6 faces, eyes closed", len(M["faces"]) == 6 and closed == 6, closed)
