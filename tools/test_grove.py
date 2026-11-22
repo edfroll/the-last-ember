@@ -154,8 +154,8 @@ def t_build():
     gi = sum(1 for g in M["giants"] if blk(g["x"], g["lo"] + 1, g["z"], "minecraft:mushroom_stem") and not blk(g["cap"][0] + g["cap"][3] - 1, g["cap"][1], g["cap"][2], "minecraft:air"))
     chk("8..10 giant mushrooms (card), stems standing: %d" % len(M["giants"]), 8 <= len(M["giants"]) <= 10 and gi == len(M["giants"]), gi)
     sys.path.insert(0, os.path.join(ROOT, "tools/build")); import grove_dp
-    closed = sum(1 for f in M["faces"] if blk(*grove_dp.eye_cell(f), "minecraft:stripped_poplar_log"))
-    chk("6 faces, eyes closed", len(M["faces"]) == 6 and closed == 6, closed)
+    closed = sum(1 for f in M["faces"] if blk(*grove_dp.eye_cell(f), "minecraft:poplar_log") and blk(*grove_dp.eye_front(f), "minecraft:dark_oak_trapdoor"))
+    chk("6 faces, eyes closed (bark, a fold in front)", len(M["faces"]) == 6 and closed == 6, closed)
     lt = M["light"]
     chk("light >= 1 on every walked cell (path, terrace, garden, approaches, the study): %d cells, the circle %d of %d" % (lt["must"], lt["rest"] - lt["rest_dark"], lt["rest"]), lt["must_dark"] == 0)
     bio = [passed(f"execute positioned {x} {y} {z} if biome ~ ~ ~ last_ember:mushroom_grove") for (x, y, z) in ((-420, 130, 60), (HX, L + 2, HZ), (-404, 138, 72))]
@@ -257,8 +257,9 @@ def t_fade():
     print("[fade]"); stage(); base_state(); away()
     R("data modify storage last_ember:bonfires by.b10.state set value 1"); time.sleep(1.5)            # lit by the Bearer
     R("function last_ember:altar/set_chapters {n:1}"); R("function last_ember:region/gen/fade_r1"); time.sleep(6)
-    bio = [passed(f"execute positioned {x} {y} {z} if biome ~ ~ ~ last_ember:mushroom_grove") for (x, y, z) in ((-420, 130, 60), (HX, L + 2, HZ), (-404, 138, 72), (-400, 145, 40), (-440, 110, 80))]
-    chk("after the fading the grove keeps its biome (r <= 29: inside the 16 of transition)", all(bio), bio)
+    pts = [(-420, 130, 60), (HX, L + 2, HZ), (-404, 138, 72), (-376, 150, 60), (-464, 100, 60), (-420, 110, 104), (-420, 110, 16)]   # r 44 on 4 sides
+    bio = [passed(f"execute positioned {x} {y} {z} if biome ~ ~ ~ last_ember:mushroom_grove") for (x, y, z) in pts]
+    chk("after the fading the grove keeps its biome to r 44 (review T-030: the contour r 61, the transition in the seam)", all(bio), bio)
     st = R("data get storage last_ember:bonfires by.b10")
     chk("bonfire 10 still burns (state 1, not faded)", "state: 1" in st and "faded: 1b" not in st, st[:160])
     a = PT["day"]; R(f"tp Cam {a[0] + 2} {L + 1} {a[2] + 1}"); press("Cam", 1)
@@ -275,7 +276,7 @@ def t_faces():
     o = sum(1 for f in M["faces"] if blk(*grove_dp.eye_cell(f), "minecraft:verdant_froglight"))
     chk("faces_open: 6 faces with eyes of verdant froglight", o == 6, o)
     R("function last_ember:grove/faces_close"); time.sleep(0.5)
-    c = sum(1 for f in M["faces"] if blk(*grove_dp.eye_cell(f), "minecraft:stripped_poplar_log"))
+    c = sum(1 for f in M["faces"] if blk(*grove_dp.eye_cell(f), "minecraft:poplar_log") and blk(*grove_dp.eye_front(f), "minecraft:dark_oak_trapdoor"))
     chk("faces_close: closed again (as built)", c == 6, c)
     for f in M["faces"]: R(f"forceload remove {f['x']} {f['z']}")
 

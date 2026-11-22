@@ -43,7 +43,7 @@ def main():
         ok &= bool(hit)
     # the faces: closed in the world (BlockWriter wrote the closed templates' blocks)
     import grove_dp
-    bad = [f["k"] for f in meta["faces"] if "stripped_poplar_log" not in (blocks.get(tuple(grove_dp.eye_cell(f))) or "")]
+    bad = [f["k"] for f in meta["faces"] if "poplar_log" not in (blocks.get(tuple(grove_dp.eye_cell(f))) or "") or "dark_oak_trapdoor" not in (blocks.get(tuple(grove_dp.eye_front(f))) or "")]
     print("  faces closed in the build: %d of %d%s" % (len(meta["faces"]) - len(bad), len(meta["faces"]), (" (not: %s)" % bad) if bad else ""))
     ok &= not bad
     print("grove check: %s" % ("OK" if ok else "FAILED"))

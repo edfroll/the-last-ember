@@ -21,48 +21,61 @@ OPP = {"north": "south", "south": "north", "east": "west", "west": "east"}
 def octagon(dx, dz, r=4): return abs(dx) <= r and abs(dz) <= r and not (abs(dx) == r and abs(dz) == r)
 
 def house(b, cx, cz, L, meta):
-    """ground L (floor of oak planks at L); 1st floor feet L+1..L+7, ceiling L+8 (spruce), the cap's underside L+8 round the stem,
-    2nd floor (oak planks) L+9 over the whole inside of the cap (r <= 8.6), feet L+10; the cap: skirt r 8.6..10.5 L+8..L+12, dome to L+26.
-    The door east (cx+4, cz); round windows N, S, W; the stair along the south and the west walls; the chimney out of the cap's west side"""
-    F1 = L + 1; C1 = L + 8; F2 = L + 9; TOP = L + 26
-    # the stem: one block of mushroom stem round the 7 x 7 room (HQ: inside spruce planks would make it 5 x 5 again: the planks are the
-    # ribs on the inner corners, the ceiling, the frames and the floor 2 joists)
+    """ground L (floor of oak planks at L). The stem (9 x 9) stands L+1..L+12 (review T-030: the silhouette of a mushroom - a tall stem, a
+    low cap): the study (feet L+1..L+7, ceiling L+8), the bedroom in the stem (floor L+9, feet L+10..L+11, ceiling L+12); the cap: the
+    underside L+12 round the stem (pores, shroomlight), the observatory floor L+13 over the whole inside (r <= 8.6, feet L+14), the skirt
+    r 8.6..10.5 L+12..L+14, the dome L+15..L+26 (11 over the skirt at 21 across), lined inside with spruce (rafters of stripped spruce).
+    The door east (cx+4, cz); round windows N, S, W; the stairs: study -> bedroom along the south and the west walls, bedroom ->
+    observatory along the north wall; the spyglass window east in the skirt; the chimney out of the cap's west side"""
+    F1 = L + 1; C1 = L + 8; F2 = L + 9; U = L + 12; F3 = L + 13; TOP = L + 26; D0 = L + 15
+    # the stem: one block of mushroom stem round the 7 x 7 rooms (HQ: inside spruce planks would make it 5 x 5 again: the planks are the
+    # ribs on the inner corners, the ceilings, the frames)
     for dx in range(-4, 5):
         for dz in range(-4, 5):
             if not octagon(dx, dz): continue
             x, z = cx + dx, cz + dz
             b.set(x, L, z, "minecraft:oak_planks" if abs(dx) <= 3 and abs(dz) <= 3 else STEM)
             for y in range(L - 3, L): b.set(x, y, z, STEM if not (abs(dx) <= 3 and abs(dz) <= 3) else "minecraft:dirt")
-            shell = abs(dx) == 4 or abs(dz) == 4 or (abs(dx) == 3 and abs(dz) == 4) or (abs(dz) == 3 and abs(dx) == 4)
-            for y in range(F1, C1 + 1):
+            shell = abs(dx) == 4 or abs(dz) == 4
+            for y in range(F1, U + 1):
                 if shell: b.set(x, y, z, STEM)
-                elif y == C1: b.set(x, y, z, "minecraft:spruce_planks")
+                elif y in (C1, U): b.set(x, y, z, "minecraft:spruce_planks")
+                elif y == F2: b.set(x, y, z, "minecraft:oak_planks")
                 else: b.set(x, y, z, "minecraft:air")
-    for (dx, dz) in ((-3, 3), (3, -3), (-3, -3)):               # plank ribs in the inner corners (the SE one is the way onto the stair)
+    for (dx, dz) in ((-3, 3), (3, -3), (-3, -3)):               # plank ribs in the inner corners of the study (the SE one: the way onto the stair)
         for y in range(F1, C1): b.set(cx + dx, y, cz + dz, "minecraft:spruce_planks")
-    # the cap: underside layer C1 (pores + shroomlight) round the stem, the floor of the 2nd storey F2, skirt and dome
+    # the cap: the underside U round the stem, the observatory floor F3, the skirt, the dome
+    cap = {}; inner = set()
     for dx in range(-11, 12):
         for dz in range(-11, 12):
             r = math.hypot(dx, dz); x, z = cx + dx, cz + dz
             if r > 10.6: continue
-            if r > 4.6 or not octagon(dx, dz):
-                b.set(x, C1, z, "minecraft:shroomlight" if hsh(x, C1, z, 3010) < 0.22 else RED(False))
-            if r <= 8.6: b.set(x, F2, z, "minecraft:oak_planks")
+            if r > 4.6 or not octagon(dx, dz): cap[(x, U, z)] = "minecraft:shroomlight" if hsh(x, U, z, 3010) < 0.22 else RED(False)
+            if r <= 8.6:
+                b.set(x, F3, z, "minecraft:oak_planks")
+                inner.add((x, F3 + 1, z))
             else:
-                for y in range(F2, L + 13): b.set(x, y, z, RED())
-    for y in range(L + 12, TOP + 1):
-        t = (y - (L + 12)) / (TOP - (L + 12))
-        ro = 10.5 * math.sqrt(max(0.0, 1 - t ** 1.6)); ri = ro - 1.6
+                for y in range(U, D0): cap[(x, y, z)] = RED()
+    for y in range(D0, TOP + 1):
+        t = (y - D0 + 0.5) / (TOP - D0 + 1)
+        ro = 10.5 * math.sqrt(max(0.0, 1 - t * t)); ri = ro - 2.2
         for dx in range(-11, 12):
             for dz in range(-11, 12):
                 r = math.hypot(dx, dz)
-                if r <= ro + 0.1 and (r > ri or y >= TOP - 1): b.set(cx + dx, y, cz + dz, RED())
-                elif r <= ro + 0.1 and y > F2: b.set(cx + dx, y, cz + dz, "minecraft:air")
-    for dx in range(-9, 10):                              # the room under the cap: air above the floor
-        for dz in range(-9, 10):
-            r = math.hypot(dx, dz)
-            if r <= 8.6:
-                for y in range(F2 + 1, L + 13): b.set(cx + dx, y, cz + dz, "minecraft:air")
+                if r > ro + 0.1: continue
+                if r > ri or y >= TOP - 1: cap[(cx + dx, y, cz + dz)] = RED()
+                else: inner.add((cx + dx, y, cz + dz))
+    for k, v in cap.items(): b.set(*k, v)
+    for k in inner: b.set(*k, "minecraft:air")
+    # the lining of the observatory: every cap block facing the room (and not the open air) becomes spruce planks, rafters of stripped
+    # spruce on 8 directions and a ring beam at the foot of the dome
+    def outside(q): return q not in cap and q not in inner and math.hypot(q[0] - cx, q[2] - cz) > 4.6 and q[1] > U
+    for (x, y, z), v in cap.items():
+        if y <= U: continue
+        nb = [(x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z), (x, y, z + 1), (x, y, z - 1)]
+        if not any(q in inner for q in nb) or any(outside(q) for q in nb): continue
+        ang = math.atan2(z - cz, x - cx); rafter = min(abs(((ang / (math.pi / 4)) % 1) - 0.5) for _ in (0,)) > 0.38
+        b.set(x, y, z, "minecraft:stripped_spruce_wood[axis=y]" if rafter or y == D0 else "minecraft:spruce_planks")
     # the door (east): spruce door in a round frame of spruce stairs
     dxx = cx + 4
     b.set(dxx, F1, cz, "minecraft:spruce_door[facing=west,half=lower,hinge=left,open=false]")
@@ -136,30 +149,49 @@ def house(b, cx, cz, L, meta):
     b.set(cx - 2, F1, cz, "minecraft:lectern[facing=east,has_book=true,powered=false]" + grove_dp.book_nbt())
     meta["lectern"] = [cx - 2, F1, cz]; meta["ball"] = [cx - 2, F1 + 1, cz - 2]
     b.set(cx + 3, F1 + 5, cz + 3, lantern(True)); b.set(cx - 1, C1 - 1, cz - 2, lantern(True))
-    # ---- the 2nd storey: bedroom and observatory under the cap
-    b.set(cx - 6, F2 + 1, cz - 1, "minecraft:red_bed[facing=west,part=head,occupied=false]")
-    b.set(cx - 5, F2 + 1, cz - 1, "minecraft:red_bed[facing=west,part=foot,occupied=false]")
-    b.set(cx - 6, F2 + 1, cz - 2, "minecraft:spruce_planks"); pot(cx - 6, F2 + 2, cz - 2, "potted_brown_mushroom")
-    pot(cx + 1, F2 + 1, cz - 7, "deco"); pot(cx - 1, F2 + 1, cz + 7, "potted_red_mushroom")
-    b.set(cx - 6, F2 + 1, cz + 2, "minecraft:spruce_planks"); b.set(cx - 6, F2 + 2, cz + 2, lantern())
-    # star maps: wall banners on the skirt's inner face (dark blue / black, white stars)
-    stars = [("north", cx - 3, cz + 8, "blue", ["minecraft:flower", "minecraft:small_stripes"]), ("south", cx + 2, cz - 8, "black", ["minecraft:globe"]),
-             ("north", cx + 3, cz + 8, "black", ["minecraft:flower", "minecraft:curly_border"]), ("east", cx - 8, cz + 3, "blue", ["minecraft:globe", "minecraft:border"])]
-    for (f, x, z, col, pats) in stars:
-        p = ",".join('{pattern:"%s",color:"white"}' % q for q in pats)
-        b.set(x, F2 + 3, z, "minecraft:%s_wall_banner[facing=%s]{patterns:[%s]}" % (col, f, p))
-        bx, bz = DXZ[OPP[f]]; b.set(x + bx, F2 + 3, z + bz, RED())
-    # the spyglass window east in the skirt: round, the spyglass itself is an item display (datapack)
-    wx = cx + 9
+    # ---- the bedroom in the stem (feet L+10) and the observatory under the cap (feet L+14)
+    FB = F2 + 1; FO = F3 + 1
+    up = [(cx + dx, FB + k, cz - 3, "east") for k, dx in enumerate((-2, -1, 0, 1))]     # bedroom -> observatory, along the north wall
+    for (x, y, z, f) in up:
+        b.set(x, y, z, stairs("spruce_stairs", f))
+        for yy in range(y + 1, y + 4): b.set(x, yy, z, "minecraft:air")       # head room of the next step too
+    b.set(cx - 3, U, cz - 3, "minecraft:air")                                   # over the foot of the flight (the head on the first step)
+    for (dx, dz) in ((-3, -3), (-2, -4), (-1, -4), (0, -4), (-2, -2), (-1, -2), (0, -2)):  # the rail round the hole in the observatory floor
+        b.set(cx + dx, FO, cz + dz, "minecraft:spruce_fence")
+    meta["stair"] += [list(u[:3]) for u in up]
+    # the room in the stem: the Advisor's map room (cartography table, shelves, a lantern); the bed stands under the cap
+    b.set(cx + 2, FB, cz + 2, "minecraft:cartography_table"); b.set(cx + 3, FB, cz + 2, "minecraft:bookshelf"); b.set(cx + 3, FB, cz + 1, "minecraft:bookshelf")
+    b.set(cx + 3, FB, cz + 3, lantern())
+    b.set(cx - 6, FO, cz - 1, "minecraft:red_bed[facing=west,part=head,occupied=false]")
+    b.set(cx - 5, FO, cz - 1, "minecraft:red_bed[facing=west,part=foot,occupied=false]")
+    b.set(cx - 6, FO, cz - 2, "minecraft:spruce_planks"); pot(cx - 6, FO + 1, cz - 2, "potted_brown_mushroom")
+    for (wx_, wz_) in ((cx, cz + 4), (cx, cz - 4), (cx - 4, cz), (cx + 4, cz)):        # small windows of the bedroom (1 x 2)
+        for y in (FB, FB + 1): b.set(wx_, y, wz_, "minecraft:glass_pane")
+    pot(cx + 1, FO, cz - 7, "deco"); pot(cx - 1, FO, cz + 7, "potted_red_mushroom")
+    # star maps: wall banners on the lining (dark blue / black, white stars), one on each side at FO+2
+    stars = [((0, -1), (0, 0), "black", ["minecraft:globe"]), ((0, 1), (-3, 0), "blue", ["minecraft:flower", "minecraft:small_stripes"]),
+             ((-1, 0), (0, 0), "blue", ["minecraft:globe", "minecraft:border"]), ((0, 1), (3, 0), "black", ["minecraft:flower", "minecraft:curly_border"])]
+    for ((ux, uz), (ox, oz), col, pats) in stars:      # from the axis outward to the last cell of the room, the banner faces back in
+        y = FO + 2; x, z = cx + ox, cz + oz
+        while (x + ux, y, z + uz) in inner: x += ux; z += uz
+        f = {(0, -1): "south", (0, 1): "north", (-1, 0): "east", (1, 0): "west"}[(ux, uz)]
+        p_ = ",".join('{pattern:"%s",color:"white"}' % q for q in pats)
+        b.set(x, y, z, "minecraft:%s_wall_banner[facing=%s]{patterns:[%s]}" % (col, f, p_))
+    # the spyglass window east in the dome: round, two thick (panes outside); the spyglass itself is an item display (datapack)
+    wx = cx + 9; wy = FO + 2
     for x in (wx, wx + 1):
-        for a in (-1, 0, 1):
-            for c in (-1, 0, 1):
-                y = F2 + 3 + c; z = cz + a
-                if a and c: b.set(x, y, z, stairs("spruce_stairs", "west", "top" if c > 0 else "bottom") if x == wx else RED())
+        for a_ in (-1, 0, 1):
+            for c_ in (-1, 0, 1):
+                y = wy + c_; z = cz + a_
+                if a_ and c_: b.set(x, y, z, stairs("spruce_stairs", "west", "top" if c_ > 0 else "bottom") if x == wx else RED())
                 else: b.set(x, y, z, "minecraft:glass_pane" if x == wx + 1 else "minecraft:air")
-    b.set(wx - 1, F2 + 1, cz, "minecraft:spruce_fence"); b.set(wx - 1, F2 + 2, cz, "minecraft:spruce_trapdoor[facing=east,half=bottom,open=false]")
-    meta["spyglass"] = [wx - 1, F2 + 2, cz]; meta["night"] = [wx - 3, F2 + 1, cz]; meta["day"] = [ax, F1, az]
-    for (x, y, z) in ((cx + 5, F2 + 4, cz + 5), (cx - 5, F2 + 4, cz - 5), (cx + 5, F2 + 4, cz - 5)): b.set(x, y + 2, z, "minecraft:iron_chain[axis=y]"); b.set(x, y + 1, z, lantern(True))
+    b.set(wx - 1, FO, cz, "minecraft:spruce_fence"); b.set(wx - 1, FO + 1, cz, "minecraft:spruce_trapdoor[facing=east,half=bottom,open=false]")
+    meta["spyglass"] = [wx - 1, FO + 1, cz]; meta["night"] = [wx - 3, FO, cz]; meta["day"] = [ax, F1, az]
+    for (x, z) in ((cx + 4, cz + 4), (cx - 4, cz - 4), (cx + 4, cz - 4), (cx - 4, cz + 4)):    # lanterns hanging from the rafters
+        y = FO + 5
+        if (x, y, z) not in inner: continue
+        b.set(x, y, z, lantern(True)); y += 1
+        while (x, y, z) in inner and y < TOP: b.set(x, y, z, "minecraft:iron_chain[axis=y]"); y += 1
     # the chimney: out of the cap's west side, up past the dome; the signal campfire on hay at its mouth, walled in
     chx, chz = cx - 9, cz + 3
     for y in range(L + 13, L + 29):
@@ -173,7 +205,7 @@ def house(b, cx, cz, L, meta):
         b.set(chx + a, L + 28, chz + c, "minecraft:mud_brick_wall")
     meta["chimney"] = [chx, L + 28, chz]
     meta["pots"] = pots
-    meta["floors"] = {"f1": F1, "f2": F2 + 1}
+    meta["floors"] = {"f1": F1, "f2": F2 + 1, "f3": F3 + 1}
     meta["door"] = [dxx, F1, cz]
     return meta
 
@@ -278,7 +310,7 @@ def thick_poplar(b, x, gy, z, hh, lo, salt):
 
 def face_cells(x, gy, z, side, state):
     """the face on one side of a thick poplar (HQ T-030: quieter than T-025): eyes = the two outer cells of the face side at gy+5,
-    closed: a lid of stripped poplar (the bark taken off) with a dark oak trapdoor fold over its lower half, open: verdant froglight; the mouth fold at gy+3 (a dark oak
+    closed: the bark with a dark oak trapdoor fold in front (one cell per eye; review T-030: barely seen), open: verdant froglight; the mouth fold at gy+3 (a dark oak
     trapdoor in front of the middle cell). Returns {(x, y, z): state} for the trunk plane and the cells in front of it (the template)"""
     dx, dz = DXZ[side]; px, pz = (-dz, dx)            # along the face
     out = {}
@@ -289,8 +321,8 @@ def face_cells(x, gy, z, side, state):
             out[(fx + px * k + dx, y, fz + pz * k + dz)] = "minecraft:air"
     for k in (-1, 1):
         ex, ez = fx + px * k, fz + pz * k; ey = gy + 5
-        if state == "closed":           # the bark itself, a thin dark fold of the lid in front (seen only when looked for)
-            out[(ex, ey, ez)] = "minecraft:stripped_poplar_log[axis=y]"
+        if state == "closed":           # review T-030: the eye is the bark itself, only a thin dark fold (one cell) in front of it
+            out[(ex, ey, ez)] = LOG
             out[(ex + dx, ey, ez + dz)] = "minecraft:dark_oak_trapdoor[facing=%s,half=bottom,open=false]" % side
         else:
             out[(ex, ey, ez)] = "minecraft:verdant_froglight[axis=y]"

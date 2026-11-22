@@ -48,6 +48,7 @@ def shot(name, f, t, settle=7, nv=False, hud=False):
     place(f, t, nv); time.sleep(settle); snap(name, hud)
 
 def setup():
+    open(os.path.join(CL, "shot-request.txt"), "w").write("!sneak_off\n"); time.sleep(2)      # a window left open (a test) closes
     for c in ("gamerule advance_time false", "gamerule locator_bar false", "weather clear", "function last_ember:grove/advisor_free"):
         R(c)
 
@@ -64,8 +65,9 @@ def main(names):
         "study_wide": lambda: (R("time set 6000"), shot("study_wide", (cx + 3.3, L + 2.2, cz + 2.4), (cx - 1, L + 1.6, cz - 2), settle=8)),
         "chimney": lambda: (R("time set 7000"), shot("chimney", (cx - 26, L + 30, cz + 14), (cx - 9, L + 27, cz + 3), settle=10)),
         "circle": lambda: circle(),
+        "face_path": lambda: face_path(),
         "faded": lambda: faded(),
-        "observatory": lambda: (R("time set 18000"), time.sleep(3), shot("observatory", (cx + 1.5, L + 10, cz + 4.5), (ng[0] + 1.5, ng[1] + 1.5, ng[2] + 0.5), settle=8)),
+        "observatory": lambda: (R("time set 18000"), time.sleep(3), shot("observatory", (cx - 7.5, M["floors"]["f3"] + 1.6, cz + 4.5), (ng[0] + 1.5, ng[1] + 1.0, ng[2] - 0.5), settle=8)),
         "garden": lambda: (R("time set 7000"), shot("garden", (-397.5, 139.5, 79.5), (-405, 137, 62), settle=8)),
         "intro": lambda: intro(),
     }
@@ -93,11 +95,45 @@ def circle():
     R("function last_ember:grove/reset"); R("forceload remove -446 -189 -438 -181")
 
 def faded():
-    """the grove after the fading of chapter I, by the darkened Vale"""
-    R("time set 6000"); R("function last_ember:altar/set_chapters {n:1}"); R("function last_ember:region/gen/fade_r1")
-    place((-352, 182, 30), (-420, 128, 66)); time.sleep(14)
-    snap("faded")
-    R("function last_ember:region/gen/unfade_r1"); R("function last_ember:altar/set_chapters {n:0}"); time.sleep(4)
+    """the grove by the Vale before and after the fading of chapter I, from one point (review T-030, 5)"""
+    R("time set 6000"); place(FADE_CAM, FADE_TGT); time.sleep(14); snap("faded_before")
+    R("function last_ember:altar/set_chapters {n:1}"); R("function last_ember:region/gen/fade_r1"); time.sleep(16)
+    snap("faded_after")
+    R("function last_ember:region/gen/unfade_r1"); R("function last_ember:altar/set_chapters {n:0}"); time.sleep(6)
+FADE_CAM = (-366, 198, 2); FADE_TGT = (-420, 128, 66)
+
+def face_path():
+    """one face seen from the walk 8..12 blocks off by day (review T-030, 1: it should be guessed only when looked for)"""
+    sys.path.insert(0, os.path.join(ROOT, "tools/build")); import grove_plan as P
+    gr = P.grids(); rl = P.relief(gr); T = rl["T"]
+    solid = set()
+    for line in open(os.path.join(ROOT, "server/build/r1/grove.txt")):
+        x_, y_, z_, st = line.split(" ", 3)
+        if "air" not in st: solid.add((int(x_), int(y_), int(z_)))
+    def clear(a, b):                                        # nothing of ours between the eye and the face (leaves count)
+        n = int(math.dist(a, b) * 3)
+        for k in range(2, n - 2):
+            q = [a[i] + (b[i] - a[i]) * k / n for i in range(3)]
+            c = (math.floor(q[0]), math.floor(q[1]), math.floor(q[2]))
+            if c in solid or q[1] <= T[P.ix(gr, c[0], c[2])] + 1: return False
+        return True
+    best = None
+    for f in M["faces"]:
+        dx, dz = {"north": (0, -1), "east": (1, 0), "south": (0, 1), "west": (-1, 0)}[f["side"]]
+        fc = (f["x"] + dx * 2 + 0.5, f["y"] + 4.5, f["z"] + dz * 2 + 0.5)
+        cells = list(rl["flat"]) + [(f["x"] + a, f["z"] + c) for a in range(-12, 13) for c in range(-12, 13)]     # the walks first, then any open ground
+        for (x, z) in cells:
+            if (x, int(T[P.ix(gr, x, z)]) + 1, z) in solid or (x, int(T[P.ix(gr, x, z)]) + 2, z) in solid: continue
+            d = math.hypot(x - f["x"], z - f["z"])
+            if not 8 <= d <= 12 or (x - f["x"]) * dx + (z - f["z"]) * dz <= 0: continue
+            eye = (x + 0.5, int(T[P.ix(gr, x, z)]) + 1 + 1.62, z + 0.5)
+            on_walk = (x, z) in rl["flat"]
+            if clear(eye, fc) and (best is None or (not on_walk, abs(d - 10)) < best[0]): best = ((not on_walk, abs(d - 10)), f, x, z)
+    if best is None: print("  face_path: no walk cell sees a face at 8..12"); return
+    _, f, x, z = best
+    print("  face_path: face %d from (%d, %d)%s" % (f["k"], x, z, " (a walk cell)" if (x, z) in rl["flat"] else " (open ground of the grove)"))
+    y = int(T[P.ix(gr, x, z)]) + 1
+    R("time set 6000"); shot("face_path", (x + 0.5, y, z + 0.5), (f["x"] + 0.5, f["y"] + 4.5, f["z"] + 0.5), settle=8)
 
 def intro():
     """the window of the acquaintance (keep: the frame with the window open): Cam talks to the Advisor"""

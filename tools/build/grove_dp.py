@@ -182,3 +182,9 @@ def eye_cell(f):
     import grove_build as GB
     dx, dz = GB.DXZ[f["side"]]; px, pz = -dz, dx
     return [f["x"] + dx + px, f["y"] + 5, f["z"] + dz + pz]
+
+def eye_front(f):
+    """the cell in front of the eye (the fold of the closed face)"""
+    import grove_build as GB
+    dx, dz = GB.DXZ[f["side"]]; e = eye_cell(f)
+    return [e[0] + dx, e[1], e[2] + dz]

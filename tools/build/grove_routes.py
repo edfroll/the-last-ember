@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """T-030: walk-bot routes of the Mushroom Grove -> server/build/walk/v_*.json (tools/walkbot.py, no jumps), from server/build/r1/grove.json:
-  v_in        the pad of bonfire 10 -> the path down to the terrace -> the door -> the study -> the stair (south and west walls) -> the 2nd
-              storey -> the observatory (the Advisor's night point); v_out the same way back
+  v_in        the pad of bonfire 10 -> the path down to the terrace -> the door -> the study -> the stair (south and west walls) -> the bedroom in
+              the stem -> the observatory under the cap (the Advisor's night point); v_out the same way back
   v_garden    the pad -> through the gap of the bench at its north edge into the garden -> the stump and the bee nest -> back to the pad
   v_approach  the approaches of T-022 in the grove (both share the z 78 line in the circle): from the east edge of the place to the pad
               (v_approach) and back (v_approach_b)
@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import grove_plan as P
 OUT = os.path.join(ROOT, "server/build/walk"); os.makedirs(OUT, exist_ok=True)
 M = json.load(open(os.path.join(ROOT, "server/build/r1/grove.json")))
-HX, HZ = M["house"]; L = M["L"]; F1 = M["floors"]["f1"]; F2 = M["floors"]["f2"]; ng = M["night"]
+HX, HZ = M["house"]; L = M["L"]; F1 = M["floors"]["f1"]; F2 = M["floors"]["f2"]; F3 = M["floors"]["f3"]; ng = M["night"]
 pad = [P.PAD[0] + 2.5, P.HZ + 0.5, P.PAD_Y + 1.0]              # on the pad, west of the bonfire (r 3), on the line of the path
 path = sorted(M["path"], key=lambda p: -p[0])
 pz = P.HZ
@@ -21,7 +21,7 @@ door_out = [HX + 5.5, pz + 0.5, L + 1.0]
 def c(dx, dz, f): return [HX + dx + 0.5, HZ + dz + 0.5, float(f)]      # the centre of the cell (HX + dx, HZ + dz)
 inside = [c(3, 0, F1), c(3, 3, F1)]
 stair = [c(2, 3, F1 + 1), c(-2, 3, F1 + 5), c(-3, 3, F1 + 5), c(-3, 2, F1 + 6), c(-3, -1, F1 + 9), c(-3, -2, F2)]
-upstairs = [c(-3, -3, F2), c(4, -3, F2), [ng[0] + 0.5, ng[2] + 0.5, float(F2)]]
+upstairs = [c(-3, -3, F2), c(-2, -3, F2 + 1), c(1, -3, F2 + 4), c(2, -3, F3), c(5, -3, F3), [ng[0] + 0.5, ng[2] + 0.5, float(F3)]]   # bedroom -> observatory
 v_in = [pad, [P.PAD[0] + 0.5, pz + 0.5, P.PAD_Y + 1.0]] + line + [door_out] + inside + stair + upstairs
 v_out = v_in[::-1]
 g = M["garden"]
