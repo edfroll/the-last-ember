@@ -1,0 +1,105 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Советчик",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Тише. Смотрю на звёзды. Их стало меньше, чем было, когда я был молод. Спрашивайте.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 2,
+ "actions": [
+  {
+   "label": {
+    "text": "О замке",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 2"
+   }
+  },
+  {
+   "label": {
+    "text": "О лабиринте",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 3"
+   }
+  },
+  {
+   "label": {
+    "text": "О бледном саде",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 4"
+   }
+  },
+  {
+   "label": {
+    "text": "О топях",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 5"
+   }
+  },
+  {
+   "label": {
+    "text": "О Плакальщицах",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 6"
+   }
+  },
+  {
+   "label": {
+    "text": "О тебе",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 7"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

@@ -1,0 +1,29 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Советчик",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Все четыре у вас. Кладите на камни, по одной на каждый. Несущий пусть стоит рядом, шагах в десяти, не дальше. Они долго ждали. Не заставляйте ждать ещё.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

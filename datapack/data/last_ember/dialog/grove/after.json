@@ -1,0 +1,45 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Советчик",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Плакальщицы замолчали. Дол темнеет, а здесь всё так же тепло. Не спрашивайте почему. Идите дальше. Я догоню.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "О тебе",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 7"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}
