@@ -89,7 +89,9 @@ def house(b, cx, cz, L, meta):
     for (x, y, z, f) in st:
         for yy in range(y + 1, y + 4):
             if yy in (C1, F2) or yy < C1: b.set(x, yy, z, "minecraft:air")
-    b.set(cx - 3, F1 + 5, cz + 3, "minecraft:air"); b.set(cx - 3, F1 + 6, cz + 3, "minecraft:air")
+    b.set(cx - 3, F1 + 5, cz + 3, "minecraft:air"); b.set(cx - 3, F1 + 6, cz + 3, "minecraft:air"); b.set(cx - 3, C1, cz + 3, "minecraft:air")   # head room over the landing
+    # the balustrade on the room side of the flights (posts stepping with the stairs: the fall to the study floor is up to 5)
+    for dx, y in ((1, F1 + 2), (0, F1 + 3), (-1, F1 + 4), (-2, F1 + 5), (-2, F1 + 6)): b.set(cx + dx, y, cz + 2, "minecraft:spruce_fence")
     for (x, z) in ((cx - 2, cz + 1), (cx - 2, cz), (cx - 2, cz + 2), (cx - 2, cz - 1)):
         b.set(x, F2 + 1, z, "minecraft:spruce_fence")                              # the rail round the stair hole
     for dz in (3, 2):

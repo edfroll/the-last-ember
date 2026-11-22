@@ -255,10 +255,20 @@ def approaches(b, gr, rl):
     """HQ T-030: the approaches of T-022 inside the circle get the path's palette on top, the heights stay: read their top blocks"""
     if "live" not in gr: return 0
     cells = {(int(gr["X"][i, j]), int(gr["Z"][i, j])) for i, j in zip(*np.nonzero(rl["app"] & gr["circle"]))}
+    # the trail is graded by half blocks: a slab stays a slab (cobblestone slab), a full block becomes the path's mossy cobblestone or
+    # cobblestone; what lies on the top (read from the world now: the frame's blocks or ours from an earlier run) decides
+    top = {}
+    for (x, y, z, nm) in world_scan(re.compile(r"minecraft:(?!air$|cave_air$).*"), lambda x, z: (x, z) in cells):
+        b0 = int(gr["before"][ix(gr, x, z)])
+        if b0 - 1 <= y <= b0 + 1 and y > top.get((x, z), (-999, ""))[0]: top[(x, z)] = (y, nm)
     n = 0
     for (x, z) in cells:
         y = int(gr["before"][ix(gr, x, z)])           # the ground before the place (grove_plan: the first scan)
-        b.set(x, y, z, GB.PATH); n += 1
+        ty, nm = top.get((x, z), (y, ""))
+        if nm.endswith("_slab") and ty >= y: b.set(x, ty, z, slab("cobblestone_slab"))
+        elif nm.endswith("dirt_path") and ty == y: b.set(x, y, z, "minecraft:dirt_path")          # the frame's paths keep their 15/16
+        elif ty == y: b.set(x, y, z, GB.PATH)
+        n += 1
     return n
 
 def untree_unsnow(b, gr, rl):
