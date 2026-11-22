@@ -5,6 +5,7 @@ scoreboard objectives add le.grv dummy
 scoreboard objectives add le.agen dummy
 scoreboard objectives add le.ametg dummy
 scoreboard objectives add le.atrig trigger
+scoreboard objectives add le.awin dummy
 execute unless score #agen le.grv = #agen le.grv run scoreboard players set #agen le.grv 0
 execute unless score #cur le.grv = #cur le.grv run scoreboard players set #cur le.grv -1
 execute unless score #met le.grv = #met le.grv run scoreboard players set #met le.grv 0

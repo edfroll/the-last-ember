@@ -433,7 +433,7 @@ def main(plan_only=False):
     n = b.write_placements(os.path.join(OUT, "grove.txt"))
     zlo, zhi = zone_line(gr, rl, b)
     out = dict(meta); out.update(info=info, terrain_columns=ncol, blocks=n, air=nair, approach_top=napp, trees_removed=ntree, snow=nsnow, springs=nwat,
-                                 zone=[zlo, zhi], hearth=list(P.HEARTH), pad=list(P.PAD), centre=[P.CX, P.CZ, P.R], house=[P.HX, P.HZ])
+                                 zone=[zlo, zhi], bonfire=list(P.HEARTH), pad=list(P.PAD), centre=[P.CX, P.CZ, P.R], house=[P.HX, P.HZ])
     import grove_dp
     grove_dp.run(out)
     json.dump(out, open(os.path.join(OUT, "grove.json"), "w"), ensure_ascii=False, default=lambda o: list(o) if isinstance(o, (set, tuple)) else str(o))
