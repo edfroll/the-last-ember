@@ -306,30 +306,44 @@ def points(b, c, meta):
     outer side of its lanes), the bow, Toivo"""
     gr = c.gr; pv = c.pl["pv"]; out = dict(elites=[], items=[])
     deep_trunks = [t for t in meta["_trees"] if t["kind"] in ("deep_dark_oak", "deep_oak")]
+    T = c.T
+    def solid(x, y, z):
+        s = b.get(x, y, z)
+        if s is None: return y <= T[P.ix(gr, x, z)] if not c.rl["pit"][P.ix(gr, x, z)] else (y <= c.pl["nest"]["floor"] or y >= P.B4(gr, x, z))
+        return not re.search(r"air$|cobweb|leaf_litter|tripwire|chain", s)
+    def free(x, y, z):
+        """a scaled elite spider (1.68 wide, 1.1 high) at the centre of cell (x, y, z) touches no solid block (else she suffocates)"""
+        return not any(solid(x + a, y + d, z + e) for a in (-1, 0, 1) for e in (-1, 0, 1) for d in (0, 1))
     used = []
     for f in (0.2, 0.4, 0.55, 0.7, 0.85, 0.95):
         x, z, v = pv[min(len(pv) - 1, int(len(pv) * f))]
-        best = None
+        cands = []
         for t in deep_trunks:
             d = max(abs(t["x"] - x), abs(t["z"] - z))
-            if not 4 <= d <= 10 or any(max(abs(t["x"] - u[0]), abs(t["z"] - u[2])) < 8 for u in used): continue
-            if best is None or d < best[0]: best = (d, t)
-        if best is None: continue
-        t = best[1]; side = 1 if x > t["x"] else -1
-        # on the trunk's side toward the trail, 3 over the ground (NoAI holds her there)
-        px = t["x"] + (2 if side > 0 and t["kind"] == "deep_dark_oak" else 1 if side > 0 else -1)
-        if b.get(px, c.g(px, t["z"]) + 3, t["z"]) is not None: continue
-        yaw = 90 if side < 0 else -90
-        used.append((px + 0.5, c.g(px, t["z"]) + 3, t["z"] + 0.5, yaw))
+            if not 4 <= d <= 11 or any(max(abs(t["x"] - u[0]), abs(t["z"] - u[2])) < 8 for u in used): continue
+            w = 2 if t["kind"] == "deep_dark_oak" else 1
+            for (px, pz, yaw) in ((t["x"] - 2, t["z"], -90), (t["x"] + w + 1, t["z"], 90), (t["x"], t["z"] - 2, 0), (t["x"], t["z"] + w + 1, 180)):
+                py = c.g(px, pz) + 3
+                if (px, pz) in c.walk or not free(px, py, pz): continue
+                cands.append((d, px, py, pz, yaw))
+        if not cands: continue
+        d, px, py, pz, yaw = min(cands)
+        used.append((px + 0.5, py, pz + 0.5, yaw))
     for k in meta["cocoons"]:                                   # top up to 6 by the cocoons, under the canopy
         if len(used) >= 6: break
-        x, z = k["x"] + 1, k["z"]
-        y = int(c.cb[P.ix(gr, x, z)]) - 2
-        if b.get(x, y, z) is None and b.get(x, y + 1, z) is None and y > c.g(x, z) + 3 and all(max(abs(x - u[0]), abs(z - u[2])) >= 8 for u in used):
+        x, z = k["x"] + 2, k["z"]
+        y = int(c.cb[P.ix(gr, x, z)]) - 3
+        if y > c.g(x, z) + 3 and free(x, y, z) and all(max(abs(x - u[0]), abs(z - u[2])) >= 8 for u in used):
             used.append((x + 0.5, y, z + 0.5, 0))
+    if len(used) < 6: raise SystemExit("only %d points for the elite spiders of the thicket" % len(used))
     out["elites"] = [list(u) for u in used[:6]]
     x1, z1, x2, z2 = c.pl["nest"]["r"]; F = c.pl["nest"]["floor"]
-    out["elites"] += [[x2 - 0.5, F + 4, z1 + 4.5, 90], [x1 + 4.5, F + 1, z1 + 2.5, 180], [x2 - 2.5, F + 1, z2 - 4.5, -90]]
+    nest_pts = []
+    for (px, pz, yaw) in ((x2 - 2, z1 + 5, 90), (x1 + 8, z1 + 4, 180), (x2 - 3, z2 - 5, -90), (x1 + 6, z2 - 6, 0), (x2 - 6, (z1 + z2) // 2 + 3, 90)):
+        for py in (F + 4, F + 1):
+            if free(px, py, pz) and len(nest_pts) < 3: nest_pts.append([px + 0.5, py, pz + 0.5, yaw]); break
+    if len(nest_pts) < 3: raise SystemExit("only %d points for the elite spiders of the nest" % len(nest_pts))
+    out["elites"] += nest_pts
     mx, my, mz = meta["nest"]["lair_mid"]; out["boss"] = [mx + 0.5, my, mz + 0.5]
     # the things of the victims: helmet, shield, torch, boot + bone, rag, a broken arrow, a bowl
     kinds = ["leather_helmet", "shield", "torch", "leather_boots", "bone", "rag", "arrow", "bowl"]

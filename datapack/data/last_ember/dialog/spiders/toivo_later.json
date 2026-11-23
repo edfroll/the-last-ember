@@ -1,0 +1,49 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Тойво",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Отдышусь и пойду. Лук нашёл, значит, и дорогу найду.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Что ты видел?",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.sptrig set 1"
+   }
+  },
+  {
+   "label": {
+    "text": "Иди домой",
+    "color": "gray",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.sptrig set 2"
+   }
+  }
+ ]
+}

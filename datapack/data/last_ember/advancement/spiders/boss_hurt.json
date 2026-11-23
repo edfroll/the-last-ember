@@ -1,0 +1,20 @@
+{
+ "criteria": {
+  "c": {
+   "trigger": "minecraft:player_hurt_entity",
+   "conditions": {
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "minecraft:spider",
+      "minecraft:nbt": "{Tags:[\"le.sp_boss\"]}"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:spiders/boss_hurt"
+ }
+}

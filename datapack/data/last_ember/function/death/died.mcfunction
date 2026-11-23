@@ -1,6 +1,8 @@
 # as the player who just died (still on the death screen; keep_inventory kept everything).
 # Stays: equipment (armor, off-hand), the selected hotbar slot, the Ember, items with custom_data le_keep / le_key. Everything else and XP -> trail.
 scoreboard players set @s le.deaths 0
+# T-032: the quest «Внук звонаря» closed: the far bell for every death
+function last_ember:spiders/died
 execute if entity @s[tag=le.ringon] at @s run function last_ember:ring/off_death
 data modify storage last_ember:dt d set from entity @s LastDeathLocation
 data modify storage last_ember:dt dim set from storage last_ember:dt d.dimension
