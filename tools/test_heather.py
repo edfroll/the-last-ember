@@ -121,7 +121,7 @@ def t_build():
     trees = [t for t in RH.world_scan(RH.VANILLA_TREE, lambda x, z: P.in_village(x, z)) if ours.get(t[:3]) != t[3]]
     chk("no snow in the places, no vanilla tree blocks in the village", not snow and not trees, (snow + trees)[:4])
     hs = M["houses"]; kinds = sorted({h["kind"] for h in hs})
-    chk("8..10 houses: %d of the street with the five oddities %s + the miller's house" % (len(hs), kinds), 8 <= len(hs) + 1 <= 10 and kinds == sorted(["walled", "ladder", "roof", "deep", "reversed"]))
+    chk("8..10 houses: %d of the street with the five oddities %s + the miller's house" % (len(hs), kinds), 8 <= len(hs) <= 10 and kinds == sorted(["walled", "ladder", "roof", "deep", "reversed"]))
     for h in hs:
         k = h["kind"]; d = h["door"]; L = h["L"]
         if k == "walled": chk("house %d: the door walled up (cobble), the window open at the ground" % (h["k"] + 1), blk(d[0], L + 1, d[1], "#minecraft:air") is False and blk(h["window_in"][0], L + 1, h["window_in"][1], "minecraft:air"))

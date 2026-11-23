@@ -324,7 +324,7 @@ def reversed_(b, f, L, du, out):
     put(b, f, du - 1, bw - 1, L + 4, "minecraft:bricks"); put(b, f, du, bw - 1, L + 4, "minecraft:bricks"); put(b, f, du + 1, bw - 1, L + 4, "minecraft:bricks")
     put(b, f, du, bw - 1, L + 1, "minecraft:campfire[facing=%s,lit=false,signal_fire=false,waterlogged=false]" % f.d("out"))
     put(b, f, du, bw - 1, L + 2, "minecraft:air"); put(b, f, du, bw - 1, L + 3, "minecraft:air")
-    put(b, f, du, bw, L + 1, door(f, "in", "lower", hinge="right")); put(b, f, du, bw, L + 2, door(f, "in", "upper", hinge="right"))
+    put(b, f, du, bw, L + 1, door(f, "in", "lower", hinge="right", open_=True)); put(b, f, du, bw, L + 2, door(f, "in", "upper", hinge="right", open_=True))    # open: seen from the room as a doorway in the fire
     for y in range(L + 1, L + 4): put(b, f, du, bw + 1, y, "minecraft:air")
     put(b, f, du, bw + 1, L, LO)
     out["back_door"] = p3(f, du, bw + 1, L + 1)

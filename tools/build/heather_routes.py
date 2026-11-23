@@ -35,7 +35,10 @@ for line in open(os.path.join(ROOT, "server/build/r1/heather.txt")):
     x, y, z, s_ = line.split(" ", 3); _B[(int(x), int(y), int(z))] = s_.strip()
 def get(x, y, z):
     s_ = _B.get((x, y, z))
-    if s_ is not None: return "minecraft:air" if "_door" in s_ else s_
+    if s_ is not None:
+        if "_door" in s_: return "minecraft:air"
+        if "campfire" in s_: return "minecraft:stone_slab[type=bottom]"      # 7/16 high: walked onto like a slab
+        return s_
     i, j = z - _tz, x - _tx
     if not (0 <= i < _T.shape[0] and 0 <= j < _T.shape[1]): return "minecraft:barrier"
     return "minecraft:stone" if y <= _T[i, j] else None
@@ -44,6 +47,8 @@ def path(a, goal):
     with the feet level"""
     import heapq
     hh = lambda n: abs(n[0] - goal[0]) + abs(n[1] - goal[1])
+    OPP = {"east": "west", "west": "east", "north": "south", "south": "north"}
+    kinds = {a: "solid"}
     prev = {a: None}; cost = {a: 0}; q = [(hh(a), 0, a)]; end = None
     while q:
         _, cc, (x, z, s_) = heapq.heappop(q)
@@ -53,10 +58,11 @@ def path(a, goal):
             nx, nz = x + dx, z + dz
             for ns, k in surfaces(get, nx, nz, int(s_) - 4, int(s_) + 2):
                 up = ns - s_
-                if up <= 0.5 + 1e-9 or (up <= 1.0 + 1e-9 and k == "stair:" + face):
-                    if up < -3: continue
+                fwd = up <= 0.5 + 1e-9 or (up <= 1.0 + 1e-9 and k == "stair:" + face)
+                back = -up <= 0.5 + 1e-9 or (-up <= 1.0 + 1e-9 and kinds[(x, z, s_)] == "stair:" + OPP[face])    # the route is walked back too
+                if fwd and back:
                     n = (nx, nz, ns)
-                    if n not in cost or cc + 1 < cost[n]: cost[n] = cc + 1; prev[n] = (x, z, s_); heapq.heappush(q, (cc + 1 + hh(n), cc + 1, n))
+                    if n not in cost or cc + 1 < cost[n]: cost[n] = cc + 1; prev[n] = (x, z, s_); kinds[n] = k; heapq.heappush(q, (cc + 1 + hh(n), cc + 1, n))
     if end is None: raise SystemExit("no way from %s to %s" % (a, goal))
     out = []
     while end: out.append(c(end[0], end[1], end[2])); end = prev[end]

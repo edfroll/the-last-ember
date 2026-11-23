@@ -45,7 +45,10 @@ def relief(gr, pl):
         for x in range(r[0], r[2] + 1):
             for z in range(r[1], r[3] + 1): flat[(x, z)] = v; kind[(x, z)] = k
     rect(pl["church"], 2 * pl["cL"], "church"); rect(pl["square"], 2 * pl["sL"], "square")
-    for h_ in pl["houses"]: rect(h_["r"], 2 * h_["L"], "house")
+    for h_ in pl["houses"]:
+        rect(h_["r"], 2 * h_["L"], "house")
+        for q in h_.get("apron", []):
+            if q not in flat: flat[q] = 2 * h_["L"]; kind[q] = "apron"
     for k, q in pl["plain"].items():
         if q["L"] is not None: rect(q["r"], 2 * q["L"], k)
     for q, v in pl["surf"].items(): flat[q] = v; kind[q] = "street"
@@ -157,7 +160,7 @@ def surface_walks(b, gr, pl, rl, meta):
         if k == "street": b.set(x, y, z, HB.STREET)
         elif k == "square": b.set(x, y, z, SQUARE)
         elif k == "trail": b.set(x, y, z, TRAIL)
-        elif k in ("mill", "miller"): b.set(x, y, z, "minecraft:coarse_dirt" if hsh(x, 1, z, 3403) < 0.5 else "minecraft:grass_block[snowy=false]")
+        elif k in ("mill", "miller", "apron"): b.set(x, y, z, "minecraft:coarse_dirt" if hsh(x, 1, z, 3403) < 0.5 else "minecraft:grass_block[snowy=false]")
         if v % 2: b.set(x, y + 1, z, slab("tuff_slab" if k == "trail" else "cobblestone_slab"))
         for yy in range(y + 1 + v % 2, y + 4):
             if b.get(x, yy, z) is None: b.set(x, yy, z, "minecraft:air")

@@ -224,7 +224,9 @@ def widen(centre, flats_fixed):
 # ---------------------------------------------------------------- the houses along the street
 # (kind, w along the street, d deep, storeys): the five oddities of the card (HQ T-031, 2), the repeats in another size and finish
 HOUSES = [("walled", 7, 7, 1), ("ladder", 7, 9, 2), ("roof", 7, 7, 1), ("deep", 9, 11, 1), ("reversed", 7, 9, 1),
-          ("walled", 9, 7, 2), ("roof", 9, 7, 1), ("ladder", 7, 7, 2), ("reversed", 9, 7, 1)]
+          ("walled", 9, 7, 2), ("roof", 9, 7, 1), ("ladder", 7, 7, 2), ("reversed", 9, 7, 1),
+          ("walled", 7, 9, 1), ("reversed", 7, 7, 1), ("roof", 7, 9, 1)]           # spares: the street takes 8..9 (HQ T-031: 8..10 + the miller's)
+MAX_HOUSES = 9
 
 def house_sites(gr, surf, taken, n=len(HOUSES)):
     """greedy: along the street, both sides, a footprint w x d set back 1 from the street edge with its door on the street; the floor at
@@ -248,6 +250,7 @@ def house_sites(gr, surf, taken, n=len(HOUSES)):
             cand_all.append((x, z, v, dx, dz, face))
     cand_all.sort(key=lambda c: hsh(c[0], 7, c[1], 3100))
     for (k, (kind, w, d, st)) in order:
+        if len(out) >= MAX_HOUSES: break
         best = None
         for (x, z, v, dx, dz, face) in cand_all:
             # the footprint: the door in the middle of the front wall (front wall at the door cell)
@@ -255,16 +258,52 @@ def house_sites(gr, surf, taken, n=len(HOUSES)):
             else: r = (x - w // 2, z + dz, x + w // 2, z + dz * d)
             r = (min(r[0], r[2]), min(r[1], r[3]), max(r[0], r[2]), max(r[1], r[3]))
             if not (in_village(r[0], r[1], -2) and in_village(r[2], r[3], -2)): continue
-            if not free(r, 3): continue
+            if not free(r, 2): continue
             if np.any(gr["wet"][ix(gr, r[0], r[1])[0]:ix(gr, r[2], r[3])[0] + 1, ix(gr, r[0], r[1])[1]:ix(gr, r[2], r[3])[1] + 1]): continue
-            L = v // 2                                         # the floor: the street level (a slab step at the door when v is odd)
+            L = (v + 1) // 2                                   # the floor: the street level or half a block over it (never under: the
+                                                               # door is opened from the street at the eye level)
+            import heather_build as HB
+            fr = HB.Frame(r, face)
+            # the ways in that start outside the door: the street must lie by them at the floor's level (within half a block): the
+            # corner where the outer stair (ladder house) or the ladder (roof house) starts, the window of the walled-up house
+            du_ = fr.W // 2
+            need = {"ladder": range(du_ + 1, fr.W + 1), "roof": range(-1, du_), "walled": range(du_ + 1, du_ + 3)}.get(kind, [])
+            front_ap = []; bad_ = False
+            for u in need:                                     # the front row from the door to there: street at the floor's level or
+                q = fr.xz(u, -1)                               # free ground made flat at it (the apron)
+                if q in surf:
+                    if abs(surf[q] - 2 * L) > 1: bad_ = True; break
+                elif q in used or q in hused or gr["wet"][ix(gr, *q)]: bad_ = True; break
+                else: front_ap.append(q)
+            if bad_: continue
+            if kind == "reversed" and any(fr.xz(fr.W // 2, fr.D + k) in used or fr.xz(fr.W // 2, fr.D + k) in hused or
+                                          not in_village(*fr.xz(fr.W // 2, fr.D + k), -2) for k in (0, 1)): continue
             a = sub(gr, r); m = int(np.abs(a - L).max())
             if m > MAX_EARTH: continue
             spread = min([max(abs(r[0] - q["r"][0]), abs(r[1] - q["r"][1])) for q in out] + [99])
             c = (m > 5, -min(spread, 14), int(np.abs(a - L).sum()) / 40.0)
-            if best is None or c < best[0]: best = (c, dict(k=k, kind=kind, w=w, d=d, storeys=st, r=r, L=L, face=face, door=(x + dx, z + dz), front=(x, z), v=v, earth=m))
+            if best is None or c < best[0]: best = (c, dict(k=k, kind=kind, w=w, d=d, storeys=st, r=r, L=L, face=face, door=(x + dx, z + dz), front=(x, z), v=v, earth=m, front_ap=front_ap))
         if best is None: continue
         h_ = best[1]; out.append(h_)
+        # the apron at the floor level where a stair or a ladder starts outside: the outer stair of the ladder house (2 columns on the
+        # right, front row too), the ladder of the roof house (1 column on the left); street cells stay street
+        ap = []
+        import heather_build as HB
+        fr = HB.Frame(h_["r"], h_["face"])
+        if kind in ("ladder", "roof"):
+            us = (fr.W, fr.W + 1) if kind == "ladder" else (-1,)
+            for u in us:
+                for w in range(-1, fr.D):
+                    q = fr.xz(u, w)
+                    if q not in surf and q not in used and q not in hused: ap.append(q)
+        if kind == "reversed":                         # the yard behind the door in the hearth
+            for k in (0, 1):
+                for a in (-1, 0, 1):
+                    q = fr.xz(fr.W // 2 + a, fr.D + k)
+                    if q not in surf and q not in used and q not in hused: ap.append(q)
+        ap += [q for q in h_.pop("front_ap") if q not in ap]
+        h_["apron"] = ap
+        for q in ap: hused.add(q)
         for xx in range(h_["r"][0], h_["r"][2] + 1):
             for zz in range(h_["r"][1], h_["r"][3] + 1): hused.add((xx, zz))
     return out

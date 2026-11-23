@@ -35,6 +35,7 @@ def main():
         s = blocks.get((x, y, z))
         if s is not None:
             if "_door" in s and "iron" not in s: return "minecraft:air"
+            if "campfire" in s: return "minecraft:stone_slab[type=bottom]"      # 7/16 high: walked onto like a slab
             return s
         i, j = z - tz1, x - tx1
         if 0 <= i < TT.shape[0] and 0 <= j < TT.shape[1] and y <= TT[i, j]: return "minecraft:stone"
