@@ -228,6 +228,7 @@ def untree(b, gr, pl, rl, meta):
     for (x, y, z, nm) in world_scan(PLANTS, lambda x, z: P.in_village(x, z) or (x, z) in meta["_ridge_keep"]):
         i, j = ix(gr, x, z)
         if b.get(x, y, z) is not None: continue
+        if y <= int(T[i, j]): continue                 # under the new ground: the terrain write takes it (air here would cut the ground)
         if T[i, j] != gr["live"][i, j] or y != int(T[i, j]) + 1 or (x, z) in rl["flat"] or rl["wallm"][i, j]: b.set(x, y, z, "minecraft:air"); npl += 1
     meta["removed"] = dict(tree_blocks=n, snow=ns, springs=nw, plants=npl)
 
