@@ -78,8 +78,8 @@ def main(names):
         "workers": lambda: workers(),
         "noon": lambda: noon(),
         "midnight": lambda: midnight(),
-        "ridge_pad": lambda: (R("time set 6000"), shot("ridge_pad", (P_PAD[0], P_PAD[1] + 1, P_PAD[2]), (hd["sword_base"][0], 120, hd["sword_base"][2]), settle=14)),
-        "ridge_shelf": lambda: (R("time set 6000"), shot("ridge_shelf", (sq[0] + 0.5, sL + 6, sq[3] + 0.5), (hd["sword_base"][0], 118, hd["sword_base"][2]), settle=12)),
+        "ridge_pad": lambda: (R("time set 6000"), shot("ridge_pad", (P_PAD[0], P_PAD[1] + 1, P_PAD[2]), (hd["sword_base"][0] - 4, 128, hd["sword_base"][2]), settle=25)),
+        "ridge_shelf": lambda: (R("time set 6000"), shot("ridge_shelf", (79.5, 81.5, -454.5), (hd["sword_base"][0] - 2, 118, hd["sword_base"][2]), settle=20)),
         "mouth": lambda: (R("time set 6000"), shot("mouth", (M["tp"]["mouth"][0], M["mouth_y"] + 0.1, M["tp"]["mouth"][2] + 1.5), (M["tp"]["mouth"][0], M["mouth_y"] - 8, M["tp"]["mouth"][2] - 60), settle=12)),
         "intro": lambda: intro(),
     }
