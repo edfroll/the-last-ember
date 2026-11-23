@@ -192,7 +192,9 @@ def templates(b, c, meta, live):
     for k, (za, zb) in enumerate(((gi["za"], gi["za"] + 20), (gi["za"] + 21, gi["zb"] + 2))):
         cells = {}
         for (x, y, z), s in b.v.items():
-            if x1 <= x <= x2 and za <= z <= zb and ylo <= y <= yhi: cells[(x, y, z)] = s
+            if not (x1 <= x <= x2 and za <= z <= zb and ylo <= y <= yhi): continue
+            if s == "minecraft:air" and not (z1 <= z <= z2): continue      # the air of clear() outside the pit differs on a re-run
+            cells[(x, y, z)] = s
         for x in range(x1, x2 + 1):
             for z in range(za, zb + 1):
                 for y in range(ylo, yhi + 1): cells.setdefault((x, y, z), "minecraft:structure_void")
@@ -364,23 +366,24 @@ def main(plan_only=False):
     rl = P.relief(gr, pl["nest"], pl["giant"], pl["lair"], pl["tv"], pl["ta"], pl["ts"])
     info = P.checks(gr, pl["nest"], pl["lair"], rl, pl["tv"], pl["ta"], pl["ts"])
     b, c, meta, live = build(gr, pl, rl)
-    if not plan_only: clear(b, c, meta)
     from connect import connect
     connect(b)
-    bad = [k for k in b.v if not P.in_place(k[0], k[2])]
-    if bad: raise SystemExit("blocks outside the place: %s" % bad[:5])
-    ft = [k for k in b.v if gr["ftrail"][ix(gr, k[0], k[2])]]
-    if ft: raise SystemExit("blocks on the trail of T-022: %s" % ft[:5])
     L, org = light(b, c)
     meta["light"], _ = deep_light(b, c, L, org)
     if meta["light"]["share"] < 0.8: raise SystemExit("STOP (HQ T-032, 2): the deep has %.1f %% of its cells at sky light <= 7 (< 80 %%)" % (100 * meta["light"]["share"]))
     meta["_trees"] = c.trees
     meta["points"] = points(b, c, meta)
+    if not plan_only: templates(b, c, meta, live)    # before clear(): the same cells on every run
+    if not plan_only: clear(b, c, meta)              # after the points: its air (up to the old tops in the world now) differs on a re-run
+    else: meta["removed"] = {}
+    bad = [k for k in b.v if not P.in_place(k[0], k[2])]
+    if bad: raise SystemExit("blocks outside the place: %s" % bad[:5])
+    ft = [k for k in b.v if gr["ftrail"][ix(gr, k[0], k[2])]]
+    if ft: raise SystemExit("blocks on the trail of T-022: %s" % ft[:5])
     os.makedirs(os.path.join(ROOT, "docs/reports/T-032"), exist_ok=True)
     plan_png(c, b, meta, info, os.path.join(ROOT, "docs/reports/T-032/spiders_plan.png"))
     if plan_only:
         print("plan:", info, meta["light"]); return
-    templates(b, c, meta, live)
     ncol = write_terrain(gr, rl, b)
     np.savez_compressed(os.path.join(OUT, "spiders_T.npz"), T=rl["T"], x1=gr["x1"], z1=gr["z1"], walk=np.array([[x, z, v] for (x, z), v in c.walk.items()]))
     n = b.write_placements(os.path.join(OUT, "spiders.txt"))
