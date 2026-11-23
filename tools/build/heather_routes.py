@@ -62,12 +62,16 @@ def path(a, goal):
                 back = -up <= 0.5 + 1e-9 or (-up <= 1.0 + 1e-9 and kinds[(x, z, s_)] == "stair:" + OPP[face])    # the route is walked back too
                 if fwd and back:
                     n = (nx, nz, ns)
-                    if n not in cost or cc + 1 < cost[n]: cost[n] = cc + 1; prev[n] = (x, z, s_); kinds[n] = k; heapq.heappush(q, (cc + 1 + hh(n), cc + 1, n))
+                    # keep off walls and edges: +0.6 for every side of the cell with no standing within half a block (the bot is
+                    # 0.6 wide and drifts; a path hugging a parapet catches it)
+                    edge = sum(1 for (ex, ez) in DIRS if not any(abs(t - ns) <= 0.5 for (t, _) in surfaces(get, nx + ex, nz + ez, int(ns) - 2, int(ns) + 1)))
+                    nc = cc + 1 + 0.6 * edge
+                    if n not in cost or nc < cost[n]: cost[n] = nc; prev[n] = (x, z, s_); kinds[n] = k; heapq.heappush(q, (nc + hh(n), nc, n))
     if end is None: raise SystemExit("no way from %s to %s" % (a, goal))
     out = []
     while end: out.append(c(end[0], end[1], end[2])); end = prev[end]
     return out[::-1]
-pad = (P.HEARTH[0], P.PAD[1] + 2, float(P.PAD_Y + 1))          # on the pad, north of the bonfire, on the line of the bridge
+pad = (P.HEARTH[0], P.PAD[1] + 1, float(P.PAD_Y + 1))          # on the pad, 4 north of the bonfire (clear of its blocks), on the line of the bridge
 sq = M["square"]; sL = M["sL"]; ch = M["church"]; L = ch["L"]; dx, dy, dz = ch["door"]
 wx, wy, wz = M["well"]
 rx, ry, rz = ch["ringer"]
