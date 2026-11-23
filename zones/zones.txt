@@ -52,4 +52,6 @@ castle_keep_rock_2  overworld box  469 99 9  474 105 81   no_blink,no_chorus   #
 castle_keep_rock_3  overworld box  460 99 9  469 105 13   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
 castle_keep_rock_4  overworld box  460 99 -34  464 105 9   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
 castle_keep_rock_5  overworld box  433 99 -34  461 121 -30   no_blink,no_chorus   # T-029: the castle and the secret way (castle_rock)
-grove           overworld cyl -420 60 45 85 181   no_spawn   # T-030: the Mushroom Grove of the Advisor (adventure, no monsters)
+grove           overworld cyl -420 60 45 85 194   no_spawn   # T-030: the Mushroom Grove of the Advisor (adventure, no monsters)
+heather         overworld box  20 16 -515  120 144 -425   # T-031: the Village of Heather (adventure, spawning on)
+heather_head    overworld box  102 62 -576  147 144 -547   # T-031: the head of the Dragon Ridge and the sword (the rest of the ridge breaks)

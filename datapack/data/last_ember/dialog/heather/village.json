@@ -1,0 +1,37 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Звонарь",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Огонь ушёл, и всё стало немного не так. Сначала двери. Потом лестницы. Потом люди. Мы не замечали. А когда заметили, сказать было уже некому.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Ещё",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.htrig set 4"
+   }
+  }
+ ]
+}

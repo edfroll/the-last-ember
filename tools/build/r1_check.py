@@ -13,7 +13,7 @@ import r1
 ROOT = r1.ROOT
 args = sys.argv[1:]; path = args[0] if args and args[0].endswith(".bin") else os.path.join(ROOT, "server/build/r1/after.bin")
 what = [a for a in args if not a.endswith(".bin")] or ["wall", "seam", "plots", "water"]
-BUILT = {"weepers", "maze", "garden", "fens", "cemetery", "lodge", "castle", "grove"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
+BUILT = {"weepers", "maze", "garden", "fens", "cemetery", "lodge", "castle", "grove", "heather", "dragon_ridge"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
 if what[:1] == ["places"]:
     W0 = r1.World(); bad = False
     for pid in what[1:] or ["weepers"]:

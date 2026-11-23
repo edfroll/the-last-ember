@@ -1,0 +1,57 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Звонарь",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Живые? Поднимайтесь, не бойтесь. Внизу все свои, только давно себя не помнят. Я звоню им в полночь. Колокол им напоминает, и они на миг вспоминают.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Кто ты?",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.htrig set 1"
+   }
+  },
+  {
+   "label": {
+    "text": "Что с деревней?",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.htrig set 2"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}
