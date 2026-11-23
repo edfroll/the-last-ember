@@ -108,8 +108,8 @@ def run(meta):
     w("near", [hdr + "#near = players near the place (box + 48)", "execute store result score #near le.sp if entity @a[%s]" % box(NEAR)])
     w("in_nest", [hdr + "as a player: #in 1 when inside the nest's cavity (under the lid; 4 x 4 column boxes up to the lowest lid over them)",
                   "scoreboard players set #in le.sp 0"] + ["execute if entity @s[%s] run return run scoreboard players set #in le.sp 1" % box(s) for s in subs])
-    w("count_nest", [hdr + "#innest = live players (not spectator/creative) inside the nest's cavity", "scoreboard players set #innest le.sp 0",
-                     "execute as @a[gamemode=!spectator,gamemode=!creative,%s] unless entity @s[nbt={Health:0.0f}] run function last_ember:spiders/count_one" % box(LEASH)])
+    w("count_nest", [hdr + "#innest = live players (not spectator/creative) inside the nest's cavity (@e selects only the living: @a would count a dead one)", "scoreboard players set #innest le.sp 0",
+                     "execute as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,%s] run function last_ember:spiders/count_one" % box(LEASH)])
     bx, by, bz = meta["points"]["boss"]
     w("boss_put", [hdr + "the Mistress asleep on her lair (a new generation: the old one goes wherever she is)",
                    "scoreboard players add #bgen le.sp 1",
@@ -250,12 +250,12 @@ def run(meta):
     w("fire_clamp", [hdr + "as a player: the box round him clamped to the place (storage last_ember:spiders f.x1..z2)",
                      "execute store result score #fx le.sp run data get entity @s Pos[0]", "execute store result score #fy le.sp run data get entity @s Pos[1]",
                      "execute store result score #fz le.sp run data get entity @s Pos[2]",
-                     "scoreboard players operation #x1 le.sp = #fx le.sp", "scoreboard players remove #x1 le.sp 20", "execute if score #x1 le.sp matches ..%d run scoreboard players set #x1 le.sp %d" % (px1 - 1, px1),
-                     "scoreboard players operation #x2 le.sp = #fx le.sp", "scoreboard players add #x2 le.sp 20", "execute if score #x2 le.sp matches %d.. run scoreboard players set #x2 le.sp %d" % (px2 + 1, px2),
-                     "scoreboard players operation #z1 le.sp = #fz le.sp", "scoreboard players remove #z1 le.sp 20", "execute if score #z1 le.sp matches ..%d run scoreboard players set #z1 le.sp %d" % (pz1 - 1, pz1),
-                     "scoreboard players operation #z2 le.sp = #fz le.sp", "scoreboard players add #z2 le.sp 20", "execute if score #z2 le.sp matches %d.. run scoreboard players set #z2 le.sp %d" % (pz2 + 1, pz2),
-                     "scoreboard players operation #y1 le.sp = #fy le.sp", "scoreboard players remove #y1 le.sp 9",
-                     "scoreboard players operation #y2 le.sp = #fy le.sp", "scoreboard players add #y2 le.sp 9",
+                     "scoreboard players operation #x1 le.sp = #fx le.sp", "scoreboard players remove #x1 le.sp 12", "execute if score #x1 le.sp matches ..%d run scoreboard players set #x1 le.sp %d" % (px1 - 1, px1),
+                     "scoreboard players operation #x2 le.sp = #fx le.sp", "scoreboard players add #x2 le.sp 12", "execute if score #x2 le.sp matches %d.. run scoreboard players set #x2 le.sp %d" % (px2 + 1, px2),
+                     "scoreboard players operation #z1 le.sp = #fz le.sp", "scoreboard players remove #z1 le.sp 12", "execute if score #z1 le.sp matches ..%d run scoreboard players set #z1 le.sp %d" % (pz1 - 1, pz1),
+                     "scoreboard players operation #z2 le.sp = #fz le.sp", "scoreboard players add #z2 le.sp 12", "execute if score #z2 le.sp matches %d.. run scoreboard players set #z2 le.sp %d" % (pz2 + 1, pz2),
+                     "scoreboard players operation #y1 le.sp = #fy le.sp", "scoreboard players remove #y1 le.sp 6",
+                     "scoreboard players operation #y2 le.sp = #fy le.sp", "scoreboard players add #y2 le.sp 6",
                      "execute if score #x1 le.sp > #x2 le.sp run return fail", "execute if score #z1 le.sp > #z2 le.sp run return fail"] +
       ["execute store result storage last_ember:spiders f.%s int 1 run scoreboard players get #%s le.sp" % (k, k) for k in ("x1", "y1", "z1", "x2", "y2", "z2")] + ["return 1"])
     # ---- the tp points for the shots and the tests

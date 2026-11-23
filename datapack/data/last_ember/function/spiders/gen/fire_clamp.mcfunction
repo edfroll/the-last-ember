@@ -3,21 +3,21 @@ execute store result score #fx le.sp run data get entity @s Pos[0]
 execute store result score #fy le.sp run data get entity @s Pos[1]
 execute store result score #fz le.sp run data get entity @s Pos[2]
 scoreboard players operation #x1 le.sp = #fx le.sp
-scoreboard players remove #x1 le.sp 20
+scoreboard players remove #x1 le.sp 12
 execute if score #x1 le.sp matches ..109 run scoreboard players set #x1 le.sp 110
 scoreboard players operation #x2 le.sp = #fx le.sp
-scoreboard players add #x2 le.sp 20
+scoreboard players add #x2 le.sp 12
 execute if score #x2 le.sp matches 191.. run scoreboard players set #x2 le.sp 190
 scoreboard players operation #z1 le.sp = #fz le.sp
-scoreboard players remove #z1 le.sp 20
+scoreboard players remove #z1 le.sp 12
 execute if score #z1 le.sp matches ..-341 run scoreboard players set #z1 le.sp -340
 scoreboard players operation #z2 le.sp = #fz le.sp
-scoreboard players add #z2 le.sp 20
+scoreboard players add #z2 le.sp 12
 execute if score #z2 le.sp matches -259.. run scoreboard players set #z2 le.sp -260
 scoreboard players operation #y1 le.sp = #fy le.sp
-scoreboard players remove #y1 le.sp 9
+scoreboard players remove #y1 le.sp 6
 scoreboard players operation #y2 le.sp = #fy le.sp
-scoreboard players add #y2 le.sp 9
+scoreboard players add #y2 le.sp 6
 execute if score #x1 le.sp > #x2 le.sp run return fail
 execute if score #z1 le.sp > #z2 le.sp run return fail
 execute store result storage last_ember:spiders f.x1 int 1 run scoreboard players get #x1 le.sp
