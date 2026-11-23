@@ -1,0 +1,45 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Советчик",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "А, Несущие. Заходите, у огня тепло. Зовите меня Советчиком: я советую, больше ничего не умею. Уголь у вас совсем тусклый. Это поправимо. В Доле четыре вещи, которые помнят огонь. Отнесите их Плакальщицам — и Уголь вспомнит, каким был.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Расспросить",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.atrig set 1"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

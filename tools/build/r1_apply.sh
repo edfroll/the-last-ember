@@ -53,6 +53,9 @@ tools/build/cemetery_step.sh
 # the causeway, the pier and the colossi, the stair in the rock, the bridgehead, the rift and the bridge, the barbican, the table; scans
 # server/build/r1/castle_pre.bin)
 tools/build/castle_step.sh
+# T-030: the Mushroom Grove of the Advisor (only inside its place, r 45 + 16: the house terrace, the garden by bonfire 10, the path, the
+# giant mushrooms, the poplars, the faces; scans server/build/r1/grove_pre.bin)
+tools/build/grove_step.sh
 tools/biomepaint.sh | grep -v JAVA_TOOL | sed -n 1p      # not head -1: it closed the pipe, SIGPIPE + pipefail stopped the step (exit 141)
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

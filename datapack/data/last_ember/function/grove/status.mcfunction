@@ -1,0 +1,3 @@
+# T-030: ADMIN: the state of the grove in the chat
+function last_ember:grove/gen/faces_count
+tellraw @s [{"text":"grove: advisor point=","color":"gray"},{"score":{"name":"#cur","objective":"le.grv"}},{"text":" (0 day, 1 night, 2 circle, 3 pinned) should=","color":"gray"},{"score":{"name":"#ap","objective":"le.grv"}},{"text":" gen="},{"score":{"name":"#agen","objective":"le.grv"}},{"text":" pin="},{"score":{"name":"#pin","objective":"le.grv"}},{"text":" met-gen="},{"score":{"name":"#met","objective":"le.grv"}},{"text":" faces open="},{"score":{"name":"#fo","objective":"le.grv"}},{"text":" chapters="},{"score":{"name":"#chapters","objective":"le.alt"}}]

@@ -1,0 +1,33 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Советчик",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Живая изгородь на севере перестраивается, пока вы внутри. Не спорьте с ней. Статуи в тупиках смотрят вслед тому, кто уходит. Куда смотрят — туда и идите.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Ещё",
+   "color": "green",
+   "italic": false
+  },
+  "width": 150,
+  "action": {
+   "type": "minecraft:run_command",
+   "command": "trigger le.atrig set 1"
+  }
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Советчик",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Король за озером на востоке спит и никого не пускает. Колоссы у воды помнят только своих. Спросите того, кто хоронит рыцарей у Брода: он знает, чью руку они помнят.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Ещё",
+   "color": "green",
+   "italic": false
+  },
+  "width": 150,
+  "action": {
+   "type": "minecraft:run_command",
+   "command": "trigger le.atrig set 1"
+  }
+ }
+}
