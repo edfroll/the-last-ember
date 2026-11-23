@@ -272,7 +272,7 @@ def deep(b, f, L, du, out):
     # the stair: from the ledge (w 1) at u 1 down along the left wall (u 1) southwards... w 2..D-2: 7 steps down to bot + 1 surface
     for k in range(depth):
         w = 2 + k
-        y = L - 1 - k                          # the stair block top = L - k (standing L - k + ... ) : step down 1 per cell (stairs)
+        y = L - k                              # the first step at the ledge's level (its top = the ledge's floor), then 1 down per cell
         put(b, f, 1, w, y, st("spruce_stairs", f, "out"))
         for yy in range(bot, y): put(b, f, 1, w, yy, LO)
     out["stair_top"] = p3(f, 1, 1, L + 1); out["stair_bot"] = p3(f, 1, 2 + depth, bot + 1)

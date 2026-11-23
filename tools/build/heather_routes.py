@@ -25,56 +25,71 @@ def simplify(pts):
         if (round(b[0] - a[0], 3), round(b[1] - a[1], 3)) != (round(cc[0] - b[0], 3), round(cc[1] - b[1], 3)) or abs((b[2] - a[2]) - (cc[2] - b[2])) > 0.01: out.append(b)
     out.append(pts[-1]); return out
 
-pad = c(P.HEARTH[0] - 3, P.PAD[1] + 2, P.PAD_Y + 1)                     # on the pad, north of the bonfire, west of the line of the bridge
-deck = sorted(({(x, z): v for (x, z, v) in M["deck"]}).items(), key=lambda kv: -kv[0][1])
-bridge = [c(70, z, v / 2 + 1) for (x, z), v in deck if x == 70]
-street = [c(x, z, v / 2 + 1) for (x, z, v) in M["street"]]
-sq = M["square"]; sL = M["sL"]
-# the street ends at the east edge of the square (leg 1) and starts again at its north edge (leg 2): walk across the square between
-i2 = next(k for k, p in enumerate(street) if k > 0 and abs(p[0] - street[k - 1][0]) + abs(p[1] - street[k - 1][1]) > 1.01)
-leg1, leg2 = street[:i2], street[i2:]
-across = [c(leg1[-1][0] - 1.5, leg1[-1][1] - 0.5, sL + 1), c(leg2[0][0] - 0.5, leg1[-1][1] - 0.5, sL + 1)]
-ch = M["church"]; L = ch["L"]; dx, dy, dz = ch["door"]
-church_in = [c(dx, dz, L + 1), c(dx, dz - 1, L + 1), c(dx, dz - 2, L + 1)]
-ax, ay, az = ch["arch"]
-nave = [c(dx, az, L + 1), c(ax + 1, az, L + 1), c(ax, az, L + 1)]
-steps = [c(x, z, f) for (x, z, f) in ch["steps"]]
+# houses: the way in is searched on the blocks (the rules of tools/build/walkcheck.py: no jumps), from the street cell in front of the
+# door to the goal of the house's oddity; the ladder of the roof house is climbed by the bot from the cell at its foot
+import numpy as np
+from walkcheck import surfaces, DIRS
+_d = np.load(os.path.join(ROOT, "server/build/r1/heather_T.npz")); _T = _d["T"]; _tx, _tz = int(_d["x1"]), int(_d["z1"])
+_B = {}
+for line in open(os.path.join(ROOT, "server/build/r1/heather.txt")):
+    x, y, z, s_ = line.split(" ", 3); _B[(int(x), int(y), int(z))] = s_.strip()
+def get(x, y, z):
+    s_ = _B.get((x, y, z))
+    if s_ is not None: return "minecraft:air" if "_door" in s_ else s_
+    i, j = z - _tz, x - _tx
+    if not (0 <= i < _T.shape[0] and 0 <= j < _T.shape[1]): return "minecraft:barrier"
+    return "minecraft:stone" if y <= _T[i, j] else None
+def path(a, goal):
+    """A* over standing cells (unit steps, the rules of walkcheck) from a = (x, z, feet) to goal = (x, z, feet or None): the cell centres
+    with the feet level"""
+    import heapq
+    hh = lambda n: abs(n[0] - goal[0]) + abs(n[1] - goal[1])
+    prev = {a: None}; cost = {a: 0}; q = [(hh(a), 0, a)]; end = None
+    while q:
+        _, cc, (x, z, s_) = heapq.heappop(q)
+        if cc > cost[(x, z, s_)]: continue
+        if (x, z) == goal[:2] and (goal[2] is None or abs(s_ - goal[2]) < 0.6): end = (x, z, s_); break
+        for (dx, dz), face in DIRS.items():
+            nx, nz = x + dx, z + dz
+            for ns, k in surfaces(get, nx, nz, int(s_) - 4, int(s_) + 2):
+                up = ns - s_
+                if up <= 0.5 + 1e-9 or (up <= 1.0 + 1e-9 and k == "stair:" + face):
+                    if up < -3: continue
+                    n = (nx, nz, ns)
+                    if n not in cost or cc + 1 < cost[n]: cost[n] = cc + 1; prev[n] = (x, z, s_); heapq.heappush(q, (cc + 1 + hh(n), cc + 1, n))
+    if end is None: raise SystemExit("no way from %s to %s" % (a, goal))
+    out = []
+    while end: out.append(c(end[0], end[1], end[2])); end = prev[end]
+    return out[::-1]
+pad = (P.HEARTH[0] - 3, P.PAD[1] + 2, float(P.PAD_Y + 1))      # on the pad, north of the bonfire, west of the line of the bridge
+sq = M["square"]; sL = M["sL"]; ch = M["church"]; L = ch["L"]; dx, dy, dz = ch["door"]
+wx, wy, wz = M["well"]
 rx, ry, rz = ch["ringer"]
-top = [c(int(rx), int(rz), ry)]
-h_in = [pad, c(70, P.PAD[1] + 1, P.PAD_Y + 1)] + simplify(bridge + leg1) + across + simplify(leg2) + church_in + nave + simplify(steps) + top
-# houses
+legs = [(wx + 3, wz + 3, float(sL + 1)), (dx, dz, float(L + 1)), (int(rx), int(rz), float(ry))]
+h_in = [c(pad[0], pad[1], pad[2])]; a = pad
+for g in legs:
+    seg = simplify(path(a, g)); h_in += seg[1:]; a = (g[0], g[1], seg[-1][2])
 routes = {"h_in": h_in, "h_in_b": h_in[::-1]}
 for h in M["houses"]:
     fx, fz = h["front"]; L_ = h["L"]
-    f0 = c(fx, fz, L_ + 1)
-    door = h["door"]
-    ins = h["inside"]
-    if h["kind"] == "walled":
-        wx, wz = h["window_in"]
-        out = [c(wx + (fx - door[0]), wz + (fz - door[1]), L_ + 1)]
-        pts = [f0] + out + [c(wx, wz, L_ + 1), c(ins[0], ins[2], L_ + 1)]
-    elif h["kind"] == "deep":
-        pts = [f0, c(door[0], door[1], L_ + 1), c(h["stair_top"][0], h["stair_top"][2], L_ + 1), c(h["stair_bot"][0], h["stair_bot"][2], h["stair_bot"][1]),
-               c(h["small_door"][0], h["small_door"][2], h["bot"] + 1), c(h["small_in"][0], h["small_in"][2], h["bot"] + 1)]
-    elif h["kind"] == "ladder":
-        ud = h["upper_door"]
-        pts = [f0, c(door[0], door[1], L_ + 1), c(ins[0], ins[2], L_ + 1), c(door[0], door[1], L_ + 1), f0]
-        # the outer stair: from the front corner along the right wall outside
-        pts += [c(ud[0], ud[2], ud[1]), c(h["upper_in"][0], h["upper_in"][2], h["upper_in"][1])]
-    elif h["kind"] == "roof":
-        lx, ly, lz = h["ladder"]; rx_, ry_, rz_ = h["roof"]
-        pts = [f0, c(door[0], door[1], L_ + 1), c(ins[0], ins[2], L_ + 1), c(door[0], door[1], L_ + 1), f0, c(lx, lz, L_ + 1), c(rx_, rz_, ry_)]
-    else:
-        bd = h["back_door"]
-        pts = [f0, c(door[0], door[1], L_ + 1), c(ins[0], ins[2], L_ + 1), c(bd[0], bd[2], bd[1])]
+    st_ = [s_ for (s_, k) in surfaces(get, fx, fz, L_ - 3, L_ + 3)]
+    a = (fx, fz, min(st_, key=lambda v: abs(v - (L_ + 1))))
+    k = h["kind"]
+    if k == "walled": g = (h["inside"][0], h["inside"][2], h["inside"][1])
+    elif k == "deep": g = (h["small_in"][0], h["small_in"][2], h["small_in"][1])
+    elif k == "ladder": g = (h["upper_in"][0], h["upper_in"][2], h["upper_in"][1])
+    elif k == "reversed": g = (h["back_door"][0], h["back_door"][2], h["back_door"][1])
+    else: g = (h["ladder"][0], h["ladder"][2], None)
+    pts = simplify(path(a, g))
+    if k == "ladder":            # first the room under the low ceiling, then out and up the outer stair
+        pts = simplify(path(a, (h["inside"][0], h["inside"][2], h["inside"][1]))) + simplify(path(a, (h["inside"][0], h["inside"][2], h["inside"][1])))[::-1][1:] + pts[1:]
+    if k == "roof":              # first in and out of the door, then up the ladder onto the roof table
+        pts = simplify(path(a, (h["inside"][0], h["inside"][2], h["inside"][1]))) + simplify(path(a, (h["inside"][0], h["inside"][2], h["inside"][1])))[::-1][1:] + pts[1:]
+        rx_, ry_, rz_ = h["roof"]; pts = pts + [c(rx_, rz_, ry_)]
     routes["h_house%d" % (h["k"] + 1)] = pts + pts[::-1][1:]
-# the ridge: the church door -> east along the terrace's south edge -> round the east end to the north side -> the trail -> the mouth
-cr = M["church_r"]
-trail = [c(x, z, v / 2 + 1) for (x, z, v) in M["trail"]]
-ne = M["neck_end"]; my = M["mouth_y"]; mo = M["mouth"]
-jaw = [c(x, ne[1], my) for x in range(ne[0] + 1, mo[0] + 3)] + [c((mo[0] + mo[2]) // 2, (mo[1] + mo[3]) // 2, my)]
-round_church = [c(dx, cr[3], L + 1), c(cr[2], cr[3], L + 1), c(cr[2], cr[1], L + 1)]
-h_ridge = [c(dx, dz, L + 1)] + round_church + simplify(trail) + simplify(jaw)
+# the ridge: the church door -> the trail -> the jaw passage -> the mouth platform (searched on the blocks)
+mo = M["mouth"]; my = M["mouth_y"]
+h_ridge = simplify(path((dx, dz, float(L + 1)), ((mo[0] + mo[2]) // 2, (mo[1] + mo[3]) // 2, float(my))))
 routes["h_ridge"] = h_ridge; routes["h_ridge_b"] = h_ridge[::-1]
 # the approaches of T-022 (south of the pad): the trail r1_heather->r1_garden and refuge->r1_heather end at (70, -411)
 r1 = json.load(open(os.path.join(ROOT, "server/build/r1/r1.json")))
