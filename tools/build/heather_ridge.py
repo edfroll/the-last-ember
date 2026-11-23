@@ -77,21 +77,39 @@ def skull_cells():
     out = {}
     def S(x, y, z, s=None): out[(x, y, z)] = s or SKULL.at(x, y, z)
     def A(x, y, z): out[(x, y, z)] = "minecraft:air"
-    # the cranium: an ellipsoid centred over the back half, flattened under; the brow ridges; the cheeks down to the jaw
-    cx, cz, cy = hx1 + 14.5, hz1 + 17.0, 101.0
-    rx, rz, ry = 13.5, 12.5, P.HEAD_TOP - 101.0 + 0.4
+    # the skull as a lizard's: a low snout to the north rising into a high crown over the back half, a rounded cross-section (the top
+    # of the column falls off as the square of the distance from the axis), the cheeks widest behind the eyes
+    cx, cz = hx1 + 14.5, hz1 + 17.0
+    def half_w(Z):
+        if Z < 12: return 6.0 + 0.25 * Z                 # the snout 6..9
+        if Z < 20: return 9.0 + (Z - 12) * 0.45          # the cheeks 9..12.6
+        return 12.6 - (Z - 20) * 0.35                    # the back of the skull
+    def ridge(Z):
+        if Z < 12: return Y0 + 8 + 0.6 * Z               # the snout's top: 92 -> 99
+        if Z < 22: return Y0 + 15 + (Z - 12) * 2.1       # the forehead up to the crown (~120)
+        return P.HEAD_TOP - (Z - 22) * 1.4               # the back of the crown falling to the neck
+    def side(Z): return Y0 + 2 if Z < 12 else Y0 + 4
     for x in range(hx1, hx2 + 1):
         for z in range(hz1, hz2 + 1):
-            for y in range(Y0 - 1, P.HEAD_TOP + 1):
-                e = ((x + 0.5 - cx) / rx) ** 2 + ((z + 0.5 - cz) / rz) ** 2 + ((y + 0.5 - cy) / ry) ** 2
-                if e <= 1.0 or (y < cy and ((x + 0.5 - cx) / rx) ** 2 + ((z + 0.5 - cz) / rz) ** 2 <= 1.0): S(x, y, z)
-    # the snout (upper jaw): from the cranium forward (north) to Z 0, X 8..21, y 90..97, narrowing and rising a little to the front
-    for z in range(hz1, hz1 + 12):
-        Z = z - hz1
-        half = 5.5 + Z * 0.15
-        for x in range(hx1, hx2 + 1):
-            if abs(x + 0.5 - cx) > half: continue
-            for y in range(Y0 + 6, Y0 + 13 - (1 if Z < 2 else 0)): S(x, y, z)
+            Z = z - hz1; w = half_w(Z); dx = abs(x + 0.5 - cx)
+            if dx > w: continue
+            top = ridge(Z) - (ridge(Z) - side(Z)) * (dx / w) ** 2
+            for y in range(Y0 - 1, int(round(min(top, P.HEAD_TOP))) + 1): S(x, y, z)
+    # the brow ridges (cobbled deepslate) over the eye sockets, both sides, Z 13..17
+    for z in range(hz1 + 13, hz1 + 18):
+        Z = z - hz1; w = half_w(Z)
+        for sgn in (-1, 1):
+            x = int(cx + sgn * (w - 0.5))
+            for y in (Y0 + 20, Y0 + 21): S(x - sgn, y, z, "minecraft:cobbled_deepslate"); S(x, y, z, "minecraft:cobbled_deepslate")
+    # the crest of the spine over the crown and down the back (fins of cobbled deepslate / tuff)
+    for z in range(hz1 + 14, hz2 + 1, 2):
+        Z = z - hz1; t = int(round(min(ridge(Z), P.HEAD_TOP)))
+        for k in range(1, 4 if Z % 4 == 0 else 3): S(int(cx), t + k, z, CREST.at(int(cx), t + k, z))
+    # the nostrils: two holes on the snout's top at Z 1..2
+    for sgn in (-1, 1):
+        for z in (hz1 + 1, hz1 + 2):
+            x = int(cx + sgn * 2.5); t = int(round(ridge(z - hz1)))
+            A(x, t, z); S(x, t - 1, z, "minecraft:cobbled_deepslate")
     # the lower jaw: Z 0..13, the floor at Y0 - 1 (the mound is under it), the gums 1 high along its sides
     for z in range(hz1, hz1 + 14):
         Z = z - hz1; half = 6.5 + Z * 0.2
@@ -141,22 +159,22 @@ def skull_cells():
             S(x, Y0 + 4, z, "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down,waterlogged=false]")
         else:
             S(x, Y0 + 5, z, "minecraft:dripstone_block")
-    # the eye: on the west side of the cranium at Z 13..14, y 103..104: a niche 1 deep, tinted glass at its back, a dripstone brow over it
+    # the eye: on the west side under the brow, Z 14..15, y Y0+17..18: a niche 1 deep, tinted glass at its back
     ex = None
     for x in range(hx1, hx2 + 1):
-        if (x, 103, hz1 + 13) in out and out[(x, 103, hz1 + 13)] != "minecraft:air": ex = x; break
+        if out.get((x, Y0 + 17, hz1 + 14), "minecraft:air") != "minecraft:air" and out.get((x, Y0 + 17, hz1 + 15), "minecraft:air") != "minecraft:air": ex = x; break
     eye = []
-    for z in (hz1 + 13, hz1 + 14):
-        for y in (103, 104):
+    for z in (hz1 + 14, hz1 + 15):
+        for y in (Y0 + 17, Y0 + 18):
             A(ex, y, z); S(ex + 1, y, z, "minecraft:tinted_glass"); eye.append([ex + 1, y, z])
-        S(ex - 1, 105, z, "minecraft:dripstone_block")
     # the horns: two curved prongs from the back of the cranium, backwards (south) and up
     for side in (-1, 1):
-        x0, z0, y0 = cx + side * 8, hz1 + 25, 110
-        for k in range(9):
-            x = int(round(x0 + side * k * 0.3)); z = int(round(z0 + k * 0.6)); y = int(round(y0 + k * 0.9))
-            if z > hz2: break
+        x0, z0, y0 = cx + side * 7, hz1 + 24, 113
+        for k in range(13):
+            x = int(round(x0 + side * k * 0.35)); z = int(round(z0 + k * 0.7)); y = int(round(y0 + k * 0.8 - (k * k) * 0.02))
+            if z > hz2 + 6: break
             S(x, y, z, "minecraft:cobbled_deepslate"); S(x, y - 1, z, "minecraft:tuff")
+            if k < 7: S(x + side, y, z, "minecraft:cobbled_deepslate"); S(x + side, y - 1, z, "minecraft:tuff")
     meta = dict(eye=eye, eye_x=ex, centre=[cx, cz], cavity=[int(cx - 5), hz1, int(cx + 5), hz1 + 12])
     return out, meta
 
@@ -178,7 +196,7 @@ def sword_cells(eye):
             zc = int(ez)
             if -4 <= t <= BL and abs(s_) <= 1.35 - (0.6 if t < 2 else 0):
                 edge = abs(s_) > 0.55
-                for z in (zc, zc + 1) if not edge else (zc,):
+                for z in (zc, zc + 1):
                     st = "minecraft:polished_andesite" if edge else ("minecraft:brown_terracotta" if hsh(x, y, z, 3330) < 0.1 else "minecraft:andesite")
                     cells[(x, y, z)] = st
             elif BL < t <= BL + 1.2 and abs(s_) <= 4.4:                  # the guard

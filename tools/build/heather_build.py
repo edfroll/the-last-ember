@@ -206,9 +206,9 @@ def ladder_house(b, f, L, du, out):
     out["upper_door"] = p3(f, W, dw, L + 5)
     out["upper_in"] = p3(f, W - 2, dw, L + 5)
     # the beds made on the wall: on the left wall upstairs, two beds: pillow (white wool) up, blanket (red wool) 2 below, trapdoor frames
-    for (bw, col) in ((2, "red"), (D - 3, "blue")):
-        put(b, f, 0, bw, L + 7, "minecraft:white_wool"); put(b, f, 0, bw, L + 6, "minecraft:%s_wool" % col); put(b, f, 0, bw, L + 5, "minecraft:%s_wool" % col)
-        put(b, f, 1, bw, L + 5, "minecraft:spruce_trapdoor[facing=%s,half=bottom,open=true]" % f.d("right"))
+    for (bw, col) in ((2, "red"), (D - 3, "blue")):      # inside, against the left wall (the wall itself stays: not seen from the street)
+        put(b, f, 1, bw, L + 7, "minecraft:white_wool"); put(b, f, 1, bw, L + 6, "minecraft:%s_wool" % col); put(b, f, 1, bw, L + 5, "minecraft:%s_wool" % col)
+        put(b, f, 2, bw, L + 5, "minecraft:spruce_trapdoor[facing=%s,half=bottom,open=true]" % f.d("right"))
     put(b, f, W - 2, 2, L + 5, "minecraft:spruce_trapdoor[facing=%s,half=bottom,open=false]" % f.d("out"))    # a chest-like stool
     window(b, f, du, 0, L + 6); window(b, f, 0, D // 2, L + 6)
 

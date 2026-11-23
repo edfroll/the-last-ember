@@ -27,7 +27,7 @@ from heather_plan import ix
 ROOT = P.ROOT; OUT = P.OUT
 DP = os.path.join(ROOT, "datapack/data/last_ember")
 STR = os.path.join(DP, "structure/heather")
-S_FOREST, S_ROCK = 2, 10
+S_GRASS, S_FOREST, S_ROCK = 1, 2, 10
 R_STONE = 0
 WALL_AT = 3                    # a flat whose neighbour lies more than this lower gets a retaining wall (else a 1:1 fill, at most 4 cells)
 FILL_REACH = 4
@@ -300,7 +300,9 @@ def write_terrain(gr, rl, b):
     lo = T.copy()
     for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): lo = np.minimum(lo, np.roll(np.roll(lo, dz, 0), dx, 1))
     F = np.minimum(np.minimum(T, now), lo) - 4
-    S = np.where(gr["ridge"] | ~gr["village"] & (T > 95), S_ROCK, S_FOREST).astype(np.uint8)
+    slope = np.zeros(T.shape, np.int32)
+    for dz, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)): slope = np.maximum(slope, np.abs(T - np.roll(np.roll(T, dz, 0), dx, 1)))
+    S = np.where(gr["ridge"] | (slope >= 3), S_ROCK, S_GRASS).astype(np.uint8)      # grass in the village, rock on the ridge and steep banks
     write_grid(os.path.join(OUT, "heather_terrain.bin"), gr["x1"], gr["z1"], H, F, np.full(T.shape, NONE, np.int32), S, np.full(T.shape, R_STONE, np.uint8), np.zeros(T.shape, np.uint8))
     return int(touch.sum())
 
