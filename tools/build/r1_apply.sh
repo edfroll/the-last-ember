@@ -59,6 +59,9 @@ tools/build/grove_step.sh
 # T-031: the Village of Heather and the Dragon Ridge (only inside their places + seams: the bridge from bonfire 9, the street, the
 # houses, the church, the mill, the gardens; the spine, the head with the sword, the trail to the mouth; scans heather_pre.bin)
 tools/build/heather_step.sh
+# T-032: the Spider Thicket (only inside its place + seam: the forest, the canopy, the web, the cocoons, the fallen giant, the nest with
+# the drop and the burrow of roots, the trail of the victims, the animal trail from the trail Heather -> Garden; scans spiders_pre.bin)
+tools/build/spiders_step.sh
 tools/biomepaint.sh | grep -v JAVA_TOOL | sed -n 1p      # not head -1: it closed the pipe, SIGPIPE + pipefail stopped the step (exit 141)
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

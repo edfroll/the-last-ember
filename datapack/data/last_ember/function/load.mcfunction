@@ -59,3 +59,5 @@ function last_ember:castle/setup
 # T-030: the Mushroom Grove of the Advisor
 function last_ember:grove/setup
 function last_ember:heather/setup
+# T-032: the Spider Thicket
+function last_ember:spiders/setup

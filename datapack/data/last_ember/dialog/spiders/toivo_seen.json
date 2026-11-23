@@ -1,0 +1,37 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Тойво",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Про кости у дороги я деду не зря писал. От тракта на кладбище, там, где он спускается к воде, в лес уходят кости. Цепочкой, как нарочно. Ведут на восток, к старому дубу. Под дубом лежит упавший ствол, а под стволом ступени вниз. Оттуда пахнет, как из котла. Там живёт кто-то, кто ест не дичь. Я туда не полез. Вы, может, полезете. Только не по одному.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Иди домой",
+    "color": "gray",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.sptrig set 2"
+   }
+  }
+ ]
+}

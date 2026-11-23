@@ -1,0 +1,15 @@
+{
+ "values": [
+  "minecraft:air",
+  "minecraft:cave_air",
+  "minecraft:cobweb",
+  "minecraft:short_grass",
+  "minecraft:leaf_litter",
+  "minecraft:turtle_egg",
+  "minecraft:frogspawn",
+  "minecraft:mangrove_roots",
+  "minecraft:iron_chain",
+  "minecraft:tripwire",
+  "#minecraft:fire"
+ ]
+}

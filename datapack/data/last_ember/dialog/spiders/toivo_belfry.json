@@ -1,0 +1,29 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Тойво",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Дед ворчит, что я его чуть не схоронил. А я ему про дуб рассказал, он велел вам не ходить. Я бы пошёл. Вдвоём, не меньше.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

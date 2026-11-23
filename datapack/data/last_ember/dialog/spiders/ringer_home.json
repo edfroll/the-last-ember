@@ -1,0 +1,29 @@
+{
+ "type": "minecraft:notice",
+ "title": {
+  "text": "Звонарь",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Тойво дошёл. Сидит внизу и ест за троих. Не знаю, чем вам платить. Возьмите вот это. И ещё: колокол теперь звонит и за вас. Где бы вы ни легли, я услышу и позвоню.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}
