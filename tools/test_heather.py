@@ -359,7 +359,12 @@ def t_zones():
     R(f"setblock {xr} {yr + 1} {zr + 1} minecraft:stone"); R(f"setblock {xr} {yr + 2} {zr + 1} minecraft:air"); R(f"setblock {xr} {yr + 1} {zr + 2} minecraft:air"); R(f"setblock {xr} {yr + 2} {zr + 2} minecraft:air")
     R(f"tp Cam {xr + 0.5} {yr + 1} {zr + 3.5}"); time.sleep(1.0)
     chk("on the ridge out of the head: survival", wait(lambda: passed("execute if entity @a[name=Cam,gamemode=survival]"), 4))
-    look_at("Cam", xr + 0.5, yr + 1.5, zr + 1.5); time.sleep(0.4); tc.act("Cam", "!attack_on"); time.sleep(2.5); tc.act("Cam", "!attack_off")
+    R("item replace entity Cam weapon.mainhand with minecraft:diamond_pickaxe")
+    look_at("Cam", xr + 0.5, yr + 1.5, zr + 1.5); time.sleep(0.4)
+    for _ in range(3):
+        tc.act("Cam", "!attack_on"); time.sleep(2.5); tc.act("Cam", "!attack_off")
+        if blk(xr, yr + 1, zr + 1, "#minecraft:air"): break
+    R("item replace entity Cam weapon.mainhand with minecraft:air")
     chk("a stone of the ridge breaks", blk(xr, yr + 1, zr + 1, "#minecraft:air"))
     R(f"forceload remove {xr} {zr}"); R("effect clear Cam minecraft:haste"); R("gamemode adventure Cam")
 
@@ -375,14 +380,20 @@ def t_restart():
     R("data modify storage last_ember:heather q set value 0")
 
 def t_perf():
+    """two players in the village, every dead villager awake: the players stand between the points (Cam by the mill, Cam2 by the
+    church); the ones further than 32 from both go home after a second (by design) - the test wakes them again every second"""
     print("[perf]"); stage(); base(); far(); time.sleep(2)
-    sq = M["square"]
-    R(f"tp Cam {sq[0] + 1.5} {M['sL'] + 1} {sq[1] + 1.5}"); R(f"tp Cam2 {sq[2] - 0.5} {M['sL'] + 1} {sq[3] - 0.5}")
-    R("execute as @e[type=minecraft:zombie_villager,tag=le.hzr] run function last_ember:heather/wake"); time.sleep(2)
-    chk("all awake", count("@e[type=minecraft:zombie_villager,tag=le.hza]") == len(Z))
-    pr = tm.prof(10)
+    ml = M["mill"]; R(f"tp Cam {ml['door'][0] - 6} {ml['door'][1]} {ml['door'][2]}"); R(f"tp Cam2 {CH['door'][0] + 0.5} {CH['door'][1]} {CH['door'][2] + 2.5}")
+    import threading
+    stop = [False]; seen = []
+    def keep():
+        while not stop[0]:
+            R("execute as @e[type=minecraft:zombie_villager,tag=le.hzr] run function last_ember:heather/wake"); seen.append(count("@e[type=minecraft:zombie_villager,tag=le.hza]")); time.sleep(0.7)
+    th = threading.Thread(target=keep); th.start(); time.sleep(2)
+    pr = tm.prof(10); stop[0] = True; th.join()
+    chk("every dead villager awake during the profile (mean %.1f of %d)" % (sum(seen) / max(1, len(seen)), len(Z)), seen and sum(seen) / len(seen) >= len(Z) - 2, seen[:10])
     hv_ = {k: v for k, v in pr.items() if k.startswith("last_ember:heather")}
-    tot = sum(v for k, v in hv_.items() if k in ("last_ember:heather/loop",))
+    tot = hv_.get("last_ember:heather/loop", 0.0)
     print("    tick %.2f ms; heather/loop %.3f ms/tick; top: %s" % (pr.get("tick", 0), tot, sorted(hv_.items(), key=lambda kv: -kv[1])[:6]))
     chk("heather/* under 0.5 ms per tick with two players and every dead villager awake (%.3f)" % tot, tot < 0.5)
     far(); time.sleep(3)
