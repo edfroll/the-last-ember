@@ -454,7 +454,7 @@ def nest(b, c, meta):
                 ceil = int(math.ceil(feet + LAIR_ROOM))
                 for yy in range(y + 1 + v % 2, max(top, ceil)): b.set(x, yy, z, "minecraft:air")
                 if ceil > top:                                    # the hump of roots over the ledge (the lid is too low there)
-                    for yy in range(top, ceil): b.set(x, yy, z, "minecraft:air")
+                    for yy in range(max(top, y + 1 + v % 2), ceil): b.set(x, yy, z, "minecraft:air")
                     b.set(x, ceil, z, ROOTS)
                     if hsh(x, ceil, z, 3271) < 0.5: b.set(x, ceil + 1, z, ROOTS)
                 else: b.set(x, top, z, ROOTS if hsh(x, top, z, 3271) < 0.6 else LID)

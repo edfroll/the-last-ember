@@ -55,8 +55,12 @@ def main():
     seen = reach(get, start, box, 60, 200)
     def hit(seen, x, z, y=None): return any(s[0] == x and s[1] == z and (y is None or abs(s[2] - y) < 0.6) for s in seen)
     F = meta["floor"]; lp = meta["lair_path"][0]
+    lm = meta["nest"]["lair_mid"]
+    fl = sorted((abs(s[0] - lm[0]) + abs(s[1] - lm[2]), s) for s in seen if abs(s[2] - (F + 1)) < 0.1 and P.in_rect(meta["nest_r"], s[0], s[1]))
+    print("  pit floor cells reached: %d" % len(fl))
+    fx, fz = (fl[0][1][0], fl[0][1][1]) if fl else (lm[0], lm[2])
     goals = {"live cocoon clearing": (meta["pv"][-1][0], meta["pv"][-1][1], None), "burrow exit": (meta["lair_exit"][0], meta["lair_exit"][1], None),
-             "pit floor (foot of the ledge)": (lp[0] + 1, lp[1] + 2, F + 1)}
+             "pit floor by the Mistress's lair (down the ledge)": (fx, fz, F + 1)}
     for k, r in enumerate(meta["remains"]): goals["cocoon with remains %d (its mouth)" % (k + 1)] = (r["front"][0], r["front"][1], None)
     for nm, (gx, gz, gy) in goals.items():
         r = hit(seen, gx, gz, gy)

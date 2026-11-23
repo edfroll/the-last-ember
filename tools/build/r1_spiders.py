@@ -47,7 +47,7 @@ def clear(b, c, meta):
     ground (rooted dirt / dirt near the top, stone deeper) or air; the plants over changed columns; everything above the ground of the
     place up to the old top where nothing of ours stands"""
     gr = c.gr; T = c.T; near = trail_near(c)
-    def ours(x, z): return P.in_place(x, z, 0) or (x, z) in near
+    def ours(x, z): return (P.in_place(x, z, 0) or (x, z) in near) and not gr["ftrail"][ix(gr, x, z)]      # the trail of T-022 is never written
     tr = world_scan(VANILLA_TREE, lambda x, z: P.in_place(x, z, 8))
     logs_out = [(x, y, z) for (x, y, z, nm) in tr if ("_log" in nm or "_wood" in nm) and not ours(x, z)]
     logs_on = [(x, y, z) for (x, y, z, nm) in tr if ("_log" in nm or "_wood" in nm) and (x, z) in near and not P.in_place(x, z, 0)]
