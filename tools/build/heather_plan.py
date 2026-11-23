@@ -32,7 +32,7 @@ HEAD = (118, -576, 147, -547)
 HEAD_TOP = 120
 MOUTH_Y = 84                               # the floor of the mouth (the platform of the view north, 5 x 5): 9 over the plain below
 MOUTH = (128, -575, 132, -571)             # the platform (x1, z1, x2, z2) at the north edge of the head
-NECK_END = (119, -573)                     # where the trail enters the jaw from the west (the corner of the mouth)
+NECK_END = (117, -573)                     # where the trail meets the jaw passage on the head's west side (the corner of the mouth)
 
 def in_rect(r, x, z): return (x >= r[0]) & (x <= r[2]) & (z >= r[1]) & (z <= r[3])
 def in_village(x, z, m=0): return VILLAGE[0] - m <= x <= VILLAGE[2] + m and VILLAGE[1] - m <= z <= VILLAGE[3] + m
@@ -324,7 +324,7 @@ def trail(gr, church, cL, mound, keep):
             for c in (-1, 0, 1):
                 q = (x + a, z + c)
                 if q in keep or gr["wet"][ix(gr, *q)]: return False
-                if in_rect(HEAD, q[0], q[1]) and not (q[0] <= NECK_END[0] + 1): return False
+                if in_rect(HEAD, q[0], q[1]) and abs(q[1] - NECK_END[1]) > 1: return False      # into the head only by its passage
                 if abs(v / 2 - G(*q)) > TRAIL_CUT: return False
         return True
     start = (church[2] - 3, church[1] - 1, 2 * cL)

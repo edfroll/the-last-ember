@@ -58,3 +58,4 @@ function last_ember:give/setup
 function last_ember:castle/setup
 # T-030: the Mushroom Grove of the Advisor
 function last_ember:grove/setup
+function last_ember:heather/setup

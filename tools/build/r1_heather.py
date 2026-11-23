@@ -198,7 +198,8 @@ def untree(b, gr, pl, rl, meta):
     for (x, y, z, nm) in tr:
         if b.get(x, y, z) is not None: continue
         if clear_zone(x, z):
-            if y > int(T[ix(gr, x, z)]): b.set(x, y, z, "minecraft:air"); n += 1
+            g = int(T[ix(gr, x, z)])
+            b.set(x, y, z, "minecraft:air" if y > g else ("minecraft:grass_block[snowy=false]" if y == g else "minecraft:dirt")); n += 1
             continue
         if "leaves" in nm and P.in_village(x, z, 8) and not any(abs(y - yy) <= 4 for yy in lo.get((x, z), [])): b.set(x, y, z, "minecraft:air"); n += 1
     ns = 0
@@ -465,6 +466,7 @@ def main(plan_only=False):
     nbt("sword_lo", lo, (min(k[0] for k in lo), min(k[1] for k in lo), min(k[2] for k in lo)))
     nbt("sword_hi", hi, (min(k[0] for k in hi), min(k[1] for k in hi), min(k[2] for k in hi)))
     ncol = write_terrain(gr, rl, b)
+    np.savez_compressed(os.path.join(OUT, "heather_T.npz"), T=rl["T"], x1=gr["x1"], z1=gr["z1"])    # the ground of the places (heather_check)
     n = b.write_placements(os.path.join(OUT, "heather.txt"))
     zv, zh = zone_lines(gr, rl, b, meta)
     meta.pop("_ridge_keep", None)

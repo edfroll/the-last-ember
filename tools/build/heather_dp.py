@@ -197,9 +197,13 @@ def run(meta):
     for k, (x, y, z) in enumerate(sc):
         w("scare_%d" % k, [hdr + "scarecrow %d" % k, "kill @e[type=minecraft:armor_stand,tag=le.hsc_%d]" % k,
                            'summon minecraft:armor_stand %.1f %d %.1f {Tags:["le.hscare","le.hsc_%d","le.hrent"],Invulnerable:1b,NoBasePlate:1b,ShowArms:1b,DisabledSlots:4144959,PersistenceRequired:1b,Rotation:[%.1ff,0f],Pose:{LeftArm:[0f,0f,-85f],RightArm:[0f,0f,85f],Head:[8f,12f,0f]},equipment:{head:{id:"minecraft:carved_pumpkin",count:1},chest:{id:"minecraft:leather_chestplate",count:1,components:{"minecraft:dyed_color":%d}},legs:{id:"minecraft:leather_leggings",count:1,components:{"minecraft:dyed_color":%d}}},drop_chances:{head:0.0f,chest:0.0f,legs:0.0f}}' % (x + 0.5, y, z + 0.5, k, 160.0 + 25 * k, cols[k % 4], cols[(k + 2) % 4])])
-    w("scare_check", [hdr + "every second: the scarecrows (one each; missing: again)"] +
-      ["execute if loaded %d %d %d unless entity @e[type=minecraft:armor_stand,tag=le.hsc_%d] run function last_ember:heather/gen/scare_%d" % (x, y, z, k, k) for k, (x, y, z) in enumerate(sc)] +
-      ["execute if loaded %d %d %d as @e[type=minecraft:armor_stand,tag=le.hsc_%d] if entity @e[type=minecraft:armor_stand,tag=le.hsc_%d,distance=0.01..] run function last_ember:heather/gen/scare_%d" % (x, y, z, k, k, k) for k, (x, y, z) in enumerate(sc)])
+    L = [hdr + "every second: the scarecrows (one each: missing or doubled - again)"]
+    for k, (x, y, z) in enumerate(sc):
+        L.append("execute if loaded %d %d %d store result score #c le.hv if entity @e[type=minecraft:armor_stand,tag=le.hsc_%d]" % (x, y, z, k))
+        L.append("execute if loaded %d %d %d unless score #c le.hv matches 1 run function last_ember:heather/gen/scare_%d" % (x, y, z, k))
+    w("scare_check", L)
+    w("genchk", [hdr + "as a dead villager: one of an old generation (a double from a chunk loaded late) goes"] +
+      ["execute if score @s le.hn matches %d unless score @s le.hgen = #g%d le.hv run return run function last_ember:heather/vanish" % (z["n"], z["n"]) for z in meta["zombies"]])
     # ---- the tp points for the shots and the tests
     tps = {"bridge": (70.5, meta["bridge"]["south_y"] + 1, meta["bridge"]["z"][1] + 0.5), "square": (meta["well"][0] + 3.5, meta["well"][1], meta["well"][2] + 3.5),
            "church": (ch["door"][0] + 0.5, ch["door"][1], ch["door"][2] + 1.5), "belfry": (ch["ringer"][0] + 2.0, ch["ringer"][1], ch["ringer"][2]),

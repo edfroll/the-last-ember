@@ -100,18 +100,16 @@ def roof_(b, f, top, kind, seed):
         # under the eaves at the gable overhang nothing
     return top + n
 
-def window(b, f, u, w, y, lit=False, side_out="out"):
-    """a window in the wall at (u, w): glass pane; a lit window is a lantern box: the lantern one cell inside behind the pane, closed
-    to the room by tinted glass (HQ T-031, 2: the windows glow, the depth of the room stays dark - block light 0, spawning possible)"""
-    put(b, f, u, w, y, "minecraft:glass_pane")
-    if lit:
-        di = {"out": (0, 1), "left": (1, 0), "right": (-1, 0), "in": (0, -1)}[side_out]
-        u2, w2 = u + di[0], w + di[1]
-        put(b, f, u2, w2, y, lantern())
-        put(b, f, u2 + di[0], w2 + di[1], y, "minecraft:tinted_glass")
-        for (a, c) in ((di[1], di[0]), (-di[1], -di[0])): put(b, f, u2 + a, w2 + c, y, LO)
-        put(b, f, u2, w2, y - 1, LO); put(b, f, u2, w2, y + 1, FILL)
-        return f.xz(u2, w2)
+def window(b, f, u, w, y, lit=False):
+    """a window in the wall at (u, w): a glass pane; a lit window (HQ T-031, 2: the windows glow, the depth of the room stays dark -
+    block light 0, spawning possible): the lantern stands in the window itself, open to the street, and the room side of the niche is
+    a block of tinted glass (it lets the lantern be seen and no light in)"""
+    if not lit:
+        put(b, f, u, w, y, "minecraft:glass_pane"); return None
+    put(b, f, u, w, y, lantern())
+    du, dw = (1, 0) if u == 0 else (-1, 0) if u == f.W - 1 else (0, 1)          # into the house
+    put(b, f, u + du, w + dw, y, "minecraft:tinted_glass")
+    return f.xz(u, w)
 
 def furnish_room(b, f, L, u1, w1, u2, w2, seed, reverse=False):
     """a table with two chairs and a bed (the reversed house: the bed's head to the door, the chairs facing away from the table)"""
@@ -142,30 +140,32 @@ def house(b, spec, ground_lo, meta):
         top, du = shell(b, f, L, 1, ground_lo, sd, "spruce")
         reversed_(b, f, L, du, out)
     # the threshold: a step from the street (the street by the door may be half a block higher: a slab)
-    out["inside"] = p3(f, du, 2, L + 1)
+    out["inside"] = p3(f, du, 1 if kind == "deep" else 2, L + 1)
     out["front"] = list(f.xz(du, -1))
     out["top"] = top
     return out
 
-def front_windows(b, f, L, du, lit_u=None, skip=()):
-    lit = None
+def front_windows(b, f, L, du, lit_at=None, skip=()):
+    """glass panes in the front (not by the door) and in both side walls; lit_at = (u, w) of the one lit window (a side wall)"""
     for u in range(2, f.W - 2, 3):
         if abs(u - du) <= 1 or u in skip: continue
-        p = window(b, f, u, 0, L + 2, lit=(lit is None and (lit_u is None or u == lit_u)))
-        if p and lit is None: lit = p
-    for w in range(2, f.D - 2, 3):
-        window(b, f, 0, w, L + 2); window(b, f, f.W - 1, w, L + 2)
-    return lit
+        window(b, f, u, 0, L + 2)
+    for w in range(2, f.D - 1, 3):
+        for u in (0, f.W - 1):
+            if lit_at and (u, w) == tuple(lit_at): continue
+            window(b, f, u, w, L + 2)
+    if lit_at: return window(b, f, lit_at[0], lit_at[1], L + 2, lit=True)
 
 def walled(b, f, L, du, out):
     """1: the door walled up from outside (the door frame stays, the opening is cobble with moss), the way in is a window at the ground
     (an opening 1 x 2 beside the door, the bot walks through it); inside the note «Марта» on a lectern"""
     put(b, f, du, 0, L + 1, "minecraft:mossy_cobblestone"); put(b, f, du, 0, L + 2, "minecraft:cobblestone")
-    put(b, f, du, -1, L + 1, "minecraft:cobblestone_wall"); put(b, f, du, -1, L + 2, "minecraft:mossy_cobblestone_wall")   # the walling outside
+    put(b, f, du - 1, 0, L + 3, "minecraft:mossy_cobblestone"); put(b, f, du + 1, 0, L + 1, "minecraft:mossy_cobblestone")    # the mortar spills
     wu = du + 2
     put(b, f, wu, 0, L + 1, "minecraft:air"); put(b, f, wu, 0, L + 2, "minecraft:air")
     put(b, f, wu, 0, L + 3, "minecraft:spruce_trapdoor[facing=%s,half=top,open=false]" % f.d("in"))      # the lintel of the window
-    lit = front_windows(b, f, L, du, skip=(wu, wu - 1, wu + 1))
+    lit = front_windows(b, f, L, du, lit_at=(0, 2), skip=(wu, wu - 1, wu + 1))
+    put(b, f, wu, -1, L, "minecraft:cobblestone_stairs[facing=%s,half=bottom,shape=straight,waterlogged=false]" % f.d("in"))   # a step up to the sill
     out["window_in"] = list(f.xz(wu, 0)); out["lantern"] = lit
     lu, lw = 1, f.D - 2
     out["lectern"] = p3(f, lu, lw, L + 1)
@@ -184,7 +184,7 @@ def ladder_house(b, f, L, du, out):
         put(b, f, 1, 1 + k, L + 1 + k, st("spruce_stairs", f, "in"))
         for y in range(L + 1, L + 1 + k): put(b, f, 1, 1 + k, y, "minecraft:spruce_planks")
     put(b, f, 1, 4, L + 4, "minecraft:spruce_planks")
-    lit = front_windows(b, f, L, du)
+    lit = front_windows(b, f, L, du, lit_at=(W - 1, D - 2))
     out["lantern"] = lit
     out["lectern"] = p3(f, W - 2, 2, L + 1); out["note"] = 2
     furnish_room(b, f, L, 3, 3, W - 3, D - 2, 0)
@@ -229,7 +229,7 @@ def flat_roof_house(b, f, L, ground_lo, sd, out):
             if edge: put(b, f, u, w, top + 1, "minecraft:spruce_fence")
     du = W // 2
     put(b, f, du, 0, L + 1, door(f, "out", "lower")); put(b, f, du, 0, L + 2, door(f, "out", "upper"))
-    lit = front_windows(b, f, L, du)
+    lit = front_windows(b, f, L, du, lit_at=(W - 1, D - 3))
     out["lantern"] = lit
     # the ladder up the left side wall (outside, u = -1), from the ground at the front to the roof; a gap in the parapet over it
     lw = 2
@@ -254,7 +254,7 @@ def deep(b, f, L, du, out):
     the front wall, then a stair along the left wall (marches with a landing, 3 of head room), the way out the same way (no jumps)"""
     W, D = f.W, f.D; depth = 7; bot = L - depth
     put(b, f, du, 0, L + 1, door(f, "out", "lower")); put(b, f, du, 0, L + 2, door(f, "out", "upper"))
-    lit = front_windows(b, f, L, du)
+    lit = front_windows(b, f, L, du, lit_at=(W - 1, D - 2))
     out["lantern"] = lit
     # the pit: u 1..W-2, w 2..D-2 down to bot (the walls of the pit: LO), the ledge w = 1 at L (the door side), the lectern on it
     for u in range(1, W - 1):
@@ -307,7 +307,7 @@ def reversed_(b, f, L, du, out):
     the chairs turned away from the table; the lectern «Бран, ученик»"""
     W, D = f.W, f.D
     put(b, f, du, 0, L + 1, door(f, "out", "lower")); put(b, f, du, 0, L + 2, door(f, "out", "upper"))
-    lit = front_windows(b, f, L, du)
+    lit = front_windows(b, f, L, du, lit_at=(0, D - 3))
     out["lantern"] = lit
     # the hearth by the door: bricks round a campfire (lit, the smoke goes up a chimney in the front wall corner)
     hu = du + 2 if du + 2 < W - 1 else du - 2
@@ -341,7 +341,7 @@ def miller_house(b, r, face, L, ground_lo, meta):
     top, du = shell(b, f, L, 1, ground_lo, 3299, "spruce")
     put(b, f, du, 0, L + 1, door(f, "out", "lower", block="dark_oak_door")); put(b, f, du, 0, L + 2, door(f, "out", "upper", block="dark_oak_door"))
     put(b, f, du, 1, L + 1, "minecraft:spruce_planks"); put(b, f, du, 1, L + 2, "minecraft:spruce_planks")     # the bar
-    front_windows(b, f, L, du, lit_u=-1)
+    front_windows(b, f, L, du)
     furnish_room(b, f, L, 2, 2, f.W - 3, f.D - 3, 0)
     meta["miller"] = dict(r=list(r), face=face, L=L, door=list(f.xz(du, 0)), bar=p3(f, du, 1, L + 1))
 
@@ -532,7 +532,7 @@ def church(b, r, L, ground_lo_at, meta):
             for y in range(L + 1, TOP + 6): b.set(x, y, z, CHURCH if edge else "minecraft:air")
     # the arch nave -> tower (in the tower's east wall = the nave's west end; the nave starts at tx2 + 1: the tower wall is its west wall)
     for z in (tz1 + 3,):
-        for y in (L + 1, L + 2, L + 3): b.set(tx2, y, z, "minecraft:air")
+        for y in (L + 1, L + 2, L + 3): b.set(tx2, y, z, "minecraft:air"); b.set(nx1, y, z, "minecraft:air")      # both walls: the tower's and the nave's
     # the spiral: the ring cells of the 5 x 5 inside (tx1+1..tx2-1), order counter-clockwise from the arch; every cell up 1 (a stair)
     # except the corners (landings); 3 of head room above each (the next turn is 16 above: the ring has 16 cells)
     ring = []
@@ -548,25 +548,25 @@ def church(b, r, L, ground_lo_at, meta):
     corners = {(ix1, iz1), (ix2, iz1), (ix1, iz2), (ix2, iz2)}
     while y < TOP:
         x, z, fdir = ring[k % len(ring)]
-        if (x, z) in corners:
-            b.set(x, y, z, "minecraft:stone_bricks")                      # a landing at the level of the last step top
+        if (x, z) in corners or k == 0:                                  # a landing (the first cell by the arch: the floor)
+            b.set(x, y, z, "minecraft:stone_bricks")
             for yy in range(y + 1, y + 4): b.set(x, yy, z, "minecraft:air")
-            steps.append((x, z, y + 1))
+            steps.append((x, z, y + 1, "landing"))
         else:
             y += 1
             b.set(x, y, z, "minecraft:stone_brick_stairs[facing=%s,half=bottom,shape=straight,waterlogged=false]" % fdir)
             b.set(x, y - 1, z, "minecraft:stone_bricks")
             for yy in range(y + 1, y + 4): b.set(x, yy, z, "minecraft:air")
-            steps.append((x, z, y))
-        # the underside: solid under each step down to the previous turn
+            steps.append((x, z, y + 1, "stair"))
         k += 1
         if k > 200: break
-    # the last cells reach TOP: the platform floor is TOP over the whole inside except the stair's opening (the last 2 ring cells)
+    # the platform floor at TOP over the inside, except the stair's opening: every ring cell whose last step stands within 3 under
+    # TOP (3 of head room over the marches, HQ T-030), the last step (its top is the platform level)
     last = steps[-1]
+    opening = {(q[0], q[1]) for q in steps if q[2] > TOP - 3}
     for x in range(ix1, ix2 + 1):
         for z in range(iz1, iz2 + 1):
-            if (x, z) in [(s[0], s[1]) for s in steps[-2:]]: continue
-            if (x, z) == (last[0], last[1]): continue
+            if (x, z) in opening: continue
             b.set(x, TOP, z, "minecraft:spruce_planks")
     # the well (3 x 3) is open (the bell rope hangs: chains), a rail of fences round the opening at the platform
     for x in range(ix1 + 1, ix2):
@@ -587,7 +587,7 @@ def church(b, r, L, ground_lo_at, meta):
             b.set(x, TOP + 5, z, CHURCH if edge else "minecraft:spruce_planks")
     # the bell: hangs from the ceiling over the well's centre (attachment ceiling), the ringer stands west of it
     b.set(bx, TOP + 3, bz, "minecraft:bell[attachment=ceiling,facing=north,powered=false]")
-    b.set(bx, TOP + 4, bz, "minecraft:chain[axis=y,waterlogged=false]") if False else None
+    b.set(bx, TOP + 4, bz, "minecraft:dark_oak_planks")                     # the beam the bell hangs from
     for x in range(ix1, ix2 + 1):
         for z in range(iz1, iz2 + 1):
             if abs(x - bx) <= 1 and abs(z - bz) <= 1 and (x, z) != (bx, bz): b.set(x, TOP, z, "minecraft:spruce_planks")
@@ -601,7 +601,11 @@ def church(b, r, L, ground_lo_at, meta):
             for z in range(bz - rr, bz + rr + 1):
                 if rr == 0 or x in (bx - rr, bx + rr) or z in (bz - rr, bz + rr): b.set(x, sy, z, "minecraft:brick_wall")
         sy += 1; n += 1
+    # the ringer: on a platform cell of the ring next to the bell, away from the opening (west side preferred)
+    cand = [(x, z) for x in range(ix1, ix2 + 1) for z in range(iz1, iz2 + 1) if (x in (ix1, ix2) or z in (iz1, iz2)) and (x, z) not in opening
+            and (x, z) not in corners]
+    rc = min(cand, key=lambda q: (min(abs(q[0] - o[0]) + abs(q[1] - o[1]) for o in opening) < 2, abs(q[0] - ix1) + abs(q[1] - bz)))
     meta["church"] = dict(r=list(r), L=L, nave=[nx1, nz1, nx2, nz2], tower=[tx1, tz1, tx2, tz2], door=[dx, L + 1, nz2 + 1], top=TOP,
-                          bell=[bx, TOP + 3, bz], ringer=[ix1 + 0.5, TOP + 1, bz + 0.5], benches=benches, altar=[nx2 - 2, L + 1, ac],
+                          bell=[bx, TOP + 3, bz], ringer=[rc[0] + 0.5, TOP + 1, rc[1] + 0.5], opening=sorted(opening), steps=[list(q[:3]) for q in steps], benches=benches, altar=[nx2 - 2, L + 1, ac],
                           sacristy=meta_s, spire=L + 32, stair_top=list(last), arch=[tx2, L + 1, tz1 + 3])
     return meta["church"]

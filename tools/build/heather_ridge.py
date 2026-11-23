@@ -186,7 +186,7 @@ def sword_cells(eye):
                     cells[(x, y, z)] = "minecraft:polished_tuff"
             elif BL + 1.2 < t <= BL + 8.5 and abs(s_) <= 0.6:            # the grip
                 for z in (zc, zc + 1):
-                    cells[(x, y, z)] = "minecraft:chain[axis=y,waterlogged=false]" if int(t) % 3 == 0 and z == zc + 1 else "minecraft:dark_oak_log[axis=y]"
+                    cells[(x, y, z)] = "minecraft:iron_chain[axis=y,waterlogged=false]" if int(t) % 3 == 0 and z == zc + 1 else "minecraft:dark_oak_log[axis=y]"
             elif BL + 8.5 < t <= L and abs(s_) <= 1.4:                   # the pommel
                 for z in (zc, zc + 1): cells[(x, y, z)] = "minecraft:polished_tuff" if abs(s_) > 0.6 else "minecraft:chiseled_tuff"
     return cells, [int(bx), int(by), int(ez)]
