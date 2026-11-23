@@ -18,4 +18,6 @@ execute unless score #ms le.hv = #ms le.hv run scoreboard players set #ms le.hv 
 execute unless data storage last_ember:heather q run data modify storage last_ember:heather q set value 0
 scoreboard players set #rmiss le.hv 0
 scoreboard players set #2 le.hv 2
+scoreboard players set #24000 le.hv 24000
+function last_ember:heather/gen/init
 schedule function last_ember:heather/loop 5t replace

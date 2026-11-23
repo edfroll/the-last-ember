@@ -5,6 +5,7 @@ execute if score #c le.hv matches 1.. run return run scoreboard players set #m9 
 execute if score #df le.hv matches 0 run return 0
 execute if score #s9 le.hv matches 0 if score #d9 le.hv matches 0 run return run function last_ember:heather/gen/spawn_9
 execute if score #s9 le.hv matches 1 run scoreboard players add #m9 le.hv 1
+execute if score #s9 le.hv matches 1 if score #m9 le.hv matches 3.. run scoreboard players operation #k9 le.hv = #day le.hv
 execute if score #s9 le.hv matches 1 if score #m9 le.hv matches 3.. run scoreboard players set #d9 le.hv 1
 execute if score #s9 le.hv matches 1 if score #m9 le.hv matches 3.. run scoreboard players set #s9 le.hv 0
-execute if score #d9 le.hv matches 1 if score #dt le.hv matches 0..1000 unless entity @a[gamemode=!spectator,x=57.5,y=87.0,z=-473.5,distance=..48] run function last_ember:heather/gen/spawn_9
+execute if score #d9 le.hv matches 1 if score #dt le.hv matches 0..1000 if score #day le.hv > #k9 le.hv unless entity @a[gamemode=!spectator,x=57.5,y=87.0,z=-473.5,distance=..48] run function last_ember:heather/gen/spawn_9

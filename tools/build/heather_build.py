@@ -594,13 +594,12 @@ def church(b, r, L, ground_lo_at, meta):
     b.set(bx, TOP, bz, "minecraft:spruce_planks")
     b.set(ix1, TOP + 4, iz1, lantern(True)); b.set(ix2, TOP + 4, iz2, lantern(True))
     # the spire: a pyramid of brick walls 7 -> 1 up to L + 32 (the card: brick_wall)
-    sy = TOP + 6; n = 0
-    while sy <= L + 32:
-        rr = max(0, 3 - n // 3)
+    levels = L + 32 - (TOP + 6) + 1
+    for k in range(levels):
+        sy = TOP + 6 + k; rr = int(round(3 * (1 - k / max(1, levels - 1))))
         for x in range(bx - rr, bx + rr + 1):
             for z in range(bz - rr, bz + rr + 1):
                 if rr == 0 or x in (bx - rr, bx + rr) or z in (bz - rr, bz + rr): b.set(x, sy, z, "minecraft:brick_wall")
-        sy += 1; n += 1
     # the ringer: on a platform cell of the ring next to the bell, away from the opening (west side preferred)
     cand = [(x, z) for x in range(ix1, ix2 + 1) for z in range(iz1, iz2 + 1) if (x in (ix1, ix2) or z in (iz1, iz2)) and (x, z) not in opening
             and (x, z) not in corners]

@@ -1,0 +1,45 @@
+{
+ "type": "minecraft:multi_action",
+ "title": {
+  "text": "Звонарь",
+  "color": "gold",
+  "italic": false
+ },
+ "body": [
+  {
+   "type": "minecraft:plain_message",
+   "contents": {
+    "text": "Звонарь. Был ещё внук, Тойво, охотник. Ушёл в белый лес на юго-востоке и не вернулся. Лук у него приметный, тетива зелёная. Найдёте его — буду звонить и за вас.",
+    "color": "white",
+    "italic": false
+   },
+   "width": 300
+  }
+ ],
+ "can_close_with_escape": true,
+ "pause": false,
+ "after_action": "close",
+ "columns": 1,
+ "actions": [
+  {
+   "label": {
+    "text": "Найдём",
+    "color": "green",
+    "italic": false
+   },
+   "width": 200,
+   "action": {
+    "type": "minecraft:run_command",
+    "command": "trigger le.htrig set 3"
+   }
+  }
+ ],
+ "exit_action": {
+  "label": {
+   "text": "Пойдём",
+   "color": "gray",
+   "italic": false
+  },
+  "width": 150
+ }
+}

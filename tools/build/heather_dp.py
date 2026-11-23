@@ -6,7 +6,7 @@ Scores (objective le.hv, fake players): #near players near the village (the loop
 #df the difficulty (0 peaceful), #dt / #pdt the day time now / a second ago, #frz seconds of the midnight freeze left, #ms the step of the
 sails (0..7), #met the generation of the acquaintances (heather/reset: +1), #rgen the generation of the ringer's entities, #rmiss
 seconds he was missing, and per point N of the dead villagers: #gN the generation of its zombie, #sN 1 = spawned (alive or unloaded),
-#dN 1 = killed (comes back at the next dawn), #mN seconds it was missing at a loaded point. Entities: the dead villagers (zombie_villager
+#dN 1 = killed (comes back at the next dawn: #day > #kN, the day it was killed), #mN seconds it was missing at a loaded point. Entities: the dead villagers (zombie_villager
 le.hz + le.hz_N, le.hn = N, le.hgen = #gN, le.hyaw = the base yaw; le.hzr resting (NoAI), le.hza awake, le.hfrz frozen by the bell);
 the ringer (villager le.ringer + interaction le.htalk, both le.hrent with le.hrg = #rgen); the sails (block_display le.hblade + le.hbl_K,
 le.hrent); the scarecrows (armor_stand le.hscare + le.hsc_K, le.hrent). Players: le.htrig (trigger: 1 who are you, 2 the village,
@@ -119,11 +119,16 @@ def run(meta):
                         "execute if score #df le.hv matches 0 run return 0",
                         "execute if score #s%d le.hv matches 0 if score #d%d le.hv matches 0 run return run function last_ember:heather/gen/spawn_%d" % (n, n, n),
                         "execute if score #s%d le.hv matches 1 run scoreboard players add #m%d le.hv 1" % (n, n),
+                        "execute if score #s%d le.hv matches 1 if score #m%d le.hv matches 3.. run scoreboard players operation #k%d le.hv = #day le.hv" % (n, n, n),
                         "execute if score #s%d le.hv matches 1 if score #m%d le.hv matches 3.. run scoreboard players set #d%d le.hv 1" % (n, n, n),
                         "execute if score #s%d le.hv matches 1 if score #m%d le.hv matches 3.. run scoreboard players set #s%d le.hv 0" % (n, n, n),
-                        "execute if score #d%d le.hv matches 1 if score #dt le.hv matches 0..1000 unless entity @a[gamemode=!spectator,x=%.1f,y=%.1f,z=%.1f,distance=..48] run function last_ember:heather/gen/spawn_%d" % (n, x, y, zz, n)])
+                        "execute if score #d%d le.hv matches 1 if score #dt le.hv matches 0..1000 if score #day le.hv > #k%d le.hv unless entity @a[gamemode=!spectator,x=%.1f,y=%.1f,z=%.1f,distance=..48] run function last_ember:heather/gen/spawn_%d" % (n, n, x, y, zz, n)])
         w("home_%d" % n, [hdr + "the dead villager %d back on his point, healed, resting" % n,
                           "tp @s %.2f %.2f %.2f %.1f 0" % (x, y, zz, yaw)])
+    I = [hdr + "the scores of the points (load: only those not set yet)"]
+    for z in meta["zombies"]:
+        for k in ("g", "s", "d", "m", "k"): I.append("execute unless score #%s%d le.hv = #%s%d le.hv run scoreboard players set #%s%d le.hv 0" % (k, z["n"], k, z["n"], k, z["n"]))
+    w("init", I)
     w("points", [hdr + "every second (players near): the points of the dead villagers"] + ["function last_ember:heather/gen/pt_%d" % z["n"] for z in meta["zombies"]])
     w("home", [hdr + "as a dead villager: to his point (by le.hn)"] +
       ["execute if score @s le.hn matches %d run function last_ember:heather/gen/home_%d" % (z["n"], z["n"]) for z in meta["zombies"]])

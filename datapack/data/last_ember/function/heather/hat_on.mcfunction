@@ -3,3 +3,4 @@
 item replace entity @s armor.head with minecraft:stick[minecraft:item_model="last_ember:heather_none",minecraft:custom_data={le_hat:1b}]
 data modify entity @s drop_chances.head set value 0.0f
 tag @s add le.hhat
+data modify entity @s Fire set value 0s
