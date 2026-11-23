@@ -191,8 +191,9 @@ def run(meta):
         L = [hdr + "Toivo %s (a new generation: the old entities go wherever they are, now or when their chunk loads)" % ("sitting by the cocoon" if seat else "at home on the belfry"),
              "scoreboard players add #tgen le.sp 1", "kill @e[tag=le.spt]"]
         if seat:
-            L.append('summon minecraft:armor_stand %.2f %.2f %.2f {Tags:["le.sptseat","le.spt","le.sptnew"],Invisible:1b,Marker:1b,NoGravity:1b,Invulnerable:1b,Rotation:[%.1ff,0f]}' % (x, y - 0.55, z, yaw))
-            L.append("summon minecraft:mannequin %.2f %.2f %.2f %s" % (x, y - 0.55, z, MAN % (SKIN_T, NAME_T, yaw)))
+            # sitting on the ground (as the Advisor in his armchair, T-030: the rider is 0.6 under a marker stand, hips 0.5 over his feet)
+            L.append('summon minecraft:armor_stand %.2f %.2f %.2f {Tags:["le.sptseat","le.spt","le.sptnew"],Invisible:1b,Marker:1b,NoGravity:1b,Invulnerable:1b,Rotation:[%.1ff,0f]}' % (x, y + 0.1, z, yaw))
+            L.append("summon minecraft:mannequin %.2f %.2f %.2f %s" % (x, y + 0.1, z, MAN % (SKIN_T, NAME_T, yaw)))
             L.append("ride @e[type=minecraft:mannequin,tag=le.sptnew,limit=1] mount @e[type=minecraft:armor_stand,tag=le.sptnew,limit=1]")
             L.append('summon minecraft:interaction %.2f %.2f %.2f {Tags:["le.sp_talk","le.spt","le.sptnew"],width:1.0f,height:1.4f,response:1b}' % (x, y, z))
         else:

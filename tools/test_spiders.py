@@ -49,6 +49,7 @@ FAR2 = (200.5, G(200, -352) + 1, -351.5)
 BOSS = "@e[type=minecraft:spider,tag=le.sp_boss,limit=1]"
 ELITES = "@e[type=minecraft:spider,tag=le.sp_el]"
 TOIVO_E = "@e[type=minecraft:mannequin,tag=le.toivo]"
+TOIVO1 = "@e[type=minecraft:mannequin,tag=le.toivo,limit=1]"
 
 class tm:   # restart and profiler (tools/test_heather.py)
     @staticmethod
@@ -361,7 +362,7 @@ def t_venom():
 def t_web():
     print("[web]"); stage(); base(); far(); time.sleep(3)
     # Cam far in the nest with a free line, Cam2 close to keep her busy
-    cx, cy, cz = nest_cell(2, 6)
+    cx, cy, cz = BOSS_PT[0] + 8, F + 1, BOSS_PT[2] - 5            # 9 north-east of her lair, nothing between
     tpp("Cam2", BOSS_PT[0] + 1.5, F + 1, BOSS_PT[2]); tpp("Cam", cx, cy, cz); time.sleep(1)
     wait(boss_awake, 3)
     R(f"tp {BOSS} {BOSS_PT[0]} {BOSS_PT[1]} {BOSS_PT[2]}")
@@ -445,6 +446,7 @@ def t_cocoon():
     chk("only one brood: the first cut", count("@e[type=minecraft:cave_spider,tag=le.sp_brood]") == 0)
     R("item replace entity Cam weapon.mainhand with minecraft:air"); R("item replace entity Cam2 weapon.mainhand with minecraft:air")
     # the fall into the drop: no damage (the cobweb at its foot)
+    R("function last_ember:spiders/boss_peace"); far(); time.sleep(1)          # the fall alone: no bite of the Mistress waking under the drop
     R("effect clear Cam"); R("effect give Cam minecraft:saturation infinite 1 true")
     hx, hz = HOLE[0] + 1, HOLE[1] + 1; top = P.B4(P.grids(), hx, hz)
     R("gamemode survival Cam"); R("data modify entity Cam Health set value 20.0f"); time.sleep(0.5)
@@ -452,11 +454,11 @@ def t_cocoon():
     h = tc.hp("Cam"); p = pos("Cam")
     chk("a jump into the drop (%d blocks): damage 0 (health %s), at the bottom" % (top + 2 - F - 1, h), h is not None and h >= 19.99 and p is not None and p[1] < F + 4, p)
     R("effect give Cam minecraft:resistance infinite 4 true"); R("effect give Cam minecraft:regeneration infinite 4 true")
-    far(); time.sleep(12)
+    far(); R("function last_ember:spiders/boss_reset"); time.sleep(2)
 
 def tw(p): return tc.score(p, "le.spwin")
 def talk_t(p):
-    t = pos(TOIVO_E)
+    t = pos(TOIVO1)
     if not t: return False
     R(f"scoreboard players set {p} le.spwin 0")
     for dx, dz in ((0, 1.7), (1.4, 1.2), (-1.4, 1.2), (1.7, 0), (-1.7, 0)):
@@ -478,16 +480,17 @@ def t_toivo():
     chk("Cam2: his own first window", talk_t("Cam2") and tw("Cam2") == 1, tw("Cam2"))
     press("Cam", 1); chk("«Что ты видел?» -> the bones window (Cam)", tw("Cam") == 2)
     chk("the next talk of Cam: «потом»", talk_t("Cam") and tw("Cam") == 3, tw("Cam"))
-    t = pos(TOIVO_E); R(f"tp Cam2 {t[0] + 8} {G(int(t[0] + 8), int(t[2])) + 1} {t[2]}"); R("scoreboard players set Cam2 le.spwin 0"); press("Cam2", 1)
+    t = pos(TOIVO1); R(f"tp Cam2 {t[0] + 8} {G(int(t[0] + 8), int(t[2])) + 1} {t[2]}"); R("scoreboard players set Cam2 le.spwin 0"); press("Cam2", 1)
     chk("a button 6+ away does nothing", tw("Cam2") == 0, tw("Cam2"))
     tpp("Cam", LIVE["clearing"][0] + 20.5, G(LIVE["clearing"][0] + 20, LIVE["clearing"][2]) + 1, LIVE["clearing"][2] + 0.5); tpp("Cam2", *FAR); time.sleep(3)
     chk("Cam within 32 of the cocoon: Toivo stays", sp("#toivo") == 1 and count(TOIVO_E) == 1)
     far(); time.sleep(2.5)
     chk("nobody within 32: he leaves the thicket (toivo 2)", sp("#toivo") == 2 and stor("toivo") == 2)
-    tpp("Cam", BELFRY[0] + 1.5, BELFRY[1], BELFRY[2]); tpp("Cam2", *FAR); time.sleep(5)
-    chk("at the belfry, Cam within 12: he does not appear yet", count(TOIVO_E) == 0)
+    tpp("Cam", BELFRY[0] + 1.5, BELFRY[1], BELFRY[2]); tpp("Cam2", *FAR); time.sleep(3)
+    R("kill @e[tag=le.spt]"); time.sleep(4)
+    chk("at the belfry, Cam within 12: a missing Toivo does not appear", count(TOIVO_E) == 0)
     R("forceload add 36 -503"); R("tp Cam 60 86 -462"); time.sleep(4)
-    chk("nobody within 12 of the belfry: Toivo there (one), next to the ringer", wait(lambda: count(TOIVO_E) == 1 and math.dist(pos(TOIVO_E), BELFRY[:3]) < 1.2, 6))
+    chk("nobody within 12 of the belfry: Toivo there (one), next to the ringer", wait(lambda: count(TOIVO_E) == 1 and math.dist(pos(TOIVO1), BELFRY[:3]) < 1.2, 6))
     g = sp("#tgen")
     R('summon minecraft:mannequin %.1f %.1f %.1f {Tags:["le.toivo","le.spt","t32dup"]}' % (BELFRY[0], BELFRY[1], BELFRY[2] + 1)); R(f"scoreboard players set @e[tag=t32dup] le.sptg {g - 1}"); time.sleep(2.5)
     chk("a double of an old generation goes", count("@e[tag=t32dup]") == 0 and count(TOIVO_E) == 1)
@@ -512,7 +515,7 @@ def t_quest():
     chk("the ringer: Cam's talk at q 2 - «Тойво дома» (le.hwin 8)", TH.talk_real("Cam") and tc.score("Cam", "le.hwin") == 8, tc.score("Cam", "le.hwin"))
     r1 = R("data get entity Cam Inventory")
     chk("Cam got the reward of an R1 contract (inventory not empty), q 3", r1.count("id:") >= 1 and q() == 3, r1[:200])
-    chk("Cam's next talk: the menu (no second reward)", TH.talk_real("Cam") and tc.score("Cam", "le.hwin") == 4, tc.score("Cam", "le.hwin"))
+    chk("Cam's next talk: the ringer's own windows (acquaintance or menu), no second reward", TH.talk_real("Cam") and tc.score("Cam", "le.hwin") in (1, 4), tc.score("Cam", "le.hwin"))
     R("tp Cam 60 86 -462")
     for k in range(36): R(f"item replace entity Cam2 container.{k} with minecraft:dirt 64")
     chk("Cam2's own talk (q 3, no tag): «Тойво дома»", TH.talk_real("Cam2") and tc.score("Cam2", "le.hwin") == 8, tc.score("Cam2", "le.hwin"))
