@@ -106,10 +106,8 @@ def checks(gr, pl, rl):
     if out["street_cut"] > P.STREET_CUT: raise SystemExit("STOP (HQ T-031, 1): the street cuts %.1f" % out["street_cut"])
     hd = [t - P.B4(gr, x, z) for (x, z), t in pl["mound"].items() if P.in_rect(P.HEAD, x, z)]
     out["head_fill_mound"] = max(hd) if hd else 0
-    sk, _ = HR.skull_cells(); top = {}
-    for (x, y, z), s_ in sk.items():
-        if s_ != "minecraft:air": top[(x, z)] = max(top.get((x, z), -999), y)
-    out["head_fill_top"] = max(y - P.B4(gr, x, z) for (x, z), y in top.items())      # the head over the natural ground, column by column
+    _, hm = HR.skull_cells()
+    out["head_fill_top"] = max(y - P.B4(gr, x, z) for (x, z), y in hm["body"].items())   # the body of the head (mound + skull, not the horns and fins) over the natural ground
     if out["head_fill_top"] > 50: raise SystemExit("STOP (HQ T-031, 1): the head needs %d of fill" % out["head_fill_top"])
     hx1, hz1, hx2, hz2 = P.HEAD
     if hx1 < P.RIDGE[0] + 3 or hx2 > P.RIDGE[2] - 3 or hz1 < P.RIDGE[1] + 3 or hz2 > P.RIDGE[3] - 3 + 9:

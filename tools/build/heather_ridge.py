@@ -94,11 +94,13 @@ def skull_cells():
         w = half_w(Z); dx = abs(x + 0.5 - cx)
         if dx > w: return None
         return ridge(Z) - (ridge(Z) - side(Z)) * (dx / w) ** 3.5
+    body = {}
     for x in range(hx1, hx2 + 1):
         for z in range(hz1, hz2 + 1):
             t = top_at(x, z - hz1)
             if t is None: continue
-            for y in range(Y0 - 1, int(round(min(t, P.HEAD_TOP))) + 1): S(x, y, z)
+            body[(x, z)] = int(round(min(t, P.HEAD_TOP)))
+            for y in range(Y0 - 1, body[(x, z)] + 1): S(x, y, z)
     # the brow ridges (cobbled deepslate) over the eye sockets, both sides, Z 12..16: one cell out of the surface at Y0 + 19
     for z in range(hz1 + 12, hz1 + 17):
         for sgn in (-1, 1):
@@ -180,7 +182,7 @@ def skull_cells():
             if z > hz2 + 6: break
             S(x, y, z, "minecraft:cobbled_deepslate"); S(x, y - 1, z, "minecraft:tuff")
             if k < 7: S(x + side, y, z, "minecraft:cobbled_deepslate"); S(x + side, y - 1, z, "minecraft:tuff")
-    meta = dict(eye=eye, eye_x=ex, centre=[cx, cz], cavity=[int(cx - 5), hz1, int(cx + 5), hz1 + 12])
+    meta = dict(eye=eye, eye_x=ex, centre=[cx, cz], cavity=[int(cx - 5), hz1, int(cx + 5), hz1 + 12], body=body)
     return out, meta
 
 def sword_cells(eye):
@@ -228,6 +230,7 @@ def head(b, meta):
     sx, sy, sz = P.HEAD[0], P.MOUTH_Y + 1, tz + 3
     b.set(sx, sy, sz, "minecraft:polished_tuff")
     b.set(sx - 1, sy, sz, 'minecraft:dark_oak_wall_sign[facing=west,waterlogged=false]' + sign_nbt(["Он дошёл", "до самой головы.", "Дальше идти", "было некуда."]))
+    hm.pop("body", None)
     hm.update(sword_base=base, sword_top=max(k[1] for k in sw), sword=len(sw), sign=[sx - 1, sy, sz], head_cells=len(sk))
     meta["head"] = hm
     return sk, sw
