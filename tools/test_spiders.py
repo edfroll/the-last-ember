@@ -587,7 +587,8 @@ def t_perf():
     far(); time.sleep(12)
 
 TESTS = dict(build=t_build, dark=t_dark, fire=t_fire, elites=t_elites, trip=t_trip, wake=t_wake, ret=t_return, dawn=t_dawn, boss=t_boss, venom=t_venom,
-             web=t_web, brood=t_brood, leash=t_leash, death=t_death, cocoon=t_cocoon, toivo=t_toivo, quest=t_quest, bell=t_bell, restart=t_restart, perf=t_perf)
+             web=t_web, brood=t_brood, leash=t_leash, cocoon=t_cocoon, toivo=t_toivo, quest=t_quest, bell=t_bell, death=t_death, restart=t_restart, perf=t_perf)
+# death kicks Cam2 and starts his client again: real clicks of Cam2 right after it can miss - it runs after the groups with clicks
 if __name__ == "__main__":
     names = [("ret" if a == "return" else a) for a in sys.argv[1:]] or list(TESTS)
     for n in names: TESTS[n]()
