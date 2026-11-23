@@ -81,26 +81,31 @@ def skull_cells():
     # of the column falls off as the square of the distance from the axis), the cheeks widest behind the eyes
     cx, cz = hx1 + 14.5, hz1 + 17.0
     def half_w(Z):
-        if Z < 12: return 6.0 + 0.25 * Z                 # the snout 6..9
-        if Z < 20: return 9.0 + (Z - 12) * 0.45          # the cheeks 9..12.6
-        return 12.6 - (Z - 20) * 0.35                    # the back of the skull
+        if Z < 10: return 6.5 + 0.2 * Z                  # the snout 6.5..8.5
+        if Z < 18: return 8.5 + (Z - 10) * 0.56          # the cheeks 8.5..13
+        return 13.0 - (Z - 18) * 0.18                    # the back of the skull
     def ridge(Z):
-        if Z < 12: return Y0 + 8 + 0.6 * Z               # the snout's top: 92 -> 99
-        if Z < 22: return Y0 + 15 + (Z - 12) * 2.1       # the forehead up to the crown (~120)
-        return P.HEAD_TOP - (Z - 22) * 1.4               # the back of the crown falling to the neck
-    def side(Z): return Y0 + 2 if Z < 12 else Y0 + 4
+        if Z < 10: return Y0 + 8 + 0.8 * Z               # the snout's top: 92 -> 100
+        if Z < 16: return Y0 + 16 + (Z - 10) * 3.0       # the forehead: 100 -> 118
+        if Z < 24: return P.HEAD_TOP - 2 + (Z - 16) * 0.25   # the crown ~120
+        return P.HEAD_TOP - (Z - 24) * 1.8               # the back of the crown falling to the neck
+    def side(Z): return Y0 + 2 if Z < 10 else Y0 + 5
+    def top_at(x, Z):
+        w = half_w(Z); dx = abs(x + 0.5 - cx)
+        if dx > w: return None
+        return ridge(Z) - (ridge(Z) - side(Z)) * (dx / w) ** 3.5
     for x in range(hx1, hx2 + 1):
         for z in range(hz1, hz2 + 1):
-            Z = z - hz1; w = half_w(Z); dx = abs(x + 0.5 - cx)
-            if dx > w: continue
-            top = ridge(Z) - (ridge(Z) - side(Z)) * (dx / w) ** 2
-            for y in range(Y0 - 1, int(round(min(top, P.HEAD_TOP))) + 1): S(x, y, z)
-    # the brow ridges (cobbled deepslate) over the eye sockets, both sides, Z 13..17
-    for z in range(hz1 + 13, hz1 + 18):
-        Z = z - hz1; w = half_w(Z)
+            t = top_at(x, z - hz1)
+            if t is None: continue
+            for y in range(Y0 - 1, int(round(min(t, P.HEAD_TOP))) + 1): S(x, y, z)
+    # the brow ridges (cobbled deepslate) over the eye sockets, both sides, Z 12..16: one cell out of the surface at Y0 + 19
+    for z in range(hz1 + 12, hz1 + 17):
         for sgn in (-1, 1):
-            x = int(cx + sgn * (w - 0.5))
-            for y in (Y0 + 20, Y0 + 21): S(x - sgn, y, z, "minecraft:cobbled_deepslate"); S(x, y, z, "minecraft:cobbled_deepslate")
+            xs = [x for x in range(hx1, hx2 + 1) if (top_at(x, z - hz1) or -1) >= Y0 + 19]
+            if not xs: continue
+            x = (min(xs) - 1) if sgn < 0 else (max(xs) + 1)
+            S(x, Y0 + 19, z, "minecraft:cobbled_deepslate"); S(x, Y0 + 20, z, "minecraft:cobbled_deepslate")
     # the crest of the spine over the crown and down the back (fins of cobbled deepslate / tuff)
     for z in range(hz1 + 14, hz2 + 1, 2):
         Z = z - hz1; t = int(round(min(ridge(Z), P.HEAD_TOP)))
@@ -159,17 +164,17 @@ def skull_cells():
             S(x, Y0 + 4, z, "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down,waterlogged=false]")
         else:
             S(x, Y0 + 5, z, "minecraft:dripstone_block")
-    # the eye: on the west side under the brow, Z 14..15, y Y0+17..18: a niche 1 deep, tinted glass at its back
+    # the eye: on the west side under the brow, Z 13..14, y Y0+16..17: a niche 1 deep, tinted glass at its back
     ex = None
     for x in range(hx1, hx2 + 1):
-        if out.get((x, Y0 + 17, hz1 + 14), "minecraft:air") != "minecraft:air" and out.get((x, Y0 + 17, hz1 + 15), "minecraft:air") != "minecraft:air": ex = x; break
+        if out.get((x, Y0 + 16, hz1 + 13), "minecraft:air") != "minecraft:air" and out.get((x, Y0 + 16, hz1 + 14), "minecraft:air") != "minecraft:air": ex = x; break
     eye = []
-    for z in (hz1 + 14, hz1 + 15):
-        for y in (Y0 + 17, Y0 + 18):
+    for z in (hz1 + 13, hz1 + 14):
+        for y in (Y0 + 16, Y0 + 17):
             A(ex, y, z); S(ex + 1, y, z, "minecraft:tinted_glass"); eye.append([ex + 1, y, z])
     # the horns: two curved prongs from the back of the cranium, backwards (south) and up
     for side in (-1, 1):
-        x0, z0, y0 = cx + side * 7, hz1 + 24, 113
+        x0, z0, y0 = cx + side * 9, hz1 + 22, 116
         for k in range(13):
             x = int(round(x0 + side * k * 0.35)); z = int(round(z0 + k * 0.7)); y = int(round(y0 + k * 0.8 - (k * k) * 0.02))
             if z > hz2 + 6: break
