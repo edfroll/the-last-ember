@@ -225,8 +225,32 @@ def widen(centre, flats_fixed):
 # (kind, w along the street, d deep, storeys): the five oddities of the card (HQ T-031, 2), the repeats in another size and finish
 HOUSES = [("walled", 7, 7, 1), ("ladder", 7, 9, 2), ("roof", 7, 7, 1), ("deep", 9, 11, 1), ("reversed", 7, 9, 1),
           ("walled", 9, 7, 2), ("roof", 9, 7, 1), ("ladder", 7, 7, 2), ("reversed", 9, 7, 1),
-          ("walled", 7, 9, 1), ("reversed", 7, 7, 1), ("roof", 7, 9, 1)]           # spares: the street takes 8..9 (HQ T-031: 8..10 + the miller's)
+          ("walled", 7, 9, 1), ("reversed", 7, 7, 1), ("roof", 7, 9, 1), ("walled", 7, 7, 1), ("reversed", 7, 9, 1), ("ladder", 7, 9, 2)]           # spares: the street takes 8..9 (HQ T-031: 8..10 + the miller's)
 MAX_HOUSES = 9
+
+VIEW_EYES = [(x + 0.5, PAD_Y + 2.62, z + 0.5) for x in (66, 70, 74) for z in (-423, -418, -414)]
+def view_targets():
+    """points of the sword over the head (heather_ridge.sword_cells): its upper half"""
+    import heather_ridge as HR
+    sk, hm = HR.skull_cells(); sw, base = HR.sword_cells(hm["eye"])
+    ys = sorted({k[1] for k in sw}); top = [k for k in sw if k[1] >= ys[len(ys) // 2]]
+    return [(k[0] + 0.5, k[1] + 0.5, k[2] + 0.5) for k in top[::max(1, len(top) // 12)]]
+_VT = []
+def lines_cut(r, top):
+    """the sight lines (eye, target) from the pad of bonfire 9 to the upper half of the sword that a house (footprint r, highest block
+    `top`) would cut"""
+    if not _VT: _VT.extend(view_targets())
+    out = set()
+    for a, e in enumerate(VIEW_EYES):
+        for b, t in enumerate(_VT):
+            for k in range(1, 200):
+                f = k / 200.0; x, y, z = (e[i] + (t[i] - e[i]) * f for i in range(3))
+                if y > top + 1: break
+                if r[0] - 1 <= x <= r[2] + 2 and r[1] - 1 <= z <= r[3] + 2: out.add((a, b)); break
+    return out
+def sword_seen(cut):
+    """the sword counts as seen from the pad while one of its eyes sees at least a quarter of the targets (the top of the blade)"""
+    return any(sum(1 for b in range(len(_VT)) if (a, b) not in cut) * 4 >= len(_VT) for a in range(len(VIEW_EYES)))
 
 def house_sites(gr, surf, taken, n=len(HOUSES)):
     """greedy: along the street, both sides, a footprint w x d set back 1 from the street edge with its door on the street; the floor at
@@ -236,7 +260,7 @@ def house_sites(gr, surf, taken, n=len(HOUSES)):
     for k, spec in enumerate(HOUSES):
         order.append((k, spec))
     out = []
-    used = set(taken); hused = set()
+    used = set(taken); hused = set(); cut = set()
     def free(r, m):
         return all((x, z) not in used for x in range(r[0], r[2] + 1) for z in range(r[1], r[3] + 1)) and \
             all((x, z) not in hused for x in range(r[0] - m, r[2] + m + 1) for z in range(r[1] - m, r[3] + m + 1))
@@ -262,6 +286,8 @@ def house_sites(gr, surf, taken, n=len(HOUSES)):
             if np.any(gr["wet"][ix(gr, r[0], r[1])[0]:ix(gr, r[2], r[3])[0] + 1, ix(gr, r[0], r[1])[1]:ix(gr, r[2], r[3])[1] + 1]): continue
             L = (v + 1) // 2                                   # the floor: the street level or half a block over it (never under: the
                                                                # door is opened from the street at the eye level)
+            lc = lines_cut(r, L + 4 * st + (d + 1) // 2 + 3)
+            if lc and not sword_seen(cut | lc): continue          # the sword of the ridge stays seen from the pad of bonfire 9
             import heather_build as HB
             fr = HB.Frame(r, face)
             # the ways in that start outside the door: the street must lie by them at the floor's level (within half a block): the
@@ -282,7 +308,7 @@ def house_sites(gr, surf, taken, n=len(HOUSES)):
             if m > MAX_EARTH: continue
             spread = min([max(abs(r[0] - q["r"][0]), abs(r[1] - q["r"][1])) for q in out] + [99])
             c = (m > 5, -min(spread, 14), int(np.abs(a - L).sum()) / 40.0)
-            if best is None or c < best[0]: best = (c, dict(k=k, kind=kind, w=w, d=d, storeys=st, r=r, L=L, face=face, door=(x + dx, z + dz), front=(x, z), v=v, earth=m, front_ap=front_ap))
+            if best is None or c < best[0]: best = (c, dict(k=k, kind=kind, w=w, d=d, storeys=st, r=r, L=L, face=face, door=(x + dx, z + dz), front=(x, z), v=v, earth=m, front_ap=front_ap, cut=lc))
         if best is None: continue
         h_ = best[1]; out.append(h_)
         # the apron at the floor level where a stair or a ladder starts outside: the outer stair of the ladder house (2 columns on the
@@ -302,6 +328,7 @@ def house_sites(gr, surf, taken, n=len(HOUSES)):
                     q = fr.xz(fr.W // 2 + a, fr.D + k)
                     if q not in surf and q not in used and q not in hused: ap.append(q)
         ap += [q for q in h_.pop("front_ap") if q not in ap]
+        cut |= h_.pop("cut")
         h_["apron"] = ap
         for q in ap: hused.add(q)
         for xx in range(h_["r"][0], h_["r"][2] + 1):
@@ -385,7 +412,8 @@ def plan(gr):
     plain = plain_sites(gr, taken)
     for k, q in plain.items():
         r = q["r"]; taken |= {(x, z) for x in range(r[0] - 1, r[2] + 2) for z in range(r[1] - 1, r[3] + 2)}
-    houses = house_sites(gr, surf, taken)
+    sqc = {(x, z): 2 * sL for x in range(square[0], square[2] + 1) for z in range(square[1], square[3] + 1)}
+    houses = house_sites(gr, dict(surf, **{}) | sqc, taken)          # houses face the street and the square
     mound = head_mound(gr)
     tr = trail(gr, church, cL, mound, set())
     tsurf = widen(tr, {})

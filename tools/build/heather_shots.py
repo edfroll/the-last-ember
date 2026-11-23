@@ -88,7 +88,7 @@ def main(names):
         if n in S: S[n]()
     R("gamerule advance_time true"); R("gamemode survival Cam2")
 
-P_PAD = (66.5, 64, -415.5)
+P_PAD = (65.5, 64, -415.5)          # a cell of the pad that sees the sword over the houses of the bank
 def odd(k):
     R("time set 6000")
     if k == "walled":
