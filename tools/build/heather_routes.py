@@ -67,7 +67,7 @@ def path(a, goal):
     out = []
     while end: out.append(c(end[0], end[1], end[2])); end = prev[end]
     return out[::-1]
-pad = (P.HEARTH[0] - 3, P.PAD[1] + 2, float(P.PAD_Y + 1))      # on the pad, north of the bonfire, west of the line of the bridge
+pad = (P.HEARTH[0], P.PAD[1] + 2, float(P.PAD_Y + 1))          # on the pad, north of the bonfire, on the line of the bridge
 sq = M["square"]; sL = M["sL"]; ch = M["church"]; L = ch["L"]; dx, dy, dz = ch["door"]
 wx, wy, wz = M["well"]
 rx, ry, rz = ch["ringer"]
@@ -106,6 +106,8 @@ if tr:
     app = [[p[0], p[1], p[2]] for p in prof]
     app = [app[0]] + app[1:-1][::4] + [app[-1]] + [c(70, P.PAD[3] - 1, P.PAD_Y + 1)]
     routes["h_approach"] = app; routes["h_approach_b"] = app[::-1]
+for f_ in os.listdir(OUT):                                   # the routes of an earlier layout go (heather_walk.sh walks every h_*.json)
+    if f_.startswith("h_") and f_.endswith(".json"): os.remove(os.path.join(OUT, f_))
 for n, pts in routes.items():
     s = pts[0]
     json.dump(dict(start=[s[0], s[2], s[1]], points=[[p[0], p[1], p[2]] for p in pts[1:]]), open(os.path.join(OUT, n + ".json"), "w"))

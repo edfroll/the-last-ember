@@ -233,7 +233,7 @@ def flat_roof_house(b, f, L, ground_lo, sd, out):
     out["lantern"] = lit
     # the ladder up the left side wall (outside, u = -1), from the ground at the front to the roof; a gap in the parapet over it
     lw = 2
-    for y in range(L + 1, top + 2): put(b, f, -1, lw, y, "minecraft:ladder[facing=%s,waterlogged=false]" % f.d("left"))
+    for y in range(L + 1, top + 1): put(b, f, -1, lw, y, "minecraft:ladder[facing=%s,waterlogged=false]" % f.d("left"))   # up to the roof's level: from the roof one steps over it and climbs down
     put(b, f, 0, lw, top + 1, "minecraft:air")
     out["ladder"] = p3(f, -1, lw, L + 1); out["roof"] = p3(f, 1, lw, top + 1)
     # the table on the roof: 2 x 1 of spruce slabs (top) on fences? -> trapdoors as a table top, chairs (stairs) round it
@@ -325,6 +325,7 @@ def reversed_(b, f, L, du, out):
     put(b, f, du, bw - 1, L + 1, "minecraft:campfire[facing=%s,lit=false,signal_fire=false,waterlogged=false]" % f.d("out"))
     put(b, f, du, bw - 1, L + 2, "minecraft:air"); put(b, f, du, bw - 1, L + 3, "minecraft:air")
     put(b, f, du, bw, L + 1, door(f, "in", "lower", hinge="right", open_=True)); put(b, f, du, bw, L + 2, door(f, "in", "upper", hinge="right", open_=True))    # open: seen from the room as a doorway in the fire
+    put(b, f, du, bw, L + 3, "minecraft:air")          # no lintel: on the campfire one stands 7/16 higher (the head would hit it)
     for y in range(L + 1, L + 4): put(b, f, du, bw + 1, y, "minecraft:air")
     put(b, f, du, bw + 1, L, LO)
     out["back_door"] = p3(f, du, bw + 1, L + 1)
