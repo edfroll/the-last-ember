@@ -151,7 +151,7 @@ def forest(b, c, meta):
             if gy - lo > 3: continue
             k = len(trees)
             if e <= P.EDGE:
-                if hsh(x, 3, z, 3222) < 0.5: trees.append(dark_oak(b, x, gy, z, 6 + int(hsh(x, 4, z, 3223) * 3), 3300 + k, lo, 0.3, crown=e < CANOPY_FROM))
+                if hsh(x, 3, z, 3222) < 0.6: trees.append(dark_oak(b, x, gy, z, 6 + int(hsh(x, 4, z, 3223) * 3), 3300 + k, lo, 0.3, crown=e < CANOPY_FROM))
                 else: trees.append(poplar(b, x, gy, z, 11 + int(hsh(x, 5, z, 3224) * 5), 3300 + k, lo))
                 if e >= CANOPY_FROM and trees[-1]["kind"] == "dark_oak":       # the trunk reaches the canopy
                     top = int(cb[P.ix(gr, x, z)]) + 1
@@ -211,11 +211,14 @@ def web(b, c, meta, trees):
             if hsh(x, 14, z, 3233) < d * 2.2 and b.get(x, y, z) is None and y > gy + 3:
                 b.set(x, y, z, WEB); n["under"] += 1
                 if hsh(x, 15, z, 3234) < 0.4 and b.get(x, y - 1, z) is None and y - 1 > gy + 3: b.set(x, y - 1, z, WEB)
-    for t in trees:              # the small cocoons of the edge: a wool bundle 1 x 2 under a poplar's crown on its south side
-        if t["kind"] != "poplar" or hsh(t["x"], 16, t["z"], 3235) > 0.45: continue
-        x, z = t["x"] + 1, t["z"]; gy = c.g(t["x"], t["z"]); y = gy + int(t["h"] * 0.33) - 1
-        if b.get(x, y, z) is None and b.get(x, y - 1, z) is None and (x, z) not in c.walk and y - 1 > c.g(x, z) + 2:
-            b.set(x, y, z, WOOL); b.set(x, y - 1, z, STEM); n["small"] += 1
+    for t in trees:              # the small cocoons of the edge: a bundle 1 x 2 (wool over stem) stuck to the side of an edge tree's trunk
+        if t["kind"] not in ("poplar", "dark_oak") or hsh(t["x"], 16, t["z"], 3235) > 0.5: continue
+        w = 2 if t["kind"] == "dark_oak" else 1
+        for (x, z) in ((t["x"] + w, t["z"]), (t["x"] - 1, t["z"]), (t["x"], t["z"] + w), (t["x"], t["z"] - 1)):
+            if (x, z) in c.walk or (x, z) in c.keep or not c.inner(x, z): continue
+            y = c.g(x, z) + 2 + int(hsh(x, 17, z, 3236) * 2)
+            if b.get(x, y, z) is None and b.get(x, y + 1, z) is None:
+                b.set(x, y, z, STEM); b.set(x, y + 1, z, WOOL); n["small"] += 1; break
     meta["web"] = n
 
 # ---------------------------------------------------------------- cocoons
@@ -346,45 +349,52 @@ def live_cocoon(b, c, meta):
 
 # ---------------------------------------------------------------- the trip wires
 def tripwires(b, c, meta):
-    """3 places on the trail of the victims: a straight level stretch, the hooks on the two cells beside the trail on dark oak posts
-    (their trunks go up into the canopy), the wire across both lanes at the feet; a fresh scratch (stripped dark oak) on the post"""
+    """3 places on the trail of the victims, out of the nest's zone (adventure there: shears could not cut them): a straight level
+    stretch, the hooks on the two cells beside the trail on dark oak posts (their trunks go up into the canopy), the wire across both
+    lanes at the feet; a fresh scratch (stripped dark oak) on the post; spread along the allowed part of the trail, >= 6 cells apart"""
     pv = c.pl["pv"]; out = []
-    for f in (0.25, 0.5, 0.75):
-        n0 = int(len(pv) * f); done = False
-        for dn in sorted(range(-11, 12), key=abs):
-            n = n0 + dn
-            if done or not 2 <= n < len(pv) - 2: continue
-            x, z, v = pv[n]
-            if v % 2 or any(abs(n - o["n"]) < 6 for o in out): continue
-            k = P.D.index((pv[n + 1][0] - x, pv[n + 1][1] - z))
-            if P.D.index((x - pv[n - 1][0], z - pv[n - 1][1])) != k: continue
-            sx, sz = P.side(k)
-            if (x + sx, z + sz) not in c.walk: sx, sz = -sx, -sz                  # the second lane (widened in the search's order)
-            lanes = [(x, z), (x + sx, z + sz)]
-            if any(c.walk.get(q) != v for q in lanes): continue
-            h1 = (x - sx, z - sz); h2 = (x + 2 * sx, z + 2 * sz); p1 = (x - 2 * sx, z - 2 * sz); p2 = (x + 3 * sx, z + 3 * sz)
-            y = v // 2 + 1
-            if any(q in c.walk or not c.inner(*q) for q in (h1, h2, p1, p2)): continue
-            if any(c.g(*q) > v // 2 + 1 for q in (h1, h2)) or any(c.g(*q) > v // 2 + 2 for q in (p1, p2)): continue   # a hook may sit in the bank's top block
-            if any(b.get(q[0], yy, q[1]) is not None for q in (h1, h2, p1, p2) for yy in range(y, y + 3)): continue
-            if c.cb[P.ix(c.gr, *p1)] - y < 3: continue
-            dir1 = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}[(sx, sz)]
-            dir2 = {"east": "west", "west": "east", "south": "north", "north": "south"}[dir1]
-            top = int(c.cb[P.ix(c.gr, *p1)]) + 1
-            for (px, pz) in (p1, p2):
-                for yy in range(min(c.g(px, pz) + 1, y), top + 1): b.set(px, yy, pz, DLOG)          # the post: from the ground (or the hook's level in the bank) up into the canopy
-            for (hx, hz) in (h1, h2):
-                for yy in range(c.g(hx, hz) + 1, y): b.set(hx, yy, hz, "minecraft:rooted_dirt")      # the hooks' cells raised to the trail
-            b.set(*p1[:1], y, p1[1], "minecraft:stripped_dark_oak_log[axis=y]")                    # the scratch at the hook
-            b.set(p1[0], y + 1, p1[1], "minecraft:stripped_dark_oak_log[axis=y]")
-            b.set(h1[0], y, h1[1], "minecraft:tripwire_hook[attached=true,facing=%s,powered=false]" % dir1)
-            b.set(h2[0], y, h2[1], "minecraft:tripwire_hook[attached=true,facing=%s,powered=false]" % dir2)
-            ax = "east=true,west=true,north=false,south=false" if sx else "east=false,west=false,north=true,south=true"
-            for (lx, lz) in lanes: b.set(lx, y, lz, "minecraft:tripwire[attached=true,disarmed=false,%s,powered=false]" % ax)
-            for q in (h1, h2, p1, p2): c.keep.add(q)
-            out.append(dict(n=n, hooks=[[h1[0], y, h1[1]], [h2[0], y, h2[1]]], wire=[[lx, y, lz] for (lx, lz) in lanes], f1=dir1, f2=dir2, ax=ax))
-            done = True
-        if not done: raise SystemExit("no straight level stretch for a trip wire near trail cell %d" % n0)
+    nx1, nz1, nx2, nz2 = c.pl["nest"]["r"]; gi = c.pl["giant"]
+    cands = []
+    for n in range(2, len(pv) - 2):
+        x, z, v = pv[n]
+        if v % 2: continue
+        if nx1 - 10 <= x <= nx2 + 10 and z <= gi["zb"] + 9: continue
+        k = P.D.index((pv[n + 1][0] - x, pv[n + 1][1] - z))
+        if P.D.index((x - pv[n - 1][0], z - pv[n - 1][1])) != k: continue
+        sx, sz = P.side(k)
+        if (x + sx, z + sz) not in c.walk: sx, sz = -sx, -sz                  # the second lane (widened in the search's order)
+        lanes = [(x, z), (x + sx, z + sz)]
+        if any(c.walk.get(q) != v for q in lanes): continue
+        h1 = (x - sx, z - sz); h2 = (x + 2 * sx, z + 2 * sz); p1 = (x - 2 * sx, z - 2 * sz); p2 = (x + 3 * sx, z + 3 * sz)
+        y = v // 2 + 1
+        if any(q in c.walk or q in c.keep or not c.inner(*q) for q in (h1, h2, p1, p2)): continue
+        if any(c.g(*q) > v // 2 + 1 for q in (h1, h2)) or any(c.g(*q) > v // 2 + 2 for q in (p1, p2)): continue   # a hook may sit in the bank's top block
+        if any(b.get(q[0], yy, q[1]) is not None for q in (h1, h2, p1, p2) for yy in range(y, y + 3)): continue
+        if c.cb[P.ix(c.gr, *p1)] - y < 3: continue
+        cands.append((n, x, z, v, sx, sz, lanes, h1, h2, p1, p2, y))
+    if len(cands) < 3: raise SystemExit("only %d straight level stretches for the trip wires out of the nest's zone" % len(cands))
+    lo, hi = cands[0][0], cands[-1][0]; picks = []
+    for f in (0.1, 0.5, 0.9):
+        t = lo + (hi - lo) * f
+        for cd in sorted(cands, key=lambda q: abs(q[0] - t)):
+            if all(abs(cd[0] - o[0]) >= 6 for o in picks) and all(max(abs(cd[1] - o[1]), abs(cd[2] - o[2])) >= 5 for o in picks): picks.append(cd); break
+    if len(picks) < 3: raise SystemExit("the trip wires cannot be spread 6 cells apart (%d)" % len(picks))
+    for (n, x, z, v, sx, sz, lanes, h1, h2, p1, p2, y) in sorted(picks):
+        dir1 = {(1, 0): "east", (-1, 0): "west", (0, 1): "south", (0, -1): "north"}[(sx, sz)]
+        dir2 = {"east": "west", "west": "east", "south": "north", "north": "south"}[dir1]
+        top = int(c.cb[P.ix(c.gr, *p1)]) + 1
+        for (px, pz) in (p1, p2):
+            for yy in range(min(c.g(px, pz) + 1, y), top + 1): b.set(px, yy, pz, DLOG)          # the post: from the ground (or the hook's level in the bank) up into the canopy
+        for (hx, hz) in (h1, h2):
+            for yy in range(c.g(hx, hz) + 1, y): b.set(hx, yy, hz, "minecraft:rooted_dirt")      # the hooks' cells raised to the trail
+        b.set(p1[0], y, p1[1], "minecraft:stripped_dark_oak_log[axis=y]")                    # the scratch at the hook
+        b.set(p1[0], y + 1, p1[1], "minecraft:stripped_dark_oak_log[axis=y]")
+        b.set(h1[0], y, h1[1], "minecraft:tripwire_hook[attached=true,facing=%s,powered=false]" % dir1)
+        b.set(h2[0], y, h2[1], "minecraft:tripwire_hook[attached=true,facing=%s,powered=false]" % dir2)
+        ax = "east=true,west=true,north=false,south=false" if sx else "east=false,west=false,north=true,south=true"
+        for (lx, lz) in lanes: b.set(lx, y, lz, "minecraft:tripwire[attached=true,disarmed=false,%s,powered=false]" % ax)
+        for q in (h1, h2, p1, p2): c.keep.add(q)
+        out.append(dict(n=n, hooks=[[h1[0], y, h1[1]], [h2[0], y, h2[1]]], wire=[[lx, y, lz] for (lx, lz) in lanes], f1=dir1, f2=dir2, ax=ax))
     meta["trips"] = out
     return out
 

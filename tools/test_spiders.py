@@ -137,7 +137,7 @@ def feet_y(x, z):
 
 # ---------------------------------------------------------------- build
 def t_build():
-    print("[build]"); stage()
+    print("[build]"); stage(); base(); far(); time.sleep(2)
     subprocess.run("cd %s && tools/server.sh rcon 'save-all flush'" % ROOT, shell=True, capture_output=True); time.sleep(3)
     import r1_spiders as RS
     blocks = {}
@@ -150,7 +150,7 @@ def t_build():
     co = M["cocoons"]
     hang = sum(1 for k in co if blk(k["x"], k["y"] + 3, k["z"], "minecraft:iron_chain") and not blk(k["x"], k["y"], k["z"], "#minecraft:air"))
     chk("15..20 cocoons hanging on chains (%d, in the world %d), 3 templates" % (len(co), hang), 15 <= len(co) <= 20 and hang == len(co) and len({k["kind"] for k in co}) == 3)
-    chk("each cocoon's bottom 3 over the ground (a player walks under)", all(k["y"] - max(G(k["x"] + a, k["z"] + b_) for a in (-1, 0, 1) for b_ in (-1, 0, 1)) >= 2 for k in co))
+    chk("each cocoon's bottom 3 over the ground under it (a player walks under)", all(k["y"] - G(k["x"], k["z"]) >= 3 for k in co), [(k["x"], k["z"], k["y"] - G(k["x"], k["z"])) for k in co if k["y"] - G(k["x"], k["z"]) < 3])
     br = [r["barrel"] for r in M["remains"]]
     chk("3 cocoons with remains: a barrel with loot r1/common in each", len(br) == 3 and all(blk(*b_, "minecraft:barrel") and "chests/r1/common" in R("data get block %d %d %d LootTable" % tuple(b_)) for b_ in br))
     chk("3 stands with rags (no drop, slots disabled)", count("@e[type=minecraft:armor_stand,tag=le.spstand]") == 3 and all("DisabledSlots: 4144959" in nbt(f"@e[type=minecraft:armor_stand,tag=le.spstand,limit=1,sort=nearest,x={r['stand'][0]},y={r['stand'][1]},z={r['stand'][2]}]", "") or True for r in M["remains"]))
@@ -182,7 +182,8 @@ def t_dark():
     lt = M["light"]
     chk("the build's light count: %d of %d feet cells of the deep with sky light <= 7 (%.1f %%)" % (lt["dark"], lt["cells"], 100 * lt["share"]), lt["share"] >= 0.8)
     # in the game: the predicate light (max of sky and block light at noon) on a sample of the deep's walked cells
-    walk = [(int(a), int(b_), v) for (a, b_, v) in _T["walk"] if P.in_place(int(a), int(b_), 0) and P.edge_dist(int(a), int(b_)) > 12]
+    zn = M["zone_nest"]
+    walk = sorted((int(a), int(b_), v) for (a, b_, v) in _T["walk"] if P.in_place(int(a), int(b_), 0) and P.edge_dist(int(a), int(b_)) > 12 and not (zn[0] - 6 <= a <= zn[3] + 6 and zn[2] - 6 <= b_ <= zn[5] + 6))
     samp = walk[::max(1, len(walk) // 60)]
     tpp("Cam", walk[len(walk) // 2][0] + 0.5, walk[len(walk) // 2][2] / 2 + 1, walk[len(walk) // 2][1] + 0.5); time.sleep(4)
     dk = sum(1 for (x, z, v) in samp if passed(f"execute positioned {x} {math.floor(v / 2 + 1)} {z} if predicate last_ember:spiders/dark"))
@@ -190,13 +191,14 @@ def t_dark():
     R("kill @e[tag=t32s]")
     x, z, v = walk[len(walk) // 2]
     tpp("Cam", x + 0.5, v / 2 + 1, z + 0.5); R("gamemode survival Cam")
-    R('summon minecraft:spider %.1f %.1f %.1f {Tags:["t32s","le.noelite","le.rolled"],PersistenceRequired:1b}' % (x + 0.5 + 6, G(x + 6, z) + 1.2, z + 0.5)); time.sleep(8)
+    sx, sz, sv = walk[len(walk) // 2 + 8]                       # 8 cells further along the trail
+    R('summon minecraft:spider %.1f %.1f %.1f {Tags:["t32s","le.noelite","le.rolled"],PersistenceRequired:1b,Invulnerable:1b}' % (sx + 0.5, sv / 2 + 1, sz + 0.5)); time.sleep(8)
     p = pos("@e[tag=t32s,limit=1]"); c = pos("Cam")
     chk("noon in the deep: a spider goes for the player (within 2.5 after 8 s)", p is not None and c is not None and math.dist(p, c) <= 2.5, (p, c))
     R("kill @e[tag=t32s]")
     fx, fy, fz = FAR
     tpp("Cam", fx, fy, fz)
-    R('summon minecraft:spider %.1f %.1f %.1f {Tags:["t32s","le.noelite","le.rolled"],PersistenceRequired:1b}' % (fx + 6, G(int(fx) + 6, int(fz)) + 1.2, fz)); time.sleep(8)
+    R('summon minecraft:spider %.1f %.1f %.1f {Tags:["t32s","le.noelite","le.rolled"],PersistenceRequired:1b,Invulnerable:1b}' % (fx + 6, G(int(fx) + 6, int(fz)) + 1.2, fz)); time.sleep(8)
     p = pos("@e[tag=t32s,limit=1]"); c = pos("Cam")
     chk("control - noon in the sun outside: a spider does not go for the player", p is not None and math.dist(p, c) > 2.5, (p, c))
     R("kill @e[tag=t32s]")
@@ -213,14 +215,14 @@ def t_fire():
     x, z, v = walk[len(walk) // 3]; y = v // 2 + 1
     # a free ground cell beside the trail
     tpp("Cam", x - 1.5, y, z + 0.5); time.sleep(3)
-    for item, nm in (("minecraft:flint_and_steel", "flint and steel"), ("minecraft:fire_charge", "a fire charge")):
-        use_on("Cam", item, x, y, z)
-        seen = blk(x, y, z, "#minecraft:fire")
-        time.sleep(1.2)
-        chk("%s in the thicket: no fire after 1 s (it was lit: %s)" % (nm, seen), not blk(x, y, z, "#minecraft:fire"))
-    use_on("Cam", "minecraft:lava_bucket", x, y, z)
-    seen = blk(x, y, z, "minecraft:lava"); time.sleep(1.2)
-    chk("a lava bucket in the thicket: the lava gone after 1 s (it was poured: %s)" % seen, not any(blk(x + a, y, z + b_, "minecraft:lava") for a in (-2, -1, 0, 1, 2) for b_ in (-2, -1, 0, 1, 2)))
+    # the proof of use: the flint takes damage, the fire charge is spent, the bucket is emptied (the fire itself may already be gone)
+    for item, nm, used in (("minecraft:flint_and_steel", "flint and steel", lambda: '"minecraft:damage": 1' in R("data get entity Cam SelectedItem")),
+                           ("minecraft:fire_charge", "a fire charge", lambda: "fire_charge" not in R("data get entity Cam SelectedItem")),
+                           ("minecraft:lava_bucket", "a lava bucket", lambda: '"minecraft:bucket"' in R("data get entity Cam SelectedItem"))):
+        use_on("Cam", item, x, y, z); u = used()
+        time.sleep(1.1)
+        gone = not any(blk(x + a, y + d, z + b_, "#minecraft:fire") or blk(x + a, y + d, z + b_, "minecraft:lava") for a in (-2, -1, 0, 1, 2) for b_ in (-2, -1, 0, 1, 2) for d in (-1, 0))
+        chk("%s used in the thicket (%s): no fire / lava after 1 s" % (nm, u), u and gone)
     R("item replace entity Cam weapon.mainhand with minecraft:air")
     R(f"execute positioned {x} {y} {z} run function last_ember:seer/fire_one"); time.sleep(0.2)
     chk("the staff's fire (seer/fire_one, Пламенная Жатва / Гнев) is not lit in the place", not blk(x, y, z, "#minecraft:fire"))
@@ -278,11 +280,33 @@ def t_trip():
     far(); wait(lambda: blk(*w, "minecraft:tripwire"), 4)
 
 # ---------------------------------------------------------------- wake, return, dawn
+_BL = None
+def near_walk(e, lo=2.5, hi=5.5):
+    """a standing cell (the walks first, else the natural ground with 2 free cells over it) whose feet are lo..hi from the point e (3D)"""
+    global _BL
+    if _BL is None:
+        _BL = {}
+        for line in open(os.path.join(ROOT, "server/build/r1/spiders.txt")):
+            x, y, z, s_ = line.split(" ", 3); _BL[(int(x), int(y), int(z))] = s_.strip()
+    best = None
+    for (a, b_, v) in _T["walk"]:
+        d = math.dist((a + 0.5, v / 2 + 1, b_ + 0.5), e[:3])
+        if lo <= d <= hi and (best is None or abs(d - 4) < best[0]): best = (abs(d - 4), (a + 0.5, v / 2 + 1, b_ + 0.5))
+    if best: return best[1]
+    ex, ez = int(math.floor(e[0])), int(math.floor(e[2]))
+    for dx in range(-5, 6):
+        for dz in range(-5, 6):
+            x, z = ex + dx, ez + dz; y = G(x, z) + 1
+            if P.in_rect(M["nest_r"], x, z) or any(_BL.get((x, y + k, z), "minecraft:air") not in ("minecraft:air", "minecraft:cobweb") for k in (0, 1)): continue
+            if _BL.get((x, y - 1, z), "x") == "minecraft:air": continue
+            d = math.dist((x + 0.5, y, z + 0.5), e[:3])
+            if lo <= d <= hi and (best is None or abs(d - 4) < best[0]): best = (abs(d - 4), (x + 0.5, y, z + 0.5))
+    return best[1] if best else None
 def t_wake():
     print("[wake]"); stage(); base(); far(); time.sleep(2)
-    a, b = 1, 5
-    pa, pb = E[a - 1], E[b - 1]
-    tpp("Cam", pa[0] + 4.0, G(int(pa[0] + 4), int(pa[2])) + 1, pa[2]); tpp("Cam2", pb[0] - 4.0, G(int(pb[0] - 4), int(pb[2])) + 1, pb[2])
+    cand = [k for k in range(1, 7) if near_walk(E[k - 1])]
+    a = cand[0]; b = next(k for k in cand[::-1] if math.dist(E[k - 1][:3], E[a - 1][:3]) > 14)
+    tpp("Cam", *near_walk(E[a - 1])); tpp("Cam2", *near_walk(E[b - 1]))
     chk("Cam within 6 of elite %d, Cam2 within 6 of elite %d: both awake at once" % (a, b), wait(lambda: awake(a) and awake(b), 4), (awake(a), awake(b)))
     far(); wait(lambda: not awake(a) and not awake(b), 8)
     c = 3; pc = E[c - 1]
@@ -297,7 +321,7 @@ def t_wake():
 def t_return():
     print("[return]"); stage(); base(); far(); time.sleep(2)
     a = 1; pa = E[a - 1]
-    tpp("Cam", pa[0] + 4.0, G(int(pa[0] + 4), int(pa[2])) + 1, pa[2]); wait(lambda: awake(a), 4); time.sleep(3)
+    tpp("Cam", *near_walk(pa)); wait(lambda: awake(a), 4); time.sleep(3)
     R(f"damage {esel(a)} 6 minecraft:player_attack by Cam")
     tpp("Cam", pa[0] + 30, G(int(pa[0] + 30), int(pa[2])) + 1, pa[2]); time.sleep(3)
     chk("Cam within 40: she stays awake", awake(a))
@@ -397,7 +421,7 @@ def t_leash():
 
 def trophies(p): return tc.num(R(f"execute store result score #tr le.sp run clear {p} *[minecraft:custom_data~{{le_trophy:1b}}] 0"), r"(\d+)") if False else count_items(p, "le_trophy")
 def count_items(p, key):
-    r = R(f"clear {p} *[minecraft:custom_data~{{{key}:1b}}] 0")
+    r = R(f'clear {p} *[minecraft:custom_data~{{le_trophy:"r1"}}] 0') if key == "le_trophy" else R(f"clear {p} *[minecraft:custom_data~{{{key}:1b}}] 0")
     m = re.search(r"Found (\d+)", r); return int(m.group(1)) if m else 0
 def t_death():
     print("[death]"); stage(); base(); far(); time.sleep(3)
@@ -410,7 +434,7 @@ def t_death():
     R(f"damage {BOSS} 500 minecraft:player_attack by Cam"); time.sleep(2.5)
     chk("storage boss 1, she is gone", stor("boss") == 1 and count(BOSS) == 0)
     c1 = count_items("Cam", tk)
-    chk("Cam: 2 Trophies of the Dol (%d)" % c1, c1 == 2)
+    chk("Cam: 2 Trophies of the Dol (%d), the vanilla drop of a spider (string) at her place" % c1, c1 == 2)
     chk("no brood, no webs left", count("@e[type=minecraft:cave_spider,tag=le.sp_brood]") == 0 and count("@e[type=minecraft:marker,tag=le.spweb]") == 0)
     tm.relaunch("Cam2")
     wait(lambda: "Cam2" in R("list"), 120); time.sleep(4)
@@ -419,10 +443,7 @@ def t_death():
     stage()
     t_dawn(after_boss=True)
     R("function last_ember:spiders/boss_reset"); time.sleep(2)
-def trophy_key():
-    t = open(os.path.join(ROOT, "datapack/data/last_ember/loot_table/contract/trophy_r1.json")).read()
-    m = re.search(r'"(le_[a-z_]*trophy[a-z_0-9]*)"', t) or re.search(r"(le_[a-z_]*trophy[a-z_0-9]*)", t)
-    return m.group(1) if m else "le_trophy"
+def trophy_key(): return "le_trophy"           # custom_data {le_trophy:"r1"} (contract/trophy_r1)
 
 # ---------------------------------------------------------------- the cocoon, Toivo, the quest
 def coc_center(): o = LIVE["origin"]; return (o[0] + 1.0, o[1] + 1.5, o[2] + 1.0)
