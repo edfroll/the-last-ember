@@ -62,6 +62,10 @@ tools/build/heather_step.sh
 # T-032: the Spider Thicket (only inside its place + seam: the forest, the canopy, the web, the cocoons, the fallen giant, the nest with
 # the drop and the burrow of roots, the trail of the victims, the animal trail from the trail Heather -> Garden; scans spiders_pre.bin)
 tools/build/spiders_step.sh
+# T-033: the Iron Ore Mines (only inside its place + seam: the yard terrace, the headframe, the office, the approach from the trail refuge
+# -> causeway; under the place the adit, the shaft, three horizons, the inclines, the ore, the cave-ins, the big collapse and Bran's
+# pocket; the box of the place filled with rock round them; scans mines_pre.bin)
+tools/build/mines_step.sh
 tools/biomepaint.sh | grep -v JAVA_TOOL | sed -n 1p      # not head -1: it closed the pipe, SIGPIPE + pipefail stopped the step (exit 141)
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

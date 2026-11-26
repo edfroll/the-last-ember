@@ -1,0 +1,43 @@
+{
+ "type": "minecraft:generic",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:iron_pickaxe",
+     "modifier": [
+      {
+       "type": "minecraft:set_components",
+       "components": {
+        "minecraft:custom_name": {
+         "text": "Кирка Брана",
+         "italic": false
+        },
+        "minecraft:lore": [
+         {
+          "text": "Ученическая. Клеймо Хальварда на обухе.",
+          "color": "gray",
+          "italic": false
+         }
+        ],
+        "minecraft:custom_data": "{le_bran_pick:1b}"
+       }
+      },
+      {
+       "type": "minecraft:set_enchantments",
+       "enchantments": {
+        "minecraft:efficiency": 1
+       }
+      },
+      {
+       "type": "minecraft:set_damage",
+       "damage": 0.5
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
