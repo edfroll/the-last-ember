@@ -1,0 +1,40 @@
+{
+ "gen": {
+  "commit": "c2838008fa785656a2c2df657dce7c2ba13f5ec0",
+  "dirty": false,
+  "made": "2026-11-22 07:50:59",
+  "sha256": "5d815e818e3d63154271b0044f34b29b429693bf42e2974b7934b4b97a81e2ce",
+  "size": 106342721,
+  "key": "5ddcca616268a4ff4a834615e79311fb289a4c4e",
+  "parts": [
+   "gen.tar.gz.00",
+   "gen.tar.gz.01"
+  ]
+ },
+ "final": {
+  "commit": "7605801352692f6b1dec532c1c4a1b5a150a2ce5",
+  "dirty": false,
+  "made": "2026-11-26 18:30:25",
+  "sha256": "3e51421d4b904488c6f0530b8a83295dee89bff28a2c03e707c6612461b05000",
+  "size": 145147325,
+  "gen_key": "5ddcca616268a4ff4a834615e79311fb289a4c4e",
+  "sections": {
+   "head": "2d8bec7a1fefb2a3f5728fcac0de94f94a231f74",
+   "frame": "66b28f8d9c3a6a2e2aef5c01457fc1ca7744e9ce",
+   "weepers": "ac221e30489d307fcffb1f8f924a73f6264949cc",
+   "maze": "36847df8dafd3119d050cece3d59e6ff54cd552e",
+   "garden": "9b7ef585ee31bf171c760d4552789c729ba69911",
+   "fens": "e873adc50f2f04920b1cb5dc53aaf149f6193aa3",
+   "cemetery": "b712001f3f69035b909af16017d7af555596dc12",
+   "castle": "d3b1b4bad195f380020663ea9681238ec871cfdf",
+   "grove": "86cad5c0a4bab16a11df03e4b67974436e2bcb13",
+   "heather": "11b5261add4a953db7cacb4a8d30fc47ec78fd02",
+   "spiders": "fb24494417824e128ca6fbcd17d90dd9c14fdcab",
+   "tail": "6fb9186dd35f5ba8e3c55efbed63ac2c6116d97c"
+  },
+  "parts": [
+   "final.tar.gz.00",
+   "final.tar.gz.01"
+  ]
+ }
+}
