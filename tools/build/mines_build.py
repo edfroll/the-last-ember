@@ -13,7 +13,7 @@ from mines_plan import ix, in_rect
 
 YARD = Mix({"coarse_dirt": 45, "gravel": 20, "dirt": 20, "packed_mud": 15}, 3301)
 TRAIL = Mix({"coarse_dirt": 55, "gravel": 30, "dirt": 15}, 3302)
-TRAIL_SLAB = Mix({"cobblestone_slab[type=bottom,waterlogged=false]": 60, "stone_slab[type=bottom,waterlogged=false]": 40}, 3303)
+TRAIL_SLAB = Mix({"spruce_slab[type=bottom,waterlogged=false]": 70, "cobblestone_slab[type=bottom,waterlogged=false]": 30}, 3303)   # timber steps
 WALL = Mix({"cobblestone": 70, "mossy_cobblestone": 30}, 3304)
 SPOIL = Mix({"gravel": 40, "cobblestone": 30, "andesite": 20, "tuff": 10}, 3305)
 ROCK = {1: Mix({"stone": 70, "andesite": 30}, 3306), 2: Mix({"stone": 60, "andesite": 40}, 3307), 3: Mix({"tuff": 60, "stone": 40}, 3308)}
@@ -298,8 +298,8 @@ def cave_rect_near(q, m):
 
 def caves(b, c):
     """HQ T-033, 2: 3 cave-ins: the sensor 2 into the rock over the zone's middle (floor + 5), the hints (a post without its pair, a patch
-    of cobblestone and gravel in the ceiling away from the sensor, gravel on the floor); the templates are made by r1_mines.py from
-    `before` and `after` cells"""
+    of cobblestone and tuff in the ceiling - not gravel: over the air of the drift it falls at the first block update (a template placed,
+    a block broken beside it) and blocks the drift -, gravel on the floor); the templates are made by r1_mines.py"""
     lv = c.lv; out = []
     for (n, h, r, ax) in P.CAVES:
         f = lv[h]; x1, z1, x2, z2 = r
@@ -309,7 +309,7 @@ def caves(b, c):
             for z in range(z1, z2 + 1):
                 if hsh(x, f, z, 3340 + n) < 0.55: b.set(x, f, z, "minecraft:gravel")
                 far = abs(x - mx) >= 2 if ax == "x" else abs(z - mz) >= 2
-                if far and hsh(x, f + 4, z, 3341 + n) < 0.6: b.set(x, f + 4, z, "minecraft:gravel" if hsh(x, 0, z, 3342) < 0.4 else "minecraft:cobblestone")
+                if far and hsh(x, f + 4, z, 3341 + n) < 0.6: b.set(x, f + 4, z, "minecraft:tuff" if hsh(x, 0, z, 3342) < 0.4 else "minecraft:cobblestone")
                 elif hsh(x, f + 4, z, 3343 + n) < 0.3: b.set(x, f + 4, z, "minecraft:cobblestone")
         # the post without its pair: in the wall on one side at the zone's middle
         sx, sz = ((mx, z1 - 1) if ax == "x" else (x1 - 1, mz))
@@ -369,7 +369,7 @@ def big_collapse(b, c):
                 else: b.set(x, y, z, "minecraft:stripped_spruce_log[axis=x]" if hsh(x, y, z, 3350) < 0.1 else COLLAPSE.at(x, y, z) if hsh(x, y, z, 3351) < 0.6 else "minecraft:cobblestone")
             for y in range(f, f + 5): c.noore.add((x, y, z))
     # gravel never over air: the front rows sit on the floor; the crawl's upper gravel sits on its lower one
-    c.meta["big"] = dict(rect=[x1, z1, x2, z2], pick=[(x1 + x2) / 2 - 0.5, f + 2.05, fr + 0.5], torch=[la[0] + 1.0, f + 1.05, fr - 0.4],
+    c.meta["big"] = dict(rect=[x1, z1, x2, z2], pick=[x1 + 0.5, f + 2.45, fr + 0.75], torch=[la[0] + 1.0, f + 1.04, fr - 0.3],
                          crawl=[la[0], f + 1, fr - 2, la[1], f + 2, z1])
 
 def pocket(b, c):

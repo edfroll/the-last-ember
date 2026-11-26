@@ -170,7 +170,7 @@ BRAN_LETTER = {"minecraft:custom_name": {"text": "Письмо Брана", "ita
 dump(os.path.join(LT, "mines", "bran_pick.json"), table([pool([item("iron_pickaxe", mods=[comps(BRAN_PICK), ench({"efficiency": 1}),
      {"type": "minecraft:set_damage", "damage": 0.5}])])], "minecraft:generic"))
 dump(os.path.join(LT, "mines", "bran_letter.json"), table([pool([item("paper", mods=[comps(BRAN_LETTER)])])], "minecraft:generic"))
-dump(os.path.join(LT, "mines", "bran.json"), table([pool([ref("mines/bran_pick")]), pool([ref("mines/bran_letter")])], "minecraft:entity"))
+dump(os.path.join(LT, "mines", "bran.json"), table([pool([ref("mines/bran_pick")]), pool([ref("mines/bran_letter")]), pool([ref("elite/r1/zombie")])], "minecraft:entity"))   # + the elite's (T-014: its trophy only when a player killed him)
 for r in BOOKS:
     good = [book(e, l, 3) for e, l in BOOKS[r]] + [item(i, 6 // len(INGOTS[r]), 1, count=(4, 8)) for i in INGOTS[r]] + [potion(p, 2) for p in POTIONS[r]]
     pools = [pool(good, (2, 3) if r in GRIMOIRES else (3, 5))]
