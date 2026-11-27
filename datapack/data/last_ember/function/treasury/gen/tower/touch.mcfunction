@@ -2,5 +2,6 @@
 damage @s 6 minecraft:mob_attack by @e[type=minecraft:vex,tag=le.tr_lady,limit=1]
 function last_ember:wound/frost
 scoreboard players set @s le.trcd 20
+tag @s add le.trcool
 playsound minecraft:block.glass.break hostile @a[distance=..16] ~ ~1 ~ 0.6 1.6
 scoreboard players add #t.touches le.tr 1

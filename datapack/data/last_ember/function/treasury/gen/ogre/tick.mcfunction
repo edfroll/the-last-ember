@@ -2,6 +2,8 @@
 execute unless score #o.st le.tr matches 1 run return 0
 schedule function last_ember:treasury/gen/ogre/tick 1t replace
 scoreboard players add #o.t le.tr 1
+tag @e[type=minecraft:player] remove le.trin_o
+tag @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,x=220,y=169,z=144,dx=29,dy=9,dz=23] add le.trin_o
 execute as @e[type=minecraft:snowball,tag=le.tr_bone] at @s run function last_ember:treasury/gen/ogre/bone_fly
 execute as @e[type=minecraft:marker,tag=le.tr_bonem] at @s unless entity @e[type=minecraft:snowball,tag=le.tr_bone,distance=..3] run function last_ember:treasury/gen/ogre/bone_end
 execute if score #o.die le.tr matches 0.. run return run function last_ember:treasury/gen/ogre/dying

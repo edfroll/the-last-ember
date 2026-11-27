@@ -2,8 +2,10 @@
 damage @s 8 minecraft:mob_attack by @e[type=minecraft:ghast,tag=le.trme,limit=1]
 effect give @s minecraft:slowness 2 1
 scoreboard players set @s le.trcd 20
+tag @s add le.trcool
 playsound minecraft:block.slime_block.hit hostile @a[distance=..16] ~ ~1 ~ 1.2 0.6
 particle minecraft:item_slime ~ ~1 ~ 0.3 0.5 0.3 0 10 force @a[distance=..24]
 scoreboard players add #g.touches le.tr 1
+execute at @s facing entity @e[type=minecraft:ghast,tag=le.trme,limit=1] feet rotated ~ 0 positioned ^ ^ ^0.6 run summon minecraft:wind_charge ~ ~0.1 ~ {Motion:[0.0d,-1.0d,0.0d]}
 execute at @s facing entity @e[type=minecraft:ghast,tag=le.trme,limit=1] feet rotated ~ 0 positioned ^ ^ ^0.6 run summon minecraft:wind_charge ~ ~0.1 ~ {Motion:[0.0d,-1.0d,0.0d]}
 effect give @s minecraft:slow_falling 1 0 true

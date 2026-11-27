@@ -2,6 +2,7 @@
 damage @s 5 minecraft:mob_attack by @e[type=minecraft:ghast,tag=le.trme,limit=1]
 effect give @s minecraft:slowness 2 1
 scoreboard players set @s le.trcd 20
+tag @s add le.trcool
 playsound minecraft:block.slime_block.hit hostile @a[distance=..16] ~ ~1 ~ 1.2 0.6
 particle minecraft:item_slime ~ ~1 ~ 0.3 0.5 0.3 0 10 force @a[distance=..24]
 scoreboard players add #g.touches le.tr 1

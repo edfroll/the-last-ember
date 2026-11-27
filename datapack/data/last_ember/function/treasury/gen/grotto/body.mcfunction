@@ -7,11 +7,13 @@ scoreboard players operation #b le.tr %= #4 le.tr
 execute if score #b le.tr matches 0 run function last_ember:treasury/gen/grotto/breathe
 scoreboard players remove @s le.trd 1
 execute if score @s le.trd matches ..0 run function last_ember:treasury/gen/grotto/dash
-execute unless score @s le.trv matches 0 run function last_ember:treasury/gen/grotto/move
-execute unless score @s le.trw matches 0 run function last_ember:treasury/gen/grotto/move
+scoreboard players set #m le.tr 0
+execute unless score @s le.trv matches 0 run scoreboard players set #m le.tr 1
+execute unless score @s le.trw matches 0 run scoreboard players set #m le.tr 1
+execute if score #m le.tr matches 1 run function last_ember:treasury/gen/grotto/move
 tag @s add le.trme
-execute if score @s le.trs matches 3 as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,distance=..2.7,scores={le.trcd=..0}] run function last_ember:treasury/gen/grotto/touch_3
-execute if score @s le.trs matches 2 as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,distance=..1.7,scores={le.trcd=..0}] run function last_ember:treasury/gen/grotto/touch_2
-execute if score @s le.trs matches 1 as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,distance=..1.1,scores={le.trcd=..0}] run function last_ember:treasury/gen/grotto/touch_1
+execute if score @s le.trs matches 3 as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,distance=..2.7,tag=!le.trcool] run function last_ember:treasury/gen/grotto/touch_3
+execute if score @s le.trs matches 2 as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,distance=..1.7,tag=!le.trcool] run function last_ember:treasury/gen/grotto/touch_2
+execute if score @s le.trs matches 1 as @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,distance=..1.1,tag=!le.trcool] run function last_ember:treasury/gen/grotto/touch_1
 tag @s remove le.trme
 execute unless entity @s[x=-388,y=131,z=195,dx=29,dy=14,dz=33] run tp @s -369.5 134 220.5
