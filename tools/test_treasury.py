@@ -161,8 +161,8 @@ def t_build():
     print("\n".join("     " + l for l in r.stdout.strip().splitlines()))
     chk("treasury_check (the cover 8/6, no light, the chests and locks, the walks, the boat, the ledges, the rift)", r.returncode == 0, r.stdout[-400:] + r.stderr[-300:])
     c = O["chest"]; g = G["chest"]; t = TW["chest"]
-    def vault(ch, v):      # the loot table of T-019 until the first opening (then the loot is in the chest)
-        return "r1_" in R("data get block %d %d %d LootTable" % tuple(ch)) or (tc.score("#o.%s" % v, "le.vt") or 0) == 1
+    def vault(ch, v):      # the loot table of T-019 until the first opening (then the loot is in the chest: opened in the tests)
+        return "vault/" + v in R("data get block %d %d %d LootTable" % tuple(ch)) or "Items" in R("data get block %d %d %d" % tuple(ch))
     for k, (x, y, z) in LOCKS.items(): R(f"forceload add {x} {z}")
     time.sleep(1)
     chk("three chests, the vaults of T-019 (r1_ogre, r1_grotto, r1_tower)", blk(*c, "minecraft:chest") and blk(*g, "minecraft:chest") and blk(*t, "minecraft:chest")
@@ -404,11 +404,11 @@ def t_restart():
     chk("the Ogre awake before the restart", sc("#o.st") == 1)
     R("scoreboard players set #g.st le.tr 2"); R("function last_ember:treasury/gen/grotto/save")
     tm.restart(); stage(); away("Cam"); away("Cam2"); time.sleep(2)
-    into_den("Cam", DEN_OUT); time.sleep(4)
-    chk("after the restart: the Ogre asleep on his bed, one only", sc("#o.st") == 0 and count("@e[type=minecraft:zombie,tag=le.tr_ogre]") == 1
-        and passed(f"execute as {OGRE} on vehicle if entity @s[tag=le.tr_oseat]"))
-    tpp("Cam", *GOUT); time.sleep(4)
-    chk("the dead Jelly stays dead (no body)", sc("#g.st") == 2 and count(JELLY) == 0)
+    into_den("Cam", DEN_OUT)
+    chk("after the restart: the Ogre asleep on his bed, one only (what the fight left gone)", wait(lambda: sc("#o.st") == 0 and count("@e[type=minecraft:zombie,tag=le.tr_ogre]") == 1
+        and passed(f"execute as {OGRE} on vehicle if entity @s[tag=le.tr_oseat]"), 20, 1.0))
+    tpp("Cam", *GOUT)
+    chk("the dead Jelly stays dead (no body)", wait(lambda: sc("#g.st") == 2 and count(JELLY) == 0, 15, 1.0) and stor("grotto") == 2)
     reset_all()
 
 def t_perf():

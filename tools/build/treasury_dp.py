@@ -342,6 +342,7 @@ function last_ember:treasury/rotate_by with storage last_ember:treasury rv
     write(sub, "second", "every second with the den loaded: the difficulty, the trophies, the Ogre present (asleep) / the empty den (the fight), his chewing, the decor", """
 execute if score #df le.tr matches 0 if score #o.st le.tr matches ..1 run function last_ember:treasury/gen/ogre/peace
 execute if score #o.st le.tr matches 2 run function last_ember:treasury/gen/ogre/unlock_quiet
+execute if score #o.st le.tr matches 2 if score #o.die le.tr matches -1 as @e[tag=le.tr_ostuff,type=!minecraft:marker] run function last_ember:treasury/vanish
 execute as @e[type=minecraft:zombie,tag=le.tr_ogre] unless score @s le.trg = #o.g le.tr run function last_ember:treasury/vanish
 execute if score #o.st le.tr matches 0 unless entity @e[type=minecraft:zombie,tag=le.tr_ogre] run scoreboard players add #o.miss le.tr 1
 execute if score #o.st le.tr matches 0 if score #o.miss le.tr matches 2.. run function last_ember:treasury/gen/ogre/summon
@@ -400,6 +401,9 @@ SIZES = {3: dict(scale=1.0, hp=(80, 25), touch=8, r=2.7, push=0.25, every=36, sp
          1: dict(scale=0.25, hp=(10, 0), touch=3, r=1.1, push=0.35, every=16, split=0, name="small")}
 
 
+MOVE_LINES = 'execute if score @s le.trv matches 326..99999 rotated as @s run function last_ember:treasury/gen/grotto/step_350\nexecute if score @s le.trv matches 276..325 rotated as @s run function last_ember:treasury/gen/grotto/step_300\nexecute if score @s le.trv matches 226..275 rotated as @s run function last_ember:treasury/gen/grotto/step_250\nexecute if score @s le.trv matches 176..225 rotated as @s run function last_ember:treasury/gen/grotto/step_200\nexecute if score @s le.trv matches 126..175 rotated as @s run function last_ember:treasury/gen/grotto/step_150\nexecute if score @s le.trv matches 76..125 rotated as @s run function last_ember:treasury/gen/grotto/step_100\nexecute if score @s le.trv matches 31..75 rotated as @s run function last_ember:treasury/gen/grotto/step_50'
+
+
 def run_grotto(g):
     sub = "grotto"; clean(sub)
     W = g["W"]; x1, z1, x2, z2 = g["rect"]
@@ -422,14 +426,14 @@ execute as @e[tag=le.tr_gstuff] run function last_ember:treasury/vanish
                  'interpolation_duration:4,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,%sf,0f],scale:[%sf,%sf,%sf]}}' % (f2(-2.5 * s), f2(ms), f2(ms * 0.8), f2(ms)))
         name = '{id:"minecraft:text_display",Tags:["le.tr_gstuff","le.tr_jn","le.trnew"],billboard:"center",text:"",background:0,see_through:0b,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0.3f,0f],scale:[1f,1f,1f]}}'
         write(sub, "body_%d" % sz, "a body of the Jelly, %s (model %s blocks): an invisible ghast (NoAI, scale %s) carrying the model and the name; health set after" % (d["name"], f2(ms), f2(s)), """
-summon minecraft:ghast ~ ~ ~ {Tags:["le.tr_jelly","le.tr_gstuff","le.boss","le.noelite","le.keep","le.eq_done","le.rolled","le.trnew","le.trnb"],Silent:1b,NoAI:1b,PersistenceRequired:1b,CanPickUpLoot:0b,Health:600f,DeathLootTable:"minecraft:empty",active_effects:[{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b},{id:"minecraft:fire_resistance",amplifier:0b,duration:-1,show_particles:0b}],attributes:[{id:"minecraft:scale",base:«S»d},{id:"minecraft:max_health",base:600.0d},{id:"minecraft:follow_range",base:0.0d}],Passengers:[«MODEL»,«NAME»]}
+tag @e[tag=le.trlast] remove le.trlast
+summon minecraft:ghast ~ ~ ~ {Tags:["le.tr_jelly","le.tr_gstuff","le.boss","le.noelite","le.keep","le.eq_done","le.rolled","le.trnew","le.trnb","le.trlast"],Silent:1b,NoAI:1b,PersistenceRequired:1b,CanPickUpLoot:0b,Health:600f,DeathLootTable:"minecraft:empty",active_effects:[{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b},{id:"minecraft:fire_resistance",amplifier:0b,duration:-1,show_particles:0b}],attributes:[{id:"minecraft:scale",base:«S»d},{id:"minecraft:max_health",base:600.0d},{id:"minecraft:follow_range",base:0.0d}],Passengers:[«MODEL»,«NAME»]}
 scoreboard players set @e[tag=le.trnb] le.trs «SZ»
 scoreboard players operation @e[tag=le.trnew] le.trg = #g.g le.tr
 scoreboard players operation @e[tag=le.trnb] le.tri = #g.made le.tr
 scoreboard players add #g.made le.tr 1
 scoreboard players add #g.alive le.tr 1
 scoreboard players set @e[tag=le.trnb] le.trv 0
-scoreboard players set @e[tag=le.trnb] le.trw 0
 scoreboard players set @e[tag=le.trnb] le.trp -1
 execute store result score @e[tag=le.trnb] le.trd run random value 10..30
 """, S=f2(s), MODEL=model, NAME=name, SZ=sz, **kw)
@@ -489,10 +493,7 @@ scoreboard players operation #b le.tr %= #4 le.tr
 execute if score #b le.tr matches 0 run function last_ember:treasury/gen/grotto/breathe
 scoreboard players remove @s le.trd 1
 execute if score @s le.trd matches ..0 run function last_ember:treasury/gen/grotto/dash
-scoreboard players set #m le.tr 0
-execute unless score @s le.trv matches 0 run scoreboard players set #m le.tr 1
-execute unless score @s le.trw matches 0 run scoreboard players set #m le.tr 1
-execute if score #m le.tr matches 1 run function last_ember:treasury/gen/grotto/move
+execute if score @s le.trv matches 1.. run function last_ember:treasury/gen/grotto/move
 tag @s add le.trme
 execute if score @s le.trs matches 3 as @e[«ALIVE»,distance=..2.7,tag=!le.trcool] run function last_ember:treasury/gen/grotto/touch_3
 execute if score @s le.trs matches 2 as @e[«ALIVE»,distance=..1.7,tag=!le.trcool] run function last_ember:treasury/gen/grotto/touch_2
@@ -513,44 +514,74 @@ execute if score @s le.trb matches 2.. run scoreboard players set @s le.trb 0
 """, **kw)
     dash_lines = []
     for sz, d in SIZES.items():
-        dash_lines.append("execute if score @s le.trs matches %d facing entity @e[tag=le.trin_g,sort=nearest,limit=1] feet rotated ~ 0 positioned ^ ^ ^%s run summon minecraft:marker ~ ~ ~ {Tags:[\"le.tr_vec\"]}" % (sz, f2(d["push"] * 10)))
+        dash_lines.append("execute if score @s le.trs matches %d run scoreboard players set @s le.trv %d" % (sz, int(d["push"] * 1000)))
         dash_lines.append("execute if score @s le.trs matches %d store result score @s le.trd run random value %d..%d" % (sz, d["every"], d["every"] + 12))
-    write(sub, "dash", "as/at a body: a lunge at the nearest player alive in the grotto (none: it waits); the speed by its size (slower: it is in the water)", """
+    write(sub, "dash", "as/at a body: a lunge at the nearest player alive in the grotto (none: it waits): it turns to him, its speed by its size (slower: it is in the water)", """
 scoreboard players set @s le.trd 20
 execute unless entity @e[tag=le.trin_g] run return 0
+execute facing entity @e[tag=le.trin_g,sort=nearest,limit=1] feet run tp @s ~ ~ ~ ~ 0
 «DASH»
-execute store result score #a le.tr run data get entity @s Pos[0] 100
-execute store result score #b le.tr run data get entity @s Pos[2] 100
-execute store result score @s le.trv run data get entity @e[type=minecraft:marker,tag=le.tr_vec,limit=1] Pos[0] 100
-execute store result score @s le.trw run data get entity @e[type=minecraft:marker,tag=le.tr_vec,limit=1] Pos[2] 100
-kill @e[type=minecraft:marker,tag=le.tr_vec]
-scoreboard players operation @s le.trv -= #a le.tr
-scoreboard players operation @s le.trw -= #b le.tr
 playsound minecraft:entity.slime.jump hostile @a[distance=..32] ~ ~1 ~ 1.2 0.4
 particle minecraft:item_slime ~ ~0.6 ~ 0.8 0.2 0.8 0 12 force @a[distance=..32]
 scoreboard players add #g.dashes le.tr 1
-""", DASH="\n".join(dash_lines).replace("«ALIVE»", ALIVE).replace("«ROOM»", ROOM), **kw)
-    write(sub, "move", "as a body with a speed (le.trv, le.trw: 1/1000 block a tick): one step, back if it would leave the grotto's water (the ledge, a wall); the speed fades", """
-execute store result storage last_ember:treasury mv.x double 0.001 run scoreboard players get @s le.trv
-execute store result storage last_ember:treasury mv.z double 0.001 run scoreboard players get @s le.trw
-function last_ember:treasury/gen/grotto/step with storage last_ember:treasury mv
+""", DASH="\n".join(dash_lines), **kw)
+    write(sub, "move", "as/at a body with a speed (le.trv, 1/1000 block a tick, along its facing): one step of the nearest fixed length (no macro: a macro is compiled for every new argument), the speed fades by 0.9", """
+«LINES»
 scoreboard players operation @s le.trv *= #90 le.tr
 scoreboard players operation @s le.trv /= #100 le.tr
-scoreboard players operation @s le.trw *= #90 le.tr
-scoreboard players operation @s le.trw /= #100 le.tr
-execute if score @s le.trv matches -5..5 run scoreboard players set @s le.trv 0
-execute if score @s le.trw matches -5..5 run scoreboard players set @s le.trw 0
+execute if score @s le.trv matches ..30 run scoreboard players set @s le.trv 0
+""", LINES=MOVE_LINES, **kw)
+    write(sub, "step_350", "as/at a body, rotated as it: a step of 0.35 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.35 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.35 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.35 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.35 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.35 run tp @s ~ «W» ~
 """, **kw)
-    write(sub, "step", "macro x, z: as/at a body: the step over the water of the grotto (feet W), onto a stone (solid at W: feet W + 1) or the ledge (solid at W + 1: feet W + 2), always with air at W + 2; a wall, the chest's slime or out of the room: it stops", """
-$execute positioned ~$(x) «W» ~$(z) unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
-$execute positioned ~$(x) «W2» ~$(z) unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
-$execute positioned ~$(x) «W1» ~$(z) unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~$(x) «W2» ~$(z)
-$execute positioned ~$(x) «W» ~$(z) unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~$(x) «W1» ~$(z)
-$tp @s ~$(x) «W» ~$(z)
+    write(sub, "step_300", "as/at a body, rotated as it: a step of 0.30 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.30 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.30 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.30 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.30 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.30 run tp @s ~ «W» ~
+""", **kw)
+    write(sub, "step_250", "as/at a body, rotated as it: a step of 0.25 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.25 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.25 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.25 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.25 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.25 run tp @s ~ «W» ~
+""", **kw)
+    write(sub, "step_200", "as/at a body, rotated as it: a step of 0.20 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.20 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.20 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.20 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.20 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.20 run tp @s ~ «W» ~
+""", **kw)
+    write(sub, "step_150", "as/at a body, rotated as it: a step of 0.15 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.15 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.15 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.15 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.15 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.15 run tp @s ~ «W» ~
+""", **kw)
+    write(sub, "step_100", "as/at a body, rotated as it: a step of 0.10 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.10 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.10 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.10 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.10 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.10 run tp @s ~ «W» ~
+""", **kw)
+    write(sub, "step_50", "as/at a body, rotated as it: a step of 0.05 over the water (feet W), onto a stone (solid at W: W + 1) or the ledge (solid at W + 1: W + 2), air at W + 2; a wall, the chest's slime or out of the room: it stops", """
+execute positioned ^ ^ ^0.05 positioned ~ «W» ~ unless predicate last_ember:treasury/in_grotto run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.05 positioned ~ «W2» ~ unless block ~ ~ ~ minecraft:air run return run function last_ember:treasury/gen/grotto/stop
+execute positioned ^ ^ ^0.05 positioned ~ «W1» ~ unless block ~ ~ ~ minecraft:air unless block ~ ~ ~ minecraft:water run return run tp @s ~ «W2» ~
+execute positioned ^ ^ ^0.05 positioned ~ «W» ~ unless block ~ ~ ~ minecraft:water unless block ~ ~ ~ minecraft:air run return run tp @s ~ «W1» ~
+execute positioned ^ ^ ^0.05 run tp @s ~ «W» ~
 """, **kw)
     write(sub, "stop", "as a body: it hit a wall or the ledge: it stops", """
 scoreboard players set @s le.trv 0
-scoreboard players set @s le.trw 0
 """, **kw)
     for sz, d in SIZES.items():
         extra = ""
@@ -571,7 +602,6 @@ scoreboard players add #g.touches le.tr 1
     write(sub, "rip_start", "as/at a body: its true health is 0: it tears (20 ticks), no more lunges", """
 scoreboard players set @s le.trp 20
 scoreboard players set @s le.trv 0
-scoreboard players set @s le.trw 0
 data merge entity @s {Invulnerable:1b}
 playsound minecraft:entity.slime.death hostile @a[distance=..32] ~ ~1 ~ 2 0.4
 """, **kw)
@@ -602,8 +632,7 @@ function last_ember:treasury/vanish_with
         for k in range(n):
             ang = 360.0 * k / n + (30 if n == 3 else 90)
             lines.append("execute rotated %s 0 positioned ^ ^ ^0.6 run function last_ember:treasury/gen/grotto/body_%d" % (f2(ang), hp))
-            lines.append("execute rotated %s 0 positioned ^ ^ ^2.2 run summon minecraft:marker ~ ~ ~ {Tags:[\"le.tr_vec\"]}" % f2(ang))
-            lines.append("function last_ember:treasury/gen/grotto/fling")
+            lines.append("execute as @e[type=minecraft:ghast,tag=le.trlast,limit=1] run function last_ember:treasury/gen/grotto/fling {yaw:%s}" % f2(ang))
         write(sub, "split_%d" % sz, "at a torn body: %d smaller bodies thrown 2..3 blocks out, their health by the players at the wake" % n, """
 «LINES»
 execute store result storage last_ember:treasury hp.max int 1 run scoreboard players get #g.hp«HP» le.tr
@@ -614,18 +643,9 @@ tag @e[tag=le.trnew] remove le.trnew
 tag @e[tag=le.trnb] remove le.trnb
 scoreboard players add #g.splits le.tr 1
 """, LINES="\n".join(lines), HP=hp, **kw)
-    write(sub, "fling", "the newest body (le.trnb without speed): the speed toward the marker le.tr_vec (2.2 out: about 2..3 blocks with the fading)", """
-execute as @e[type=minecraft:ghast,tag=le.trnb,scores={le.trv=0,le.trw=0},limit=1] run function last_ember:treasury/gen/grotto/fling_one
-kill @e[type=minecraft:marker,tag=le.tr_vec]
-""", **kw)
-    write(sub, "fling_one", "as a new body: its speed toward le.tr_vec / 10 (fading 0.9 a tick: ~10 x the speed in all)", """
-execute store result score #a le.tr run data get entity @s Pos[0] 100
-execute store result score #b le.tr run data get entity @s Pos[2] 100
-execute store result score @s le.trv run data get entity @e[type=minecraft:marker,tag=le.tr_vec,limit=1] Pos[0] 100
-execute store result score @s le.trw run data get entity @e[type=minecraft:marker,tag=le.tr_vec,limit=1] Pos[2] 100
-scoreboard players operation @s le.trv -= #a le.tr
-scoreboard players operation @s le.trw -= #b le.tr
-execute if score @s le.trv matches 0 run scoreboard players set @s le.trv 1
+    write(sub, "fling", "macro yaw (the few values of a split, compiled once each): as a new body: turned out, a speed of 0.3 (about 3 blocks with the fading)", """
+$tp @s ~ ~ ~ $(yaw) 0
+scoreboard players set @s le.trv 300
 scoreboard players set @s le.trd 25
 """, **kw)
     write(sub, "sleep", "nobody alive in the grotto 10 s (or the Jelly went missing): the fight is over: the big one whole again by the ledge, asleep", """
@@ -653,6 +673,7 @@ execute if score #a le.tr matches 1 run «R1»
     write(sub, "second", "every second with the grotto loaded: the difficulty, the trophies, the Jelly present (asleep) / the empty grotto (the fight), its rest, the drops at the mouth", """
 execute if score #df le.tr matches 0 if score #g.st le.tr matches ..1 run function last_ember:treasury/gen/grotto/peace
 execute if score #g.st le.tr matches 2 run function last_ember:treasury/gen/grotto/unlock_quiet
+execute if score #g.st le.tr matches 2 if score #g.die le.tr matches -1 as @e[tag=le.tr_gstuff,type=!minecraft:marker] run function last_ember:treasury/vanish
 execute as @e[tag=le.tr_gstuff] unless score @s le.trg = #g.g le.tr unless entity @s[type=minecraft:marker] run function last_ember:treasury/vanish
 execute if score #g.st le.tr matches 0 unless entity @e[type=minecraft:ghast,tag=le.tr_jelly] run scoreboard players add #g.miss le.tr 1
 execute if score #g.st le.tr matches 0 if score #g.miss le.tr matches 2.. run function last_ember:treasury/gen/grotto/summon
@@ -876,6 +897,7 @@ execute if block «NX» «NY» «NZ» minecraft:soul_lantern run setblock «NX»
     write(sub, "second", "every second with the tower loaded: the difficulty, the trophies, the Lady present (asleep) / the empty room (the fight), her rest, the window", """
 execute if score #df le.tr matches 0 if score #t.st le.tr matches ..1 run function last_ember:treasury/gen/tower/peace
 execute if score #t.st le.tr matches 2 run function last_ember:treasury/gen/tower/unlock_quiet
+execute if score #t.st le.tr matches 2 if score #t.die le.tr matches -1 as @e[tag=le.tr_tstuff,type=!minecraft:marker] run function last_ember:treasury/vanish
 execute if score #t.st le.tr matches 2 run function last_ember:treasury/gen/tower/lantern_off
 execute as @e[tag=le.tr_tstuff] unless score @s le.trg = #t.g le.tr unless entity @s[type=minecraft:marker] run function last_ember:treasury/vanish
 execute if score #t.st le.tr matches 0 unless entity @e[type=minecraft:vex,tag=le.tr_lady] run scoreboard players add #t.miss le.tr 1
