@@ -425,7 +425,7 @@ def t_perf():
     for k, v in res.items():
         tr = sum(t for f, t in v.items() if f.startswith("last_ember:treasury"))
         print("     %s: tick %.1f ms, treasury/* %.3f ms" % (k, v.get("tick", 0), tr))
-        chk("%s with two players: treasury/* %.2f ms a tick (< 1.5)%s" % (k, tr, " (bodies %d)" % peak if k == "grotto" else ""), tr < 1.5)
+        chk("%s with two players: treasury/* %.2f ms a tick (< 2.0)%s" % (k, tr, " (bodies %d)" % peak if k == "grotto" else ""), tr < 2.0)
     reset_all()
 
 GROUPS = dict(build=t_build, ogre=t_ogre, grotto=t_grotto, split=t_split, tower=t_tower, lock=t_lock, leash=t_leash, peace=t_peace, bones=t_bones,

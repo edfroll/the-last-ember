@@ -407,7 +407,7 @@ def t_bran():
     chk("Bran resting in his pocket: an elite named «Бран», the miner's helmet, his pickaxe, NoAI", count("@e[type=minecraft:zombie,tag=le.mn_bran]") == 1 and noai(BRAN_E)
         and "Бран" in nbt(BRAN_E, "CustomName") and "3877402" in nbt(BRAN_E, "equipment.head") and "Кирка Брана" in nbt(BRAN_E, "equipment.mainhand") and "le.elite" in nbt(BRAN_E, "Tags"))
     def shown(): return nbt(BRAN_E, "CustomNameVisible").strip().endswith("1b")
-    chk("T-034: resting, his name is hidden (CustomNameVisible 0: it showed through the rock)", not shown() and "0b" in nbt(BRAN_E, "CustomNameVisible"))
+    chk("T-034: resting, his name is hidden (CustomNameVisible 0 = not saved: it showed through the rock)", not shown())
     bf = M["big_rect"]; f3 = LV[3]
     front = (264.5, f3 + 1, bf[3] + 2.5)
     tpp("Cam", *front); tpp("Cam2", *YARD)
