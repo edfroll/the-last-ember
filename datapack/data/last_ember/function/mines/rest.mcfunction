@@ -8,3 +8,4 @@ tag @s remove le.mna
 tag @s add le.mnr
 execute if entity @s[tag=le.mn_bran] run scoreboard players set #bran le.mn 0
 execute if entity @s[tag=le.mn_bran] run data modify storage last_ember:mines bran set value 0
+execute if entity @s[tag=le.mn_bran] run data modify entity @s CustomNameVisible set value 0b

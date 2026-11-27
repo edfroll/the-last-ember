@@ -152,7 +152,7 @@ def run(meta):
                      "scoreboard players set #bmiss le.mn 0"])
     w("bran_dress", [hdr + "as Bran just made an elite: his name, the helmet, his pickaxe, his death table",
                      "data modify entity @s CustomName set value {\"text\":\"Бран\",\"color\":\"gold\"}",
-                     "data modify entity @s CustomNameVisible set value 1b",
+                     "data modify entity @s CustomNameVisible set value 0b",   # T-034: hidden while he rests (it shows through the rock)
                      "item replace entity @s armor.head with minecraft:leather_helmet[dyed_color=3877402]",
                      "item replace entity @s weapon.mainhand with " + "minecraft:iron_pickaxe[custom_name={text:\"Кирка Брана\",italic:false},lore=[{text:\"Ученическая. Клеймо Хальварда на обухе.\",color:\"gray\",italic:false}],custom_data={le_bran_pick:1b},enchantments={\"minecraft:efficiency\":1},damage=125]",
                      "data merge entity @s {drop_chances:{head:0.0f,mainhand:0.0f}}",

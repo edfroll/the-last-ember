@@ -13,7 +13,9 @@ Branch `world-cache` = one orphan commit (overwritten on every push): manifest.j
   python3 tools/world_cache.py restore gen|final put a snapshot into server/world (+ server/build/r1); the server must be stopped
   python3 tools/world_cache.py redo [place…]     restore final, put back the pre-step chunks of each place, re-run its step of r1_apply.sh,
                                                  then the tail (biomepaint, borders, sync). A place new since the cache is just run.
-                                                 Without places: the ones `status` names.
+                                                 Without places: the ones `status` names. Places that depend on a named one
+                                                 (DEPENDS: fens -> grotto) are redone too; snapshots go back latest first, steps
+                                                 run in the order of r1_apply.sh.
   python3 tools/world_cache.py save gen|final    (rebuild.sh) pack the current world into server/cache/<name>.tar.gz + manifest
   python3 tools/world_cache.py push              upload server/cache/ to the branch: only worlds of origin/main (a commit in it, or one whose
                                                  world inputs equal main's); refuses to overwrite a newer cache
@@ -34,6 +36,9 @@ WORLD_INPUTS = ("tools/build/", "tools/seedmap/", "tools/sculpt_specs/", "tools/
                 "tools/borders.sh", "tools/sculpt.sh", "tools/env.sh", "tools/gen_biomes.py", "tools/gen_bonfires.py", "tools/gen_gates.py",
                 "biomes/", "bonfires/bonfires.txt", "gates/gates.txt", "datapack/data/minecraft/worldgen/", "datapack/data/last_ember/worldgen/")
 NOT_WORLD = re.compile(r"tools/build/(.*_(routes|shots|walk)\.(py|sh)|r1_(check|render|routes|shots|walk|perf|gates_test|bonfires_test)\.(py|sh)|walkcheck\.py|routes\.py)$")
+# a place whose step writes into the box of a later place's step: redoing it redoes the later one too (T-034: the channel of the Grotto
+# cuts the edge of the bowl of the Fens)
+DEPENDS = {"fens": ["grotto"]}
 GEN_INPUTS = ("datapack/data/minecraft/worldgen/", "datapack/data/last_ember/worldgen/", "tools/build/pregen.py")
 
 
@@ -358,7 +363,7 @@ def plan(m=None):
         if owner: redo.update(owner)
         else: rest.append(f)
     if rest: return "gen", [], rest
-    if redo: return "redo", [p for p in places if p in redo], changed
+    if redo: return "redo", with_deps(redo, places), changed
     return "final", [], changed
 
 
@@ -375,20 +380,31 @@ def status():
            "scratch": "  -> tools/build/rebuild.sh            (from scratch)"}[mode])
 
 
+def with_deps(names, order):
+    """the places and those that depend on them (DEPENDS), in the order of r1_apply.sh"""
+    todo = set(names)
+    for p in list(order):
+        if p in todo: todo.update(d for d in DEPENDS.get(p, []) if d in order)
+    return [p for p in order if p in todo]
+
+
 def redo(places):
     if not places:
         mode, places, _ = plan()
         if mode != "redo": sys.exit("status says %s, not redo" % mode)
-    secs = apply_sections(); log = os.path.join(SRV, "debug/world_cache_redo.log"); os.makedirs(os.path.dirname(log), exist_ok=True)
+    secs = apply_sections(); order = [k for k in secs if k not in ("head", "frame", "tail")]
+    bad = [p for p in places if p not in secs]
+    if bad: sys.exit("no section %s in tools/build/r1_apply.sh (have: %s)" % (" ".join(bad), ", ".join(order)))
+    places = with_deps(places, order); log = os.path.join(SRV, "debug/world_cache_redo.log"); os.makedirs(os.path.dirname(log), exist_ok=True)
     open(log, "w").close()
-    for p in places:
-        if p not in secs: sys.exit("no section %s in tools/build/r1_apply.sh (have: %s)" % (p, ", ".join(k for k in secs if k not in ("head", "frame", "tail"))))
     t0 = time.time(); restore("final")
     os.environ["LE_SNAPDIR"] = os.path.join(CACHE, "snap")
-    for p in places:
+    # the snapshots go back latest first: where boxes overlap (fens and grotto) the chunks end as they were before the earliest step
+    for p in reversed(places):
         snap = os.path.join(CACHE, "snap", p)
         if os.path.isdir(snap): print("  %s: %d chunks put back" % (p, snap_restore(WORLD, snap)))
         else: print("  %s: new since the cache, its box is untouched in the archive" % p)
+    for p in places:
         print("  %s: step" % p); run_lines(secs[p], log)
     print("  tail (biomes, borders, sync)"); run_lines(secs["tail"], log)
     print("redo done in %d s (log %s); now: tools/build/rebuild.sh --start-only" % (time.time() - t0, log))
