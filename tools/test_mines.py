@@ -470,7 +470,7 @@ def t_smith():
 
 # ---------------------------------------------------------------- zones
 def t_zones():
-    print("[zones]"); stage(); base()
+    print("[zones]"); tm.fresh(); stage(); base()
     R("give Cam minecraft:iron_axe"); R("effect give Cam minecraft:haste 60 3 true")
     x1, z1, x2, z2 = M["headframe"]
     tpp("Cam", x1 - 0.5 + 1.2, Y + 1, z2 + 1.5); time.sleep(1.5)
