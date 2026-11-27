@@ -479,6 +479,8 @@ def tower(k):
     for z in range(41, 44):
         for y in range(G + 1, G + 4): k.set(x1, y, z, "minecraft:mossy_cobblestone" if (y + z) % 2 else "minecraft:cobblestone")
     k.meta["tower"] = dict(box=list(r), top=rt, window=[477, P + 24, z1])
+    import castle_tower                       # T-034: the room on the tier of the window, the ledges to it from the barbican
+    castle_tower.build(k)
 
 
 # ================================================================ the keep: the vestibule, the annex, the hall, the reliquary, the roofs

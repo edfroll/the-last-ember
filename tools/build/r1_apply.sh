@@ -46,6 +46,9 @@ python3 tools/build/validate.py server/build/r1/fens.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/fens.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $FB server/build/r1/fens_post.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_check.py places fens
+# T-034: the Grotto of the Jelly (under the north cliff of the bowl of the fens: the grotto with the ledge, the channel from the water of
+# the bowl: an open cut into the hill, then the tunnel under the roots; the box of the grotto + 6 filled with rock; scans grotto_pre.bin)
+tools/build/grotto_step.sh
 # T-027: the Cemetery of the Fallen Knights and the Keeper's Lodge (only inside their places: the floor, the descent from bonfire 2, the
 # hill with the three swords, the graves, the barrows, the crypt, the chapel, the trails; the lodge on its terrace with the stream)
 tools/build/cemetery_step.sh

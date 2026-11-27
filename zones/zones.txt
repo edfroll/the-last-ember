@@ -60,3 +60,5 @@ spiders_cocoon  overworld box 136 108 -302 137 111 -301              # T-032: th
 mines_headframe overworld box 270 111 -76 278 135 -68              # T-033: the headframe of the Iron Ore Mines (a landmark)
 ogre_den        overworld box  219 168 143 250 179 168   dungeon   # T-034: the Ogre's Den (the cave)
 ogre_den_stair  overworld box  249 169 162 256 184 179   dungeon   # T-034: the Ogre's Den (the stair and its mouth)
+grotto          overworld box  -387 132 196 -360 145 227   dungeon   # T-034: the Grotto of the Jelly
+grotto_channel  overworld box  -371 131 226 -367 140 239   dungeon   # T-034: the last 12 cells of its channel (under the roots)
