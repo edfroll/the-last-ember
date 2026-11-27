@@ -144,7 +144,7 @@ def into_den(p, at=DEN_IN):
 # ---------------------------------------------------------------- the chest: a real click
 def try_open(p, front, chest):
     R("scoreboard objectives add t.open minecraft.custom:minecraft.open_chest"); n0 = tc.score(p, "t.open") or 0    # a statistic: read, not reset
-    tpp(p, front[0] + 0.5, front[1], front[2] + 0.5); time.sleep(1.0)
+    tpp(p, front[0] + 0.5, front[1], front[2] + 0.5); time.sleep(2.5)          # the client loads the chunks (a far tp)
     look_at(p, chest[0] + 0.5, chest[1] + 0.5, chest[2] + 0.5); time.sleep(0.5)
     tc.act(p, "!use"); time.sleep(1.2)
     n = tc.score(p, "t.open") or 0
@@ -303,6 +303,8 @@ def t_tower():
 
 def t_lock():
     print("[lock]"); stage(); away("Cam"); away("Cam2"); reset_all(); time.sleep(3)
+    # the clicks in creative: the owners do not wake for it (a woken Jelly's body, 4x4x4, stands between Cam and the chest and takes the click)
+    R("gamemode creative Cam")
     for name, ch, face, lockb in (("ogre", O["chest"], "east", "minecraft:brown_wool"), ("grotto", G["chest"], G["chest_facing"], "minecraft:slime_block"),
                                   ("tower", TW["chest"], "north", "minecraft:cracked_stone_bricks")):
         R(f"forceload add {ch[0]} {ch[2]}"); time.sleep(0.5)
@@ -310,8 +312,11 @@ def t_lock():
         R(f"forceload remove {ch[0]} {ch[2]}")
         R(f"execute as {OGRE} run data merge entity @s {{NoAI:1b}}")
         chk("%s: while its owner lives the chest does not open (a real click)" % name, not try_open("Cam", front_of(ch, face), ch))
+    gf = front_of(G["chest"], G["chest_facing"])
+    tpp("Cam", gf[0] + 0.5, gf[1], gf[2] + 0.5); time.sleep(3)       # the grotto loaded first: its reload (asleep again) puts the lock back
     R("setblock %d %d %d minecraft:air" % (G["lock"][0], G["lock"][1], G["lock"][2]))
     chk("(control) the grotto's chest without the lock opens with the same click", try_open("Cam", front_of(G["chest"], G["chest_facing"]), G["chest"]))
+    R("gamemode survival Cam")
     reset_all()
 
 def t_leash():

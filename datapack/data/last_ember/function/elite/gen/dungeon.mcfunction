@@ -12,3 +12,7 @@ execute if dimension minecraft:overworld if entity @s[x=437,y=167,z=54,dx=33,dy=
 execute if dimension minecraft:overworld if entity @s[x=466,y=166,z=39,dx=4,dy=15,dz=15] run scoreboard players set #dg le.el 1
 execute if dimension minecraft:overworld if entity @s[x=470,y=166,z=44,dx=12,dy=14,dz=25] run scoreboard players set #dg le.el 1
 execute if dimension minecraft:overworld if entity @s[x=407,y=141,z=39,dx=27,dy=24,dz=45] run scoreboard players set #dg le.el 1
+execute if dimension minecraft:overworld if entity @s[x=219,y=168,z=143,dx=31,dy=11,dz=25] run scoreboard players set #dg le.el 1
+execute if dimension minecraft:overworld if entity @s[x=249,y=169,z=162,dx=7,dy=15,dz=17] run scoreboard players set #dg le.el 1
+execute if dimension minecraft:overworld if entity @s[x=-387,y=132,z=196,dx=27,dy=13,dz=31] run scoreboard players set #dg le.el 1
+execute if dimension minecraft:overworld if entity @s[x=-371,y=131,z=226,dx=4,dy=9,dz=13] run scoreboard players set #dg le.el 1
