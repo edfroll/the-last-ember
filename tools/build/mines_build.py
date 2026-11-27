@@ -367,6 +367,8 @@ def big_collapse(b, c):
                 crawl = x in la and y <= f + 2 and z <= fr - 2
                 if crawl: b.set(x, y, z, "minecraft:gravel")
                 else: b.set(x, y, z, "minecraft:stripped_spruce_log[axis=x]" if hsh(x, y, z, 3350) < 0.1 else COLLAPSE.at(x, y, z) if hsh(x, y, z, 3351) < 0.6 else "minecraft:cobblestone")
+    for x in range(x1 - 1, x2 + 2):             # its walls stay rock (the ore must face the air of a working)
+        for z in range(z1 - 1, z2 + 1):
             for y in range(f, f + 5): c.noore.add((x, y, z))
     # gravel never over air: the front rows sit on the floor; the crawl's upper gravel sits on its lower one
     c.meta["big"] = dict(rect=[x1, z1, x2, z2], pick=[x1 + 0.5, f + 2.45, fr + 0.75], torch=[la[0] + 1.0, f + 1.04, fr - 0.3],

@@ -132,7 +132,7 @@ DRIFTS = {
         ("B2c", (281, -60, 306, -59)), ("B2d", (305, -58, 306, -44)),
         ("K1a", (287, -62, 288, -61)), ("K1b", (287, -64, 297, -63)), ("K1c", (296, -62, 297, -61)),          # the bypass of cave-in 1
         ("K2a", (301, -58, 304, -57)), ("K2b", (301, -56, 302, -52)), ("K2c", (301, -51, 304, -50))],         # the bypass of cave-in 2
-    3: [("D1a", (263, -46, 291, -44)), ("D1b", (263, -61, 265, -47)), ("D2", (274, -69, 275, -47)),
+    3: [("D1a", (263, -46, 291, -44)), ("D1b", (263, -69, 265, -47)), ("D2", (274, -69, 275, -47)),
         ("K3a", (271, -43, 272, -42)), ("K3b", (263, -41, 272, -40)), ("K3c", (263, -43, 264, -42))],         # the bypass of cave-in 3
     4: [("P", (260, -75, 267, -70))],          # Bran's pocket (H3)
 }
@@ -142,7 +142,8 @@ INCLINES = [("adit", 0, (283, -66, 297, -64), (1, 0), (6, 6), -66),
             ("I23", 2, (292, -46, 304, -44), (-1, 0), (6, 4), None)]
 # cave-ins: (n, horizon, zone rect (floor cells), axis of the drift)
 CAVES = [(1, 2, (290, -60, 294, -59), "x"), (2, 2, (305, -56, 306, -52), "z"), (3, 3, (266, -46, 270, -44), "x")]
-BIG = dict(rect=(263, -69, 265, -62), front=-62, lane=(264, 265))   # the big collapse at the end of D1b (north); Bran's crawl: x 264..265
+BIG = dict(rect=(263, -69, 265, -62), front=-62, lane=(264, 265))   # the big collapse fills the end of D1b (north, z -69..-62, the drift
+                                                                    # is cut to the pocket under it); Bran's crawl: x 264..265
 WATER = (277, 288)                         # D1a: x 278..287 water, 277 and 288 the waterlogged slab steps
 DRIPS = [(279, -45), (283, -46), (286, -44), (287, -46)]      # pointed dripstone under the raised ceiling over the water (not on the
                                                               # timbering's columns x 281, 285)

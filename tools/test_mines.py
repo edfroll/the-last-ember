@@ -69,6 +69,22 @@ class tm:   # restart and profiler (tools/test_spiders.py)
             except Exception: pass
         time.sleep(6)
     @staticmethod
+    def fresh():
+        """the clients relaunched in the usual order (Cam, then Cam2: the focus stays with Cam2; a focused Cam turns by itself): after an
+        hour of input the client Cam stops trading or breaking blocks"""
+        subprocess.run("pkill -f net.minecraft.client.main.Main", shell=True); time.sleep(4)
+        for name in ("Cam", "Cam2"):
+            tm.relaunch(name)
+            for _ in range(60):
+                time.sleep(3)
+                try:
+                    l = R("list")
+                    if (name == "Cam2" and "Cam2" in l) or (name == "Cam" and re.search(r"\bCam(?!2)\b", l)): break
+                except Exception: pass
+            time.sleep(6)
+        time.sleep(25)                     # right after joining the clicks of a client miss (T-032): let it settle, one idle click each
+        for name in ("Cam", "Cam2"): tc.act(name, "!sneak_off"); tc.act(name, "!use"); time.sleep(1)
+    @staticmethod
     def prof(sec=10):
         import glob, zipfile
         before = set(glob.glob(os.path.join(ROOT, "server/debug/profiling/*.zip"))); R("perf start")
@@ -346,7 +362,7 @@ def t_dead():
     # the helmets of the vanilla zombies of the workings, not of the elites
     R("kill @e[tag=t33v]")
     x, y, z = 270.5, LV[3] + 1, -44.5
-    R('summon minecraft:zombie %.1f %d %.1f {Tags:["t33v","t33a"],PersistenceRequired:1b}' % (x, y, z))
+    R('summon minecraft:zombie %.1f %d %.1f {Tags:["t33v","t33a","le.noelite"],PersistenceRequired:1b}' % (x, y, z))   # its elite roll (T-014) passes it by: not an elite
     R('summon minecraft:zombie %.1f %d %.1f {Tags:["t33v","t33e"],PersistenceRequired:1b}' % (x + 2, y, z))
     R("execute as @e[tag=t33e] at @s run function last_ember:elite/make")
     time.sleep(2.5)
@@ -431,7 +447,7 @@ def trade(p, idx):
     tpp(p, 58.5, 101, 25.3); tc.face(p, 58.5, 101, 25.3, 58.5, 101.9, 27.5); time.sleep(0.6)
     tc.act(p, "!use"); time.sleep(1.0); tc.act(p, f"!trade_sel {idx}"); time.sleep(0.7); tc.act(p, "!trade_take"); time.sleep(0.9); tc.act(p, "!sneak_off"); time.sleep(1.0)
 def t_smith():
-    print("[smith]"); stage()
+    print("[smith]"); tm.fresh(); stage()
     R('function last_ember:trader/reset {id:"smith"}'); time.sleep(3)
     offers = R("data get entity @e[tag=le.tr_smith,limit=1] Offers.Recipes")
     idx = offers.count("buy:") - 1
