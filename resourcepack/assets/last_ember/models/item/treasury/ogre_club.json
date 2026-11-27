@@ -1,0 +1,42 @@
+{
+ "parent": "minecraft:item/handheld",
+ "textures": {
+  "layer0": "last_ember:item/treasury/ogre_club"
+ },
+ "display": {
+  "thirdperson_righthand": {
+   "rotation": [
+    0,
+    -90,
+    55
+   ],
+   "translation": [
+    0,
+    5,
+    1.0
+   ],
+   "scale": [
+    1.4,
+    1.4,
+    1.0
+   ]
+  },
+  "thirdperson_lefthand": {
+   "rotation": [
+    0,
+    90,
+    -55
+   ],
+   "translation": [
+    0,
+    5,
+    1.0
+   ],
+   "scale": [
+    1.4,
+    1.4,
+    1.0
+   ]
+  }
+ }
+}

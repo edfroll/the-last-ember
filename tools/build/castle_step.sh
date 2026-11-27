@@ -10,6 +10,7 @@ python3 tools/gen_regions.py >/dev/null
 python3 tools/gen_traps.py >/dev/null
 python3 tools/gen_altars.py >/dev/null
 python3 tools/gen_zones.py >/dev/null
+python3 tools/gen_loot.py >/dev/null       # T-034: the vault r1_tower (treasury/vaults.txt)
 python3 tools/gen_biomes.py >/dev/null
 tools/terrain.sh apply server/build/r1/castle_terrain.bin | grep -v JAVA_TOOL
 python3 tools/build/validate.py server/build/r1/castle.txt | tail -1

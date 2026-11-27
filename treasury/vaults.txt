@@ -6,3 +6,6 @@
 #   clue=<id>     a scrap of a map to the treasury <id> lies inside (its text is hint= of that treasury, lines split by |)
 #   build=0       the container is placed by the region (BlockWriter with LootTable "last_ember:vault/<id>"), the datapack does not place it
 # After a change: python3 tools/gen_loot.py. Treasuries are added by the region tasks by the location cards.
+vault r1_ogre r1 overworld 222 170 149 block=chest[facing=east] build=0   # T-034: the Ogre's Den, under the bed of hides
+vault r1_grotto r1 overworld -373 136 213 block=chest[facing=south] build=0   # T-034: the Grotto of the Jelly, on the ledge in slime
+vault r1_tower r1 overworld 477 190 43 block=chest[facing=north] build=0   # T-034: the Locked Tower, the niche behind the torn tapestry

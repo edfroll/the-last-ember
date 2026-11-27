@@ -1,0 +1,30 @@
+{
+ "criteria": {
+  "c": {
+   "trigger": "minecraft:player_hurt_entity",
+   "conditions": {
+    "damage": {
+     "type": {
+      "tags": [
+       {
+        "id": "#minecraft:is_projectile",
+        "expected": true
+       }
+      ]
+     }
+    },
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "minecraft:vex",
+      "minecraft:nbt": "{Tags:[\"le.tr_lady\"]}"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:treasury/gen/tower/proj"
+ }
+}

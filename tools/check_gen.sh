@@ -33,6 +33,7 @@ run python3 tools/build/gen_runtime.py
 run python3 tools/make_castle_textures.py
 run python3 tools/make_advisor_skin.py
 run python3 tools/make_toivo_skin.py
+run python3 tools/make_treasury_textures.py
 after=$(state)
 if [ "$before" != "$after" ]; then
   echo; echo "CHANGED by the generators (commit the regenerated output, or fix the generator):"

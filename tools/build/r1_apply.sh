@@ -46,6 +46,9 @@ python3 tools/build/validate.py server/build/r1/fens.txt | tail -1
 tools/blockwriter.sh apply server/build/r1/fens.txt | grep -v JAVA_TOOL | tail -1
 tools/terrain.sh scan $FB server/build/r1/fens_post.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_check.py places fens
+# T-034: the Grotto of the Jelly (under the north cliff of the bowl of the fens: the grotto with the ledge, the channel from the water of
+# the bowl: an open cut into the hill, then the tunnel under the roots; the box of the grotto + 6 filled with rock; scans grotto_pre.bin)
+tools/build/grotto_step.sh
 # T-027: the Cemetery of the Fallen Knights and the Keeper's Lodge (only inside their places: the floor, the descent from bonfire 2, the
 # hill with the three swords, the graves, the barrows, the crypt, the chapel, the trails; the lodge on its terrace with the stream)
 tools/build/cemetery_step.sh
@@ -66,6 +69,10 @@ tools/build/spiders_step.sh
 # -> causeway; under the place the adit, the shaft, three horizons, the inclines, the ore, the cave-ins, the big collapse and Bran's
 # pocket; the box of the place filled with rock round them; scans mines_pre.bin)
 tools/build/mines_step.sh
+# T-034: the Ogre's Den (only inside its place + seam: the old oak, the fallen trunk, the mouth of the stair; under the hill north of it
+# the stair and the cave with the lair, the box of the cave + 6 filled with rock; on the ground to the trail refuge -> bonfire 2 the chain
+# of bones; scans ogre_pre.bin)
+tools/build/ogre_step.sh
 tools/biomepaint.sh | grep -v JAVA_TOOL | sed -n 1p      # not head -1: it closed the pipe, SIGPIPE + pipefail stopped the step (exit 141)
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

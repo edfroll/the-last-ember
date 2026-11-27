@@ -406,6 +406,8 @@ def t_bran():
     print("[bran]"); stage(); base(); time.sleep(2)
     chk("Bran resting in his pocket: an elite named «Бран», the miner's helmet, his pickaxe, NoAI", count("@e[type=minecraft:zombie,tag=le.mn_bran]") == 1 and noai(BRAN_E)
         and "Бран" in nbt(BRAN_E, "CustomName") and "3877402" in nbt(BRAN_E, "equipment.head") and "Кирка Брана" in nbt(BRAN_E, "equipment.mainhand") and "le.elite" in nbt(BRAN_E, "Tags"))
+    def shown(): return nbt(BRAN_E, "CustomNameVisible").strip().endswith("1b")
+    chk("T-034: resting, his name is hidden (CustomNameVisible 0 = not saved: it showed through the rock)", not shown())
     bf = M["big_rect"]; f3 = LV[3]
     front = (264.5, f3 + 1, bf[3] + 2.5)
     tpp("Cam", *front); tpp("Cam2", *YARD)
@@ -417,6 +419,11 @@ def t_bran():
     R("fill %d %d %d %d %d %d minecraft:air replace minecraft:gravel" % (cr[0], cr[1], cr[2], cr[3], cr[4], cr[5]))
     tpp("Cam", 264.5, f3 + 1, -68.5)
     chk("the crawl dug: Cam in it near the pocket - Bran wakes (bran 1)", wait(lambda: not noai(BRAN_E), 4) and stor("bran") == 1)
+    chk("T-034: awake, his name is shown (CustomNameVisible 1)", shown())
+    tpp("Cam", *YARD); tpp("Cam2", *YARD)
+    chk("T-034: nobody within 32 -> back on his point resting, the name hidden again (CustomNameVisible 0)", wait(lambda: noai(BRAN_E) and stor("bran") == 0, 6) and not shown())
+    tpp("Cam", 264.5, f3 + 1, -68.5)
+    chk("Cam back in the pocket: he wakes again (bran 1)", wait(lambda: not noai(BRAN_E), 4) and stor("bran") == 1)
     R("kill @e[type=minecraft:item]")
     R("damage %s 1000 minecraft:player_attack by Cam" % BRAN_E); time.sleep(2)
     IB = "type=minecraft:item,x=250,y=65,z=-85,dx=25,dy=25,dz=30"

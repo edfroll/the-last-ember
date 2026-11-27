@@ -1,0 +1,20 @@
+{
+ "criteria": {
+  "c": {
+   "trigger": "minecraft:player_hurt_entity",
+   "conditions": {
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "minecraft:ghast",
+      "minecraft:nbt": "{Tags:[\"le.tr_jelly\"]}"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:treasury/gen/grotto/hurt"
+ }
+}

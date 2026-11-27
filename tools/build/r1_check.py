@@ -13,7 +13,7 @@ import r1
 ROOT = r1.ROOT
 args = sys.argv[1:]; path = args[0] if args and args[0].endswith(".bin") else os.path.join(ROOT, "server/build/r1/after.bin")
 what = [a for a in args if not a.endswith(".bin")] or ["wall", "seam", "plots", "water"]
-BUILT = {"weepers", "maze", "garden", "fens", "cemetery", "lodge", "castle", "grove", "heather", "dragon_ridge", "spiders", "mines"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
+BUILT = {"weepers", "maze", "garden", "fens", "cemetery", "lodge", "castle", "grove", "heather", "dragon_ridge", "spiders", "mines", "ogre_den", "grotto"}      # places built by their own tools (T-023+): not natural any more, checked by `places`
 if what[:1] == ["places"]:
     W0 = r1.World(); bad = False
     for pid in what[1:] or ["weepers"]:
@@ -23,7 +23,15 @@ if what[:1] == ["places"]:
         outside = np.ones(X.shape, bool)
         for q in W0.plots:
             if q["id"] in ids: outside &= r1.plot_dist(q, X, Z) - q["m"] > 0
-        d = outside & ((pre.ground != post.ground) | (pre.top != post.top) | (pre.water != post.water))
+        deco_p = os.path.join(r1.OUT, f"{pid}_deco.json")      # T-034: decoration on the ground outside the place (the chain of bones)
+        deco = np.zeros(X.shape, bool)
+        if os.path.exists(deco_p):
+            import json
+            for (x, z) in json.load(open(deco_p))["deco"]:
+                if pre.x0 <= x < pre.x0 + pre.w and pre.z0 <= z < pre.z0 + pre.h: deco[z - pre.z0, x - pre.x0] = True
+        d = outside & ~deco & ((pre.ground != post.ground) | (pre.top != post.top) | (pre.water != post.water))
+        dd = outside & deco & ((pre.ground != post.ground) | (pre.top != post.top) | (pre.water != post.water))
+        if deco.any(): print(f"places: {pid}: {int(deco.sum())} decoration columns outside the place ({pid}_deco.json), {int(dd.sum())} of them changed")
         inside_changed = int((~outside & ((pre.ground != post.ground) | (pre.top != post.top))).sum())
         print(f"places: {pid}: {int(outside.sum())} columns around the place checked, {int(d.sum())} changed (inside the place {inside_changed} changed)")
         if d.any(): zz, xx = np.nonzero(d); print("   e.g.", [(int(x + pre.x0), int(z + pre.z0)) for z, x in list(zip(zz, xx))[:8]]); bad = True

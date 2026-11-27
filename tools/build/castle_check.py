@@ -23,6 +23,15 @@ def main(what):
     X, Z = gr["X"], gr["Z"]; rock = rl["rock"]; ok = True
     exc = P.rect((P.PIER[0] - 1, P.PIER[1] - 1, P.FACE_X + 15, P.PIER[3] + 1), X, Z)    # the pier and the stair's mouth
     exc |= P.rect((P.BRIDGE_X[0] - 1, P.RIFT[1] - 3, P.BRIDGE_X[1] + 1, P.RIFT[3] + 3), X, Z)   # the bridge (rock to rock over the rift)
+    tj = os.path.join(P.OUT, "tower.json")              # T-034: the ledges to the tower and their rails hang over the rift (no base below:
+    nled = 0                                            # nothing outside reaches them, the bfs below proves it): not an edge of the rock
+    if os.path.exists(tj):
+        import json
+        for c in json.load(open(tj))["ledges"]:
+            for a in (-1, 0, 1):
+                for e in (-1, 0, 1):
+                    m = (X == c["x"] + a) & (Z == c["z"] + e)
+                    nled += int((m & ~exc).sum()); exc |= m
     H = np.where((Wa != NONE) & (Wa > G), Wa, G)
     if "edge" in what:
         low = []; n = 0; worst = 999
@@ -32,7 +41,8 @@ def main(what):
                 if rock[p, r] or exc[p, r]: continue
                 d = int(G[i, j]) - int(H[p, r]); n += 1; worst = min(worst, d)
                 if d < P.SHEER: low.append((int(X[i, j]), int(Z[i, j]), d))
-        print(f"edge: {n} edge pairs of the rock, the lowest wall {worst} (>= {P.SHEER})" + (f"; low: {low[:10]}" if low else ""))
+        print(f"edge: {n} edge pairs of the rock, the lowest wall {worst} (>= {P.SHEER})" + (f"; low: {low[:10]}" if low else "")
+              + (f"; T-034: {nled} cells of the ledges to the tower and their rails excused" if nled else ""))
         ok &= not low
     if "knock" in what:
         kn = rl["knock"]; dep = (Wa - G)[kn]; fl = (G == rl["T"])[kn]

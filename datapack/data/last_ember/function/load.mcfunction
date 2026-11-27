@@ -62,3 +62,5 @@ function last_ember:heather/setup
 # T-032: the Spider Thicket
 function last_ember:spiders/setup
 function last_ember:mines/setup
+# T-034: the owners of the treasuries of R1
+function last_ember:treasury/setup

@@ -4,7 +4,9 @@ the built fens (server/build/r1/fens_post.bin: the water top; server/build/r1/fe
 1.375 wide: a cell is open when it is water at W with nothing solid over it (W+1, W+2: air or a lily pad, which a boat breaks), and
 the boat stands on an open cell when the 8 cells round it are open too (half a block of play each side). Prints the length of the
 shortest such way and the narrowest place; exit 1 when there is none.
-  python3 tools/build/fens_boat.py"""
+  python3 tools/build/fens_boat.py
+  python3 tools/build/fens_boat.py grotto   T-034: from the hut's pier (its boats) to the foot of the stepping stones of the Grotto of the Jelly
+                                            and back, over the blocks of the built world (tools/build/worldblocks.py; the server stopped)"""
 import json, math, os, sys
 from collections import deque
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -22,6 +24,34 @@ def water(x, z):
     i, j = z - S.z0, x - S.x0
     return 0 <= i < S.h and 0 <= j < S.w and S.water[i, j] == W and free(BL.get((x, W + 1, z))) and free(BL.get((x, W + 2, z)))
 def boat(x, z): return all(water(x + a, z + b) for a in (-1, 0, 1) for b in (-1, 0, 1))
+if sys.argv[1:2] == ["grotto"]:
+    import worldblocks
+    G = json.load(open(os.path.join(B, "grotto.json")))
+    wx = [c[0] for c in M["boats"]] + [G["rect"][0], G["rect"][2]]; wz = [c[2] for c in M["boats"]] + [G["rect"][1], G["rect"][3]]
+    WB = worldblocks.World(min(wx) - 60, min(wz) - 10, max(wx) + 60, max(wz) + 10, W - 1, W + 3)
+    def gfree(s): return s is None or s.split("[")[0] in ("minecraft:air", "minecraft:cave_air", "minecraft:lily_pad", "minecraft:hanging_roots")
+    def water(x, z):
+        s = WB.get(x, W, z) or ""
+        return (s.startswith("minecraft:water") and "level=0" in s or "waterlogged=true" in s and "slab" not in s) and gfree(WB.get(x, W + 1, z)) and gfree(WB.get(x, W + 2, z))
+    def boat(x, z): return all(water(x + a, z + b) for a in (-1, 0, 1) for b in (-1, 0, 1))
+    starts = [(c[0] + a, c[2] + e) for c in M["boats"][2:] for a in range(-2, 3) for e in range(-2, 3) if boat(c[0] + a, c[2] + e)]
+    fx, fy, fz = G["water_foot"]; fx, fz = int(math.floor(fx)), int(math.floor(fz))
+    goals = {(fx + a, fz + e) for a in range(-3, 4) for e in range(-3, 4)}
+    prev = {s: None for s in starts}; q = deque(starts); end = None
+    while q:
+        c = q.popleft()
+        if c in goals: end = c; break
+        for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (c[0] + dx, c[1] + dz)
+            if n not in prev and boat(*n): prev[n] = c; q.append(n)
+    if end is None:
+        print("boat grotto: NO way for a boat from the hut's pier %s to the stones of the grotto %s (%d cells reached)" % (starts[:1], (fx, fz), len(prev))); sys.exit(1)
+    path = [end]
+    while prev[path[-1]] is not None: path.append(prev[path[-1]])
+    json.dump([[c[0] + 0.5, c[1] + 0.5] for c in path[::-1]], open(os.path.join(B, "grotto_boat.json"), "w"))
+    print("boat grotto: a way for a boat (3 x 3 open water, air W+1, W+2) from the hut's pier %s to %s at the stones of the grotto: %d cells, "
+          "back the same way" % (path[-1], end, len(path)))
+    sys.exit(0)
 main = M["main"]
 start = next((x, z) for (x, z) in main[:30] if boat(x, z))
 goal = next((x, z) for (x, z) in main[::-1][:30] if boat(x, z))
