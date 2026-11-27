@@ -7,6 +7,7 @@ SB="224 -111 336 -9"   # the place + its seam (16) + 10 (checked by `places mine
 tools/terrain.sh scan $SB server/build/r1/mines_pre.bin | grep -v JAVA_TOOL
 python3 tools/build/r1_mines.py
 python3 tools/gen_zones.py >/dev/null
+python3 tools/gen_seer.py >/dev/null      # the fire zones of the staves read zones.txt (mines_headframe)
 python3 tools/gen_loot.py >/dev/null
 python3 tools/gen_traders.py >/dev/null
 tools/terrain.sh apply server/build/r1/mines_terrain.bin | grep -v JAVA_TOOL
