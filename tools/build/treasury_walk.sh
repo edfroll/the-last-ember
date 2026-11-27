@@ -21,6 +21,10 @@ walk() {
 }
 for n in o_approach o_in o_in_b o_approach_b g_in g_in_b t_ledges t_ledges_b; do
   [ -n "${1:-}" ] && [[ "$n" != *$1* ]] && continue
-  case "$n" in o_approach*) walk $n --jump ;; *) walk $n ;; esac
+  case "$n" in
+    o_approach*) walk $n --jump ;;
+    t_*) R "tag Cam add le.cpass"; walk $n ;;     # the pass of the colossi (in the game from the bridge); it lapses after 5 s off the rock
+    *) walk $n ;;
+  esac
 done
 R "difficulty ${DIFF:-easy}"; R "gamemode survival Cam2"

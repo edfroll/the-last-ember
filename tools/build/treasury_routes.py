@@ -51,9 +51,11 @@ def simplify(pts):
         if (round(b[0] - a[0], 3), round(b[1] - a[1], 3)) != (round(c[0] - b[0], 3), round(c[1] - b[1], 3)) or abs((b[2] - a[2]) - (c[2] - b[2])) > 0.01: out.append(b)
     out.append(pts[-1]); return out
 
-def feet(get, x, z, lo, hi):
+def feet(get, x, z, lo, hi, near=None):
+    """the standing level in a column (the highest, or the one nearest to `near`: the ground, not a lantern or a sign over it)"""
     s = surfaces(get, x, z, lo, hi)
-    return max(s)[0] if s else None
+    if not s: return None
+    return (min(s, key=lambda q: abs(q[0] - near)) if near is not None else max(s))[0]
 
 routes = {}
 # ---- the Ogre: the approach (natural ground, jumps), the stair
@@ -64,8 +66,8 @@ def go(x, y, z):
     s = Wo.get(x, y, z)
     if s and (s.startswith("minecraft:water") or "leaves" in s.split("[")[0]): return "minecraft:barrier"
     return s
-a = (ts[0], ts[1], feet(go, ts[0], ts[1], 150, 225))
-m = (ex[4][0], ex[4][1], None)
+a = (ts[0], ts[1], feet(go, ts[0], ts[1], 150, 225, near=O["signs"][0][1]))
+m = (ex[0][0], ex[0][1], float(O["top"]))          # the first exit row, under the fallen trunk (not on top of it)
 legs = [a] + [(s[0], s[2], None) for s in O["signs"][::3]] + [m]
 pts = [[a[0] + 0.5, a[1] + 0.5, a[2]]]; cur = a
 box = (min(xs) - 5, min(zs) - 5, max(xs) + 5, max(zs) + 5)
