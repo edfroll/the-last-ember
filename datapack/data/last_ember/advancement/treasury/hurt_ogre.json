@@ -1,0 +1,20 @@
+{
+ "criteria": {
+  "c": {
+   "trigger": "minecraft:player_hurt_entity",
+   "conditions": {
+    "entity": {
+     "type": "minecraft:entity_properties",
+     "entity": "this",
+     "predicate": {
+      "minecraft:entity_type": "minecraft:zombie",
+      "minecraft:nbt": "{Tags:[\"le.tr_ogre\"]}"
+     }
+    }
+   }
+  }
+ },
+ "rewards": {
+  "function": "last_ember:treasury/gen/ogre/hurt"
+ }
+}

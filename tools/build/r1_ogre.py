@@ -274,7 +274,7 @@ def lair(b, dn):
             for yy in range(y0 + 4, dn.ceil.get((gx + a, gz + c), y0 + 3) + 1): b.set(gx + a, yy, gz + c, "minecraft:iron_chain[axis=y,waterlogged=false]")
     m["cages"] = [[g[0], F + 3, g[1]] for g in cages]
     m["cauldron"] = [x1 + 11 + 0.5, F + 1.0, z1 + 9 + 0.5]
-    m["bones"] = [[x1 + 8.3, F + 1.05, z1 + 11.6, 30], [x1 + 21.6, F + 1.05, z2 - 7.4, 110], [bx2 + 2.6, F + 1.05, bz1 + 0.4, 200]]
+    m["bones"] = [[x1 + 8.3, F + 1.05, z1 + 11.6, 30], [bx2 + 2.6, F + 1.05, bz1 + 0.4, 200]]     # item_displays: 3 ravens + 4 bones of the chain + these + the cauldron = 10
 
 
 def flat_spots(dn):

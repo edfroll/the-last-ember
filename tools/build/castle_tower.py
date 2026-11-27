@@ -141,4 +141,6 @@ def build(k):
     replace_lines(os.path.join(ROOT, "treasury/vaults.txt"), ["vault r1_tower "],
                   ["vault r1_tower r1 overworld %d %d %d block=chest[facing=north] build=0   # T-034: the Locked Tower, the niche behind the torn tapestry" % tuple(m["chest"])])
     k.meta["tower_t034"] = m
+    import treasury_dp
+    treasury_dp.run_tower(m)
     return m

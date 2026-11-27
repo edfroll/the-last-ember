@@ -10,6 +10,11 @@ execute store result storage last_ember:vt d.r1_grotto.m2 int 1 run scoreboard p
 execute store result storage last_ember:vt d.r1_grotto.a int 1 run scoreboard players get #a.r1_grotto le.vt
 execute store result storage last_ember:vt d.r1_grotto.e int 1 run scoreboard players get #e.r1_grotto le.vt
 execute store result storage last_ember:vt d.r1_grotto.o int 1 run scoreboard players get #o.r1_grotto le.vt
+execute store result storage last_ember:vt d.r1_tower.m int 1 run scoreboard players get #m.r1_tower le.vt
+execute store result storage last_ember:vt d.r1_tower.m2 int 1 run scoreboard players get #m2.r1_tower le.vt
+execute store result storage last_ember:vt d.r1_tower.a int 1 run scoreboard players get #a.r1_tower le.vt
+execute store result storage last_ember:vt d.r1_tower.e int 1 run scoreboard players get #e.r1_tower le.vt
+execute store result storage last_ember:vt d.r1_tower.o int 1 run scoreboard players get #o.r1_tower le.vt
 execute store result storage last_ember:vt d.st1 int 1 run scoreboard players get #st.1 le.vt
 execute store result storage last_ember:vt d.st2 int 1 run scoreboard players get #st.2 le.vt
 execute store result storage last_ember:vt d.st3 int 1 run scoreboard players get #st.3 le.vt

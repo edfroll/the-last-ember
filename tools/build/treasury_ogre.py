@@ -211,7 +211,7 @@ def chain_way(gr, goal):
 def chain_signs(gr, way, oak_cells, bank):
     """12..20 signs along the way, 8..12 apart in a straight line (the way bends round the hills): the first one >= 9 from the trail
     off its banks (seen from it), then greedily the farthest cell of the way (anywhere ahead: the bends are cut) within G of the last sign (G = 12, then less), the last
-    within 15 of the mouth (the oak stands there); the kinds in turn: a bone (item_display), a skull (block), ribs (bone_block, 1 or 2): [(x, y, z, kind)], y the
+    within 15 of the mouth (the oak stands there); the kinds in turn: a skull (block), ribs (bone_block, 1 or 2), a bone (item_display), a skull, ribs: [(x, y, z, kind)], y the
     ground before + 1"""
     L = [0.0]
     for a, b in zip(way, way[1:]): L.append(L[-1] + math.dist(a, b))
@@ -234,8 +234,8 @@ def chain_signs(gr, way, oak_cells, bank):
     if best is None:
         raise SystemExit("STOP (HQ T-034, 2): the way to the oak (%.0f long, %.0f straight) takes no %d..%d signs %d..%d apart"
                          % (L[-1], math.dist(way[0], way[-1]), SIGNS[0], SIGNS[1], GAP[0], GAP[1]))
-    kinds = ["bone", "skull", "ribs"]
-    return [(x, gr.g(x, z) + 1, z, kinds[i % 3]) for i, (x, z) in enumerate(best)], L[-1]
+    kinds = ["skull", "ribs", "bone", "skull", "ribs"]        # the first two blocks (seen from the trail); bones (item_displays) 1 in 5
+    return [(x, gr.g(x, z) + 1, z, kinds[i % 5]) for i, (x, z) in enumerate(best)], L[-1]
 
 
 # ---------------------------------------------------------------- the whole plan (cached by its inputs)
