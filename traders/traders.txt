@@ -13,3 +13,4 @@ trader smith overworld 58 101 27 180 type=villager prof=weaponsmith vtype=plains
   buy trophy:r1 1 + minecraft:coal 4 -> minecraft:arrow 16 uses=5
   buy trophy:r1 2 -> minecraft:lapis_lazuli 4 uses=3
   buy minecraft:iron_ingot 2 + trophy:r1 2 -> @blade_prytu 1 uses=2
+  buy @bran_letter 1 -> @apprentice_helm 1 uses=1

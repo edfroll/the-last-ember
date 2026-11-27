@@ -1,0 +1,6 @@
+{
+  "criteria": { "hit": { "trigger": "minecraft:player_hurt_entity",
+    "conditions": { "entity": { "type": "minecraft:entity_properties", "entity": "this",
+      "predicate": { "minecraft:nbt": "{Tags:[\"le.mnr\"]}" } } } } },
+  "rewards": { "function": "last_ember:mines/hit" }
+}

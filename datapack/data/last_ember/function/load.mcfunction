@@ -61,3 +61,4 @@ function last_ember:grove/setup
 function last_ember:heather/setup
 # T-032: the Spider Thicket
 function last_ember:spiders/setup
+function last_ember:mines/setup

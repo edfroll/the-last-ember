@@ -57,3 +57,4 @@ heather         overworld box  20 16 -515  120 144 -425   # T-031: the Village o
 heather_head    overworld box  102 62 -576  147 144 -547   # T-031: the head of the Dragon Ridge and the sword (the rest of the ridge breaks)
 spiders_nest    overworld box 118 85 -333 141 122 -292   no_spawn   # T-032: the nest of the Spider Thicket (the pit, the giant, the burrow)
 spiders_cocoon  overworld box 136 108 -302 137 111 -301              # T-032: the live cocoon (only the datapack opens it)
+mines_headframe overworld box 270 111 -76 278 135 -68              # T-033: the headframe of the Iron Ore Mines (a landmark)

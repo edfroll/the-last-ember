@@ -6,3 +6,5 @@ execute as @e[type=#last_ember:cube_mobs,tag=le.elite] run function last_ember:e
 schedule function last_ember:mob_eq/scan 10t replace
 # T-029: at most 20 monsters in castle_halls (new ones beyond are removed)
 execute in minecraft:overworld run function last_ember:castle/kg/cap
+# T-033: the miners' helmets and pickaxes, at most 10 vanilla monsters in the workings of the Iron Ore Mines
+execute in minecraft:overworld run function last_ember:mines/gen/scan

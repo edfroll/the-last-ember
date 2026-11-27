@@ -157,6 +157,20 @@ def castle_reliquary():
     return table([pool([book(e, 2) for e, l in BOOKS[r]]), pool(iron), pool([item(INGOTS[r][0], count=(4, 8))]), pool([item("golden_apple")]),
                   pool([potion(p, 1) for p in POTIONS[r]]), pool([item(f, count=(2, 4)) for f in FOOD[r]])])
 dump(os.path.join(LT, "chests", "r1", "castle_reliquary.json"), castle_reliquary())
+# T-033: the miner's chest and barrels of the Iron Ore Mines (2..4 of: torches, bread, coal, rails, ladders, a worn stone pickaxe, a worn
+# flint and steel ~10 %, a lantern ~10 %; no ore, ingots or nuggets: T-001), Bran's things (his death table: both always)
+dump(os.path.join(LT, "chests", "r1", "miner.json"), table([pool([
+    item("torch", 20, count=(6, 16)), item("bread", 20, count=(2, 4)), item("coal", 20, count=(3, 8)), item("rail", 15, count=(4, 10)),
+    item("ladder", 15, count=(4, 8)), item("stone_pickaxe", 12, mods=[{"type": "minecraft:set_damage", "damage": {"type": "minecraft:uniform", "min": 0.2, "max": 0.6}}]),
+    item("flint_and_steel", 4, mods=[{"type": "minecraft:set_damage", "damage": 0.5}]), item("lantern", 4)], (2, 4))]))
+BRAN_PICK = {"minecraft:custom_name": {"text": "Кирка Брана", "italic": False}, "minecraft:lore": [tx("Ученическая. Клеймо Хальварда на обухе.")],
+             "minecraft:custom_data": "{le_bran_pick:1b}"}
+BRAN_LETTER = {"minecraft:custom_name": {"text": "Письмо Брана", "italic": False}, "minecraft:lore": [tx("Мастеру Хальварду, в Приют.")],
+               "minecraft:custom_data": "{le_bran_letter:1b}"}
+dump(os.path.join(LT, "mines", "bran_pick.json"), table([pool([item("iron_pickaxe", mods=[comps(BRAN_PICK), ench({"efficiency": 1}),
+     {"type": "minecraft:set_damage", "damage": 0.5}])])], "minecraft:generic"))
+dump(os.path.join(LT, "mines", "bran_letter.json"), table([pool([item("paper", mods=[comps(BRAN_LETTER)])])], "minecraft:generic"))
+dump(os.path.join(LT, "mines", "bran.json"), table([pool([ref("mines/bran_pick")]), pool([ref("mines/bran_letter")]), pool([ref("elite/r1/zombie")])], "minecraft:entity"))   # + the elite's (T-014: its trophy only when a player killed him)
 for r in BOOKS:
     good = [book(e, l, 3) for e, l in BOOKS[r]] + [item(i, 6 // len(INGOTS[r]), 1, count=(4, 8)) for i in INGOTS[r]] + [potion(p, 2) for p in POTIONS[r]]
     pools = [pool(good, (2, 3) if r in GRIMOIRES else (3, 5))]

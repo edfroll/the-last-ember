@@ -9,3 +9,5 @@ book_sharpness2 minecraft:enchanted_book {"minecraft:stored_enchantments":{"mine
 arrows_poison minecraft:tipped_arrow {"minecraft:potion_contents":{potion:"minecraft:poison"}}
 book_bane2 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:bane_of_arthropods":2}}
 book_unbreaking1 minecraft:enchanted_book {"minecraft:stored_enchantments":{"minecraft:unbreaking":1}}
+bran_letter minecraft:paper {"minecraft:custom_name":{text:"Письмо Брана",italic:false},"minecraft:lore":[{text:"Мастеру Хальварду, в Приют.",color:"gray",italic:false}],"minecraft:custom_data":{le_bran_letter:1b}}
+apprentice_helm minecraft:iron_helmet {"minecraft:custom_name":{text:"Шлем подмастерья",italic:false},"minecraft:enchantments":{"minecraft:protection":1},"minecraft:lore":[{text:"Хальвард ковал его к выпуску ученика.",color:"gray",italic:false}]}
