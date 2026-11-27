@@ -17,4 +17,5 @@ execute if score @s le.trs matches 3 run function last_ember:treasury/gen/grotto
 execute if score @s le.trs matches 2 run function last_ember:treasury/gen/grotto/split_2
 execute if score @s le.trs matches 1 run particle minecraft:block{block_state:"minecraft:slime_block"} ~ ~0.3 ~ 0.6 0.1 0.6 0 30 force @a[distance=..32]
 playsound minecraft:block.slime_block.break hostile @a[distance=..32] ~ ~1 ~ 2 0.5
+scoreboard players remove #g.alive le.tr 1
 function last_ember:treasury/vanish_with

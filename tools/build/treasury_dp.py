@@ -91,6 +91,16 @@ scoreboard players set #«P».st le.tr 2
 scoreboard players set #«P».die le.tr -1
 function last_ember:treasury/gen/«ID»/save
 """, **kw)
+    write(sub, "away", "the fight goes on with its lair unloaded (everybody far away): 10 s of it -> asleep: a new generation (what the fight left vanishes when the lair loads, the owner is summoned asleep with full health)", """
+scoreboard players add #«P».empty le.tr 1
+execute if score #«P».empty le.tr matches ..9 run return 0
+scoreboard players set #«P».st le.tr 0
+scoreboard players set #«P».empty le.tr 0
+scoreboard players set #«P».die le.tr -1
+scoreboard players add #«P».g le.tr 1
+scoreboard players add #«P».resets le.tr 1
+function last_ember:treasury/gen/«ID»/save
+""", **kw)
     write(sub, "peace", "peaceful difficulty: «NAME» counts as defeated (as the King of T-029), the chest open, no trophies", """
 scoreboard players set #«P».st le.tr 2
 scoreboard players set #«P».die le.tr -1
@@ -376,6 +386,7 @@ execute in minecraft:overworld positioned «CX» «CY» «CZ» if loaded ~ ~ ~ i
 """, **kw)
     write(sub, "sec", "every second (treasury/second): the den loaded -> second; the trophies of the fight that killed him", """
 execute in minecraft:overworld positioned «CX» «CY» «CZ» if loaded ~ ~ ~ run function last_ember:treasury/gen/ogre/second
+execute if score #o.st le.tr matches 1 in minecraft:overworld positioned «CX» «CY» «CZ» unless loaded ~ ~ ~ run function last_ember:treasury/gen/ogre/away
 execute if score #o.st le.tr matches 2 as @a[tag=le.trp_o] if score @s le.trf_o = #o.won le.tr run function last_ember:treasury/gen/ogre/pay
 """, **kw)
     adv("hurt_ogre", "minecraft:player_hurt_entity", {"entity": {"type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": "minecraft:zombie", "minecraft:nbt": "{Tags:[\"le.tr_ogre\"]}"}}},
@@ -416,6 +427,7 @@ scoreboard players set @e[tag=le.trnb] le.trs «SZ»
 scoreboard players operation @e[tag=le.trnew] le.trg = #g.g le.tr
 scoreboard players operation @e[tag=le.trnb] le.tri = #g.made le.tr
 scoreboard players add #g.made le.tr 1
+scoreboard players add #g.alive le.tr 1
 scoreboard players set @e[tag=le.trnb] le.trv 0
 scoreboard players set @e[tag=le.trnb] le.trw 0
 scoreboard players set @e[tag=le.trnb] le.trp -1
@@ -424,6 +436,7 @@ execute store result score @e[tag=le.trnb] le.trd run random value 10..30
     write(sub, "summon", "the Jelly asleep: the big body lying in the water by the ledge (the old ones gone)", """
 function last_ember:treasury/gen/grotto/clear
 scoreboard players set #g.made le.tr 0
+scoreboard players set #g.alive le.tr 0
 execute positioned «RX» «RY» «RZ» run function last_ember:treasury/gen/grotto/body_3
 tag @e[tag=le.trnew] remove le.trnew
 tag @e[tag=le.trnb] remove le.trnb
@@ -454,7 +467,7 @@ scoreboard players set #g.die le.tr -1
 function last_ember:treasury/gen/grotto/save
 schedule function last_ember:treasury/gen/grotto/tick 1t replace
 """, HP="\n".join(hp_lines), **kw)
-    write(sub, "tick", "every tick of the fight: the touch cooldowns, every body (breathing, the dash, the touch, the tearing), the leash; no body left -> it is dead", """
+    write(sub, "tick", "every tick of the fight: the touch cooldowns, every body (breathing, the dash, the touch, the tearing), the leash; no body alive (#g.alive: +1 a body made, -1 a body torn; not a count of the entities, which are gone when the grotto unloads) -> it is dead", """
 execute unless score #g.st le.tr matches 1 run return 0
 schedule function last_ember:treasury/gen/grotto/tick 1t replace
 scoreboard players add #g.t le.tr 1
@@ -465,7 +478,7 @@ execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd match
 execute as @e[type=minecraft:ghast,tag=le.tr_jelly] at @s run function last_ember:treasury/gen/grotto/body
 execute store result score #g.bodies le.tr if entity @e[type=minecraft:ghast,tag=le.tr_jelly]
 execute if score #g.bodies le.tr > #g.peak le.tr run scoreboard players operation #g.peak le.tr = #g.bodies le.tr
-execute if score #g.bodies le.tr matches 0 if score #g.made le.tr matches 1.. run function last_ember:treasury/gen/grotto/won
+execute if score #g.alive le.tr matches ..0 if score #g.made le.tr matches 1.. run function last_ember:treasury/gen/grotto/won
 """, **kw)
     write(sub, "body", "as/at a body in the fight: torn (true health 0) -> 1 s of tearing then the split; else the breathing, the dash, the move, the touch, the leash", """
 execute if score @s le.trp matches 0.. run return run function last_ember:treasury/gen/grotto/rip
@@ -581,6 +594,7 @@ execute if score @s le.trs matches 3 run function last_ember:treasury/gen/grotto
 execute if score @s le.trs matches 2 run function last_ember:treasury/gen/grotto/split_2
 execute if score @s le.trs matches 1 run particle minecraft:block{block_state:"minecraft:slime_block"} ~ ~0.3 ~ 0.6 0.1 0.6 0 30 force @a[distance=..32]
 playsound minecraft:block.slime_block.break hostile @a[distance=..32] ~ ~1 ~ 2 0.5
+scoreboard players remove #g.alive le.tr 1
 function last_ember:treasury/vanish_with
 """, **kw)
     for sz, n, hp in ((3, 3, 2), (2, 2, 1)):
@@ -674,6 +688,7 @@ execute in minecraft:overworld positioned «CX» «W1» «CZ» if loaded ~ ~ ~ i
 """, **kw)
     write(sub, "sec", "every second (treasury/second): the grotto loaded -> second; the trophies of the fight that killed it", """
 execute in minecraft:overworld positioned «CX» «W1» «CZ» if loaded ~ ~ ~ run function last_ember:treasury/gen/grotto/second
+execute if score #g.st le.tr matches 1 in minecraft:overworld positioned «CX» «W1» «CZ» unless loaded ~ ~ ~ run function last_ember:treasury/gen/grotto/away
 execute if score #g.st le.tr matches 2 as @a[tag=le.trp_g] if score @s le.trf_g = #g.won le.tr run function last_ember:treasury/gen/grotto/pay
 """, **kw)
     adv("hurt_grotto", "minecraft:player_hurt_entity", {"entity": {"type": "minecraft:entity_properties", "entity": "this", "predicate": {"minecraft:entity_type": "minecraft:ghast", "minecraft:nbt": "{Tags:[\"le.tr_jelly\"]}"}}},
@@ -689,7 +704,8 @@ def run_tower(t):
     ROOM = box_sel(room); LEASH = box_sel(room, 0)
     rest = t["rest"]; lock = t["lock"]; lan = t["lantern"]
     cx, cy, cz = (rx1 + rx2 + 1) / 2, ry1 + 1.5, (rz1 + rz2 + 1) / 2
-    kw = dict(ROOM=ROOM, LEASH=LEASH, ALIVE=ALIVE, RX=f2(rest[0]), RY=f2(rest[1]), RZ=f2(rest[2]), CX=f2(cx), CY=f2(cy), CZ=f2(cz),
+    INNER = "x=%d,y=%d,z=%d,dx=%d,dy=%d,dz=%d" % (rx1 + 1, ry1, rz1 + 1, rx2 - rx1 - 2, ry2 - ry1 - 1, rz2 - rz1 - 2)
+    kw = dict(ROOM=ROOM, LEASH=LEASH, INNER=INNER, ALIVE=ALIVE, RX=f2(rest[0]), RY=f2(rest[1]), RZ=f2(rest[2]), CX=f2(cx), CY=f2(cy), CZ=f2(cz),
               LX=lock[0], LY=lock[1], LZ=lock[2], NX=lan[0], NY=lan[1], NZ=lan[2], WX=rx1 - 0.5, WZ=f2(cz), WY=f2(ry1 + 1.0),
               XA=rx1 + 0.6, XB=rx2 + 0.4, YA=ry1, YB=ry2 - 1, ZA=rz1 + 0.6, ZB=rz2 + 0.4)
     common(sub, "t", "tower", "Белая Дама", "Башня опустела.", lock + ["minecraft:cracked_stone_bricks"], "minecraft:air", "minecraft:block.stone.break",
@@ -700,7 +716,7 @@ execute as @e[tag=le.tr_tstuff] run function last_ember:treasury/vanish
 """, **kw)
     write(sub, "summon", "the White Lady asleep: hanging by the niche (an invisible vex, scale 2.5, NoAI) with her model and her name (empty while asleep)", """
 function last_ember:treasury/gen/tower/clear
-summon minecraft:vex «RX» «RY» «RZ» {Tags:["le.tr_lady","le.tr_tstuff","le.boss","le.noelite","le.keep","le.eq_done","le.rolled","le.trnew"],Silent:1b,NoAI:1b,PersistenceRequired:1b,CanPickUpLoot:0b,Health:600f,Rotation:[180f,0f],DeathLootTable:"minecraft:empty",active_effects:[{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b},{id:"minecraft:fire_resistance",amplifier:0b,duration:-1,show_particles:0b}],attributes:[{id:"minecraft:scale",base:2.5d},{id:"minecraft:max_health",base:600.0d},{id:"minecraft:attack_damage",base:0.0d},{id:"minecraft:follow_range",base:24.0d}],equipment:{mainhand:{id:"minecraft:air",count:0}},drop_chances:{mainhand:0.0f},Passengers:[{id:"minecraft:item_display",Tags:["le.tr_tstuff","le.tr_lm","le.trnew"],Rotation:[180f,0f],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:treasury/white_lady"}},interpolation_duration:40,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,-1.5f,0f],scale:[1f,1f,1f]}},{id:"minecraft:text_display",Tags:["le.tr_tstuff","le.tr_ln","le.trnew"],billboard:"center",text:"",background:0,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0.3f,0f],scale:[1f,1f,1f]}}]}
+summon minecraft:vex «RX» «RY» «RZ» {Tags:["le.tr_lady","le.tr_tstuff","le.boss","le.noelite","le.keep","le.eq_done","le.rolled","le.trnew"],Silent:1b,NoAI:1b,PersistenceRequired:1b,CanPickUpLoot:0b,Health:600f,Rotation:[180f,0f],DeathLootTable:"minecraft:empty",active_effects:[{id:"minecraft:invisibility",amplifier:0b,duration:-1,show_particles:0b},{id:"minecraft:fire_resistance",amplifier:0b,duration:-1,show_particles:0b}],attributes:[{id:"minecraft:scale",base:2.5d},{id:"minecraft:max_health",base:600.0d},{id:"minecraft:attack_damage",base:0.0d},{id:"minecraft:follow_range",base:24.0d}],drop_chances:{mainhand:0.0f},Passengers:[{id:"minecraft:item_display",Tags:["le.tr_tstuff","le.tr_lm","le.trnew"],Rotation:[180f,0f],item:{id:"minecraft:stick",count:1,components:{"minecraft:item_model":"last_ember:treasury/white_lady"}},interpolation_duration:40,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,-1.5f,0f],scale:[1f,1f,1f]}},{id:"minecraft:text_display",Tags:["le.tr_tstuff","le.tr_ln","le.trnew"],billboard:"center",text:"",background:0,transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0.3f,0f],scale:[1f,1f,1f]}}]}
 item replace entity @e[type=minecraft:vex,tag=le.trnew] weapon.mainhand with air
 scoreboard players operation @e[tag=le.trnew] le.trg = #t.g le.tr
 tag @e[tag=le.trnew] remove le.trnew
@@ -742,10 +758,12 @@ scoreboard players remove @e[type=minecraft:player,scores={le.trcd=1..}] le.trcd
 execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd matches 1.. run tag @s remove le.trcool
 execute if score #t.die le.tr matches 0.. run return run function last_ember:treasury/gen/tower/dying
 execute unless entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] run return 0
+execute if score #t.proj le.tr matches 1 run function last_ember:treasury/gen/tower/halve
 execute store result score #t.hp10 le.tr run data get entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] Health 10
 execute if score #t.hp10 le.tr matches ..5000 run return run function last_ember:treasury/gen/tower/die_start
 execute if score #t.gone le.tr matches 0.. run return run function last_ember:treasury/gen/tower/gone_tick
 execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] unless entity @s[«LEASH»] run tp @s «CX» «CY» «CZ»
+execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] unless entity @s[«INNER»] at @s facing «CX» «CY» «CZ» run function last_ember:treasury/gen/tower/push_in
 execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] at @s run function last_ember:treasury/gen/tower/fly
 scoreboard players remove #t.wl le.tr 1
 execute if score #t.wl le.tr matches ..0 as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] at @s run function last_ember:treasury/gen/tower/wail
@@ -757,6 +775,10 @@ scoreboard players operation #b le.tr %= #2 le.tr
 execute if score #b le.tr matches 0 run particle minecraft:soul ~ ~1 ~ 0.25 0.5 0.25 0.01 1 force @a[distance=..32]
 execute if score #b le.tr matches 1 run particle minecraft:white_ash ~ ~1 ~ 0.4 0.7 0.4 0 6 force @a[distance=..32]
 execute positioned ~ ~0.3 ~ as @e[«ALIVE»,distance=..1.8,tag=!le.trcool] run function last_ember:treasury/gen/tower/touch
+""", **kw)
+    write(sub, "push_in", "as/at the Lady (facing the middle of the room) near a wall: her speed turned toward the middle (she does not fly out)", """
+summon minecraft:marker ^ ^ ^0.25 {Tags:["le.tr_vec"]}
+function last_ember:treasury/vec_motion
 """, **kw)
     write(sub, "touch", "as a player the Lady touches: 6 (mob_attack by her: her own attack, the vanilla one is off), the Frost", """
 damage @s 6 minecraft:mob_attack by @e[type=minecraft:vex,tag=le.tr_lady,limit=1]
@@ -793,8 +815,12 @@ execute if predicate last_ember:treasury/in_tower run return run tp @e[type=mine
 execute positioned ^ ^ ^1.3 if predicate last_ember:treasury/in_tower run return run tp @e[type=minecraft:vex,tag=le.tr_lady,limit=1] ~ ~ ~ facing entity @p
 tp @e[type=minecraft:vex,tag=le.tr_lady,limit=1] «CX» «CY» «CZ»
 """, **kw)
-    write(sub, "proj", "advancement reward: a projectile of a player hit the Lady: half of it back (the ghost: projectiles pass half through her)", """
+    write(sub, "proj", "advancement reward: a projectile of a player hit the Lady: the tick heals half of the drop since the last tick (the ghost: projectiles pass half through her)", """
 advancement revoke @s only last_ember:treasury/hurt_tower_proj
+scoreboard players set #t.proj le.tr 1
+""", **kw)
+    write(sub, "halve", "in the tick after a projectile hit: half of the health lost since the last tick back", """
+scoreboard players set #t.proj le.tr 0
 execute store result score #h le.tr run data get entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] Health 10
 scoreboard players operation #d le.tr = #t.hp10 le.tr
 scoreboard players operation #d le.tr -= #h le.tr
@@ -803,7 +829,6 @@ scoreboard players operation #d le.tr /= #2 le.tr
 scoreboard players operation #h le.tr += #d le.tr
 execute store result storage last_ember:treasury hl.h float 0.1 run scoreboard players get #h le.tr
 execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] run function last_ember:treasury/set_health with storage last_ember:treasury hl
-scoreboard players operation #t.hp10 le.tr = #h le.tr
 scoreboard players add #t.halved le.tr 1
 """, **kw)
     write(sub, "die_start", "her true health is 0: 2 s she fades (the model shrinks and rises, pale ashes), still", """
@@ -887,6 +912,7 @@ execute in minecraft:overworld positioned «CX» «CY» «CZ» if loaded ~ ~ ~ i
 """, **kw)
     write(sub, "sec", "every second (treasury/second): the tower loaded -> second; the trophies of the fight that killed her", """
 execute in minecraft:overworld positioned «CX» «CY» «CZ» if loaded ~ ~ ~ run function last_ember:treasury/gen/tower/second
+execute if score #t.st le.tr matches 1 in minecraft:overworld positioned «CX» «CY» «CZ» unless loaded ~ ~ ~ run function last_ember:treasury/gen/tower/away
 execute if score #t.st le.tr matches 2 as @a[tag=le.trp_t] if score @s le.trf_t = #t.won le.tr run function last_ember:treasury/gen/tower/pay
 """, **kw)
     pp = os.path.join(DP, "predicate/treasury/in_tower.json"); os.makedirs(os.path.dirname(pp), exist_ok=True)

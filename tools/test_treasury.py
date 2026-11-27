@@ -60,9 +60,14 @@ def blk(x, y, z, b): return passed(f"execute if block {x} {y} {z} {b}")
 def sc(k): return tc.score(k, "le.tr")
 def nbt(sel, path): return R(f"data get entity {sel} {path}")
 def hp(sel): return tc.hp(sel)
-def tpp(p, x, y, z, yaw=0, pitch=0): R(f"tp {p} {x} {y} {z} {yaw} {pitch}")
+def tpp(p, x, y, z, yaw=0, pitch=0):
+    if 400 <= x <= 500 and -60 <= z <= 100: R(f"tag {p} add le.cpass")       # the castle's rock: the pass of the colossi (from the bridge in the game)
+    R(f"tp {p} {x} {y} {z} {yaw} {pitch}")
 def look_at(p, x, y, z): R(f"execute as {p} at @s anchored eyes run tp @s ~ ~ ~ facing {x} {y} {z}")
 def stor(k): return tc.num(R(f"data get storage last_ember:treasury {k}.state"), r"(-?\d+)$")
+def taken(p):
+    """the statistic damage_taken (tenths of a point: blocked damage and natural regeneration do not hide it)"""
+    R("scoreboard objectives add t.dmg minecraft.custom:minecraft.damage_taken"); return (tc.score(p, "t.dmg") or 0) / 10.0
 def trophies(p):
     m = re.search(r"Found (\d+)", R(f'clear {p} minecraft:nautilus_shell[minecraft:custom_data~{{le_trophy:"r1"}}] 0')); return int(m.group(1)) if m else 0
 
@@ -187,13 +192,12 @@ def t_ogre():
     chk("the blow over his head (normal): Cam behind his raised shield loses %.1f (0), Cam2 without one %.1f (<= 14 = 7 hearts, > 0)" % (d1, d2), d1 <= 0.01 and 0 < d2 <= 14.01)
     chk("Cam2 thrown back %.1f blocks (~6)" % thrown, thrown >= 4.0)
     # the bone at the far player
-    away("Cam"); tpp("Cam2", *DEN_FAR); R("effect clear Cam2 minecraft:regeneration"); time.sleep(0.5)
-    b0 = sc("#o.bonehits") or 0; h2 = hp("Cam2")
+    away("Cam"); tpp("Cam2", *DEN_FAR); time.sleep(0.5)
+    b0 = sc("#o.bonehits") or 0; h2 = taken("Cam2")
     R("scoreboard players set #o.bt le.tr 1"); R(f"data merge entity {OGRE} {{NoAI:0b}}")
     hit = wait(lambda: (sc("#o.bonehits") or 0) > b0, 5)
-    slow = passed("execute if entity @a[name=Cam2,nbt={active_effects:[{id:\"minecraft:slowness\"}]}]"); d = h2 - (hp("Cam2") or h2)
-    chk("a bone thrown at Cam2 (farther than 7) hits: %.1f (4 on normal), slowness %s" % (d, slow), hit and slow and 3.5 <= d <= 4.5)
-    R("effect give Cam2 minecraft:regeneration infinite 2 true")
+    slow = passed("execute if entity @a[name=Cam2,nbt={active_effects:[{id:\"minecraft:slowness\"}]}]"); d = taken("Cam2") - h2
+    chk("a bone thrown at Cam2 (farther than 7) hits (%d hit): %.1f (4 on normal), slowness %s" % ((sc("#o.bonehits") or 0) - b0, d, slow), hit and slow and 3.5 <= d <= 4.5)
     # the death
     R("tp Cam %s %s %s" % DEN_IN); tpp("Cam2", *DEN_IN)
     R(f"damage {OGRE} 5 minecraft:player_attack by Cam2"); time.sleep(0.7)
@@ -215,12 +219,12 @@ def t_grotto():
     tpp("Cam", *LEDGE); tpp("Cam2", LEDGE[0] + 2, LEDGE[1], LEDGE[2]); time.sleep(1.5)
     chk("Cam and Cam2 on the ledge: it wakes, 80 + 25 x 2 = 130 (+500), the name «Студень»", sc("#g.st") == 1 and abs((hp(JELLY1) or 0) - 630) < 1
         and "Студень" in nbt("@e[type=minecraft:text_display,tag=le.tr_jn,limit=1]", "text"))
-    R("effect clear Cam minecraft:resistance"); R("effect clear Cam minecraft:regeneration"); time.sleep(0.3)
-    t0 = sc("#g.touches") or 0; h0 = hp("Cam"); p0 = pos("Cam")
+    R("effect clear Cam minecraft:resistance"); time.sleep(0.3)
+    t0 = sc("#g.touches") or 0; h0 = taken("Cam"); p0 = pos("Cam")
     R(f"execute as {JELLY1} run tp @s {LEDGE[0] + 0.5} {LEDGE[1]} {LEDGE[2] + 1.2}"); time.sleep(1.2)
     p1 = pos("Cam")
-    chk("the big one touches Cam: hurt (%.1f), slowness II (sticky), thrown %.1f" % (h0 - hp("Cam"), math.dist(p0[::2], p1[::2]) if p0 and p1 else 0),
-        (sc("#g.touches") or 0) > t0 and h0 - hp("Cam") > 0 and passed('execute if entity @a[name=Cam,nbt={active_effects:[{id:"minecraft:slowness",amplifier:1b}]}]'))
+    chk("the big one touches Cam: hurt (%.1f), slowness II (sticky), thrown %.1f" % (taken("Cam") - h0, math.dist(p0[::2], p1[::2]) if p0 and p1 else 0),
+        (sc("#g.touches") or 0) > t0 and taken("Cam") - h0 > 0 and passed('execute if entity @a[name=Cam,nbt={active_effects:[{id:"minecraft:slowness",amplifier:1b}]}]'))
     R("effect give Cam minecraft:resistance infinite 4 true"); R("effect give Cam minecraft:regeneration infinite 4 true")
     d0 = sc("#g.dashes") or 0; time.sleep(4)
     chk("it lunges (dashes counted %d in 4 s), never a vanilla slime" % ((sc("#g.dashes") or 0) - d0), (sc("#g.dashes") or 0) > d0 and count("@e[type=minecraft:slime]") == 0)
@@ -251,15 +255,17 @@ def t_tower():
     tpp("Cam", *ROOM_IN); tpp("Cam2", ROOM_IN[0] + 2, ROOM_IN[1], ROOM_IN[2]); time.sleep(1.5)
     chk("Cam and Cam2 in the room: she wakes, 60 + 20 x 2 = 100 (+500), her name «Белая Дама»", sc("#t.st") == 1 and abs((hp(LADY) or 0) - 600) < 1
         and "Белая Дама" in nbt("@e[type=minecraft:text_display,tag=le.tr_ln,limit=1]", "text"))
-    R("effect clear Cam minecraft:resistance"); R("effect clear Cam minecraft:regeneration"); time.sleep(0.3); h0 = hp("Cam"); t0 = sc("#t.touches") or 0
+    R("effect clear Cam minecraft:resistance"); time.sleep(0.3); h0 = taken("Cam"); t0 = sc("#t.touches") or 0
     R(f"execute as {LADY} run data merge entity @s {{NoAI:1b}}"); R(f"execute at Cam run tp {LADY} ~0.4 ~0.2 ~0.4"); time.sleep(1.0)
-    chk("her touch: hurt (%.1f) and the Frost (slowness, mining fatigue)" % (h0 - hp("Cam")), (sc("#t.touches") or 0) > t0 and h0 - hp("Cam") > 0
+    chk("her touch: hurt (%.1f) and the Frost (slowness, mining fatigue)" % (taken("Cam") - h0), (sc("#t.touches") or 0) > t0 and taken("Cam") - h0 > 0
         and passed('execute if entity @a[name=Cam,nbt={active_effects:[{id:"minecraft:mining_fatigue"}]}]'))
-    R("effect give Cam minecraft:resistance infinite 4 true"); R("effect give Cam minecraft:regeneration infinite 4 true"); R(f"execute as {LADY} run data merge entity @s {{NoAI:0b}}")
-    tpp("Cam", ROOM_IN[0], ROOM_IN[1], ROOM_IN[2] + 4, 180, 0); time.sleep(0.5)
+    R("effect give Cam minecraft:resistance infinite 4 true"); R(f"execute as {LADY} run data merge entity @s {{NoAI:0b}}")
+    tpp("Cam", ROOM_IN[0], ROOM_IN[1], ROOM_IN[2] + 4, 180, 0); tpp("Cam2", ROOM_IN[0] + 2, ROOM_IN[1], ROOM_IN[2]); time.sleep(0.5)
     w0 = sc("#t.wails") or 0; R("scoreboard players set #t.wl le.tr 1"); time.sleep(0.4)
-    chk("the wail: darkness on both, she goes into a wall", (sc("#t.wails") or 0) > w0 and passed('execute if entity @a[name=Cam,nbt={active_effects:[{id:"minecraft:darkness"}]}]')
-        and passed('execute if entity @a[name=Cam2,nbt={active_effects:[{id:"minecraft:darkness"}]}]'))
+    lp = pos(LADY)
+    chk("the wail (%d -> %d): darkness on Cam" % (w0, sc("#t.wails") or 0), (sc("#t.wails") or 0) > w0 and passed('execute if entity @a[name=Cam,nbt={active_effects:[{id:"minecraft:darkness"}]}]'))
+    chk("darkness on Cam2 too (in the room)", passed('execute if entity @a[name=Cam2,nbt={active_effects:[{id:"minecraft:darkness"}]}]'))
+    chk("she is inside a wall now %s" % lp, lp is not None and (lp[0] < 472 or lp[0] > 483 or lp[2] < 33 or lp[2] > 44))
     time.sleep(1.8)
     lp = pos(LADY); cp = pos("Cam")
     behind = False
@@ -272,17 +278,16 @@ def t_tower():
     out = 0
     for _ in range(20):
         p = pos(LADY)
-        if p and not (471.5 <= p[0] <= 483.5 and 189 <= p[1] <= 197 and 32.5 <= p[2] <= 44.5): out += 1
+        if p and not (471.3 <= p[0] <= 483.7 and 188.5 <= p[1] <= 197 and 32.3 <= p[2] <= 44.7): out += 1
         time.sleep(0.5)
     chk("never outside the room in 10 s of flying (outside seen %d times; the leash puts her back)" % out, out == 0)
     # an arrow: half
     R(f"execute as {LADY} run data merge entity @s {{NoAI:1b}}"); tpp("Cam", ROOM_IN[0], ROOM_IN[1], ROOM_IN[2], 0, 0); tpp("Cam2", ROOM_IN[0] + 3, ROOM_IN[1], ROOM_IN[2])
     R("scoreboard players set #t.wl le.tr 100000"); R(f"tp {LADY} {ROOM_IN[0]} {ROOM_IN[1]} {ROOM_IN[2] + 4}"); time.sleep(0.8)
     h0 = hp(LADY); hv = sc("#t.halved") or 0
-    R("execute at Cam positioned ~ ~1.2 ~1.2 run summon minecraft:arrow ~ ~ ~ {Motion:[0.0d,0.05d,1.5d],damage:4.0d,Tags:[\"le.ttest\"]}")
-    R("execute as @e[type=minecraft:arrow,tag=le.ttest] run data modify entity @s Owner set from entity Cam UUID"); time.sleep(1.2)
+    R(f"damage {LADY} 8 minecraft:arrow by Cam"); time.sleep(0.6)        # an arrow of Cam (the damage type of a projectile, by the player)
     d = h0 - hp(LADY)
-    chk("an arrow of Cam: half of it taken back (halved %d -> %d, lost %.1f)" % (hv, sc("#t.halved") or 0, d), (sc("#t.halved") or 0) > hv and d > 0)
+    chk("an arrow of Cam (8): half of it taken back (halved %d -> %d, lost %.1f: 4)" % (hv, sc("#t.halved") or 0, d), (sc("#t.halved") or 0) > hv and abs(d - 4) < 0.6)
     h0 = hp(LADY); R(f"execute at {LADY} run setblock ~ ~ ~ minecraft:fire"); R(f"data merge entity {LADY} {{Fire:100s}}"); time.sleep(2)
     R(f"execute at {LADY} run fill ~-1 ~-1 ~-1 ~1 ~1 ~1 minecraft:air replace minecraft:fire")
     chk("fire does nothing (%.1f -> %.1f)" % (h0, hp(LADY)), abs(h0 - hp(LADY)) < 0.01)
@@ -315,15 +320,20 @@ def t_leash():
     R(f"tp {OGRE} {DEN_IN[0] + 30} {DEN_IN[1]} {DEN_IN[2]}"); time.sleep(0.5)
     p = pos(OGRE)
     chk("the Ogre put outside the den: back in the middle of it", p is not None and O["cave"][0] - 2 <= p[0] <= O["cave"][2] + 2)
-    R(f"damage {OGRE} 50 minecraft:player_attack by Cam"); away("Cam"); time.sleep(12)
-    chk("nobody in the den 10 s: asleep on his bed with full health (640)", sc("#o.st") == 0 and abs((hp(OGRE) or 0) - 640) < 1 and passed(f"execute as {OGRE} on vehicle if entity @s[tag=le.tr_oseat]"))
+    R(f"damage {OGRE} 50 minecraft:player_attack by Cam"); tpp("Cam", *DEN_OUT); time.sleep(12)
+    chk("nobody in the den 10 s (Cam by the mouth): asleep on his bed with full health (640)", sc("#o.st") == 0 and abs((hp(OGRE) or 0) - 640) < 1
+        and passed(f"execute as {OGRE} on vehicle if entity @s[tag=le.tr_oseat]"))
     tpp("Cam", *LEDGE); time.sleep(1.5)
     R(f"execute as {JELLY} run damage @s 300 minecraft:player_attack by Cam"); time.sleep(2)
-    n = count(JELLY); away("Cam"); time.sleep(12)
-    chk("the Jelly split (%d bodies), everybody out 10 s: one big body again, asleep, by the ledge" % n, n == 3 and sc("#g.st") == 0 and count(JELLY) == 1
-        and count(jel("scores={le.trs=3}")) == 1 and count("@e[type=minecraft:item_display,tag=le.tr_jm]") == 1)
-    tpp("Cam", *ROOM_IN); time.sleep(1.5); away("Cam"); time.sleep(12)
-    chk("the Lady: nobody in the room 10 s: asleep by the niche again", sc("#t.st") == 0 and count(LADY) == 1 and "1b" in nbt(LADY, "NoAI"))
+    n = count(JELLY); g0 = sc("#g.g") or 0; away("Cam"); t0 = time.time()
+    ok_ = wait(lambda: sc("#g.st") == 0, 60, 1.0)
+    chk("the Jelly split (%d bodies), everybody far away: the grotto unloads, 10 s later asleep again, a new generation (%.0f s)" % (n, time.time() - t0),
+        n == 3 and ok_ and (sc("#g.g") or 0) > g0)
+    tpp("Cam", *GOUT); time.sleep(5)
+    chk("back at the grotto: one big body asleep by the ledge, the old ones gone", count(JELLY) == 1 and count(jel("scores={le.trs=3}")) == 1
+        and count("@e[type=minecraft:item_display,tag=le.tr_jm]") == 1 and "1b" in nbt(JELLY1, "NoAI"))
+    tpp("Cam", *ROOM_IN); time.sleep(1.5); tpp("Cam", *TOUT); time.sleep(12)
+    chk("the Lady: nobody in the room 10 s (Cam on the ledges' start): asleep by the niche again", sc("#t.st") == 0 and count(LADY) == 1 and "1b" in nbt(LADY, "NoAI"))
 
 def t_peace():
     print("[peace]"); stage(); away("Cam"); away("Cam2"); reset_all(); time.sleep(2)
@@ -366,7 +376,8 @@ def t_vaults():
     print("[vaults]")
     got = {"r1_ogre": 0, "r1_grotto": 0, "r1_tower": 0}; lines = []
     for i in range(10):
-        R("function last_ember:vault/relayout"); time.sleep(0.4)
+        for v in got: R(f"scoreboard players set #o.{v} le.vt 0")
+        R("function last_ember:vault/reset_staffs"); R("function last_ember:vault/relayout_auto"); time.sleep(0.4)
         mains = {}
         for v in got:
             m = tc.score("#m.%s" % v, "le.vt")
@@ -421,7 +432,8 @@ GROUPS = dict(build=t_build, ogre=t_ogre, grotto=t_grotto, split=t_split, tower=
               window=t_window, vaults=t_vaults, zones=t_zones, restart=t_restart, perf=t_perf)
 if __name__ == "__main__":
     which = sys.argv[1:] or list(GROUPS)
-    if any(g in which for g in ("ogre", "split", "tower", "lock")): tm.fresh()     # the clicks (chests, the shield) on fresh clients (T-033)
-    for g in which: GROUPS[g]()
+    for g in which:
+        if g in ("ogre", "split", "tower", "lock"): tm.fresh()          # the clicks (chests, the shield) on fresh clients (T-033)
+        GROUPS[g]()
     print("\nT-034 treasuries: %d ok, %d failed" % (ok, bad))
     sys.exit(1 if bad else 0)

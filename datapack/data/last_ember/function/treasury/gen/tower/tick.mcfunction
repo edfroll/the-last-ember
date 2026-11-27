@@ -8,10 +8,12 @@ scoreboard players remove @e[type=minecraft:player,scores={le.trcd=1..}] le.trcd
 execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd matches 1.. run tag @s remove le.trcool
 execute if score #t.die le.tr matches 0.. run return run function last_ember:treasury/gen/tower/dying
 execute unless entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] run return 0
+execute if score #t.proj le.tr matches 1 run function last_ember:treasury/gen/tower/halve
 execute store result score #t.hp10 le.tr run data get entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] Health 10
 execute if score #t.hp10 le.tr matches ..5000 run return run function last_ember:treasury/gen/tower/die_start
 execute if score #t.gone le.tr matches 0.. run return run function last_ember:treasury/gen/tower/gone_tick
 execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] unless entity @s[x=472,y=190,z=33,dx=10,dy=5,dz=10] run tp @s 477.5 191.5 38.5
+execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] unless entity @s[x=473,y=190,z=34,dx=8,dy=4,dz=8] at @s facing 477.5 191.5 38.5 run function last_ember:treasury/gen/tower/push_in
 execute as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] at @s run function last_ember:treasury/gen/tower/fly
 scoreboard players remove #t.wl le.tr 1
 execute if score #t.wl le.tr matches ..0 as @e[type=minecraft:vex,tag=le.tr_lady,limit=1] at @s run function last_ember:treasury/gen/tower/wail

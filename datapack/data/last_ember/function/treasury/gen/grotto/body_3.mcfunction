@@ -4,6 +4,7 @@ scoreboard players set @e[tag=le.trnb] le.trs 3
 scoreboard players operation @e[tag=le.trnew] le.trg = #g.g le.tr
 scoreboard players operation @e[tag=le.trnb] le.tri = #g.made le.tr
 scoreboard players add #g.made le.tr 1
+scoreboard players add #g.alive le.tr 1
 scoreboard players set @e[tag=le.trnb] le.trv 0
 scoreboard players set @e[tag=le.trnb] le.trw 0
 scoreboard players set @e[tag=le.trnb] le.trp -1
