@@ -5,7 +5,7 @@ scoreboard players add #g.t le.tr 1
 tag @e[type=minecraft:player] remove le.trin_g
 tag @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,x=-386,y=133,z=197,dx=25,dy=10,dz=29] add le.trin_g
 scoreboard players remove @e[type=minecraft:player,scores={le.trcd=1..}] le.trcd 1
-tag @e[type=minecraft:player,tag=le.trcool,scores={le.trcd=..0}] remove le.trcool
+execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd matches 1.. run tag @s remove le.trcool
 execute as @e[type=minecraft:ghast,tag=le.tr_jelly] at @s run function last_ember:treasury/gen/grotto/body
 execute store result score #g.bodies le.tr if entity @e[type=minecraft:ghast,tag=le.tr_jelly]
 execute if score #g.bodies le.tr > #g.peak le.tr run scoreboard players operation #g.peak le.tr = #g.bodies le.tr

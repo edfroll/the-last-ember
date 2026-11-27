@@ -111,7 +111,7 @@ def run_ogre(o):
     seat = o["seat"]; chest = o["chest"]; lock = o["lock"]
     kw = dict(LAIR=LAIR, LEASH=LEASH, ALIVE=ALIVE, CX=f2(cx), CY=F + 1, CZ=f2(cz), SX=f2(seat[0]), SY=f2(seat[1]), SZ=f2(seat[2]),
               LX=lock[0], LY=lock[1], LZ=lock[2], PX=x1 + 1, PY=F + 1, PZ=z1 + 1)
-    common(sub, "o", "ogre", "Людоед", "Нора затихла.", lock + ["minecraft:brown_wool"], "minecraft:brown_carpet", "minecraft:block.wool.break",
+    common(sub, "o", "ogre", "Людоед", "Нора затихла.", lock + ["minecraft:brown_wool"], "minecraft:air", "minecraft:block.wool.break",
            (cx, F + 2, cz), LAIR, LEASH, 15,
            "execute at @e[type=minecraft:marker,tag=le.tr_odead,limit=1] run summon minecraft:experience_orb ~ ~0.5 ~ {Value:15s}\nkill @e[type=minecraft:marker,tag=le.tr_odead]")
     write(sub, "clear", "the Ogre and his things gone (no drops)", """
@@ -345,7 +345,7 @@ function last_ember:treasury/gen/ogre/deco
 function last_ember:treasury/gen/ogre/ravens
 """, **kw)
     write(sub, "unlock_quiet", "dead or peaceful: the lock stays off (a world from before the death, a template)", """
-execute if block «LX» «LY» «LZ» minecraft:brown_wool run setblock «LX» «LY» «LZ» minecraft:brown_carpet
+execute if block «LX» «LY» «LZ» minecraft:brown_wool run setblock «LX» «LY» «LZ» minecraft:air
 """, **kw)
     write(sub, "chew", "as/at the Ogre asleep: every 4..8 s chewing and crunching (low)", """
 scoreboard players remove #o.ch le.tr 1
@@ -461,7 +461,7 @@ scoreboard players add #g.t le.tr 1
 tag @e[type=minecraft:player] remove le.trin_g
 tag @e[«ALIVE»,«ROOM»] add le.trin_g
 scoreboard players remove @e[type=minecraft:player,scores={le.trcd=1..}] le.trcd 1
-tag @e[type=minecraft:player,tag=le.trcool,scores={le.trcd=..0}] remove le.trcool
+execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd matches 1.. run tag @s remove le.trcool
 execute as @e[type=minecraft:ghast,tag=le.tr_jelly] at @s run function last_ember:treasury/gen/grotto/body
 execute store result score #g.bodies le.tr if entity @e[type=minecraft:ghast,tag=le.tr_jelly]
 execute if score #g.bodies le.tr > #g.peak le.tr run scoreboard players operation #g.peak le.tr = #g.bodies le.tr
@@ -739,7 +739,7 @@ scoreboard players add #t.t le.tr 1
 tag @e[type=minecraft:player] remove le.trin_t
 tag @e[«ALIVE»,«ROOM»] add le.trin_t
 scoreboard players remove @e[type=minecraft:player,scores={le.trcd=1..}] le.trcd 1
-tag @e[type=minecraft:player,tag=le.trcool,scores={le.trcd=..0}] remove le.trcool
+execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd matches 1.. run tag @s remove le.trcool
 execute if score #t.die le.tr matches 0.. run return run function last_ember:treasury/gen/tower/dying
 execute unless entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] run return 0
 execute store result score #t.hp10 le.tr run data get entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] Health 10

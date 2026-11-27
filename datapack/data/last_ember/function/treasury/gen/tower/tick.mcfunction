@@ -5,7 +5,7 @@ scoreboard players add #t.t le.tr 1
 tag @e[type=minecraft:player] remove le.trin_t
 tag @e[type=minecraft:player,gamemode=!spectator,gamemode=!creative,x=472,y=190,z=33,dx=10,dy=5,dz=10] add le.trin_t
 scoreboard players remove @e[type=minecraft:player,scores={le.trcd=1..}] le.trcd 1
-tag @e[type=minecraft:player,tag=le.trcool,scores={le.trcd=..0}] remove le.trcool
+execute as @e[type=minecraft:player,tag=le.trcool] unless score @s le.trcd matches 1.. run tag @s remove le.trcool
 execute if score #t.die le.tr matches 0.. run return run function last_ember:treasury/gen/tower/dying
 execute unless entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] run return 0
 execute store result score #t.hp10 le.tr run data get entity @e[type=minecraft:vex,tag=le.tr_lady,limit=1] Health 10
