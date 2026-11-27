@@ -66,6 +66,10 @@ tools/build/spiders_step.sh
 # -> causeway; under the place the adit, the shaft, three horizons, the inclines, the ore, the cave-ins, the big collapse and Bran's
 # pocket; the box of the place filled with rock round them; scans mines_pre.bin)
 tools/build/mines_step.sh
+# T-034: the Ogre's Den (only inside its place + seam: the old oak, the fallen trunk, the mouth of the stair; under the hill north of it
+# the stair and the cave with the lair, the box of the cave + 6 filled with rock; on the ground to the trail refuge -> bonfire 2 the chain
+# of bones; scans ogre_pre.bin)
+tools/build/ogre_step.sh
 tools/biomepaint.sh | grep -v JAVA_TOOL | sed -n 1p      # not head -1: it closed the pipe, SIGPIPE + pipefail stopped the step (exit 141)
 tools/borders.sh apply | grep -v JAVA_TOOL | tail -3
 tools/server.sh sync

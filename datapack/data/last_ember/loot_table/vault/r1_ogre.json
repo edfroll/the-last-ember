@@ -1,0 +1,603 @@
+{
+ "type": "minecraft:chest",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_blink"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 1
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_frost"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 2
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_flame"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 3
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_lift"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 4
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_banish"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 5
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_wrath"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 6
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/guard_shield"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 7
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/watch_plate"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 8
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/wind_bow"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 9
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/shadow_quiver"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 10
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/old_cauldron"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 11
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/herb_bag"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 12
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/template"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 13
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_blink"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 1
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_frost"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 2
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_flame"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 3
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_lift"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 4
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_banish"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 5
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/staff_wrath"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 6
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/guard_shield"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 7
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/watch_plate"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 8
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/wind_bow"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 9
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/shadow_quiver"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 10
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/old_cauldron"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 11
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/herb_bag"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 12
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:item/template"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m2.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 13
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:vault/filler_r1"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#m.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 99
+   }
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:loot_table",
+     "value": "last_ember:vault/good_r1"
+    }
+   ]
+  },
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "minecraft:golden_apple"
+    }
+   ],
+   "condition": {
+    "type": "minecraft:int_value_check",
+    "value": {
+     "type": "minecraft:score",
+     "target": {
+      "type": "minecraft:fixed",
+      "name": "#a.r1_ogre"
+     },
+     "score": "le.vt"
+    },
+    "test": 1
+   }
+  }
+ ],
+ "random_sequence": "last_ember:vault/r1_ogre"
+}

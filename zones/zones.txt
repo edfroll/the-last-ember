@@ -58,3 +58,5 @@ heather_head    overworld box  102 62 -576  147 144 -547   # T-031: the head of 
 spiders_nest    overworld box 118 85 -333 141 122 -292   no_spawn   # T-032: the nest of the Spider Thicket (the pit, the giant, the burrow)
 spiders_cocoon  overworld box 136 108 -302 137 111 -301              # T-032: the live cocoon (only the datapack opens it)
 mines_headframe overworld box 270 111 -76 278 135 -68              # T-033: the headframe of the Iron Ore Mines (a landmark)
+ogre_den        overworld box  219 168 143 250 179 168   dungeon   # T-034: the Ogre's Den (the cave)
+ogre_den_stair  overworld box  249 169 162 256 184 179   dungeon   # T-034: the Ogre's Den (the stair and its mouth)

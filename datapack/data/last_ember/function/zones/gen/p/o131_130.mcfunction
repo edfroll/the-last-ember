@@ -2,3 +2,7 @@
 execute if entity @s[x=-205,y=45,z=-205,dx=410,dy=280,dz=410] run scoreboard players set #hit le.z 1
 execute if entity @s[x=-205,y=45,z=-205,dx=410,dy=280,dz=410] run tag @s add le.zf.calm
 execute if entity @s[x=-205,y=45,z=-205,dx=410,dy=280,dz=410] run tag @s add le.zf.no_spawn
+execute if entity @s[x=214,y=163,z=138,dx=41,dy=21,dz=35] run scoreboard players set #hit le.z 1
+execute if entity @s[x=214,y=163,z=138,dx=41,dy=21,dz=35] run tag @s add le.zf.dungeon
+execute if entity @s[x=244,y=164,z=157,dx=17,dy=25,dz=27] run scoreboard players set #hit le.z 1
+execute if entity @s[x=244,y=164,z=157,dx=17,dy=25,dz=27] run tag @s add le.zf.dungeon
