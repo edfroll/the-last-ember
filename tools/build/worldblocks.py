@@ -10,10 +10,24 @@ sb = fens_scan.sb
 ROOT = fens_scan.ROOT
 
 
+_DEF = None
+def defaults(n):
+    """the default properties of a block (26.3 saves a chunk's palette without the properties at their default: `minecraft:water`,
+    `minecraft:oak_stairs[half=bottom]` for facing=north...): from the data generator's report docs/reference/blocks.json"""
+    global _DEF
+    if _DEF is None:
+        import json
+        d = json.load(open(os.path.join(ROOT, "docs/reference/blocks.json"))); _DEF = {}
+        for k, v in d.items():
+            for st in v.get("states", []):
+                if st.get("default"): _DEF[k] = st.get("properties", {})
+    return _DEF.get(n, {})
+
+
 def state(p):
-    if isinstance(p, str): return p
-    n = p.get("Name") or p.get("id") or p.get("")
-    props = p.get("Properties") or p.get("properties") or {}
+    if isinstance(p, str): n, given = p, {}
+    else: n = p.get("Name") or p.get("id") or p.get(""); given = p.get("Properties") or p.get("properties") or {}
+    props = dict(defaults(n)); props.update(given)
     return n + ("[" + ",".join("%s=%s" % (k, props[k]) for k in sorted(props)) + "]" if props else "")
 
 

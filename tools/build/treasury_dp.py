@@ -250,14 +250,14 @@ tag @e[type=minecraft:player] remove le.trtgt
 playsound minecraft:entity.snowball.throw hostile @a[distance=..32] ~ ~2 ~ 1.5 0.5
 scoreboard players add #o.bones le.tr 1
 """, **kw)
-    write(sub, "bone_fly", "as/at a thrown bone: a player's body within 1.3 -> the hit; the marker follows it; 3 s at most", """
+    write(sub, "bone_fly", "as/at a thrown bone: a player's body within 1.6 -> the hit; the marker follows it; 3 s at most", """
 scoreboard players remove @s le.trt 1
 tp @e[type=minecraft:marker,tag=le.tr_bonem,sort=nearest,limit=1] ~ ~ ~
-execute positioned ~ ~-0.9 ~ as @e[«ALIVE»,distance=..1.3,limit=1] run function last_ember:treasury/gen/ogre/bone_hit
+execute positioned ~ ~-0.9 ~ as @e[«ALIVE»,distance=..1.6,limit=1] run function last_ember:treasury/gen/ogre/bone_hit
 execute if score @s le.trt matches ..0 run kill @s
 """, **kw)
-    write(sub, "bone_end", "as/at the marker of a bone that is gone (it hit something): a player's body within 1.6 -> the hit; the marker gone", """
-execute positioned ~ ~-0.9 ~ as @e[«ALIVE»,distance=..1.6,limit=1] run function last_ember:treasury/gen/ogre/bone_hit
+    write(sub, "bone_end", "as/at the marker of a bone that is gone (it hit something; the marker is a tick behind): a player's body within 2.2 -> the hit; the marker gone", """
+execute positioned ~ ~-0.9 ~ as @e[«ALIVE»,distance=..2.2,limit=1] run function last_ember:treasury/gen/ogre/bone_hit
 kill @s
 """, **kw)
     write(sub, "bone_hit", "as a player the bone struck: 4 (thrown by the Ogre), slowness I 2 s; the bone gone", """
