@@ -144,7 +144,8 @@ INCLINES = [("adit", 0, (283, -66, 297, -64), (1, 0), (6, 6), -66),
 CAVES = [(1, 2, (290, -60, 294, -59), "x"), (2, 2, (305, -56, 306, -52), "z"), (3, 3, (266, -46, 270, -44), "x")]
 BIG = dict(rect=(263, -69, 265, -62), front=-62, lane=(264, 265))   # the big collapse at the end of D1b (north); Bran's crawl: x 264..265
 WATER = (277, 288)                         # D1a: x 278..287 water, 277 and 288 the waterlogged slab steps
-DRIPS = [(279, -45), (282, -46), (285, -44), (287, -45)]      # pointed dripstone under the ceiling over the water
+DRIPS = [(279, -45), (283, -46), (286, -44), (287, -46)]      # pointed dripstone under the raised ceiling over the water (not on the
+                                                              # timbering's columns x 281, 285)
 
 def levels(Y):
     return {0: Y, 1: Y - 12, 2: Y - 24, 3: Y - 34, 4: Y - 34}
@@ -199,7 +200,7 @@ def workings(Y):
     # the water steps and pool of D1a: the floor 1 lower there
     f3 = lv[3]
     for x in range(WATER[0], WATER[1] + 1):
-        for z in range(-46, -43): air.add((x, f3, z))
+        for z in range(-46, -43): air.add((x, f3, z)); air.add((x, f3 + 4, z))   # 1 higher: a player wading floats ~0.5 up
     out = [q for q in air if not (PLACE[0] + WORK_PAD <= q[0] <= PLACE[2] - WORK_PAD and PLACE[1] + WORK_PAD <= q[2] <= PLACE[3] - WORK_PAD)]
     if out: raise SystemExit("STOP (HQ T-033, 2): the workings leave the box of the place minus %d: %s" % (WORK_PAD, sorted(out)[:5]))
     return dict(lv=lv, floor=floor, seg=seg_of, inc=inc, air=air, plats=plats)

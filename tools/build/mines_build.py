@@ -336,8 +336,8 @@ def cave_after(b, cv):
 
 def water(b, c):
     """HQ T-033, 2: knee-deep water on H3's main drift: the floor 1 lower over x WATER, waterlogged bottom slabs at both ends (half steps),
-    source blocks only (the rock round them is solid: no flowing water); 4 pointed dripstones under the ceiling with a sealed water source
-    over their ceiling block (the vanilla drip)"""
+    source blocks only (the rock round them is solid: no flowing water); the ceiling there 1 higher (a wading player floats ~0.5 up: a tip
+    at the usual height caught his head); 4 pointed dripstones under it with a sealed water source over their ceiling block (the drip)"""
     f = c.lv[3]; xa, xb = P.WATER
     for x in range(xa, xb + 1):
         for z in range(-46, -43):
@@ -345,12 +345,12 @@ def water(b, c):
             if x in (xa, xb): b.set(x, f, z, "minecraft:tuff_slab[type=bottom,waterlogged=true]")
             else: b.set(x, f, z, "minecraft:water[level=0]")
             c.noore.add((x, f + 1, z))
-    for (x, z) in P.DRIPS:
-        b.set(x, f + 3, z, "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down,waterlogged=false]")
-        b.set(x, f + 4, z, "minecraft:dripstone_block")
-        b.set(x, f + 5, z, "minecraft:water[level=0]")
+    for (x, z) in P.DRIPS:                       # the ceiling over the water is 1 higher (f + 5): the tips hang at f + 4
+        b.set(x, f + 4, z, "minecraft:pointed_dripstone[thickness=tip,vertical_direction=down,waterlogged=false]")
+        b.set(x, f + 5, z, "minecraft:dripstone_block")
+        b.set(x, f + 6, z, "minecraft:water[level=0]")
         for (a, e, g) in ((1, 0, 0), (-1, 0, 0), (0, 0, 1), (0, 0, -1), (0, 1, 0)):
-            q = (x + a, f + 5 + e, z + g)
+            q = (x + a, f + 6 + e, z + g)
             if b.get(*q) in (None, "minecraft:air") or b.get(*q) and "water" not in b.get(*q): b.set(*q, ROCK[3].at(*q))
     c.meta["water"] = dict(x=[xa, xb], drips=[list(d) for d in P.DRIPS])
 

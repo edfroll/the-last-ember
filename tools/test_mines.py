@@ -26,7 +26,7 @@ dev agent: walking (!fwd_on), sneaking, breaking blocks (!attack_on), the trade 
   zones    the headframe: adventure, its post stays; the yard and a drift: Cam breaks a block
   restart  after a restart: the cave-ins, Bran, the dead miners, the carts in their state, no doubles
   perf     two players on H3 in a fight, every dead miner awake: mines/* by the profiler
-Usage: python3 tools/test_mines.py [build ore caves sneak bypass shaft dead cap carts bran peace smith zones restart perf]"""
+Usage: python3 tools/test_mines.py [build ore caves sneak bypass shaft dead cap carts bran peace zones smith restart perf]"""
 import importlib.util, json, math, os, re, subprocess, sys, time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 def load(n):
@@ -464,13 +464,14 @@ def t_zones():
     chk("the headframe's zone: Cam in adventure (%s), its post stays" % adv, adv and blk(x1, Y + 2, z2, "minecraft:spruce_log"))
     tpp("Cam", 262.5, Y + 1, -63.5); time.sleep(1.5)
     surv = passed("execute if entity @a[name=Cam,gamemode=survival]")
+    R("item replace entity Cam weapon.mainhand with minecraft:iron_pickaxe")
     R("setblock 262 %d -62 minecraft:cobblestone" % (Y + 1))
     tc.face("Cam", 262.5, Y + 1, -63.5, 262.5, Y + 1.5, -61.5); time.sleep(0.5)
     g1 = mine("Cam", 262, Y + 1, -62)
     R("give Cam minecraft:iron_pickaxe"); R("item replace entity Cam weapon.mainhand with minecraft:iron_pickaxe")
-    w = (301, LV[1] + 2, -50)
+    w = (301, LV[1] + 2, -52)                  # a rock cell of A1's wall (not a post of the timbering: z -50)
     restore([w], 2)
-    tpp("Cam", 299.5, LV[1] + 1, -50.5); time.sleep(1); tc.face("Cam", 299.5, LV[1] + 1, -50.5, w[0] + 0.5, w[1] + 0.5, w[2] + 0.5); time.sleep(0.5)
+    tpp("Cam", 299.5, LV[1] + 1, -51.5); time.sleep(1); tc.face("Cam", 299.5, LV[1] + 1, -51.5, w[0] + 0.5, w[1] + 0.5, w[2] + 0.5); time.sleep(0.5)
     g2 = mine("Cam", *w)
     chk("the yard and a drift are breakable: Cam (survival: %s) breaks a block in the yard (%s) and a wall of A1 (%s)" % (surv, g1, g2), surv and g1 and g2)
     restore([w], 2); R("setblock 262 %d -62 minecraft:air" % (Y + 1)); restore([(262, Y + 1, -62)], 1)
@@ -536,7 +537,9 @@ def t_perf():
     chk("mines/* with two players on H3 in a fight, every dead miner awake: %.3f ms per tick (<= 0.3)" % tot, tot <= 0.3)
     R("kill @e[tag=t33p]"); base()
 
-ORDER = ["build", "ore", "caves", "sneak", "bypass", "shaft", "dead", "cap", "carts", "bran", "peace", "smith", "zones", "restart", "perf"]
+# smith after the groups with clicks: after the trade window the client Cam no longer breaks blocks (until it is relaunched); restart
+# relaunches the clients (their clicks miss right after: only perf follows)
+ORDER = ["build", "ore", "caves", "sneak", "bypass", "shaft", "dead", "cap", "carts", "bran", "peace", "zones", "smith", "restart", "perf"]
 if __name__ == "__main__":
     want = sys.argv[1:] or ORDER
     for t in ORDER:
